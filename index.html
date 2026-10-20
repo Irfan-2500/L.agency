@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lakshay Agency — Premium PowerPoint Store</title>
+<script>
+/* Theme: "system" (default) | "dark" | "light" — page dikhne se pehle lagta hai, taaki flash na ho */
+(function(){var m="system";try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
+var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();
+</script>
+<meta name="description" content="Lakshay Agency: Premium, fully editable educational, business, marketing and animated PowerPoint presentations. Instant download + custom PPT service." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Hind:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   1. THEME / VARIABLES  (yahan se colors badal sakte ho)
+   ========================================================= */
+:root{
+  --bg:#07080c; --bg2:#0b0d14; --card:#0f121b; --card2:#141826;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+  --text:#f4f5fb; --muted:#9aa1b8; --dim:#6b7290;
+  --violet:#8b2cff; --cyan:#06b6d4; --pink:#ec4899; --green:#22c55e; --amber:#f59e0b;
+  --grad:linear-gradient(90deg,#8b2cff,#06b6d4);
+  --radius:16px; --shadow:0 20px 60px -20px rgba(139,44,255,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;line-height:1.15;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+img{max-width:100%;display:block}
+.container{width:min(1180px,100% - 32px);margin-inline:auto}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.section{padding:96px 0}
+.eyebrow{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px}
+.section-head{text-align:center;max-width:680px;margin:0 auto 48px}
+.section-head h2{font-size:clamp(1.9rem,4vw,2.8rem)}
+.section-head p{color:var(--muted);margin-top:12px}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:12px;font-weight:600;font-size:.92rem;transition:.25s;white-space:nowrap}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:var(--shadow)}
+.btn-primary:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.btn-ghost{background:var(--card2);border:1px solid var(--line2)}
+.btn-ghost:hover{border-color:var(--violet)}
+.btn-wa{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);color:#4ade80}
+.btn-wa:hover{background:rgba(34,197,94,.2)}
+.btn-sm{padding:9px 14px;font-size:.82rem;border-radius:10px}
+
+/* =========================================================
+   2. HEADER
+   ========================================================= */
+header{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.75);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:20px;height:72px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;border:1.5px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--grad) border-box}
+.logo b{font-family:'Space Grotesk';font-size:1.05rem;display:block;line-height:1}
+.logo small{font-size:.6rem;letter-spacing:.14em;color:var(--muted);font-weight:700}
+.search{flex:1;max-width:420px;position:relative}
+.search input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 14px 11px 40px;font-size:.88rem;outline:none;transition:.2s}
+.search input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,44,255,.2)}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--dim)}
+.nav-links{display:flex;gap:8px;margin-left:auto;align-items:center}
+.nav-links a{padding:9px 14px;border-radius:10px;font-size:.88rem;font-weight:600;color:var(--muted);transition:.2s}
+.nav-links a:hover{color:#fff;background:var(--card2)}
+.nav-links a.nav-shop,.nav-links a.nav-custom{display:inline-flex;align-items:center;gap:7px;color:#fff}
+.nav-links a.nav-shop{background:linear-gradient(135deg,#06b6d4,#3b82f6);box-shadow:0 6px 20px -4px rgba(6,182,212,.6)}
+.nav-links a.nav-shop:hover{background:linear-gradient(135deg,#06b6d4,#3b82f6);filter:brightness(1.12);transform:translateY(-1px)}
+.nav-links a.nav-custom{background:var(--card2);border:1px solid rgba(192,132,252,.45)}
+.nav-links a.nav-custom svg{color:#c084fc}
+.nav-links a.nav-custom:hover{background:rgba(139,44,255,.18);border-color:#c084fc}
+.nav-links a.active{color:#fff;background:linear-gradient(135deg,#8b2cff,#a855f7);box-shadow:0 6px 20px -4px rgba(139,44,255,.7)}
+.cart-btn{position:relative;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line2);background:var(--card)}
+.cart-btn:hover{border-color:var(--violet)}
+.cart-count{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--pink);font-size:.7rem;font-weight:700;display:grid;place-items:center}
+.cart-count:empty,.cart-count[data-n="0"]{display:none}
+.menu-btn{display:none}
+
+/* =========================================================
+   3. HERO
+   ========================================================= */
+.hero{position:relative;padding:80px 0 100px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-200px -200px auto auto;width:700px;height:700px;background:radial-gradient(circle,rgba(139,44,255,.22),transparent 65%);pointer-events:none}
+.hero::after{content:"";position:absolute;left:-200px;bottom:-300px;width:600px;height:600px;background:radial-gradient(circle,rgba(6,182,212,.14),transparent 65%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center;position:relative;z-index:1}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:99px;background:var(--card2);border:1px solid var(--line2);font-size:.72rem;font-weight:700;letter-spacing:.08em;color:var(--muted)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+.hero h1{font-size:clamp(2.4rem,5.5vw,4rem);margin:22px 0 18px}
+.hero p.lead{color:var(--muted);font-size:1.05rem;max-width:480px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0}
+.hero-feats{display:flex;gap:22px;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--line);font-size:.86rem;color:var(--muted)}
+.hero-feats span{display:flex;align-items:center;gap:7px}
+.stats{display:flex;gap:32px;margin-top:28px}
+.stats b{font-family:'Space Grotesk';font-size:1.6rem;display:block}
+.stats small{color:var(--dim);font-size:.78rem}
+
+/* Hero slider (live slide mockups — images ki zarurat nahi) */
+/* --- Digital Smart Board frame --- */
+.board-wrap{position:relative;display:flex;flex-direction:column;align-items:center}
+.showcase{position:relative;width:100%;padding:18px 18px 0;border-radius:18px;
+  background:linear-gradient(180deg,#22252f,#111319 60%,#0b0c10);
+  border:1px solid #30343f;
+  box-shadow:0 40px 90px -25px rgba(139,44,255,.55),0 0 0 6px rgba(255,255,255,.02),inset 0 1px 0 rgba(255,255,255,.1)}
+.cam{position:absolute;top:7px;left:50%;transform:translateX(-50%);width:7px;height:7px;border-radius:50%;background:#0a0b0e;box-shadow:inset 0 0 0 1.5px #3a3f4c,0 0 6px rgba(6,182,212,.4)}
+.slider{position:relative;aspect-ratio:16/9;border-radius:6px;overflow:hidden;background:#000;box-shadow:inset 0 0 0 1px rgba(0,0,0,.8),0 0 0 2px #05060a}
+.glare{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,0) 35%);pointer-events:none;z-index:3}
+.screen-ui{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:8px 12px;font-size:.6rem;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.7);background:linear-gradient(rgba(0,0,0,.35),transparent);z-index:2;pointer-events:none}
+.screen-ui span:first-child{color:#4ade80}
+.slider .dots{position:absolute;bottom:10px;left:0;right:0;padding:0;z-index:2}
+.bezel-bottom{display:flex;align-items:center;justify-content:space-between;padding:10px 6px 12px}
+.bezel-bottom .brand{font-family:'Space Grotesk';font-size:.68rem;letter-spacing:.22em;color:#8a90a6}
+.bezel-bottom .brand b{color:#c4b5fd}
+.speaker{width:60px;height:6px;border-radius:4px;background:repeating-linear-gradient(90deg,#2c303b 0 3px,transparent 3px 6px)}
+.led{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;animation:blink 2s infinite}
+@keyframes blink{50%{opacity:.35}}
+.pen-tray{position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);width:42%;height:11px;border-radius:0 0 8px 8px;background:linear-gradient(#2a2e39,#16181f);border:1px solid #30343f;border-top:0;display:flex;gap:8px;justify-content:center;align-items:center}
+.pen-tray i{width:22%;height:4px;border-radius:3px}
+.stand{display:flex;flex-direction:column;align-items:center;margin-top:8px}
+.stand .pole{width:26px;height:46px;background:linear-gradient(90deg,#15171d,#2b2f3a,#15171d);border-left:1px solid #30343f;border-right:1px solid #30343f}
+.stand .base{width:220px;height:12px;border-radius:12px 12px 4px 4px;background:linear-gradient(#2b2f3a,#111319);border:1px solid #30343f;box-shadow:0 20px 40px -10px rgba(139,44,255,.5)}
+.slide{position:absolute;inset:0;opacity:0;transform:scale(1.04);transition:opacity .7s,transform .7s;padding:9% 13% 9%;display:flex;flex-direction:column;justify-content:center}
+.slide.on{opacity:1;transform:none}
+.slide h3{font-size:clamp(1.1rem,2.6vw,2rem);max-width:70%}
+.slide p{font-size:clamp(.65rem,1.1vw,.85rem);opacity:.75;margin-top:8px;max-width:60%}
+.slide .bars{display:flex;gap:6px;align-items:flex-end;height:30%;margin-top:6%;width:50%}
+.slide .bars i{flex:1;border-radius:4px 4px 0 0;background:rgba(255,255,255,.85)}
+.slide .orb{position:absolute;right:-8%;top:50%;transform:translateY(-50%);width:48%;aspect-ratio:1;border-radius:50%;filter:blur(2px);opacity:.9}
+.slide .tag{position:relative;margin-bottom:10px;font-size:.65rem;font-weight:700;letter-spacing:.12em;opacity:.75}
+.s-nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.4);z-index:4;backdrop-filter:blur(6px);display:grid;place-items:center;color:#fff;z-index:2;transition:.2s}
+.s-nav:hover{background:rgba(0,0,0,.85)}
+.s-prev{left:12px}.s-next{right:12px}
+.dots{display:flex;justify-content:center;gap:7px;padding-top:12px}
+.dots button{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.25);transition:.3s}
+.dots button.on{width:26px;background:var(--grad)}
+.badge-float{position:absolute;padding:8px 13px;border-radius:10px;background:rgba(15,18,27,.92);border:1px solid var(--line2);font-size:.72rem;font-weight:700;display:flex;align-items:center;gap:7px;backdrop-filter:blur(8px);z-index:3}
+.bf1{top:-16px;right:20px}.bf2{bottom:-16px;left:-14px}.bf3{bottom:56px;right:28px}
+
+/* =========================================================
+   4. CATEGORIES
+   ========================================================= */
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.cat{position:relative;min-height:150px;padding:20px;border-radius:var(--radius);border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;transition:.3s;cursor:pointer;text-align:left}
+.cat::before{content:"";position:absolute;inset:0;background:var(--cg);opacity:.35;transition:.3s}
+.cat:hover{transform:translateY(-4px);border-color:var(--line2)}
+.cat:hover::before{opacity:.6}
+.cat>*{position:relative}
+.cat-top{display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--muted);font-weight:600}
+.cat-top span.arrow{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center}
+.cat h3{font-size:1.1rem}
+
+/* =========================================================
+   5. PRODUCTS
+   ========================================================= */
+.toolbar{display:flex;flex-direction:column;gap:14px;padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--line);margin-bottom:28px}
+.big-search{position:relative;display:block;width:100%}
+.big-search input{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:16px 18px 16px 50px;font-size:1rem;outline:none;transition:.2s}
+.big-search input:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(139,44,255,.18)}
+.big-search svg{position:absolute;left:17px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--muted)}
+.big-search .count{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.75rem;font-weight:600;color:var(--muted);background:var(--card2);padding:5px 11px;border-radius:8px;pointer-events:none}
+.filter-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-top:4px;border-top:1px solid var(--line)}
+.filter-head .ttl{display:flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;letter-spacing:.08em;color:var(--muted);padding-top:10px}
+#filterToggle{display:none}
+.clear-btn{margin-left:auto;padding-top:10px;font-size:.8rem;font-weight:600;color:var(--pink)}
+.clear-btn[hidden]{display:none}
+.filters{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.fsel{display:flex;flex-direction:column;gap:5px}
+.fsel span{font-size:.66rem;font-weight:700;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+.fsel select{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.84rem;outline:none;cursor:pointer;transition:.2s}
+.fsel select:focus{border-color:var(--violet)}
+.fsel.on select{border-color:var(--violet);background:rgba(139,44,255,.14);color:#fff}
+.fsel.on span{color:#c084fc}
+.chips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.chip{padding:8px 14px;border-radius:9px;font-size:.8rem;font-weight:600;color:var(--muted);background:var(--card2);border:1px solid transparent;transition:.2s}
+.chip:hover{color:#fff}
+.chip.on{background:var(--grad);color:#fff}
+.toolbar .mini-search{position:relative}
+.toolbar .mini-search input{background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:8px 12px 8px 34px;font-size:.82rem;width:190px;outline:none}
+.toolbar .mini-search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;color:var(--dim)}
+.toolbar select{background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:.82rem;outline:none}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:.3s}
+.card:hover{transform:translateY(-5px);border-color:rgba(139,44,255,.45);box-shadow:var(--shadow)}
+.thumb{position:relative;aspect-ratio:16/10;overflow:hidden;padding:16px;display:flex;flex-direction:column;justify-content:flex-end}
+.thumb .t-title{font-family:'Space Grotesk';font-weight:700;font-size:1rem;max-width:80%;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.thumb .t-shape{position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;opacity:.35;background:#fff;filter:blur(30px)}
+.thumb .t-lines{display:flex;flex-direction:column;gap:4px;margin-top:8px}
+.thumb .t-lines i{height:4px;border-radius:4px;background:rgba(255,255,255,.4)}
+.ribbon{position:absolute;top:10px;left:10px;padding:4px 9px;border-radius:6px;font-size:.62rem;font-weight:800;letter-spacing:.06em;color:#fff;z-index:2}
+.r-best{background:#f97316}.r-new{background:#0ea5e9}.r-feat{background:#d946ef}
+.slides-badge{color:#fff;position:absolute;right:10px;bottom:10px;padding:4px 8px;border-radius:7px;background:rgba(0,0,0,.7);font-size:.7rem;font-weight:700;display:flex;gap:5px;align-items:center}
+.slides-badge svg{width:13px;height:13px}
+.c-body{padding:16px;display:flex;flex-direction:column;flex:1}
+.c-meta{display:flex;gap:10px;font-size:.68rem;color:var(--dim);margin-bottom:6px}
+.c-meta .c-cat{color:#c084fc;font-weight:600}
+.c-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.c-tags button{font-size:.66rem;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--card2);color:var(--muted);border:1px solid var(--line);transition:.2s}
+.c-tags button:hover{color:#fff;border-color:var(--violet)}
+.thumb.light{color:#111827}.thumb.light .t-title{text-shadow:none}.thumb.light .t-lines i{background:rgba(17,24,39,.22)}.thumb.light .t-shape{background:var(--accent);opacity:.25}
+.m-preview.light{color:#111827}
+.c-body h4{font-size:.98rem;margin-bottom:6px}
+.c-body p{font-size:.8rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.price{display:flex;align-items:baseline;gap:8px;margin:14px 0 12px;padding-top:12px;border-top:1px solid var(--line)}
+.price b{font-family:'Space Grotesk';font-size:1.4rem}
+.price s{color:var(--dim);font-size:.8rem}
+.price em{margin-left:auto;font-style:normal;font-size:.72rem;font-weight:700;color:var(--green)}
+.c-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+.add-cart{margin-top:10px;font-size:.75rem;color:var(--muted);text-align:center;transition:.2s}
+.add-cart:hover{color:var(--cyan)}
+.add-cart.added{color:var(--green)}
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted)}
+.load-more{display:flex;justify-content:center;margin-top:36px}
+
+/* =========================================================
+   6. CUSTOM CTA
+   ========================================================= */
+.cta{position:relative;padding:56px;border-radius:24px;background:var(--card);border:1px solid var(--line);overflow:hidden;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
+.cta::before{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;background:radial-gradient(circle,rgba(139,44,255,.3),transparent 70%)}
+.cta h2{font-size:clamp(1.8rem,3.5vw,2.6rem)}
+.cta p{color:var(--muted);margin:16px 0 26px}
+.cta-list{position:relative;display:flex;flex-direction:column;gap:12px}
+.cta-list div{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:.88rem;font-weight:600}
+.cta-list svg{color:var(--cyan)}
+
+/* =========================================================
+   7. FEATURES / STEPS
+   ========================================================= */
+.feats{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
+.feats .feat{grid-column:span 2}
+.feats .feat:nth-child(4){grid-column:2/4}
+.feat{padding:26px;border-radius:var(--radius);background:var(--card);border:1px solid var(--line);position:relative;overflow:hidden;transition:.3s}
+.feat:hover{border-color:var(--line2);transform:translateY(-3px)}
+.feat::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:var(--fc);opacity:.12;filter:blur(30px)}
+.ficon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--fc);color:var(--fc);margin-bottom:18px}
+.feat h3{font-size:1.05rem;margin-bottom:8px}
+.feat p{font-size:.86rem;color:var(--muted)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;position:relative}
+.steps::before{content:"";position:absolute;top:58px;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--line2),transparent)}
+.step{text-align:center;padding:28px 20px;border-radius:var(--radius);background:var(--card);border:1px solid var(--line);position:relative}
+.step .sicon{position:relative;width:60px;height:60px;margin:0 auto 18px;border-radius:16px;display:grid;place-items:center;border:1.5px solid var(--fc);color:var(--fc);background:var(--bg2)}
+.step .sicon svg{width:24px;height:24px}
+.step .num{position:absolute;top:-9px;right:-9px;width:24px;height:24px;border-radius:50%;background:#fff;color:#000;font-size:.68rem;font-weight:800;display:grid;place-items:center}
+.step h3{font-size:1rem;margin-bottom:8px}
+.step p{font-size:.82rem;color:var(--muted)}
+
+/* =========================================================
+   8. REVIEWS
+   ========================================================= */
+.reviews{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.review{padding:22px;border-radius:var(--radius);background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column}
+.stars{color:var(--amber);letter-spacing:2px;font-size:.95rem}
+.review blockquote{font-size:.88rem;font-style:italic;color:#d6d9e6;margin:12px 0 18px;flex:1}
+.reviewer{display:flex;gap:10px;align-items:center;padding-top:14px;border-top:1px solid var(--line)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-weight:700}
+.reviewer b{font-size:.86rem;display:block}
+.reviewer small{font-size:.74rem;color:var(--dim)}
+.no-reviews{text-align:center;padding:40px;border:1px dashed var(--line2);border-radius:var(--radius);color:var(--muted)}
+
+/* =========================================================
+   9. FAQ
+   ========================================================= */
+.faq{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.faq-item{border-radius:12px;background:var(--card);border:1px solid var(--line);overflow:hidden;transition:.2s}
+.faq-item.open{border-color:rgba(139,44,255,.4)}
+.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 20px;font-weight:600;font-size:.94rem;text-align:left}
+.faq-q svg{transition:.3s;color:var(--muted)}
+.faq-item.open .faq-q svg{transform:rotate(180deg);color:var(--violet)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-a p{padding:0 20px 18px;color:var(--muted);font-size:.9rem}
+
+/* =========================================================
+   10. CONTACT + FOOTER
+   ========================================================= */
+.contact{display:grid;grid-template-columns:1fr 1.25fr;gap:40px}
+.contact h2{font-size:clamp(1.8rem,3.5vw,2.5rem)}
+.contact>div>p{color:var(--muted);margin:14px 0 26px}
+.info{display:flex;gap:14px;align-items:center;padding:16px;border-radius:12px;background:var(--card);border:1px solid var(--line);margin-bottom:12px}
+.info .ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--fc) 15%,transparent);color:var(--fc)}
+.info small{font-size:.66rem;letter-spacing:.1em;color:var(--dim);font-weight:700;text-transform:uppercase;display:block}
+.info b{font-size:.95rem}
+form.box{padding:28px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
+form.box h3{font-size:1.25rem}
+form.box>p{color:var(--muted);font-size:.82rem;margin:4px 0 20px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:.78rem;font-weight:600}
+.field input,.field select,.field textarea{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:.88rem;outline:none;transition:.2s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--violet)}
+.field textarea{min-height:100px;resize:vertical}
+.form-actions{display:grid;grid-template-columns:1.6fr 1fr;gap:10px}
+footer{border-top:1px solid var(--line);padding:64px 0 28px;background:var(--bg2)}
+.f-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px}
+.f-grid>div>p{color:var(--muted);font-size:.86rem;margin:16px 0 18px;max-width:320px}
+.f-grid h5{font-size:.74rem;letter-spacing:.12em;margin-bottom:16px}
+.f-grid ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.f-grid li a{font-size:.85rem;color:var(--muted);transition:.2s}
+.f-grid li a:hover{color:#fff}
+.socials{display:flex;gap:8px;margin-top:12px}
+.socials a{width:32px;height:32px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:.7rem;font-weight:700;color:var(--muted)}
+.socials a:hover{background:var(--violet);color:#fff}
+.f-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:48px;padding-top:22px;border-top:1px solid var(--line);font-size:.8rem;color:var(--dim)}
+
+/* =========================================================
+   11. CART DRAWER, MODAL, TOAST, FLOAT WA
+   ========================================================= */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:.3s;z-index:80}
+.overlay.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,100%);background:var(--bg2);border-left:1px solid var(--line);z-index:90;transform:translateX(100%);transition:.35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.d-head{display:flex;justify-content:space-between;align-items:center;padding:20px;border-bottom:1px solid var(--line)}
+.d-body{flex:1;overflow:auto;padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+.ci{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+.ci .mini{width:56px;height:40px;border-radius:7px;flex-shrink:0}
+.ci div{flex:1;min-width:0}
+.ci b{font-size:.85rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci small{color:var(--green);font-weight:700}
+.ci button{color:var(--dim)}.ci button:hover{color:var(--pink)}
+.d-foot{padding:20px;border-top:1px solid var(--line)}
+.total{display:flex;justify-content:space-between;margin-bottom:14px;font-weight:600}
+.total b{font-family:'Space Grotesk';font-size:1.3rem}
+.close-x{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--card2)}
+.modal{position:fixed;inset:0;display:grid;place-items:center;padding:16px;z-index:95;opacity:0;pointer-events:none;transition:.3s}
+.modal.on{opacity:1;pointer-events:auto}
+.m-box{width:min(820px,100%);max-height:92vh;overflow:auto;background:var(--bg2);border:1px solid var(--line2);border-radius:20px;transform:translateY(20px);transition:.3s}
+.modal.on .m-box{transform:none}
+.m-preview{aspect-ratio:16/9;position:relative;padding:8%;display:flex;flex-direction:column;justify-content:center}
+.m-preview h3{font-size:clamp(1.3rem,3.5vw,2.4rem);max-width:70%}
+.m-thumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:12px 20px}
+.m-thumbs div{aspect-ratio:16/9;border-radius:6px;opacity:.75}
+.m-info{padding:6px 24px 24px}
+.m-info p{color:var(--muted);font-size:.9rem;margin:8px 0 16px}
+.m-specs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.m-specs span{padding:6px 11px;border-radius:8px;background:var(--card2);font-size:.76rem;color:var(--muted)}
+.m-buy{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.m-close{position:absolute;top:14px;right:14px;z-index:2;background:rgba(0,0,0,.6)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);padding:12px 20px;border-radius:12px;background:var(--card2);border:1px solid var(--line2);font-size:.88rem;font-weight:600;z-index:100;transition:.35s;display:flex;align-items:center;gap:8px}
+.toast.on{transform:translate(-50%,0)}
+.wa-float{position:fixed;right:22px;bottom:22px;z-index:70;display:flex;align-items:center;gap:10px}
+.wa-tip{padding:9px 14px;border-radius:10px;background:var(--card);border:1px solid var(--line2);font-size:.78rem;font-weight:600;display:flex;gap:8px;align-items:center}
+.wa-tip a{color:#4ade80}
+.wa-btn{width:56px;height:56px;border-radius:50%;background:#22c55e;display:grid;place-items:center;box-shadow:0 10px 30px rgba(34,197,94,.45);animation:pulse 2.4s infinite}
+.wa-btn svg{width:26px;height:26px;color:#fff}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}50%{box-shadow:0 0 0 12px rgba(34,197,94,0)}}
+
+/* reveal animation */
+.reveal{opacity:0;transform:translateY(24px);transition:.7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* =========================================================
+   12. RESPONSIVE (mobile)
+   ========================================================= */
+@media(max-width:1024px){
+  .filters{grid-template-columns:repeat(3,1fr)}
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .cats{grid-template-columns:repeat(2,1fr)}
+  .f-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:860px){
+  #filterToggle{display:inline-flex}
+  .filter-head .ttl{display:none}
+  .filters{display:none;grid-template-columns:1fr 1fr}
+  .filters.open{display:grid}
+  .big-search input{padding-right:16px;font-size:.92rem}
+  .big-search .count{display:none}
+  .hero-grid,.cta,.contact{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .feats{grid-template-columns:1fr 1fr}
+  .feats .feat,.feats .feat:nth-child(4){grid-column:auto}
+  .steps{grid-template-columns:1fr 1fr}.steps::before{display:none}
+  .nav .search{display:none}
+  .nav-links{position:fixed;top:72px;left:0;right:0;flex-direction:column;align-items:stretch;padding:16px;background:var(--bg2);border-bottom:1px solid var(--line);transform:translateY(-130%);transition:.3s}
+  .nav-links.open{transform:none}
+  .menu-btn{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;border:1px solid var(--line2);margin-left:auto}
+  .cart-btn{margin-left:0}
+  .cta{padding:32px}
+  .section{padding:72px 0}
+  .wa-tip{display:none}
+}
+@media(max-width:560px){
+  .grid,.feats,.steps,.cats{grid-template-columns:1fr}
+  .row,.form-actions{grid-template-columns:1fr}
+  .f-grid{grid-template-columns:1fr}
+  .toolbar .mini-search input{width:100%}
+  .toolbar .mini-search,.toolbar select{flex:1}
+  .stats{gap:20px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* =========================================================
+   13. ✨ RGB GLOW, SHINE & LIGHTING EFFECTS
+   ========================================================= */
+@property --angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+:root{
+  --rgb:linear-gradient(90deg,#ff004c,#ff8a00,#ffe600,#00ff88,#00e5ff,#3d5afe,#d500f9,#ff004c);
+  --rgb-conic:conic-gradient(from var(--angle),#ff004c,#ff8a00,#ffe600,#00ff88,#00e5ff,#3d5afe,#d500f9,#ff004c);
+}
+@keyframes spin{to{--angle:360deg}}
+@keyframes flow{to{background-position:200% 50%}}
+@keyframes hue{to{filter:hue-rotate(360deg)}}
+@keyframes shine{0%{left:-80%}55%,100%{left:130%}}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.12)}}
+@keyframes rgbglow{
+  0%,100%{box-shadow:0 0 0 1px rgba(255,0,76,.55),0 0 28px -4px rgba(255,0,76,.55)}
+  25%{box-shadow:0 0 0 1px rgba(0,255,136,.55),0 0 28px -4px rgba(0,255,136,.55)}
+  50%{box-shadow:0 0 0 1px rgba(0,229,255,.55),0 0 28px -4px rgba(0,229,255,.55)}
+  75%{box-shadow:0 0 0 1px rgba(213,0,249,.55),0 0 28px -4px rgba(213,0,249,.55)}}
+@keyframes textglow{0%,100%{text-shadow:0 0 22px rgba(139,44,255,.45)}50%{text-shadow:0 0 30px rgba(6,182,212,.55)}}
+
+::selection{background:#d500f9;color:#fff}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(#ff004c,#00e5ff,#d500f9);border-radius:10px;border:2px solid var(--bg)}
+
+/* Mouse-follow light */
+#glowCursor{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(139,44,255,.16),rgba(6,182,212,.08) 40%,transparent 68%);animation:hue 10s linear infinite;transition:opacity .4s;opacity:0}
+body.has-mouse #glowCursor{opacity:1}
+@media(hover:none){#glowCursor{display:none}}
+
+/* Animated RGB text */
+.grad-text{background:var(--rgb);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+.hero h1 .grad-text{filter:drop-shadow(0 0 22px rgba(213,0,249,.35))}
+.section-head h2,.hero h1,.cta h2,.contact h2{animation:textglow 5s ease-in-out infinite}
+
+/* Header RGB light line */
+header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--rgb);background-size:200% auto;animation:flow 5s linear infinite;box-shadow:0 0 12px rgba(213,0,249,.7),0 0 24px rgba(0,229,255,.4)}
+
+/* Logo RGB ring */
+.logo-icon{background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--rgb-conic) border-box;animation:spin 4s linear infinite;box-shadow:0 0 18px rgba(139,44,255,.45)}
+
+/* Hero aurora lights */
+.hero::before{animation:float 14s ease-in-out infinite,hue 16s linear infinite;background:radial-gradient(circle,rgba(213,0,249,.3),transparent 65%)}
+.hero::after{animation:float 18s ease-in-out infinite reverse,hue 20s linear infinite;background:radial-gradient(circle,rgba(0,229,255,.22),transparent 65%)}
+.hero{background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:48px 48px}
+
+/* Buttons: shine sweep + flowing gradient */
+.btn-primary{position:relative;overflow:hidden;background:linear-gradient(90deg,#8b2cff,#d500f9,#06b6d4,#8b2cff);background-size:300% auto;animation:flow 6s linear infinite;box-shadow:0 8px 30px -6px rgba(213,0,249,.65),0 0 0 1px rgba(255,255,255,.08) inset}
+.btn-primary:hover{box-shadow:0 10px 40px -4px rgba(0,229,255,.75)}
+.btn-primary::after,.nav-shop::after,.nav-links a.active::after{content:"";position:absolute;top:0;left:-80%;width:45%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:shine 3.8s ease-in-out infinite;pointer-events:none}
+.nav-links a.nav-shop,.nav-links a.active{position:relative;overflow:hidden}
+.nav-links a.nav-custom{animation:rgbglow 6s linear infinite}
+.btn-wa:hover{box-shadow:0 0 24px rgba(34,197,94,.5)}
+.cart-btn:hover{animation:rgbglow 3s linear infinite}
+.cart-count{box-shadow:0 0 12px var(--pink)}
+
+/* Smart board RGB frame */
+.showcase::before,.showcase::after{content:"";position:absolute;inset:-3px;border-radius:21px;background:var(--rgb-conic);animation:spin 5s linear infinite;z-index:-1}
+.showcase::after{inset:-8px;filter:blur(28px);opacity:.55}
+.slider{box-shadow:inset 0 0 0 1px rgba(0,0,0,.8),0 0 0 2px #05060a,0 0 30px rgba(139,44,255,.25)}
+.stand .base{box-shadow:0 18px 40px -8px rgba(213,0,249,.6),0 0 30px -6px rgba(0,229,255,.5)}
+
+/* Product cards: RGB border + spotlight on hover */
+.card{position:relative}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:var(--rgb-conic);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity .35s;animation:spin 4s linear infinite;pointer-events:none;z-index:5}
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(380px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.08),transparent 45%);z-index:4}
+.card:hover::before,.card:hover::after{opacity:1}
+.card:hover{border-color:transparent;box-shadow:0 20px 50px -18px rgba(213,0,249,.55),0 0 40px -12px rgba(0,229,255,.45)}
+.thumb::after{content:"";position:absolute;top:0;left:-80%;width:45%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);pointer-events:none}
+.card:hover .thumb::after{animation:shine 1.2s ease-out}
+.price b{text-shadow:0 0 16px rgba(0,229,255,.35)}
+.ribbon{box-shadow:0 0 14px currentColor}
+.r-best{box-shadow:0 0 14px rgba(249,115,22,.7)}.r-new{box-shadow:0 0 14px rgba(14,165,233,.7)}.r-feat{box-shadow:0 0 14px rgba(217,70,239,.7)}
+
+/* Category cards */
+.cat::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:var(--rgb-conic);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:.35;animation:spin 6s linear infinite;transition:opacity .3s;pointer-events:none}
+.cat:hover::after{opacity:1}
+.cat:hover{box-shadow:0 0 35px -8px rgba(213,0,249,.55)}
+
+/* Filter panel RGB frame */
+.toolbar{position:relative}
+.toolbar::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rgb-conic);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:.55;animation:spin 8s linear infinite;pointer-events:none}
+.big-search input:focus{border-color:transparent;animation:rgbglow 3s linear infinite}
+.chip.on{background:linear-gradient(90deg,#8b2cff,#d500f9,#06b6d4,#8b2cff);background-size:300% auto;animation:flow 5s linear infinite;box-shadow:0 0 18px rgba(213,0,249,.5)}
+.fsel.on select{box-shadow:0 0 16px rgba(139,44,255,.45)}
+
+/* Glow on hover: features, reviews, contact, FAQ */
+.feat:hover,.review:hover,.info:hover,.faq-item.open,form.box:focus-within{animation:rgbglow 4s linear infinite}
+.ficon{box-shadow:0 0 18px -2px var(--fc),inset 0 0 12px -4px var(--fc)}
+.feat:hover .ficon{transform:scale(1.08) rotate(-4deg);transition:.3s}
+.cta{animation:rgbglow 8s linear infinite}
+.field input:focus,.field select:focus,.field textarea:focus{box-shadow:0 0 0 3px rgba(139,44,255,.2),0 0 18px rgba(0,229,255,.25)}
+.wa-btn{box-shadow:0 0 0 0 rgba(34,197,94,.5),0 0 30px rgba(34,197,94,.6)}
+footer{position:relative}
+footer::before{content:"";position:absolute;top:-1px;left:10%;right:10%;height:1px;background:var(--rgb);background-size:200% auto;animation:flow 6s linear infinite;box-shadow:0 0 14px rgba(0,229,255,.6)}
+main,section,footer{position:relative;z-index:1}
+
+.hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}
+.pay-items{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;padding:14px;border-radius:14px;background:var(--bg2);border:1px solid var(--line2)}
+.pay-items .pi{display:flex;align-items:center;gap:12px;font-size:.88rem}
+.pay-items .pi span.mini{width:48px;height:32px;border-radius:6px;flex-shrink:0}
+.pay-items .pi b{flex:1;min-width:0;font-weight:600}
+.pay-items .tot{display:flex;justify-content:space-between;padding-top:10px;margin-top:4px;border-top:1px solid var(--line);font-weight:700}
+.pay-items .tot b{font-family:'Space Grotesk';font-size:1.3rem;background:var(--rgb);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+.dl-list{display:flex;flex-direction:column;gap:10px;margin:0 auto 20px;max-width:440px;text-align:left}
+.dl-list a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;background:var(--card2);border:1px solid var(--line2);font-weight:600;font-size:.88rem}
+.dl-list a:hover{border-color:#22c55e;box-shadow:0 0 20px rgba(34,197,94,.35)}
+.stars-pick .opt span{color:#fbbf24;letter-spacing:2px}
+.stars-pick .opt span::before{display:none}
+.rv-select{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:12px 15px;font-size:.9rem;outline:none;color:var(--text)}
+.thumb.has-img .t-title,.thumb.has-img .t-lines,.thumb.has-img .t-shape{display:none}
+.slide.has-img h3,.slide.has-img p,.slide.has-img .bars,.slide.has-img .orb{display:none}
+
+/* =========================================================
+   14. CUSTOM PPT REQUEST FORM (popup)
+   ========================================================= */
+.cf-box{width:min(640px,100%);position:relative;overflow:hidden!important;display:flex;flex-direction:column}
+.cf-scroll{overflow-y:auto;max-height:92vh;border-radius:inherit;overscroll-behavior:contain}
+.cf-box::before{z-index:6}
+.cf-box .m-close{z-index:7}
+.cf-box::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:var(--rgb-conic);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 5s linear infinite;pointer-events:none}
+.cf-head{padding:26px 26px 4px}
+.cf-head h3{font-size:1.45rem;display:flex;align-items:center;gap:10px}
+.cf-head h3 svg{color:#c084fc;width:22px;height:22px}
+.cf-head p{color:var(--muted);font-size:.9rem;margin-top:6px;font-family:'Plus Jakarta Sans','Noto Sans Devanagari',system-ui,sans-serif}
+#cfForm,#payForm,#rvForm{padding:16px 26px 26px}
+.cf-q{margin-bottom:16px}
+.cf-q>label,.cf-q>.lbl{display:block;font-size:.84rem;font-weight:700;margin-bottom:8px}
+.cf-q>label b,.cf-q>.lbl b{color:#f472b6}
+.cf-q input[type=text],.cf-q input[type=tel],.cf-q textarea{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:12px 15px;font-size:.9rem;outline:none;transition:.2s}
+.cf-q textarea{min-height:90px;resize:vertical}
+.cf-q input:focus,.cf-q textarea:focus{border-color:#c084fc;box-shadow:0 0 0 3px rgba(139,44,255,.2),0 0 18px rgba(0,229,255,.2)}
+.cf-q.bad input{border-color:#fb7185;box-shadow:0 0 0 3px rgba(251,113,133,.15)}
+.cf-err{display:none;color:#fb7185;font-size:.75rem;margin-top:5px}
+.cf-q.bad .cf-err{display:block}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt span{display:inline-flex;align-items:center;gap:9px;padding:10px 15px;border-radius:11px;border:1px solid var(--line2);background:var(--bg2);font-size:.86rem;font-weight:600;color:var(--muted);cursor:pointer;transition:.2s}
+.opt span::before{content:"";width:15px;height:15px;border-radius:50%;border:2px solid var(--dim);transition:.2s;flex-shrink:0}
+.opt span:hover{color:#fff;border-color:#c084fc}
+.opt input:checked+span{color:#fff;border-color:#c084fc;background:rgba(139,44,255,.16);box-shadow:0 0 18px rgba(139,44,255,.4)}
+.opt input:checked+span::before{border-color:#c084fc;background:radial-gradient(circle,#e9d5ff 35%,transparent 42%);box-shadow:0 0 8px #c084fc}
+.opt input:focus-visible+span{outline:2px solid #00e5ff;outline-offset:2px}
+.drop{display:block;border:1.5px dashed rgba(192,132,252,.45);border-radius:14px;padding:22px 16px;text-align:center;cursor:pointer;background:rgba(139,44,255,.04);transition:.25s}
+.drop:hover,.drop.drag{border-color:#00e5ff;background:rgba(0,229,255,.07);box-shadow:0 0 24px -6px rgba(0,229,255,.5)}
+.drop svg{width:30px;height:30px;color:#c084fc;margin:0 auto 8px}
+.drop b{display:block;font-size:.9rem;color:#fff!important}
+.drop small{display:block;color:var(--dim);font-size:.75rem;margin-top:4px}
+.ftypes{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.ftypes span{font-size:.66rem;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--card2);border:1px solid var(--line)}
+.file-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.fitem{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:var(--card2);border:1px solid var(--line);font-size:.82rem}
+.fitem svg{color:#00e5ff}
+.fitem span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fitem small{color:var(--dim)}
+.fitem button{color:var(--dim)}.fitem button:hover{color:#fb7185}
+.file-err{color:#fb7185;font-size:.76rem;margin-top:8px}
+.cf-submit{width:100%;padding:15px;font-size:.95rem;margin-top:6px}
+.cf-note{text-align:center;color:var(--dim);font-size:.74rem;margin-top:10px}
+.cf-done{padding:44px 28px;text-align:center}
+.cf-done .tick{width:70px;height:70px;border-radius:50%;margin:0 auto 18px;display:grid;place-items:center;background:rgba(34,197,94,.12);border:2px solid #22c55e;color:#22c55e;box-shadow:0 0 30px rgba(34,197,94,.5)}
+.cf-done .tick svg{width:34px;height:34px}
+.cf-done h3{font-size:1.4rem}
+.cf-done p{color:var(--muted);margin:10px auto 20px;max-width:440px;font-size:.92rem}
+@media(max-width:560px){.cf-head{padding:22px 18px 0}#cfForm,#payForm,#rvForm{padding:14px 18px 22px}.opt span{padding:9px 12px;font-size:.82rem}}
+
+/* =========================================================
+   15. HERO PROMO — "1 Hour. Your PPT. Ready!"
+   ========================================================= */
+.hero{padding:56px 0 90px}
+.hero h1{font-size:clamp(2.2rem,4.8vw,3.6rem);margin:18px 0 20px}
+.hero-cta{margin:26px 0 0}
+.pill-hot{position:relative;gap:9px;padding:9px 16px;font-size:.84rem;letter-spacing:.1em;color:#fff;text-transform:uppercase;
+  background:linear-gradient(var(--card),var(--card)) padding-box,var(--rgb-conic) border-box;border:1.5px solid transparent;
+  animation:spin 4s linear infinite;box-shadow:0 0 22px rgba(255,138,0,.35),0 0 40px -6px rgba(213,0,249,.45)}
+.pill-hot svg{width:17px;height:17px;color:#ffb020;fill:#ffb020;filter:drop-shadow(0 0 6px #ff8a00)}
+.promo{position:relative;display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:18px;max-width:560px;
+  background:linear-gradient(135deg,rgba(255,138,0,.14),rgba(213,0,249,.12) 55%,rgba(0,229,255,.1));overflow:hidden}
+.promo::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:var(--rgb-conic);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  animation:spin 3.5s linear infinite;pointer-events:none}
+.promo::after{content:"";position:absolute;top:0;left:-80%;width:40%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);animation:shine 4.5s ease-in-out infinite;pointer-events:none}
+.promo-clock{flex-shrink:0;width:58px;height:58px;border-radius:16px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(135deg,#ff8a00,#ff004c);box-shadow:0 0 26px rgba(255,90,0,.6);animation:tick 2s ease-in-out infinite}
+.promo-clock svg{width:30px;height:30px}
+@keyframes tick{0%,100%{transform:rotate(0) scale(1)}10%{transform:rotate(-10deg) scale(1.06)}20%{transform:rotate(8deg) scale(1.06)}30%{transform:rotate(0) scale(1)}}
+.promo-en{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.5rem,3vw,2.15rem);line-height:1.1;color:#fff;letter-spacing:-.01em}
+.promo-en b{color:#ffb020;text-shadow:0 0 18px rgba(255,138,0,.7)}
+.promo-hi{font-family:'Hind','Noto Sans Devanagari','Plus Jakarta Sans',sans-serif;font-weight:600;font-size:clamp(1.05rem,2vw,1.3rem);color:#e9e3ff;margin-top:6px}
+.promo-hi b{color:#ffb020;font-weight:700}
+@media(max-width:560px){.promo{gap:12px;padding:14px}.promo-clock{width:48px;height:48px}.promo-clock svg{width:24px;height:24px}.hero{padding-top:36px}}
+
+/* =========================================================
+   16. WHY CHOOSE — compact 10 features
+   ========================================================= */
+.feats{grid-template-columns:repeat(5,1fr)!important;gap:14px}
+.feats .feat,.feats .feat:nth-child(4){grid-column:auto!important}
+.feat{padding:20px 18px;text-align:center}
+.ficon{width:42px;height:42px;margin:0 auto 12px}
+.ficon svg{width:20px;height:20px}
+.feat h3{font-size:.95rem;margin-bottom:4px}
+.feat p{font-size:.8rem;line-height:1.45}
+@media(max-width:1024px){.feats{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:560px){.feats{gap:10px}.feat{padding:16px 12px}.feat h3{font-size:.88rem}.feat p{font-size:.76rem}}
+
+/* 17. Compact contact */
+.info-list{display:flex;flex-direction:column;gap:10px}
+.info-list .info{margin:0;padding:12px 14px}
+.info-list .info .ic{width:36px;height:36px}
+.info-list .info b{font-size:.92rem;word-break:break-all}
+
+/* =========================================================
+   18. PPT THEMES GALLERY
+   ========================================================= */
+.th-bar{gap:12px}
+.th-group{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.th-label{width:92px;flex-shrink:0;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.th-chips{display:flex;flex-wrap:wrap;gap:8px;flex:1;min-width:0}
+.th-chips button{padding:8px 14px;border-radius:10px;font-size:.82rem;font-weight:600;color:var(--muted);background:var(--card2);border:1px solid transparent;transition:.2s}
+.th-chips button:hover{color:#fff;border-color:var(--line2)}
+.th-chips button.on{color:#fff;background:linear-gradient(90deg,#8b2cff,#d500f9,#06b6d4,#8b2cff);background-size:300% auto;animation:flow 5s linear infinite;box-shadow:0 0 16px rgba(213,0,249,.45)}
+.th-chips button small{opacity:.7;margin-left:4px}
+.th-demo-note{text-align:center;color:var(--muted);font-size:.85rem;margin:-10px 0 18px}
+.th-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.th-card{cursor:pointer;position:relative;border-radius:16px;background:var(--card);border:1px solid var(--line);overflow:hidden;text-align:left;transition:.3s;display:flex;flex-direction:column}
+.th-card::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:var(--rgb-conic);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity .3s;animation:spin 4s linear infinite;pointer-events:none;z-index:3}
+.th-card:hover{transform:translateY(-4px);box-shadow:0 18px 45px -16px rgba(213,0,249,.55),0 0 35px -12px rgba(0,229,255,.45)}
+.th-card:hover::before{opacity:1}
+.th-pic{container-type:inline-size;position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:var(--bg2)}
+.th-pic img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.th-card:hover .th-pic img,.th-card:hover .mock{transform:scale(1.04)}
+.th-pic .zoom{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45);opacity:0;transition:.3s;font-weight:700;font-size:.85rem;color:#fff;z-index:2}
+.th-card:hover .zoom{opacity:1}
+.th-meta{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.th-meta b{font-size:.92rem}
+.th-tags{display:flex;flex-wrap:wrap;gap:5px}
+.th-tags span{font-size:.66rem;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--card2);color:var(--muted);border:1px solid var(--line)}
+.th-tags span.dark{color:#c4b5fd}.th-tags span.white{color:#fde68a}
+.th-count{position:absolute;top:10px;right:10px;z-index:2;display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:8px;background:rgba(0,0,0,.72);color:#fff;font-size:.7rem;font-weight:700}
+.th-strip{display:flex;gap:8px;padding:12px 20px 0;overflow-x:auto}
+.th-strip:empty{display:none}
+.th-strip button{flex:0 0 auto;width:110px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:2px solid transparent;opacity:.6;transition:.2s;padding:0}
+.th-strip button img{width:100%;height:100%;object-fit:cover;display:block}
+.th-strip button.on,.th-strip button:hover{opacity:1;border-color:#c084fc;box-shadow:0 0 14px rgba(192,132,252,.5)}
+.th-box{width:min(980px,100%);position:relative;overflow:hidden}
+.th-view{container-type:inline-size;position:relative;aspect-ratio:16/9;max-width:100%;background:#000}
+.th-view img{width:100%;height:100%;object-fit:contain;display:block}
+.th-box .s-nav{top:calc(min(980px,100vw - 32px) * 9 / 32);z-index:5}
+.th-prev{left:12px}.th-next{right:12px}
+.th-info{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px}
+.th-info h3{font-size:1.15rem;margin-right:auto}
+@media(max-width:1024px){.th-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.th-grid{grid-template-columns:repeat(2,1fr);gap:12px}.th-label{width:100%}.th-group{gap:6px}}
+@media(max-width:420px){.th-meta{padding:10px}.th-meta b{font-size:.82rem}}
+
+
+/* 19. Theme lightbox — poora popup screen mein fit */
+.th-box{width:min(980px,100%,calc((100vh - 230px) * 16 / 9));min-width:min(320px,100%);max-height:calc(100vh - 24px);display:flex;flex-direction:column;overflow:hidden!important}
+.th-stage{position:relative;flex-shrink:0}
+.th-stage .s-nav{top:50%!important;transform:translateY(-50%);width:42px;height:42px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.18)}
+.th-pos{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);padding:3px 10px;border-radius:99px;background:rgba(0,0,0,.65);font-size:.75rem;font-weight:700;color:#fff}
+.th-pos:empty{display:none}
+.th-box .m-close{background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);z-index:6}
+.th-strip{flex-shrink:0;padding:12px 16px 2px;gap:10px;scrollbar-width:thin}
+.th-strip button{position:relative;width:128px;opacity:.55}
+.th-strip button span{position:absolute;left:5px;bottom:5px;min-width:20px;height:20px;padding:0 5px;border-radius:6px;background:rgba(0,0,0,.75);color:#fff;font-size:.7rem;font-weight:800;display:grid;place-items:center}
+.th-strip button.on{opacity:1;border-color:#c084fc;box-shadow:0 0 0 1px #c084fc,0 0 16px rgba(192,132,252,.55)}
+.th-info{flex-shrink:0;padding:12px 16px 16px}
+@media(max-width:600px){.th-stage .s-nav{width:30px;height:30px;background:rgba(0,0,0,.45)}.th-prev{left:4px!important}.th-next{right:4px!important}.th-box .m-close{width:30px;height:30px;top:8px;right:8px}.th-strip button{width:96px}.th-info h3{width:100%}.th-info .btn{width:100%;justify-content:center}}
+
+/* 20. Auto-swipe slides */
+.th-track{display:flex;width:100%;height:100%;transition:transform .7s cubic-bezier(.65,0,.35,1)}
+.th-track img{flex:0 0 100%;width:100%;height:100%;object-fit:cover}
+.th-dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:5px;z-index:2;pointer-events:none}
+.th-dots i{width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.5);box-shadow:0 0 4px rgba(0,0,0,.6);transition:.35s}
+.th-dots i.on{width:18px;background:linear-gradient(90deg,#d500f9,#00e5ff)}
+.th-view img.fade-in{animation:lbIn .5s ease}
+@keyframes lbIn{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
+.th-progress{position:absolute;left:0;top:0;height:3px;width:0;z-index:4;background:linear-gradient(90deg,#d500f9,#00e5ff);box-shadow:0 0 8px #d500f9}
+.th-stage.playing .th-progress{animation:lbBar 3.5s linear forwards}
+.th-stage:hover .th-progress{animation-play-state:paused}
+@keyframes lbBar{to{width:100%}}
+
+/* =========================================================
+   21. CUSTOM PPT — "Your Topic. Our Design. Ready in 1 Hour."
+   ========================================================= */
+.cx{position:relative;display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center;padding:48px;border-radius:28px;
+  background:radial-gradient(circle at 0% 0%,rgba(0,229,255,.12),transparent 45%),radial-gradient(circle at 100% 100%,rgba(213,0,249,.16),transparent 50%),var(--card);overflow:hidden}
+.cx::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:var(--rgb-conic);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 6s linear infinite;pointer-events:none}
+.cx-left{position:relative;min-width:0}
+.cx-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:99px;font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#67e8f9;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.35)}
+.cx-badge svg{width:15px;height:15px}
+.cx h2{font-size:clamp(1.9rem,3.6vw,2.9rem);margin:16px 0 10px;text-wrap:balance}
+.cx-hi{font-family:'Hind','Noto Sans Devanagari',sans-serif;font-weight:600;font-size:1.08rem;color:#d9d3f5}
+.cx-hi b{color:#ffb020}
+.cx-steps{list-style:none;display:flex;flex-direction:column;gap:12px;margin:26px 0;position:relative}
+.cx-steps::before{content:"";position:absolute;left:25px;top:30px;bottom:30px;width:2px;background:linear-gradient(#00e5ff,#d500f9,#22c55e);opacity:.5}
+.cx-steps li{position:relative;display:flex;align-items:center;gap:16px;padding:12px 16px 12px 12px;border-radius:16px;background:var(--card2);border:1px solid var(--line);transition:.3s}
+.cx-steps li:hover{border-color:var(--c);box-shadow:0 0 24px -6px var(--c);transform:translateX(4px)}
+.cx-ic{position:relative;z-index:1;flex-shrink:0;width:28px;height:28px;margin:0 6px;border-radius:50%;display:grid;place-items:center;color:#07080c;background:var(--c);box-shadow:0 0 0 6px var(--card2),0 0 18px var(--c)}
+.cx-ic svg{width:15px;height:15px;stroke-width:2.4}
+.cx-steps li div{display:flex;flex-direction:column;min-width:0}
+.cx-steps li b{font-size:1rem}
+.cx-steps li small{color:var(--muted);font-size:.82rem}
+.cx-steps li em{margin-left:auto;font-style:normal;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.6rem;color:var(--c);opacity:.35}
+.cx-cta{display:flex;gap:12px;flex-wrap:wrap}
+.cx-main{padding:15px 24px;font-size:1rem}
+.cx-chips{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:18px;font-size:.82rem;font-weight:600;color:var(--muted)}
+.cx-chips span{color:#a7f3d0}
+.cx-right{position:relative;aspect-ratio:4/3.2;max-width:100%}
+.cx-stack{position:absolute;inset:8% 4% 10% 4%}
+.cx-stack img{position:absolute;inset:0;width:100%;aspect-ratio:16/9;height:auto;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 24px 50px -16px rgba(0,0,0,.8);transition:transform .9s cubic-bezier(.65,0,.35,1),opacity .9s,filter .9s}
+.cx-stack img.p0{transform:translate(0,22%) rotate(0deg) scale(1);z-index:3;box-shadow:0 30px 60px -18px rgba(213,0,249,.55),0 0 0 1px rgba(255,255,255,.12)}
+.cx-stack img.p1{transform:translate(9%,4%) rotate(5deg) scale(.88);z-index:2;filter:brightness(.6)}
+.cx-stack img.p2{transform:translate(-9%,0) rotate(-6deg) scale(.82);z-index:1;filter:brightness(.45)}
+.cx-stack img.p3{transform:translate(0,-4%) rotate(1deg) scale(.76);z-index:0;opacity:0;filter:brightness(.4)}
+.cx-timer{position:absolute;left:-4px;bottom:4%;z-index:4;width:92px;height:92px;border-radius:50%;display:grid;place-items:center;align-content:center;
+  background:#0b0d14;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 0 30px rgba(255,138,0,.45)}
+.cx-timer svg{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px);transform:rotate(-90deg)}
+.cx-timer circle{fill:none;stroke:rgba(255,255,255,.08);stroke-width:3.5}
+.cx-timer circle.run{stroke:#ff8a00;stroke-linecap:round;stroke-dasharray:119.4;stroke-dashoffset:119.4;animation:cxRun 6s linear infinite;filter:drop-shadow(0 0 4px #ff8a00)}
+@keyframes cxRun{to{stroke-dashoffset:0}}
+.cx-timer b{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;line-height:1;color:#ffb020}
+.cx-timer small{font-size:.6rem;font-weight:800;letter-spacing:.14em;color:var(--muted)}
+.cx-pop{position:absolute;z-index:5;padding:10px 14px;border-radius:12px;font-size:.82rem;font-weight:700;background:rgba(15,18,27,.95);border:1px solid var(--line2);
+  box-shadow:0 12px 30px -8px rgba(0,0,0,.7);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.cx-pop .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e}
+.cx-pop1{top:0;left:6%;animation:cxFloat 5s ease-in-out infinite}
+.cx-pop2{right:-6px;bottom:12%;color:#86efac;border-color:rgba(34,197,94,.45);animation:cxFloat 5s ease-in-out 2.5s infinite}
+@keyframes cxFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@media(max-width:900px){.cx{grid-template-columns:1fr;padding:30px 20px;gap:28px}.cx-right{max-width:460px;width:100%;margin:0 auto}}
+@media(max-width:480px){.cx-steps li em{display:none}.cx-main{width:100%;justify-content:center}.cx-cta .btn-wa{width:100%;justify-content:center}.cx-timer{width:76px;height:76px}.cx-timer b{font-size:1.3rem}.cx-pop{font-size:.74rem;padding:8px 10px}}
+
+/* 22. Compact theme filters — ek line */
+.th-bar{flex-direction:row!important;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px!important;padding:0!important;margin-bottom:22px;background:none!important;border:0!important}
+.th-bar::before{display:none}
+.th-group{gap:0!important;flex-wrap:nowrap;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:3px;min-width:0;max-width:100%}
+.th-label{width:auto!important;padding:0 8px 0 10px;font-size:.6rem!important;letter-spacing:.1em}
+.th-chips{flex:0 1 auto!important;flex-wrap:nowrap!important;gap:2px!important;overflow-x:auto;scrollbar-width:none}
+.th-chips::-webkit-scrollbar{display:none}
+.th-chips button{flex-shrink:0;padding:6px 9px!important;font-size:.78rem!important;border-radius:9px!important;background:transparent!important;white-space:nowrap}
+.th-chips button.on{background:linear-gradient(90deg,#8b2cff,#d500f9,#06b6d4,#8b2cff)!important;background-size:300% auto!important}
+.th-chips button small{font-size:.66rem;margin-left:3px}
+@media(max-width:760px){.th-bar{justify-content:stretch;gap:6px!important}.th-group{width:100%}.th-label{min-width:50px;padding:0 4px 0 8px}.th-chips button{padding:6px 7px!important;font-size:.76rem!important}.th-chips button small{display:none}.th-chips[data-g=type] button[data-v="Theory + Questions"]{font-size:0!important}.th-chips[data-g=type] button[data-v="Theory + Questions"]::after{content:"T + Q";font-size:.76rem}}
+
+/* =========================================================
+   23. THEME SWITCH (Dark / Light / System) + LIGHT THEME
+   ========================================================= */
+:root{color-scheme:dark}
+.theme-sw{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:12px;background:var(--card);border:1px solid var(--line2)}
+.theme-sw button{display:inline-flex;align-items:center;gap:6px;width:34px;height:32px;justify-content:center;border-radius:9px;color:var(--muted);transition:.2s}
+.theme-sw button span{display:none;font-size:.82rem;font-weight:600}
+.theme-sw button svg{width:17px;height:17px}
+.theme-sw button:hover{color:var(--text);background:var(--card2)}
+.theme-sw button[aria-checked="true"]{color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);box-shadow:0 0 14px rgba(139,44,255,.5)}
+@media(max-width:860px){.theme-sw{align-self:flex-start;margin-top:6px}.theme-sw button{width:auto;padding:0 12px}.theme-sw button span{display:inline}}
+
+html.light{
+  color-scheme:light;
+  --bg:#f5f4fa; --bg2:#ecebf5; --card:#ffffff; --card2:#f1effa;
+  --line:rgba(40,30,90,.10); --line2:rgba(40,30,90,.17);
+  --text:#16142a; --muted:#57557a; --dim:#8987a6;
+  --shadow:0 18px 44px -20px rgba(110,40,220,.35);
+  --rgb:linear-gradient(90deg,#e0115f,#ea580c,#ca8a04,#059669,#0284c7,#4f46e5,#a21caf,#e0115f);
+  --rgb-conic:conic-gradient(from var(--angle),#e0115f,#ea580c,#ca8a04,#059669,#0284c7,#4f46e5,#a21caf,#e0115f);
+}
+html.light body{background:var(--bg)}
+html.light header{background:rgba(255,255,255,.82)}
+html.light .eyebrow{color:#0e7490}
+html.light .hero{background-image:linear-gradient(rgba(40,30,90,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(40,30,90,.045) 1px,transparent 1px)}
+html.light .hero::before{background:radial-gradient(circle,rgba(213,0,249,.14),transparent 65%)}
+html.light .hero::after{background:radial-gradient(circle,rgba(0,180,220,.12),transparent 65%)}
+html.light .section-head h2,html.light .hero h1,html.light .cta h2,html.light .contact h2{animation:none;text-shadow:none}
+html.light .hero h1 .grad-text{filter:none}
+html.light #glowCursor{background:radial-gradient(circle,rgba(139,44,255,.10),rgba(6,182,212,.05) 40%,transparent 68%)}
+html.light ::selection{background:#c4b5fd;color:#16142a}
+
+/* nav */
+html.light .nav-links a:hover{color:var(--text)}
+html.light .nav-links a.nav-custom{color:var(--text);background:var(--card)}
+html.light .nav-links a.nav-custom svg{color:#7c3aed}
+
+/* hero */
+html.light .pill-hot{color:var(--text);background:linear-gradient(var(--card),var(--card)) padding-box,var(--rgb-conic) border-box;box-shadow:0 6px 20px -8px rgba(234,88,12,.4)}
+html.light .promo{background:linear-gradient(135deg,rgba(255,138,0,.10),rgba(213,0,249,.07) 55%,rgba(0,180,220,.08)),var(--card)}
+html.light .promo-en{color:var(--text)}
+html.light .promo-en b,html.light .promo-hi b,html.light .cx-hi b,html.light .cx-timer b{color:#d97706;text-shadow:none}
+html.light .promo-hi,html.light .cx-hi{color:#3f3a66}
+html.light .badge-float{background:var(--card);color:var(--text)}
+html.light .showcase{box-shadow:0 30px 70px -28px rgba(80,40,160,.55)}
+.slide{color:#f4f5fb}
+
+/* themes + filters */
+html.light .th-chips button:hover,html.light .chip:hover,html.light .c-tags button:hover,html.light .fsel.on select{color:var(--text)}
+html.light .th-tags span.dark{color:#6d28d9}
+html.light .th-tags span.white{color:#b45309}
+html.light .th-card{box-shadow:0 6px 18px -10px rgba(40,30,90,.25)}
+
+/* custom section */
+html.light .cx{background:radial-gradient(circle at 0% 0%,rgba(0,180,220,.10),transparent 45%),radial-gradient(circle at 100% 100%,rgba(213,0,249,.10),transparent 50%),var(--card)}
+html.light .cx-badge{color:#0e7490;background:rgba(6,182,212,.10);border-color:rgba(6,182,212,.4)}
+html.light .cx-chips span{color:#047857}
+html.light .cx-timer{background:var(--card);box-shadow:0 0 0 1px var(--line2),0 10px 26px -8px rgba(234,88,12,.45)}
+html.light .cx-timer circle{stroke:rgba(40,30,90,.10)}
+html.light .cx-timer circle.run{stroke:#ea580c}
+html.light .cx-pop{background:var(--card);color:var(--text);box-shadow:0 12px 26px -10px rgba(40,30,90,.35)}
+html.light .cx-pop2{color:#15803d}
+html.light .cx-stack img{border-color:var(--line2)}
+
+/* reviews, forms, popups */
+html.light .review blockquote{color:var(--text)}
+html.light .opt span:hover,html.light .opt input:checked+span,html.light .drop b{color:var(--text)!important}
+html.light .opt input:checked+span{background:rgba(139,44,255,.10)}
+html.light .btn-wa{color:#15803d;background:rgba(34,197,94,.10);border-color:rgba(21,128,61,.35)}
+html.light .wa-tip a{color:#15803d}
+html.light .stars-pick .opt span{color:#d97706}
+html.light .cf-head h3 svg,html.light .drop svg{color:#7c3aed}
+html.light .modal .m-box{box-shadow:0 30px 80px -20px rgba(40,30,90,.45)}
+html.light .overlay{background:rgba(20,16,50,.45)}
+html.light .socials a:hover{color:#fff}
+html.light .f-grid li a:hover{color:var(--text)}
+html.light .info:hover,html.light .feat:hover,html.light .review:hover{box-shadow:0 10px 30px -14px rgba(110,40,220,.4)}
+
+/* =========================================================
+   24. SMART BOARD — Pricing & Bulk slides (wipe every 5s)
+   ========================================================= */
+.slider{container-type:inline-size}
+.bslide{padding:0;opacity:1;transform:none;clip-path:inset(0 100% 0 0);transition:none;z-index:0;justify-content:stretch;color:#fff}
+.bslide.prev{clip-path:inset(0);z-index:1}
+.bslide.on{clip-path:inset(0);z-index:2;transition:clip-path .9s cubic-bezier(.77,0,.18,1)}
+.bslide.on::after{content:"";position:absolute;top:0;bottom:0;left:0;width:1.2cqw;z-index:5;pointer-events:none;
+  background:linear-gradient(#00e5ff,#d500f9,#ff8a00);box-shadow:0 0 3cqw #d500f9,0 0 6cqw #00e5ff;animation:wipeEdge .9s cubic-bezier(.77,0,.18,1) forwards}
+@keyframes wipeEdge{from{left:0;opacity:1}to{left:100%;opacity:0}}
+.bs{position:absolute;inset:0;display:flex;flex-direction:column;padding:7.5cqw 9cqw 6.5cqw;gap:1.6cqw;font-family:'Plus Jakarta Sans',sans-serif}
+.bs-price{background:radial-gradient(circle at 92% 8%,rgba(255,176,32,.28),transparent 32%),radial-gradient(circle at 0% 100%,rgba(0,229,255,.18),transparent 40%),linear-gradient(135deg,#2a0f5c,#4c1d95 55%,#6d28d9)}
+.bs-head{display:flex;align-items:center;justify-content:space-between;gap:2cqw}
+.bs h3{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:4.6cqw;line-height:1.05;max-width:none;letter-spacing:-.01em}
+.bs-off{position:relative;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:1cqw 2.4cqw;border-radius:1.8cqw;line-height:1.1;
+  background:linear-gradient(135deg,#ff8a00,#ff004c);box-shadow:0 0 3cqw rgba(255,90,0,.7);animation:offPulse 1.6s ease-in-out infinite}
+.bs-off b{font-family:'Space Grotesk',sans-serif;font-size:3.4cqw}
+.bs-off small{font-size:1.45cqw;font-weight:700;opacity:.95;white-space:nowrap}
+@keyframes offPulse{50%{transform:scale(1.06);box-shadow:0 0 5cqw rgba(255,90,0,.9)}}
+.bs-list{list-style:none;display:flex;flex-direction:column;gap:1.05cqw;flex:1;justify-content:center}
+.bs-list li{display:flex;align-items:center;gap:1.8cqw;padding:1cqw 1.8cqw;border-radius:1.6cqw;background:rgba(255,255,255,.08);border:.15cqw solid rgba(255,255,255,.12);
+  box-shadow:inset .6cqw 0 0 var(--c)}
+.bslide.on .bs-list li{animation:rowIn .55s ease both}
+.bslide.on .bs-list li:nth-child(2){animation-delay:.08s}.bslide.on .bs-list li:nth-child(3){animation-delay:.16s}
+.bslide.on .bs-list li:nth-child(4){animation-delay:.24s}.bslide.on .bs-list li:nth-child(5){animation-delay:.32s}
+@keyframes rowIn{from{opacity:0;transform:translateX(4cqw)}to{opacity:1;transform:none}}
+.bs-list span{font-size:2.6cqw;line-height:1}
+.bs-list b{font-size:2.35cqw;font-weight:700;flex:1;min-width:0}
+.bs-list b i{font-style:normal;font-weight:500;opacity:.75;font-size:1.9cqw}
+.bs-list em{font-style:normal;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2.9cqw;color:var(--c);white-space:nowrap;text-shadow:0 0 1.6cqw color-mix(in srgb,var(--c) 60%,transparent)}
+.bs-list em small{font-size:1.5cqw;color:rgba(255,255,255,.7);font-weight:600;margin-left:.3cqw;text-shadow:none}
+.bs-cta{align-self:flex-start;font-size:2cqw;font-weight:700;padding:1cqw 2.2cqw;border-radius:99px;background:rgba(0,0,0,.28);border:.15cqw solid rgba(255,255,255,.25);color:#fff;pointer-events:auto}
+.bs-cta u{text-decoration:none;color:#ffd166;margin-left:.6cqw}
+.bs-cta:hover{background:rgba(0,0,0,.45)}
+
+.bs-bulk{justify-content:center;gap:1.8cqw;background:radial-gradient(circle at 85% 20%,rgba(0,229,255,.25),transparent 35%),radial-gradient(circle at 10% 90%,rgba(255,0,140,.25),transparent 40%),linear-gradient(135deg,#0b1f4d,#1e1b6b 55%,#4c1d95)}
+.bs-kicker{align-self:flex-start;font-size:1.8cqw;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:.8cqw 2cqw;border-radius:99px;background:rgba(255,255,255,.12);border:.15cqw solid rgba(255,255,255,.25)}
+.bs-bulk h3{font-size:6cqw}
+.bs-bulk h3 .big{font-size:9.5cqw;background:linear-gradient(90deg,#ffd166,#ff8a00,#ff4d8d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 2cqw rgba(255,138,0,.5))}
+.bs-neg{font-size:3.4cqw;font-weight:700}
+.bs-neg b{color:#4ade80;text-shadow:0 0 2cqw rgba(74,222,128,.6)}
+.bs-share{align-self:flex-start;max-width:68%;font-size:2.3cqw;font-weight:600;padding:1.4cqw 2.2cqw;border-radius:1.8cqw;background:rgba(255,255,255,.1);border:.15cqw dashed rgba(255,255,255,.4)}
+.bs-tag{font-size:2.2cqw;opacity:.9}
+.bs-tag b{color:#67e8f9}
+.bs-deck{position:absolute;right:8cqw;top:50%;width:22cqw;aspect-ratio:16/10;transform:translateY(-35%)}
+.bs-deck i{position:absolute;inset:0;border-radius:1.6cqw;background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(220,225,255,.85));box-shadow:0 2cqw 4cqw rgba(0,0,0,.35)}
+.bs-deck i::before{content:"";position:absolute;left:12%;right:12%;top:18%;height:12%;border-radius:1cqw;background:#7c3aed}
+.bs-deck i::after{content:"";position:absolute;left:12%;right:30%;top:42%;height:30%;border-radius:.6cqw;background:repeating-linear-gradient(#c7cbe0 0 18%,transparent 18% 34%)}
+.bs-deck i:nth-child(1){transform:rotate(-12deg) translate(-14%,6%);opacity:.6}
+.bs-deck i:nth-child(2){transform:rotate(-5deg) translate(-6%,3%);opacity:.8}
+.bslide.on .bs-deck i:nth-child(3){animation:deckIn .8s .3s ease both}
+@keyframes deckIn{from{transform:translateY(20%) rotate(8deg);opacity:0}to{transform:none;opacity:1}}
+.bslide.on .bs-bulk h3,.bslide.on .bs-neg,.bslide.on .bs-share,.bslide.on .bs-tag{animation:rowIn .6s ease both}
+.bslide.on .bs-neg{animation-delay:.12s}.bslide.on .bs-share{animation-delay:.24s}.bslide.on .bs-tag{animation-delay:.36s}
+.slider .s-nav{width:5cqw;height:5cqw;min-width:26px;min-height:26px;z-index:4}
+.slider .s-prev{left:1.2cqw}.slider .s-next{right:1.2cqw}
+.slider .dots{bottom:1.6cqw}
+@media(prefers-reduced-motion:reduce){.bslide.on{transition:none}.bslide.on::after{display:none}}
+
+/* board slide 1: sab fit ho */
+.bs-price{padding:5.8cqw 9cqw 5.2cqw;gap:1.2cqw}
+.bs-price .bs-off b{font-size:3cqw}
+.bs-list{gap:.8cqw;line-height:1.2}
+.bs-list li{padding:.7cqw 1.8cqw}
+.bs-cta{line-height:1.2;padding:.9cqw 2.2cqw}
+
+/* board on phone: thoda lamba screen + bade akshar */
+@media(max-width:600px){
+  .slider{aspect-ratio:4/3.5}
+  .slider .s-nav{display:none}
+  .screen-ui{padding:6px 10px;font-size:.52rem}
+  .bs-price{padding:9cqw 5.5cqw 10cqw;gap:2cqw}
+  .bs h3{font-size:6.4cqw}
+  .bs-price .bs-off{padding:1.2cqw 2.6cqw}
+  .bs-price .bs-off b{font-size:4.2cqw}.bs-off small{font-size:2.1cqw}
+  .bs-list{gap:1.3cqw}
+  .bs-list li{padding:1.3cqw 2.2cqw;gap:2.2cqw}
+  .bs-list span{font-size:3.8cqw}.bs-list b{font-size:3.4cqw}.bs-list b i{font-size:2.7cqw}
+  .bs-list em{font-size:4.2cqw}.bs-list em small{font-size:2.2cqw}
+  .bs-cta{font-size:3cqw;padding:1.4cqw 3cqw}
+  .bs-bulk{padding:9cqw 6cqw 9cqw;gap:2.6cqw}
+  .bs-kicker{font-size:2.6cqw;padding:1.1cqw 2.6cqw}
+  .bs-bulk h3{font-size:8.4cqw}.bs-bulk h3 .big{font-size:13cqw}
+  .bs-neg{font-size:4.8cqw}
+  .bs-share{max-width:100%;font-size:3.4cqw;padding:2cqw 3cqw}
+  .bs-tag{font-size:3.3cqw}
+  .bs-deck{display:none}
+  .slider .dots{bottom:2.4cqw}
+}
+
+/* =========================================================
+   25. PRICING — nav button + popup
+   ========================================================= */
+.nav-links a.nav-price{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:7px;color:#fff;
+  background:linear-gradient(135deg,#ff8a00,#ff3d6e);box-shadow:0 6px 20px -4px rgba(255,100,40,.6)}
+.nav-links a.nav-price:hover{color:#fff;filter:brightness(1.1);transform:translateY(-1px)}
+.nav-links a.nav-price::after{content:"";position:absolute;top:0;left:-80%;width:45%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:shine 3.8s 1.2s ease-in-out infinite;pointer-events:none}
+.nav-price .rs{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.25);font-size:.78rem;font-weight:800}
+.nav-links{gap:6px!important}
+.nav-links a{padding:9px 12px!important}
+@media(max-width:1180px){.nav .search{max-width:260px}}
+
+.pr-box{width:min(620px,100%)}
+.pr-in{padding:28px 26px 26px;display:flex;flex-direction:column;gap:14px}
+.pr-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-right:34px}
+.pr-head h3{font-size:1.55rem}
+.pr-off{display:flex;flex-direction:column;align-items:center;padding:8px 16px;border-radius:14px;line-height:1.15;color:#fff;
+  background:linear-gradient(135deg,#ff8a00,#ff004c);box-shadow:0 0 24px rgba(255,90,0,.55);animation:offPulse 1.6s ease-in-out infinite}
+.pr-off b{font-family:'Space Grotesk',sans-serif;font-size:1.3rem}
+.pr-off small{font-size:.66rem;font-weight:700}
+.pr-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+.pr-list li{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--line);box-shadow:inset 4px 0 0 var(--c)}
+.pr-list span{font-size:1.25rem}
+.pr-list b{flex:1;min-width:0;font-size:.95rem}
+.pr-list b i{display:block;font-style:normal;font-weight:500;font-size:.76rem;color:var(--muted)}
+.pr-list em{font-style:normal;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.25rem;color:var(--c);white-space:nowrap}
+.pr-list em small{font-size:.7rem;color:var(--muted);font-weight:600;margin-left:2px}
+.pr-bulk{padding:14px 16px;border-radius:14px;border:1px dashed rgba(192,132,252,.55);background:rgba(139,44,255,.08);display:flex;flex-direction:column;gap:4px}
+.pr-bulk div{font-weight:600}
+.pr-bulk div b{font-family:'Space Grotesk',sans-serif;margin-right:4px}
+.pr-bulk div span{color:#22c55e;font-weight:800}
+.pr-bulk small{color:var(--muted);font-size:.84rem}
+.pr-tag{text-align:center;color:var(--muted);font-size:.9rem}
+.pr-tag b{color:var(--text)}
+.pr-cta{display:grid;grid-template-columns:1.3fr 1fr;gap:10px}
+.pr-cta .btn{justify-content:center;padding:14px}
+html.light .pr-list em{filter:saturate(1.3) brightness(.8)}
+@media(max-width:520px){.pr-in{padding:22px 16px 18px}.pr-head h3{font-size:1.3rem}.pr-cta{grid-template-columns:1fr}.pr-list li{padding:10px 12px}}
+
+/* 26. Header RGB line = scroll progress (scroll ke saath bharti hai) */
+header::after{right:auto!important;width:calc(var(--sp,0) * 100%);background-size:200vw 100%!important;transition:width .12s linear}
+header::before{content:"";position:absolute;left:calc(var(--sp,0) * 100% - 6px);bottom:-3px;width:6px;height:6px;border-radius:50%;background:#fff;
+  box-shadow:0 0 8px 2px #d500f9,0 0 16px 4px #00e5ff;opacity:calc(var(--sp,0) * 40);transition:left .12s linear;pointer-events:none;z-index:2}
+html.light header::before{background:#fff}
+</style>
+</head>
+<body>
+<div id="glowCursor"></div>
+
+<!-- SVG ICON SPRITE -->
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 21l2.2-5.4A8.5 8.5 0 1 1 21 11.5z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2a10 10 0 0 0 0 20c1 0 1.6-.8 1.6-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.8-1.7 1.7-1.7h2A5.5 5.5 0 0 0 22 11c0-5-4.5-9-10-9z"/></symbol>
+  <symbol id="i-cursor" viewBox="0 0 24 24"><path d="m4 4 7 17 2.5-7.5L21 11z"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+  <symbol id="i-headset" viewBox="0 0 24 24"><path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M20 16.6A5 5 0 0 0 18 7h-1.3A8 8 0 1 0 4 15.3"/><path d="M12 12v9M8 17l4 4 4-4"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></symbol>
+</svg>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="container nav">
+    <a href="#home" class="logo">
+      <span class="logo-icon"><svg class="i" style="color:#a78bfa"><use href="#i-layers"/></svg></span>
+      <span><b>LAKSHAY <span class="grad-text">AGENCY</span></b><small>PREMIUM PPT STORE</small></span>
+    </a>
+    <label class="search">
+      <svg class="i"><use href="#i-search"/></svg>
+      <input id="topSearch" type="search" placeholder="Search presentations, topics, categories…" aria-label="Search presentations">
+    </label>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    <nav class="nav-links" id="navLinks">
+      <a href="#home" class="active">Home</a>
+      <a href="#shop" class="nav-shop"><svg class="i" style="width:16px"><use href="#i-bag"/></svg>Shop PPTs</a>
+      <a href="#custom" class="nav-custom js-custom"><svg class="i" style="width:16px"><use href="#i-sparkle"/></svg>Custom PPT</a>
+      <a href="#pricing" class="nav-price js-pricing"><span class="rs">₹</span>Pricing</a>
+      <div class="theme-sw" role="radiogroup" aria-label="Website theme">
+        <button type="button" role="radio" data-mode="dark" title="Dark theme"><svg class="i"><use href="#i-moon"/></svg><span>Dark</span></button>
+        <button type="button" role="radio" data-mode="light" title="Light theme"><svg class="i"><use href="#i-sun"/></svg><span>Light</span></button>
+        <button type="button" role="radio" data-mode="system" title="System default"><svg class="i"><use href="#i-monitor"/></svg><span>System</span></button>
+      </div>
+    </nav>
+    <button class="cart-btn" id="cartBtn" aria-label="Open cart">
+      <svg class="i"><use href="#i-bag"/></svg><span class="cart-count" id="cartCount" data-n="0">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="home">
+  <div class="container hero-grid">
+    <div class="reveal">
+      <span class="pill pill-hot"><svg class="i"><use href="#i-zap"/></svg>India's Fastest PPT Services</span>
+      <h1>Your One-Stop Destination for <span class="grad-text">Educational PPTs</span></h1>
+      <div class="promo" aria-label="1 Hour. Your PPT. Ready!">
+        <span class="promo-clock" aria-hidden="true"><svg class="i"><use href="#i-clock"/></svg></span>
+        <div>
+          <p class="promo-en"><b>1 Hour.</b> Your PPT. <span class="grad-text">Ready!</span></p>
+          <p class="promo-hi" lang="hi">सिर्फ <b>1 घंटे</b> में आपकी PPT तैयार!</p>
+        </div>
+      </div>
+      <div class="hero-cta">
+        <a href="#themes" class="btn btn-primary">Explore Themes <svg class="i"><use href="#i-arrow"/></svg></a>
+        <a href="order.html" class="btn btn-ghost"><svg class="i" style="color:#c084fc"><use href="#i-sparkle"/></svg> PPT Order Now</a>
+      </div>
+    </div>
+
+
+    <!-- DIGITAL SMART BOARD -->
+    <div class="board-wrap reveal">
+      <div class="showcase">
+        <span class="cam"></span>
+        <div class="slider" id="slider">
+          <button class="s-nav s-prev" aria-label="Previous"><svg class="i"><use href="#i-left"/></svg></button>
+          <button class="s-nav s-next" aria-label="Next"><svg class="i"><use href="#i-right"/></svg></button>
+          <div class="screen-ui"><span>● LIMITED TIME OFFER</span><span>LAKSHAY AGENCY</span></div>
+          <div class="dots" id="dots"></div>
+          <span class="glare"></span>
+        </div>
+        <div class="bezel-bottom">
+          <span class="speaker"></span>
+          <span class="brand">LAKSHAY <b>SMART BOARD</b></span>
+          <span class="led"></span>
+        </div>
+        <div class="pen-tray"><i style="background:#8b2cff"></i><i style="background:#06b6d4"></i><i style="background:#ec4899"></i></div>
+      </div>
+      <div class="stand"><i class="pole"></i><i class="base"></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PPT THEMES ================= -->
+<section class="section" id="themes" style="padding-top:10px">
+  <div class="container">
+    <div class="section-head reveal"><span class="eyebrow">Our Designs</span><h2>Choose Your PPT Theme</h2><p>Pick a design you like. We'll make your PPT in it.</p></div>
+    <div class="toolbar th-bar reveal">
+      <div class="th-group"><span class="th-label">Theme</span><div class="th-chips" data-g="tone"></div></div>
+      <div class="th-group"><span class="th-label">Type</span><div class="th-chips" data-g="type"></div></div>
+      <div class="th-group"><span class="th-label">Lang</span><div class="th-chips" data-g="lang"></div></div>
+    </div>
+    <div class="th-grid" id="thGrid"></div>
+    <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
+  </div>
+</section>
+
+<!-- ================= CATEGORIES ================= -->
+<section class="section" id="categories" style="padding-top:20px" hidden>
+  <div class="container">
+    <h2 style="font-size:clamp(1.6rem,3vw,2.1rem);margin-bottom:26px" class="reveal">Browse by Category</h2>
+    <div class="cats reveal" id="cats"></div>
+  </div>
+</section>
+
+<!-- ================= PRODUCTS ================= -->
+<section class="section" id="shop" style="padding-top:20px" hidden>
+  <div class="container">
+    <div class="section-head reveal"><h2>Best-Selling Presentations</h2></div>
+    <div class="toolbar reveal">
+      <label class="big-search">
+        <svg class="i"><use href="#i-search"/></svg>
+        <input id="gridSearch" type="search" placeholder="Search by topic, subject, class, board or language… (e.g. Science, CBSE, Hindi)" aria-label="Search presentations">
+      </label>
+      <div class="chips" id="chips"></div>
+      <div class="filter-head">
+        <span class="ttl"><svg class="i" style="width:15px"><use href="#i-sliders"/></svg>FILTERS</span>
+        <button class="btn btn-ghost btn-sm" id="filterToggle"><svg class="i" style="width:15px"><use href="#i-sliders"/></svg>Filters <span id="fCount"></span></button>
+        <button class="clear-btn" id="clearFilters" hidden>Clear all filters ✕</button>
+      </div>
+      <div class="filters" id="filters"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="load-more"><button class="btn btn-ghost" id="loadMore">Load More Presentations</button></div>
+  </div>
+</section>
+
+<!-- ================= CUSTOM CTA ================= -->
+<section class="section" id="custom" style="background:var(--bg2)">
+  <div class="container">
+    <div class="cx reveal">
+      <div class="cx-left">
+        <span class="cx-badge"><svg class="i"><use href="#i-sparkle"/></svg>Custom PPT Service</span>
+        <h2>Your Topic. <span class="grad-text">Our Design.</span><br>Ready in 1 Hour.</h2>
+        <p class="cx-hi" lang="hi">आप टॉपिक बताइए, PPT हम बनाएंगे — <b>सिर्फ 1 घंटे में</b>।</p>
+
+        <ol class="cx-steps">
+          <li style="--c:#00e5ff"><span class="cx-ic"><svg class="i"><use href="#i-send"/></svg></span>
+            <div><b>Tell us your topic</b><small>Class, subject, slides &amp; language</small></div><em>1</em></li>
+          <li style="--c:#d500f9"><span class="cx-ic"><svg class="i"><use href="#i-palette"/></svg></span>
+            <div><b>We design your PPT</b><small>Your chosen theme, charts &amp; diagrams</small></div><em>2</em></li>
+          <li style="--c:#22c55e"><span class="cx-ic"><svg class="i"><use href="#i-msg"/></svg></span>
+            <div><b>Get it on WhatsApp</b><small>Fully editable PPTX, in about 1 hour</small></div><em>3</em></li>
+        </ol>
+
+        <div class="cx-cta">
+          <a href="order.html" class="btn btn-primary cx-main"><svg class="i"><use href="#i-sparkle"/></svg> PPT Order Now <svg class="i"><use href="#i-arrow"/></svg></a>
+          <a class="btn btn-wa wa-link" data-msg="Hi Lakshay Agency! I want a custom PPT made."><svg class="i"><use href="#i-msg"/></svg> Ask on WhatsApp</a>
+        </div>
+        <div class="cx-chips"><span>✓ Hindi / English</span><span>✓ Class 1–12 &amp; Exams</span><span>✓ 100% Editable</span></div>
+      </div>
+
+      <div class="cx-right" aria-hidden="true">
+        <div class="cx-stack" id="cxStack">
+          <img src="uploads/themes/samples/dark-chalk-physics-2.webp" alt="">
+          <img src="uploads/themes/samples/kids-grammar-bright-1.webp" alt="">
+          <img src="uploads/themes/samples/hindi-varn-vichar.webp" alt="">
+          <img src="uploads/themes/samples/hindi-swar.webp" alt="">
+        </div>
+        <div class="cx-timer"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19"/><circle class="run" cx="22" cy="22" r="19"/></svg><b>60</b><small>MIN</small></div>
+        <div class="cx-pop cx-pop1"><span class="dot"></span>Order received ✓</div>
+        <div class="cx-pop cx-pop2">📩 Your PPT is ready!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHY US ================= -->
+<section class="section" id="why">
+  <div class="container">
+    <div class="section-head reveal"><span class="eyebrow">The Lakshay Advantage</span><h2>Why Choose Lakshay Agency?</h2><p>Fast, affordable and fully editable PPTs, made the way you need.</p></div>
+    <div class="feats" id="feats"></div>
+  </div>
+</section>
+
+<!-- ================= REVIEWS ================= -->
+<section class="section" id="reviews">
+  <div class="container">
+    <div class="section-head reveal"><h2>Customer Reviews & Feedback</h2>
+      <a href="#reviews" class="btn btn-ghost btn-sm js-review" style="margin-top:16px"><svg class="i" style="color:#c084fc"><use href="#i-msg"/></svg> Write a Customer Review</a>
+    </div>
+    <div class="reviews reveal" id="reviewList"></div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="section" id="faq" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-head reveal"><span class="eyebrow">Got Questions?</span><h2>Frequently Asked Questions</h2><p>Everything you need to know about buying, editing and ordering custom PowerPoint decks.</p></div>
+    <div class="faq reveal" id="faqList"></div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="section" id="contact">
+  <div class="container contact">
+    <div class="reveal">
+      <span class="eyebrow">Get in Touch</span>
+      <h2>Need Help?</h2>
+      <p>Message us anytime. We reply fast.</p>
+      <div class="info-list">
+        <a class="info wa-link" data-msg="Hi Lakshay Agency!" style="--fc:var(--green)"><span class="ic"><svg class="i"><use href="#i-msg"/></svg></span><span><small>WhatsApp</small><b class="js-phone"></b></span></a>
+        <a class="info js-mail" style="--fc:#c084fc"><span class="ic"><svg class="i"><use href="#i-mail"/></svg></span><span><small>Email</small><b class="js-email"></b></span></a>
+        <div class="info" style="--fc:var(--cyan)"><span class="ic"><svg class="i"><use href="#i-clock"/></svg></span><span><small>Support</small><b>24/7 Support</b></span></div>
+      </div>
+    </div>
+
+    <form class="box reveal" id="contactForm" novalidate>
+      <h3>Send Us a Message</h3>
+      <p>Fill out the form and we'll reply on email or WhatsApp promptly.</p>
+      <div class="row">
+        <div class="field"><label for="fName">Your Name *</label><input id="fName" required placeholder="e.g. Vikram Malhotra"></div>
+        <div class="field"><label for="fEmail">Email Address *</label><input id="fEmail" type="email" required placeholder="you@example.com"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="fPhone">Phone / WhatsApp</label><input id="fPhone" type="tel" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="field"><label for="fSubject">Subject</label>
+          <select id="fSubject">
+            <option>General Template Question</option>
+            <option>Custom PPT Request</option>
+            <option>Order / Download Issue</option>
+            <option>Customer Review</option>
+            <option>Invoice Request</option>
+          </select></div>
+      </div>
+      <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="field"><label for="fMsg">Your Message *</label><textarea id="fMsg" required placeholder="Tell us about your project, topic, deadline or feedback…"></textarea></div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><svg class="i"><use href="#i-send"/></svg> SEND MESSAGE</button>
+        <button type="button" class="btn btn-wa" id="formWa"><svg class="i"><use href="#i-msg"/></svg> Send on WhatsApp</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="container">
+    <div class="f-grid">
+      <div>
+        <a href="#home" class="logo"><span class="logo-icon"><svg class="i" style="color:#a78bfa"><use href="#i-layers"/></svg></span><span><b>LAKSHAY <span class="grad-text">AGENCY</span></b><small>PREMIUM PPT STORE</small></span></a>
+        <p>Empowering students, educators and business leaders with world-class PowerPoint presentations. Present better. Impress more.</p>
+        <a class="btn btn-wa btn-sm wa-link" data-msg="Hi Lakshay Agency!"><svg class="i"><use href="#i-msg"/></svg> WhatsApp Support</a>
+      </div>
+      <div><h5>NAVIGATION</h5><ul>
+        <li><a href="#home">Home</a></li><li><a href="#shop">All Presentations</a></li><li><a href="#custom" class="js-custom">Custom PPT Services</a></li><li><a href="#why">Why Lakshay Agency</a></li><li><a href="#contact">Contact Us</a></li><li><a href="#faq">FAQs</a></li></ul></div>
+      <div><h5>CATEGORIES</h5><ul id="footCats"></ul></div>
+      <div><h5>TRUST & LEGAL</h5><ul>
+        <li><a href="#faq">Privacy Policy</a></li><li><a href="#faq">Terms & Conditions</a></li><li><a href="#faq">Refund & Replacement</a></li></ul>
+        <h5 style="margin-top:22px">FOLLOW US</h5>
+        <div class="socials"><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="Instagram">ig</a><a href="#" aria-label="YouTube">yt</a><a href="#" aria-label="X">𝕏</a></div>
+      </div>
+    </div>
+    <div class="f-bottom"><span>© <span id="year"></span> Lakshay Agency. All Rights Reserved. <span class="grad-text">Present Better. Impress More.</span></span><span>Works with PowerPoint · Google Slides · Keynote</span></div>
+  </div>
+</footer>
+
+<!-- ================= CART DRAWER ================= -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="Shopping cart">
+  <div class="d-head"><h3>Your Cart</h3><button class="close-x" id="closeCart" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="d-body" id="cartBody"></div>
+  <div class="d-foot">
+    <div class="total"><span>Total</span><b id="cartTotal">₹0</b></div>
+    <button class="btn btn-primary" style="width:100%" id="checkout"><svg class="i"><use href="#i-msg"/></svg> Order on WhatsApp</button>
+    <p style="font-size:.74rem;color:var(--dim);text-align:center;margin-top:10px">Pay via UPI (GPay / PhonePe / Paytm) — download link sent instantly.</p>
+  </div>
+</aside>
+
+<!-- ================= PREVIEW MODAL ================= -->
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="m-box" style="position:relative">
+    <button class="close-x m-close" id="closeModal" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- ================= CUSTOM PPT FORM POPUP ================= -->
+<div class="modal" id="formModal" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+  <div class="m-box cf-box">
+    <button class="close-x m-close" id="closeForm" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+    <div class="cf-scroll">
+    <div id="cfMain">
+      <div class="cf-head">
+        <h3 id="cfTitle"><svg class="i"><use href="#i-sparkle"/></svg>Custom PPT Request Form</h3>
+        <p>अपनी ज़रूरत के अनुसार PPT बनवाने के लिए नीचे जानकारी भरें।</p>
+      </div>
+      <form id="cfForm" novalidate>
+        <div class="cf-q" id="q-name"><label for="cfName">1. Full Name <b>*</b></label>
+          <input type="text" id="cfName" placeholder="Enter your name" autocomplete="name"><div class="cf-err">Please enter your name</div></div>
+
+        <div class="cf-q" id="q-phone"><label for="cfPhone">2. WhatsApp Number <b>*</b></label>
+          <input type="tel" id="cfPhone" placeholder="Enter mobile number" inputmode="tel" maxlength="16" autocomplete="tel"><div class="cf-err">Please enter a valid 10-digit mobile number</div></div>
+
+        <div class="cf-q" id="q-topic"><label for="cfTopic">3. Subject / Topic <b>*</b></label>
+          <input type="text" id="cfTopic" placeholder="e.g. Biology, History, Physics"><div class="cf-err">Please enter the subject or topic</div></div>
+
+        <div class="cf-q"><span class="lbl">4. Number of Slides</span>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="slides" value="1–20 Slides"><span>1–20 Slides</span></label>
+            <label class="opt"><input type="radio" name="slides" value="20–50 Slides" checked><span>20–50 Slides</span></label>
+            <label class="opt"><input type="radio" name="slides" value="50–100 Slides"><span>50–100 Slides</span></label>
+            <label class="opt"><input type="radio" name="slides" value="100+ Slides"><span>100+ Slides</span></label>
+          </div></div>
+
+        <div class="cf-q"><span class="lbl">5. Content Language</span>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="clang" value="Hindi"><span>Hindi</span></label>
+            <label class="opt"><input type="radio" name="clang" value="English"><span>English</span></label>
+            <label class="opt"><input type="radio" name="clang" value="Hindi + English" checked><span>Hindi + English</span></label>
+          </div></div>
+
+        <div class="cf-q"><label for="cfReq">6. Additional Requirements <span style="color:var(--dim);font-weight:500">(Optional)</span></label>
+          <textarea id="cfReq" placeholder="Figures, diagrams, images, PDF/Word file, deadline, etc."></textarea></div>
+
+        <div class="cf-q"><span class="lbl">7. Upload Files <span style="color:var(--dim);font-weight:500">(Optional)</span></span>
+          <label class="drop" id="drop">
+            <input type="file" id="cfFiles" multiple hidden
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png,.webp,.gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,image/*">
+            <svg class="i"><use href="#i-upload"/></svg>
+            <b>Click to upload or drag & drop files here</b>
+            <small>Max 5 files · up to 10 MB each · Video & audio not allowed</small>
+            <div class="ftypes"><span>📄 PDF</span><span>📝 WORD</span><span>📊 EXCEL</span><span>🖼️ IMAGES</span></div>
+          </label>
+          <div class="file-err" id="fileErr"></div>
+          <div class="file-list" id="fileList"></div>
+        </div>
+
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button type="submit" class="btn btn-primary cf-submit" id="cfSubmit"><svg class="i"><use href="#i-send"/></svg> Submit Request</button>
+        <p class="cf-note">🔒 Your details are only used to contact you about your PPT.</p>
+      </form>
+    </div>
+    <div class="cf-done" id="cfDone" hidden></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CHECKOUT POPUP ================= -->
+<div class="modal" id="payModal" role="dialog" aria-modal="true" aria-labelledby="payTitle">
+  <div class="m-box cf-box">
+    <button class="close-x m-close" onclick="closePay()" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+    <div class="cf-scroll">
+      <div id="payMain">
+        <div class="cf-head"><h3 id="payTitle"><svg class="i"><use href="#i-bag"/></svg>Checkout</h3><p>Payment ke turant baad download link milega — screen par bhi aur email par bhi.</p></div>
+        <form id="payForm" novalidate>
+          <div class="pay-items" id="payItems"></div>
+          <div class="cf-q" id="p-name"><label for="payName">Full Name <b>*</b></label><input type="text" id="payName" autocomplete="name" placeholder="Enter your name"><div class="cf-err">Please enter your name</div></div>
+          <div class="cf-q" id="p-email"><label for="payEmail">Email <b>*</b> <span style="color:var(--dim);font-weight:500">(download link yahan aayega)</span></label><input type="text" id="payEmail" inputmode="email" autocomplete="email" placeholder="you@example.com"><div class="cf-err">Please enter a valid email</div></div>
+          <div class="cf-q" id="p-phone"><label for="payPhone">WhatsApp Number <b>*</b></label><input type="tel" id="payPhone" maxlength="16" autocomplete="tel" placeholder="Enter mobile number"><div class="cf-err">Please enter a valid 10-digit mobile number</div></div>
+          <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit" class="btn btn-primary cf-submit" id="paySubmit"></button>
+          <p class="cf-note">🔒 Secure payment by Razorpay · UPI, Cards, Net Banking, Wallets</p>
+        </form>
+      </div>
+      <div class="cf-done" id="payDone" hidden></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= REVIEW POPUP ================= -->
+<div class="modal" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="rvTitle">
+  <div class="m-box cf-box">
+    <button class="close-x m-close" onclick="closeReview()" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+    <div class="cf-scroll">
+      <div id="rvMain">
+        <div class="cf-head"><h3 id="rvTitle"><svg class="i"><use href="#i-star"/></svg>Write a Review</h3><p>Aapka experience doosron ki madad karega. Review check hone ke baad website par dikhega.</p></div>
+        <form id="rvForm" novalidate>
+          <div class="cf-q"><span class="lbl">Your Rating</span>
+            <div class="opts stars-pick"><label class="opt"><input type="radio" name="stars" value="5" checked><span>★★★★★</span></label><label class="opt"><input type="radio" name="stars" value="4"><span>★★★★</span></label><label class="opt"><input type="radio" name="stars" value="3"><span>★★★</span></label><label class="opt"><input type="radio" name="stars" value="2"><span>★★</span></label><label class="opt"><input type="radio" name="stars" value="1"><span>★</span></label></div></div>
+          <div class="cf-q" id="r-name"><label for="rvName">Your Name <b>*</b></label><input type="text" id="rvName" maxlength="120" placeholder="Enter your name"><div class="cf-err">Please enter your name</div></div>
+          <div class="cf-q"><label for="rvRole">You are <span style="color:var(--dim);font-weight:500">(Optional)</span></label><input type="text" id="rvRole" maxlength="150" placeholder="e.g. Class 10 Student, Teacher, Business Owner"></div>
+          <div class="cf-q"><label for="rvDeck">Which PPT did you buy? <span style="color:var(--dim);font-weight:500">(Optional)</span></label><select id="rvDeck" class="rv-select"></select></div>
+          <div class="cf-q" id="r-text"><label for="rvText">Your Review <b>*</b></label><textarea id="rvText" maxlength="1000" placeholder="Apna experience likhiye…"></textarea><div class="cf-err">Please write at least a few words</div></div>
+          <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit" class="btn btn-primary cf-submit" id="rvSubmit"><svg class="i"><use href="#i-send"/></svg> Submit Review</button>
+        </form>
+      </div>
+      <div class="cf-done" id="rvDone" hidden></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PRICING POPUP ================= -->
+<div class="modal" id="priceModal" role="dialog" aria-modal="true" aria-labelledby="prTitle">
+  <div class="m-box cf-box pr-box">
+    <button class="close-x m-close" onclick="hidePopup('priceModal')" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+    <div class="cf-scroll">
+      <div class="pr-in">
+        <div class="pr-head">
+          <h3 id="prTitle">PPT Design &amp; Pricing</h3>
+          <span class="pr-off"><b>15% OFF</b><small>on final payment · Limited time</small></span>
+        </div>
+        <ul class="pr-list">
+          <li style="--c:#f472b6"><span>🎬</span><b>Animated Slides</b><em>₹10<small>/slide</small></em></li>
+          <li style="--c:#eab308"><span>❓</span><b>Question Slides</b><em>₹2–₹3<small>/slide</small></em></li>
+          <li style="--c:#38bdf8"><span>📚</span><b>Theory Slides</b><em>₹3–₹5<small>/slide</small></em></li>
+          <li style="--c:#34d399"><span>📝</span><b>Theory + Questions <i>Without Animation</i></b><em>₹5<small>/slide</small></em></li>
+          <li style="--c:#c084fc"><span>🎞️</span><b>Theory + Questions <i>With Animation</i></b><em>₹10<small>/slide</small></em></li>
+        </ul>
+        <div class="pr-bulk">
+          <div><b>🎯 200+ Slides?</b> Bulk pricing <span>negotiable!</span></div>
+          <small>📩 Share your content &amp; design references to get started.</small>
+        </div>
+        <p class="pr-tag">✨ You provide the content. <b>We create the presentation.</b></p>
+        <div class="pr-cta">
+          <a href="order.html" class="btn btn-primary"><svg class="i"><use href="#i-sparkle"/></svg> PPT Order Now</a>
+          <a class="btn btn-wa wa-link" data-msg="Hi Lakshay Agency! I want to know about PPT pricing."><svg class="i"><use href="#i-msg"/></svg> Ask on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= THEME LIGHTBOX ================= -->
+<div class="modal" id="themeModal" role="dialog" aria-modal="true" aria-label="Theme preview">
+  <div class="m-box th-box">
+    <button class="close-x m-close" onclick="hidePopup('themeModal')" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+    <div class="th-stage" id="thStage">
+      <span class="th-progress"></span>
+      <div class="th-view" id="thView"></div>
+      <button class="s-nav th-prev" onclick="stepSlide(-1)" aria-label="Previous slide"><svg class="i"><use href="#i-left"/></svg></button>
+      <button class="s-nav th-next" onclick="stepSlide(1)" aria-label="Next slide"><svg class="i"><use href="#i-right"/></svg></button>
+      <span class="th-pos" id="thPos"></span>
+    </div>
+    <div class="th-strip" id="thStrip"></div>
+    <div class="th-info" id="thInfo"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="wa-float">
+  <div class="wa-tip" id="waTip"><span class="pill" style="padding:0;border:0;background:none"><span class="dot"></span></span>Need PPT help? <a class="wa-link" data-msg="Hi! I need help choosing a PPT.">Chat on WhatsApp</a><button onclick="this.parentNode.remove()" aria-label="Close tip" style="color:var(--dim)">✕</button></div>
+  <a class="wa-btn wa-link" data-msg="Hi Lakshay Agency!" aria-label="WhatsApp"><svg class="i"><use href="#i-msg"/></svg></a>
+</div>
+
+<script>
+/* =========================================================
+   ⚙️ SETTINGS — sirf yahan apni details daalo
+   ========================================================= */
+const CONFIG = {
+  whatsapp: "919711069435",            // country code ke saath, bina + aur space ke
+  phoneDisplay: "+91 97110 69435",
+  email: "Mdirfan7216@gmail.com",
+  perPage: 8,
+  // (Optional) Files seedha aapke email par aayein, iske liye Formspree/Web3Forms ka
+  // file-upload wala endpoint yahan daalo, e.g. "https://formspree.io/f/xxxxxx".
+  // Khaali chhodoge toh request WhatsApp par jaayegi aur customer files chat mein bhejega.
+  formEndpoint: ""
+};
+
+/* ---------- CATEGORIES ---------- */
+const CATEGORIES = [
+  { id:"edu",  name:"Educational & Teaching PPTs", grad:"linear-gradient(135deg,#0ea5e9,#1e3a8a)" },
+  { id:"biz",  name:"Business Presentations",      grad:"linear-gradient(135deg,#10b981,#064e3b)" },
+  { id:"mkt",  name:"Marketing & Sales PPTs",      grad:"linear-gradient(135deg,#ec4899,#7f1d1d)" },
+  { id:"anim", name:"Animated PPTs",               grad:"linear-gradient(135deg,#8b5cf6,#312e81)" }
+];
+
+/* ---------- PRODUCTS (naye PPT yahan add karo) ----------
+   badge: "best" | "new" | "feat" | ""
+   colors: thumbnail ke 2 gradient colours
+   lang: "Hindi" | "English" | "Both" (Hindi + English) | koi aur = Other   theme: "Dark" | "Light"
+   board: ["CBSE","ICSE","State Board","University","Competitive Exams","Corporate"]
+   level: "Class 1" … "Class 12" | "Other"   (kai class ho toh: ["Class 9","Class 10"])
+   subject: SUBJECTS list mein se koi bhi   anim: true = Animated, false = Without Animation
+   (Jo value list mein nahi hogi, wo apne aap "Other" mein dikhegi)
+   file: (optional) asli PPT ka download / payment link            */
+let PRODUCTS = [
+  // Aapke PPTs yahan aayenge (live website par admin panel se)
+];
+
+/* ---------- REVIEWS ----------
+   Yahan sirf ASLI customers ke reviews daalo (unki permission se).
+   Example: {name:"Rahul", role:"B.Tech Student", text:"…", deck:"Engineering Capstone", stars:5}  */
+let REVIEWS = [];
+// Server (PHP) chal raha ho toh PPTs, reviews aur settings admin panel se aate hain — upar wala data sirf backup hai.
+let API = false, SETTINGS = { payments:false };
+
+/* ---------- FAQ ---------- */
+const FAQS = [
+  ["How will I receive my PowerPoint presentation after payment?","Instant digital delivery! Once your payment is confirmed, we send the editable .pptx download link on WhatsApp and email right away."],
+  ["Can I edit the presentations in Google Slides or Apple Keynote?","Yes. Every deck is a standard .pptx file, so it opens and edits in PowerPoint, Google Slides and Keynote. Fonts used are free Google Fonts."],
+  ["How does the Custom Presentation service work?","Send us your topic, syllabus or brief, number of slides and deadline via the form or WhatsApp. We share a quote, design the deck, and include revisions until you're happy."],
+  ["Are the icons and diagrams included in the presentation?","Yes — all icons, charts, diagrams and shapes are fully editable vectors included inside the file."],
+  ["What is your refund or replacement policy?","Since files are digital, we don't offer cash refunds after download — but if a file is broken or not as described, we'll replace or fix it free of cost."],
+  ["Which payment methods do you accept?","UPI (Google Pay, PhonePe, Paytm), debit/credit cards and net banking."]
+];
+
+const FEATS = [
+  ["i-clock","#ff8a00","1-Hour Delivery","Your PPT ready in just 60 minutes."],
+  ["i-palette","#a78bfa","Pro Designs","Modern, clean and eye-catching slides."],
+  ["i-zap","#f59e0b","Low Prices","Student-friendly, budget rates."],
+  ["i-sliders","#ec4899","100% Editable","Change text, colours and images easily."],
+  ["i-globe","#22d3ee","Hindi & English","Content in the language you need."],
+  ["i-book","#34d399","Any Subject & Class","Class 1–12, college and business."],
+  ["i-sparkle","#c084fc","Custom Made","Built to your topic, syllabus or brief."],
+  ["i-headset","#22c55e","WhatsApp Support","Quick replies from real people."],
+  ["i-shield","#60a5fa","Secure Payment","UPI, cards and net banking."],
+  ["i-cloud","#38bdf8","Instant Download","Get your file right after payment."]
+];
+
+/* =========================================================
+   APP LOGIC (isko chhedne ki zarurat nahi)
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const inr = n => "₹" + n.toLocaleString("en-IN");
+const catName = id => CATEGORIES.find(c => c.id === id)?.name || "";
+const waURL = msg => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
+const icon = (id, style="") => `<svg class="i" style="${style}"><use href="#${id}"/></svg>`;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let state = { cat:"all", q:"", sort:"best", shown:CONFIG.perPage, f:{} };
+let cart = [];
+try { cart = JSON.parse(localStorage.getItem("la_cart")) || []; } catch(e) {}
+
+/* contact info */
+function applySettings(){
+  document.querySelectorAll(".js-phone").forEach(e => e.textContent = CONFIG.phoneDisplay);
+  document.querySelectorAll(".js-email").forEach(e => e.textContent = CONFIG.email);
+  document.querySelectorAll(".js-mail").forEach(e => e.href = "mailto:" + CONFIG.email);
+}
+$("#year").textContent = new Date().getFullYear();
+document.addEventListener("click", e => {
+  const a = e.target.closest(".wa-link");
+  if (a) { e.preventDefault(); window.open(waURL(a.dataset.msg || "Hi Lakshay Agency!"), "_blank"); }
+});
+
+/* thumbnail generator (no images needed) */
+const cssUrl = u => `url("${String(u).replace(/["\\\n]/g,"")}")`;
+const imgLayer = p => p.thumb ? `linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.6)),${cssUrl(p.thumb)} center/cover no-repeat` : "";
+const darkBg = p => imgLayer(p) || `linear-gradient(135deg,${p.colors[0]},${p.colors[1]})`;
+const thumbBg = p => imgLayer(p) || (p.theme==="Light" ? `linear-gradient(135deg,#ffffff,#eef2ff 55%,${p.colors[1]}66)` : darkBg(p));
+const lightCls = p => p.thumb ? " has-img" : (p.theme==="Light" ? " light" : "");
+
+/* ---------- HERO SLIDER ---------- */
+const slider = $("#slider"), dots = $("#dots");
+let cur = 0, timer;
+/* Smart Board par: Pricing + Bulk offer — har 5 sec mein wipe ke saath badalta hai */
+const BOARD_SLIDES = [
+  `<div class="bs bs-price">
+     <div class="bs-head"><h3>PPT Design &amp; Pricing</h3><span class="bs-off"><b>15% OFF</b><small>on final payment · Limited time</small></span></div>
+     <ul class="bs-list">
+       <li style="--c:#f472b6"><span>🎬</span><b>Animated Slides</b><em>₹10<small>/slide</small></em></li>
+       <li style="--c:#facc15"><span>❓</span><b>Question Slides</b><em>₹2–₹3<small>/slide</small></em></li>
+       <li style="--c:#38bdf8"><span>📚</span><b>Theory Slides</b><em>₹3–₹5<small>/slide</small></em></li>
+       <li style="--c:#34d399"><span>📝</span><b>Theory + Questions <i>(Without Animation)</i></b><em>₹5<small>/slide</small></em></li>
+       <li style="--c:#c084fc"><span>🎞️</span><b>Theory + Questions <i>(With Animation)</i></b><em>₹10<small>/slide</small></em></li>
+     </ul>
+     <a class="bs-cta" href="order.html">🤝 Interested in Working Together? <u>Order Now →</u></a>
+   </div>`,
+  `<div class="bs bs-bulk">
+     <span class="bs-kicker">🎯 Bulk Orders</span>
+     <h3><span class="big">200+</span> Slides?</h3>
+     <p class="bs-neg">Bulk Pricing <b>Negotiable!</b></p>
+     <div class="bs-share">📩 Share your content &amp; design references to get started!</div>
+     <p class="bs-tag">✨ You provide the content. <b>We create the presentation.</b></p>
+     <div class="bs-deck" aria-hidden="true"><i></i><i></i><i></i></div>
+   </div>`
+];
+function buildHero(){
+  slider.querySelectorAll(".slide").forEach(x => x.remove()); dots.innerHTML = ""; cur = 0;
+  BOARD_SLIDES.forEach((html,i) => {
+    const s = document.createElement("div");
+    s.className = "slide bslide" + (i===0 ? " on" : "");
+    s.innerHTML = html;
+    slider.insertBefore(s, slider.querySelector(".screen-ui"));
+    const d = document.createElement("button"); d.setAttribute("aria-label","Slide "+(i+1));
+    if (i===0) d.className="on"; d.onclick = () => go(i); dots.appendChild(d);
+  });
+  clearInterval(timer); timer = setInterval(() => go(cur+1), 5000);
+}
+function go(i){
+  const ss = slider.querySelectorAll(".slide"), dd = dots.querySelectorAll("button");
+  if (!ss.length) return;
+  ss.forEach(x => x.classList.remove("prev"));
+  ss[cur].classList.remove("on"); ss[cur].classList.add("prev"); dd[cur].classList.remove("on");
+  cur = (i + ss.length) % ss.length;
+  ss[cur].classList.add("on"); dd[cur].classList.add("on");
+  clearInterval(timer); timer = setInterval(() => go(cur+1), 5000);
+}
+$(".s-prev").onclick = e => { e.stopPropagation(); go(cur-1); };
+$(".s-next").onclick = e => { e.stopPropagation(); go(cur+1); };
+
+/* ---------- CATEGORIES ---------- */
+function renderCats(){ $("#cats").innerHTML = CATEGORIES.map(c => {
+  const n = PRODUCTS.filter(p => p.cat===c.id).length;
+  return `<button class="cat" style="--cg:${c.grad}" data-cat="${c.id}">
+    <span class="cat-top"><span>${n ? n+" Deck"+(n>1?"s":"") : "Coming Soon"}</span><span class="arrow">${icon("i-arrow-ur","width:14px")}</span></span>
+    <h3>${c.name}</h3></button>`;
+}).join(""); }
+$("#footCats").innerHTML = CATEGORIES.map(c => `<li><a href="#shop" data-cat="${c.id}">${c.name}</a></li>`).join("");
+document.addEventListener("click", e => {
+  const c = e.target.closest("[data-cat]");
+  if (!c || c.classList.contains("chip")) return;
+  setCat(c.dataset.cat); $("#shop").scrollIntoView();
+});
+
+/* ---------- FILTER CHIPS ---------- */
+function renderChips(){
+  const list = [{id:"all",name:`All Decks (${PRODUCTS.length})`}, ...CATEGORIES];
+  $("#chips").innerHTML = list.map(c => `<button class="chip ${state.cat===c.id?"on":""}" data-cat="${c.id}">${c.name}</button>`).join("");
+  $("#chips").querySelectorAll(".chip").forEach(b => b.onclick = () => setCat(b.dataset.cat));
+}
+function setCat(c){ state.cat=c; state.shown=CONFIG.perPage; renderChips(); renderGrid(); }
+
+/* ---------- FILTERS (naya filter yahan add karo) ---------- */
+const arr = v => Array.isArray(v) ? v : [v];
+const SUBJECTS = ["Hindi","English","Urdu","Sanskrit",
+  "Mathematics","Science","Physics","Chemistry","Biology","EVS (Environmental Studies)","Environmental Science",
+  "Social Science","History","Geography","Political Science / Civics","Economics","Sociology","Psychology","Philosophy",
+  "Computer Science","Information Technology","Artificial Intelligence","Engineering","Medical / Nursing","Pharmacy","Agriculture",
+  "Accountancy","Business Studies","Business","Finance","Marketing","Management","Law",
+  "General Knowledge","Moral Science / Value Education","Art & Craft","Music","Physical Education","Home Science","Yoga","Religious Studies"];
+const SLIDE_BUCKETS = [[10,"Up to 10 slides"],[30,"11 – 30 slides"],[50,"31 – 50 slides"],[100,"51 – 100 slides"],[500,"101 – 500 slides"],[1000,"501 – 1000 slides"],[Infinity,"1000+ slides"]];
+const FILTERS = [
+  { key:"lang",    label:"Language",     options:["Hindi","English","Hindi & English (Both)"],
+    get:p=>p.lang==="Both" ? ["Hindi & English (Both)","Hindi","English"] : p.lang },
+  { key:"theme",   label:"Theme",        options:["Dark","Light"], get:p=>p.theme, fmt:v=>v==="Dark"?"🌙 Dark":v==="Light"?"☀️ Light":v },
+  { key:"board",   label:"Board / Exam", options:["CBSE","ICSE","State Board","University","Competitive Exams","Corporate"], get:p=>p.board },
+  { key:"level",   label:"Class / Level",options:Array.from({length:12},(_,i)=>"Class "+(i+1)), get:p=>p.level },
+  { key:"subject", label:"Subject",      options:SUBJECTS, get:p=>p.subject },
+  { key:"style",   label:"Style",        options:["Animated","Without Animation"], get:p=>p.anim?"Animated":"Without Animation" },
+  { key:"slidesR", label:"Slide Count",  options:SLIDE_BUCKETS.map(b=>b[1]), get:p=>SLIDE_BUCKETS.find(b=>p.slides<=b[0])[1] },
+  { key:"badge",   label:"Tag",          options:["Best Seller","New Arrival","Featured"], get:p=>({best:"Best Seller",new:"New Arrival",feat:"Featured"})[p.badge]||"None" }
+];
+// har filter ki value; jo list mein nahi wo "Other"
+const fvals = (f,p) => [...new Set(arr(f.get(p)).map(v => f.options.includes(v) ? v : "Other"))];
+const levelTxt = p => { const l = arr(p.level); if (l[0]==="Other") return ""; return l.length>1 ? l[0]+"–"+l[l.length-1].replace("Class ","") : l[0]; };
+const langTxt = p => p.lang==="Both" ? "Hindi + English" : p.lang;
+const matchF = (p, skip) => FILTERS.every(f => f.key===skip || !state.f[f.key] || fvals(f,p).includes(state.f[f.key]));
+const matchQ = p => {
+  const q = state.q.trim().toLowerCase(); if (!q) return true;
+  const hay = [p.title,p.desc,catName(p.cat),...FILTERS.flatMap(f=>arr(f.get(p)))].join(" ").toLowerCase();
+  return q.split(/\s+/).every(w => hay.includes(w));
+};
+const matchC = p => state.cat==="all" || p.cat===state.cat;
+function renderFilters(){
+  $("#filters").innerHTML = FILTERS.map(f => {
+    const base = PRODUCTS.filter(p => matchC(p) && matchQ(p) && matchF(p, f.key));
+    const vals = [...f.options, "Other"];
+    const cur = state.f[f.key] || "";
+    return `<label class="fsel ${cur?"on":""}"><span>${f.label}</span><select data-f="${f.key}">
+      <option value="">All</option>${vals.map(v => { const n = base.filter(p=>fvals(f,p).includes(v)).length;
+        return `<option value="${esc(v)}" ${v===cur?"selected":""} >${esc(f.fmt?f.fmt(v):v)} (${n})</option>`; }).join("")}
+    </select></label>`;
+  }).join("") + `<label class="fsel"><span>Sort By</span><select id="sort">
+      ${[["best","Best Sellers First"],["low","Price: Low to High"],["high","Price: High to Low"],["slides","Most Slides"],["new","Newest"]].map(([v,t])=>`<option value="${v}" ${state.sort===v?"selected":""}>${t}</option>`).join("")}
+    </select></label>`;
+  $("#filters").querySelectorAll("select[data-f]").forEach(sel => sel.onchange = () => setFilter(sel.dataset.f, sel.value));
+  $("#sort").onchange = e => { state.sort = e.target.value; renderGrid(); };
+    const n = Object.values(state.f).filter(Boolean).length + (state.cat!=="all"?1:0);
+  $("#fCount").textContent = n ? `(${n})` : "";
+  $("#clearFilters").hidden = !(n || state.q);
+}
+function setFilter(k, v){ state.f[k] = v; state.shown = CONFIG.perPage; renderGrid(); }
+$("#filterToggle").onclick = () => $("#filters").classList.toggle("open");
+$("#clearFilters").onclick = () => { state.f = {}; state.cat = "all"; onSearch(""); renderChips(); };
+
+/* ---------- PRODUCT GRID ---------- */
+function filtered(){
+  let list = PRODUCTS.filter(p => matchC(p) && matchQ(p) && matchF(p));
+  const sorters = { best:(a,b)=>b.sales-a.sales, low:(a,b)=>a.price-b.price, high:(a,b)=>b.price-a.price, slides:(a,b)=>b.slides-a.slides, new:(a,b)=>b.added-a.added };
+  return list.sort(sorters[state.sort]);
+}
+const ribbon = b => b==="best" ? `<span class="ribbon r-best">BEST SELLER</span>` : b==="new" ? `<span class="ribbon r-new">NEW</span>` : b==="feat" ? `<span class="ribbon r-feat">FEATURED</span>` : "";
+
+function renderGrid(){
+  const list = filtered(), show = list.slice(0, state.shown);
+  renderFilters();
+  $("#grid").innerHTML = show.length ? show.map(p => {
+    const off = Math.round((1 - p.price/p.mrp)*100), inCart = cart.includes(p.id);
+    return `<article class="card">
+      <div class="thumb${lightCls(p)}" style="background:${thumbBg(p)};--accent:${p.colors[1]}">
+        ${ribbon(p.badge)}<span class="t-shape"></span>
+        <span class="t-title">${esc(p.title)}</span>
+        <span class="t-lines"><i style="width:60%"></i><i style="width:40%"></i></span>
+        <span class="slides-badge">${icon("i-layers")}${p.slides} Slides</span>
+      </div>
+      <div class="c-body">
+        <div class="c-meta"><span class="c-cat">${catName(p.cat)}</span><span>${p.theme==="Light"?"☀️ Light":"🌙 Dark"}</span><span>PPTX</span></div>
+        <h4>${esc(p.title)}</h4><p>${esc(p.desc)}</p>
+        <div class="c-tags">${[["lang",langTxt(p),p.lang==="Both"?"Hindi & English (Both)":fvals(FILTERS[0],p)[0]],["level",levelTxt(p),arr(p.level)[0]],["subject",p.subject,p.subject],["style",p.anim?"Animated":"",p.anim?"Animated":""]].filter(t=>t[1]).map(([k,t,v])=>`<button onclick="setFilter('${k}','${esc(v)}')" title="Filter: ${esc(v)}">${esc(t)}</button>`).join("")}</div>
+        <div class="price"><b>${inr(p.price)}</b><s>${inr(p.mrp)}</s><em>Save ${off}%</em></div>
+        <div class="c-actions">
+          <button class="btn btn-ghost btn-sm" onclick="openPreview(${p.id})">${icon("i-eye","width:15px")}Preview</button>
+          <button class="btn btn-primary btn-sm" onclick="buyNow(${p.id})">${icon("i-bag","width:15px")}Buy Now</button>
+        </div>
+        <button class="add-cart ${inCart?"added":""}" onclick="toggleCart(${p.id})">${inCart?"✓ Added to Cart":"+ Add to Shopping Cart"}</button>
+      </div></article>`;
+  }).join("") : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>${PRODUCTS.length ? "No presentations found. Try a different search — or" : "New presentations are coming soon! Need one right now?"} <a href="#custom" class="js-custom" style="color:var(--cyan)">request a custom PPT</a>.</p></div>`;
+  const rem = list.length - show.length;
+  $("#loadMore").style.display = rem > 0 ? "" : "none";
+  $("#loadMore").innerHTML = `Load More Presentations <span style="color:var(--dim);font-size:.8rem">(${rem} remaining)</span>`;
+}
+$("#loadMore").onclick = () => { state.shown += CONFIG.perPage; renderGrid(); };
+function onSearch(v){ state.q=v; state.shown=CONFIG.perPage; if($("#gridSearch").value!==v)$("#gridSearch").value=v; if($("#topSearch").value!==v)$("#topSearch").value=v; renderGrid(); }
+$("#gridSearch").oninput = e => onSearch(e.target.value);
+$("#topSearch").oninput = e => onSearch(e.target.value);
+$("#topSearch").onkeydown = e => { if(e.key==="Enter") $("#shop").scrollIntoView(); };
+
+/* ---------- CART ---------- */
+function saveCart(){ try{ localStorage.setItem("la_cart", JSON.stringify(cart)); }catch(e){} renderCart(); renderGrid(); }
+function toggleCart(id){
+  if (cart.includes(id)) { cart = cart.filter(x=>x!==id); toast("Removed from cart"); }
+  else { cart.push(id); toast("✓ Added to cart"); }
+  saveCart();
+}
+function renderCart(){
+  const items = cart.map(id => PRODUCTS.find(p=>p.id===id)).filter(Boolean);
+  const cc = $("#cartCount"); cc.textContent = items.length; cc.dataset.n = items.length;
+  $("#cartBody").innerHTML = items.length ? items.map(p => `
+    <div class="ci"><span class="mini" style="background:${thumbBg(p)}"></span>
+      <div><b>${esc(p.title)}</b><small>${inr(p.price)}</small> <s style="color:var(--dim);font-size:.75rem">${inr(p.mrp)}</s></div>
+      <button onclick="toggleCart(${p.id})" aria-label="Remove">${icon("i-trash")}</button></div>`).join("")
+    : `<div class="empty" style="padding:40px 10px">${icon("i-bag","width:34px;height:34px;margin:0 auto 12px")}<p>Your cart is empty.</p></div>`;
+  $("#cartTotal").textContent = inr(items.reduce((s,p)=>s+p.price,0));
+  $("#checkout").disabled = !items.length; $("#checkout").style.opacity = items.length ? 1 : .5;
+}
+function openCart(o){ $("#drawer").classList.toggle("on",o); $("#overlay").classList.toggle("on",o); }
+$("#cartBtn").onclick = () => openCart(true);
+$("#closeCart").onclick = () => openCart(false);
+$("#overlay").onclick = () => { openCart(false); closeAllPopups(); };
+$("#checkout").onclick = () => {
+  const items = cart.map(id => PRODUCTS.find(p=>p.id===id)).filter(Boolean);
+  if (!items.length) return;
+  openCart(false); openPay(items.map(p=>p.id));
+};
+function buyNow(id){ closeModal(); openPay([id]); }
+
+/* ---------- PREVIEW MODAL ---------- */
+function openPreview(id){
+  const p = PRODUCTS.find(x=>x.id===id), off = Math.round((1-p.price/p.mrp)*100);
+  const angles = [135,200,45,300,90];
+  $("#modalContent").innerHTML = `
+    <div class="m-preview${lightCls(p)}" style="background:${thumbBg(p)}">
+      <span class="tag" style="position:absolute;top:7%;left:8%;font-size:.7rem;font-weight:700;letter-spacing:.12em;opacity:.7">${esc(catName(p.cat)).toUpperCase()}</span>
+      <h3>${esc(p.title)}</h3><p style="opacity:.8;margin-top:10px">${p.slides} Slides · Fully Editable</p></div>
+    <div class="m-thumbs">${angles.map(a=>`<div style="background:linear-gradient(${a}deg,${p.colors[0]},${p.colors[1]})"></div>`).join("")}</div>
+    <div class="m-info">
+      ${ribbon(p.badge).replace('class="ribbon','style="position:static;display:inline-block;margin-bottom:8px" class="ribbon')}
+      <h3 style="font-size:1.4rem">${esc(p.title)}</h3><p>${esc(p.desc)}</p>
+      <div class="m-specs"><span>${p.slides} Slides</span><span>${langTxt(p)}</span><span>${p.theme} Theme</span><span>${arr(p.board).join(", ")}</span><span>${levelTxt(p)||"Other"}</span><span>16:9 HD</span><span>PPTX</span><span>Google Slides ✓</span><span>Keynote ✓</span><span>Editable Icons & Charts</span></div>
+      <div class="m-buy">
+        <div class="price" style="border:0;margin:0;padding:0"><b>${inr(p.price)}</b><s>${inr(p.mrp)}</s><em style="margin-left:6px">Save ${off}%</em></div>
+        <div style="display:flex;gap:8px;margin-left:auto;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="toggleCart(${p.id});closeModal()">${cart.includes(p.id)?"Remove from Cart":"Add to Cart"}</button>
+          <button class="btn btn-primary btn-sm" onclick="buyNow(${p.id})">${icon("i-bag","width:15px")}Buy Now</button>
+        </div></div></div>`;
+  $("#modal").classList.add("on"); $("#overlay").classList.add("on");
+}
+function closeModal(){ $("#modal").classList.remove("on"); if(!$("#drawer").classList.contains("on")) $("#overlay").classList.remove("on"); }
+$("#closeModal").onclick = closeModal;
+$("#modal").onclick = e => { if (e.target.id==="modal") closeModal(); };
+document.addEventListener("keydown", e => { if (e.key==="Escape") { closeAllPopups(); openCart(false); } });
+
+/* ---------- FEATURES / STEPS / REVIEWS / FAQ ---------- */
+$("#feats").innerHTML = FEATS.map(([ic,c,t,d]) => `<div class="feat reveal" style="--fc:${c}"><div class="ficon">${icon(ic)}</div><h3>${t}</h3><p>${d}</p></div>`).join("");
+function renderReviews(){ $("#reviewList").innerHTML = REVIEWS.length ? REVIEWS.map(r => `
+  <div class="review"><div class="stars">${"★".repeat(r.stars||5)}</div>
+    <blockquote>"${esc(r.text)}"</blockquote>
+    <div class="reviewer"><span class="avatar">${esc(r.name[0])}</span><div><b>${esc(r.name)}</b><small>${esc(r.role||"")}</small>
+    ${r.deck?`<small style="display:block;color:#c084fc">Deck: ${esc(r.deck)}</small>`:""}</div></div></div>`).join("")
+  : `<div class="no-reviews" style="grid-column:1/-1">${icon("i-star","width:28px;height:28px;margin:0 auto 10px;color:var(--amber)")}<p>Bought a deck from us? Be the first to share your experience!</p><button class="btn btn-ghost btn-sm js-review" style="margin-top:14px">Write a Review</button></div>`; }
+$("#faqList").innerHTML = FAQS.map(([q,a],i) => `<div class="faq-item ${i===0?"open":""}"><button class="faq-q">${q}${icon("i-down")}</button><div class="faq-a"><p>${a}</p></div></div>`).join("");
+document.querySelectorAll(".faq-item").forEach(item => {
+  const a = item.querySelector(".faq-a");
+  if (item.classList.contains("open")) a.style.maxHeight = a.scrollHeight + "px";
+  item.querySelector(".faq-q").onclick = () => {
+    const open = item.classList.contains("open");
+    document.querySelectorAll(".faq-item").forEach(x => { x.classList.remove("open"); x.querySelector(".faq-a").style.maxHeight = null; });
+    if (!open) { item.classList.add("open"); a.style.maxHeight = a.scrollHeight + "px"; }
+  };
+});
+
+/* ---------- CONTACT FORM ---------- */
+function setSubject(s){ $("#fSubject").value = s; }
+function formData(){
+  const d = { name:$("#fName").value.trim(), email:$("#fEmail").value.trim(), phone:$("#fPhone").value.trim(), subject:$("#fSubject").value, msg:$("#fMsg").value.trim() };
+  if (!d.name || !d.msg || !/^\S+@\S+\.\S+$/.test(d.email)) { toast("⚠ Please fill name, a valid email and message"); return null; }
+  return d;
+}
+$("#contactForm").onsubmit = async e => {
+  e.preventDefault(); const d = formData(); if (!d) return;
+  if (API) {
+    const btn = e.submitter || $("#contactForm button[type=submit]"); btn.disabled = true;
+    const r = await postForm("api/contact.php", { name:d.name, email:d.email, phone:d.phone, subject:d.subject, message:d.msg, website:$("#contactForm .hp").value });
+    btn.disabled = false;
+    if (r.ok) { $("#contactForm").reset(); toast("✓ Message sent! We'll reply soon."); return; }
+    if (r.error && !r.network) { toast("⚠ " + r.error); return; }
+  }
+  location.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(d.subject+" — "+d.name)}&body=${encodeURIComponent(`${d.msg}\n\nName: ${d.name}\nEmail: ${d.email}\nPhone: ${d.phone}`)}`;
+  toast("✓ Opening your email app…");
+};
+$("#formWa").onclick = () => {
+  const d = formData(); if (!d) return;
+  window.open(waURL(`*${d.subject}*\n${d.msg}\n\nName: ${d.name}\nEmail: ${d.email}${d.phone?"\nPhone: "+d.phone:""}`), "_blank");
+};
+
+/* ---------- MISC ---------- */
+let tt; function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("on"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("on"),2200); }
+$("#menuBtn").onclick = () => $("#navLinks").classList.toggle("open");
+document.querySelectorAll("#navLinks a").forEach(a => a.onclick = () => $("#navLinks").classList.remove("open"));
+// reveal on scroll
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold:.12});
+document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+
+/* ---------- CUSTOM PPT FORM ---------- */
+const FILE_RULES = { ext:["pdf","doc","docx","xls","xlsx","csv","jpg","jpeg","png","webp","gif"], maxMB:10, maxFiles:5 };
+let cfFiles = [];
+function openForm(){
+  closeModal(); openCart(false); $("#navLinks").classList.remove("open");
+  $("#cfMain").hidden = false; $("#cfDone").hidden = true;
+  $("#formModal").classList.add("on"); $("#overlay").classList.add("on");
+  setTimeout(() => $("#cfName").focus(), 300);
+}
+function closeForm(){ $("#formModal").classList.remove("on"); if(!$("#drawer").classList.contains("on") && !$("#modal").classList.contains("on")) $("#overlay").classList.remove("on"); }
+$("#closeForm").onclick = closeForm;
+$("#formModal").onclick = e => { if (e.target.id==="formModal") closeForm(); };
+document.addEventListener("click", e => { const t = e.target.closest(".js-custom"); if (t) { e.preventDefault(); openForm(); } });
+
+const fmtSize = b => b < 1048576 ? (b/1024).toFixed(0)+" KB" : (b/1048576).toFixed(1)+" MB";
+function addFiles(list){
+  const errs = [];
+  [...list].forEach(f => {
+    const ext = (f.name.split(".").pop()||"").toLowerCase();
+    if (/^(video|audio)\//.test(f.type) || !FILE_RULES.ext.includes(ext)) errs.push(`"${f.name}" — only PDF, Word, Excel & image files allowed`);
+    else if (f.size > FILE_RULES.maxMB*1048576) errs.push(`"${f.name}" — file is larger than ${FILE_RULES.maxMB} MB`);
+    else if (cfFiles.length >= FILE_RULES.maxFiles) errs.push(`Maximum ${FILE_RULES.maxFiles} files allowed`);
+    else if (!cfFiles.some(x => x.name===f.name && x.size===f.size)) cfFiles.push(f);
+  });
+  $("#fileErr").innerHTML = [...new Set(errs)].map(esc).join("<br>");
+  renderFiles();
+}
+function renderFiles(){
+  $("#fileList").innerHTML = cfFiles.map((f,i) => `<div class="fitem">${icon("i-file")}<span>${esc(f.name)}</span><small>${fmtSize(f.size)}</small>
+    <button type="button" onclick="removeFile(${i})" aria-label="Remove file">${icon("i-x","width:16px")}</button></div>`).join("");
+}
+function removeFile(i){ cfFiles.splice(i,1); renderFiles(); $("#fileErr").textContent=""; }
+$("#cfFiles").onchange = e => { addFiles(e.target.files); e.target.value = ""; };
+const drop = $("#drop");
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("drag"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("drag"); }));
+drop.addEventListener("drop", e => addFiles(e.dataTransfer.files));
+$("#cfPhone").oninput = e => { e.target.value = e.target.value.replace(/[^\d+ ]/g,""); };
+["cfName","cfPhone","cfTopic"].forEach(id => $("#"+id).addEventListener("input", e => e.target.closest(".cf-q").classList.remove("bad")));
+
+$("#cfForm").onsubmit = async e => {
+  e.preventDefault();
+  const d = {
+    name: $("#cfName").value.trim(),
+    phone: $("#cfPhone").value.replace(/\D/g,"").replace(/^(91|0)(?=\d{10}$)/,""),
+    topic: $("#cfTopic").value.trim(),
+    slides: document.querySelector("input[name=slides]:checked")?.value || "",
+    lang: document.querySelector("input[name=clang]:checked")?.value || "",
+    req: $("#cfReq").value.trim()
+  };
+  const bad = [["q-name", d.name.length < 2], ["q-phone", !/^[6-9]\d{9}$/.test(d.phone)], ["q-topic", !d.topic]];
+  bad.forEach(([id,b]) => $("#"+id).classList.toggle("bad", b));
+  const first = bad.find(x => x[1]); if (first) { $("#"+first[0]+" input").focus(); return; }
+
+  const btn = $("#cfSubmit"); btn.disabled = true; btn.innerHTML = "Sending…";
+  let sentOnline = false;
+  if (API) {
+    const r = await postForm("api/request.php", { name:d.name, phone:d.phone, topic:d.topic, slides:d.slides, language:d.lang, requirements:d.req, website:$("#cfForm .hp").value }, cfFiles.map(f => ["files[]", f]));
+    if (r.ok) sentOnline = true;
+    else { btn.disabled = false; btn.innerHTML = `${icon("i-send")} Submit Request`; $("#fileErr").textContent = r.error; toast("⚠ " + r.error); return; }
+  } else if (CONFIG.formEndpoint) {
+    try {
+      const fd = new FormData();
+      fd.append("Form", "Custom PPT Request"); fd.append("Full Name", d.name); fd.append("WhatsApp", "+91 "+d.phone);
+      fd.append("Subject / Topic", d.topic); fd.append("Number of Slides", d.slides); fd.append("Content Language", d.lang);
+      fd.append("Additional Requirements", d.req || "-");
+      cfFiles.forEach(f => fd.append("attachment", f, f.name));
+      const r = await fetch(CONFIG.formEndpoint, { method:"POST", body:fd, headers:{ Accept:"application/json" } });
+      sentOnline = r.ok;
+    } catch(err) { sentOnline = false; }
+  }
+  if (!sentOnline) {
+    // WhatsApp ab apne aap nahi khulta — server na mile toh sirf error dikhata hai
+    btn.disabled = false; btn.innerHTML = `${icon("i-send")} Submit Request`;
+    $("#fileErr").textContent = "Your request could not be sent right now. Please try again in a moment.";
+    toast("⚠ Could not send request. Please try again.");
+    return;
+  }
+  $("#cfMain").hidden = true; $("#cfDone").hidden = false;
+  $("#cfDone").innerHTML = `<div class="tick">${icon("i-check")}</div>
+    <h3>Request Submitted! 🎉</h3>
+    <p>${`Thank you, ${esc(d.name)}! We've received your request${cfFiles.length?` and ${cfFiles.length} file(s)`:""}. Our team will contact you on WhatsApp shortly.`}</p>
+    <button class="btn btn-primary" onclick="closeForm()">Done</button>`;
+  $("#cfForm").reset(); cfFiles = []; renderFiles(); $("#fileErr").textContent = "";
+  btn.disabled = false; btn.innerHTML = `${icon("i-send")} Submit Request`;
+};
+
+// ✨ mouse light + card spotlight
+const gc = $("#glowCursor");
+addEventListener("pointermove", e => {
+  if (e.pointerType !== "mouse") return;
+  document.body.classList.add("has-mouse");
+  gc.style.transform = `translate(${e.clientX}px,${e.clientY}px)`;
+  const c = e.target.closest && e.target.closest(".card");
+  if (c) { const r = c.getBoundingClientRect(); c.style.setProperty("--mx", (e.clientX-r.left)+"px"); c.style.setProperty("--my", (e.clientY-r.top)+"px"); }
+}, {passive:true});
+document.addEventListener("mouseleave", () => document.body.classList.remove("has-mouse"));
+
+/* ---------- SERVER HELPERS ---------- */
+async function postForm(url, fields, files = []){
+  const fd = new FormData();
+  Object.entries(fields).forEach(([k,v]) => fd.append(k, v ?? ""));
+  files.forEach(([k,f]) => fd.append(k, f, f.name));
+  try {
+    const r = await fetch(url, { method:"POST", body:fd, headers:{ Accept:"application/json" } });
+    const j = await r.json().catch(() => ({}));
+    return r.ok && j.ok ? j : { ok:false, error: j.error || "Something went wrong. Please try again." };
+  } catch(err) { return { ok:false, network:true, error:"Network error. Please check your internet." }; }
+}
+function closeAllPopups(){ closeModal(); closeForm(); closePay(); closeReview(); hidePopup("themeModal"); hidePopup("priceModal"); }
+document.addEventListener("click", e => { if (e.target.closest(".js-pricing")) { e.preventDefault(); $("#navLinks").classList.remove("open"); showPopup("priceModal"); } });
+$("#priceModal").addEventListener("click", e => { if (e.target.id==="priceModal") hidePopup("priceModal"); });
+function showPopup(id){ $("#"+id).classList.add("on"); $("#overlay").classList.add("on"); }
+function hidePopup(id){ $("#"+id).classList.remove("on"); if (!document.querySelector(".modal.on") && !$("#drawer").classList.contains("on")) $("#overlay").classList.remove("on"); }
+["payModal","reviewModal"].forEach(id => $("#"+id).addEventListener("click", e => { if (e.target.id===id) hidePopup(id); }));
+const cleanPhone = v => v.replace(/\D/g,"").replace(/^(91|0)(?=\d{10}$)/,"");
+["payName","payEmail","payPhone","rvName","rvText"].forEach(id => $("#"+id).addEventListener("input", e => e.target.closest(".cf-q").classList.remove("bad")));
+
+/* ---------- CHECKOUT + RAZORPAY ---------- */
+let payIds = [];
+function openPay(ids){
+  payIds = ids.filter(id => PRODUCTS.some(p => p.id===id));
+  if (!payIds.length) return;
+  const items = payIds.map(id => PRODUCTS.find(p => p.id===id)), total = items.reduce((s,p)=>s+p.price,0);
+  $("#payItems").innerHTML = items.map(p => `<div class="pi"><span class="mini" style="background:${thumbBg(p)}"></span><b>${esc(p.title)}</b><span>${inr(p.price)}</span></div>`).join("")
+    + `<div class="tot"><span>Total</span><b>${inr(total)}</b></div>`;
+  $("#paySubmit").innerHTML = `${icon("i-card")} Pay ${inr(total)} Securely`;
+  $("#payMain").hidden = false; $("#payDone").hidden = true;
+  try { const saved = JSON.parse(localStorage.getItem("la_buyer")||"{}"); ["payName","payEmail","payPhone"].forEach(k => { if (saved[k] && !$("#"+k).value) $("#"+k).value = saved[k]; }); } catch(e){}
+  showPopup("payModal"); setTimeout(() => $("#payName").focus(), 300);
+}
+function closePay(){ hidePopup("payModal"); }
+function loadRazorpay(){
+  return new Promise((ok, no) => {
+    if (window.Razorpay) return ok();
+    const sc = document.createElement("script"); sc.src = "https://checkout.razorpay.com/v1/checkout.js";
+    sc.onload = ok; sc.onerror = () => no(new Error("Payment page load nahi hua. Internet check karein.")); document.head.appendChild(sc);
+  });
+}
+$("#payPhone").oninput = e => { e.target.value = e.target.value.replace(/[^\d+ ]/g,""); };
+$("#payForm").onsubmit = async e => {
+  e.preventDefault();
+  const d = { name:$("#payName").value.trim(), email:$("#payEmail").value.trim(), phone:cleanPhone($("#payPhone").value) };
+  const bad = [["p-name", d.name.length<2], ["p-email", !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)], ["p-phone", !/^[6-9]\d{9}$/.test(d.phone)]];
+  bad.forEach(([id,b]) => $("#"+id).classList.toggle("bad", b));
+  const first = bad.find(x => x[1]); if (first) { $("#"+first[0]+" input").focus(); return; }
+  if (!(API && SETTINGS.payments)) { toast("⚠ Online payment is not available right now. Please try again later."); return; }
+  try { localStorage.setItem("la_buyer", JSON.stringify({ payName:d.name, payEmail:d.email, payPhone:$("#payPhone").value })); } catch(e){}
+  const btn = $("#paySubmit"), label = btn.innerHTML; btn.disabled = true; btn.innerHTML = "Please wait…";
+  const reset = () => { btn.disabled = false; btn.innerHTML = label; };
+  const o = await postForm("api/order.php", { ...d, items: JSON.stringify(payIds), website: $("#payForm .hp").value });
+  if (!o.ok) { reset(); toast("⚠ " + o.error); return; }
+  try { await loadRazorpay(); } catch(err) { reset(); toast("⚠ " + err.message); return; }
+  const rzp = new Razorpay({
+    key: o.key, amount: o.amount, currency: "INR", name: o.name, description: payIds.length > 1 ? `${payIds.length} PPTs` : PRODUCTS.find(p=>p.id===payIds[0]).title,
+    order_id: o.rzpOrderId, prefill: o.prefill, theme: { color: "#8b2cff" },
+    modal: { ondismiss: reset },
+    handler: async resp => {
+      btn.innerHTML = "Verifying payment…";
+      const v = await postForm("api/verify.php", resp);
+      reset();
+      if (!v.ok) { toast("⚠ " + v.error); return; }
+      cart = cart.filter(id => !payIds.includes(id)); saveCart();
+      $("#payMain").hidden = true; $("#payDone").hidden = false;
+      $("#payDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>Payment Successful! 🎉</h3>
+        <p>Thank you, ${esc(d.name)}! Order #${v.orderId}. Download your PPT below — links are also sent to <b>${esc(v.email)}</b>.</p>
+        <div class="dl-list">${v.links.map(l => `<a href="${esc(l.url)}">${esc(l.title)} <span style="color:#4ade80">⬇ Download</span></a>`).join("")}</div>
+        <button class="btn btn-ghost" onclick="closePay()">Close</button>`;
+    }
+  });
+  rzp.on("payment.failed", r => { reset(); toast("⚠ Payment failed: " + (r.error?.description || "please try again")); });
+  rzp.open();
+};
+
+/* ---------- REVIEW FORM ---------- */
+function openReview(){
+  $("#rvDeck").innerHTML = `<option value="">— Select —</option>` + PRODUCTS.map(p => `<option>${esc(p.title)}</option>`).join("") + `<option>Custom PPT</option>`;
+  $("#rvMain").hidden = false; $("#rvDone").hidden = true; showPopup("reviewModal"); setTimeout(() => $("#rvName").focus(), 300);
+}
+function closeReview(){ hidePopup("reviewModal"); }
+document.addEventListener("click", e => { if (e.target.closest(".js-review")) { e.preventDefault(); openReview(); } });
+$("#rvForm").onsubmit = async e => {
+  e.preventDefault();
+  const d = { name:$("#rvName").value.trim(), role:$("#rvRole").value.trim(), deck:$("#rvDeck").value, stars:document.querySelector("input[name=stars]:checked")?.value || 5, text:$("#rvText").value.trim() };
+  const bad = [["r-name", d.name.length<2], ["r-text", d.text.length<10]];
+  bad.forEach(([id,b]) => $("#"+id).classList.toggle("bad", b));
+  const first = bad.find(x => x[1]); if (first) { $("#"+first[0]+" input, #"+first[0]+" textarea").focus(); return; }
+  let online = false;
+  if (API) {
+    const btn = $("#rvSubmit"); btn.disabled = true;
+    const r = await postForm("api/review.php", { ...d, website:$("#rvForm .hp").value });
+    btn.disabled = false;
+    if (r.ok) online = true; else if (!r.network) { toast("⚠ " + r.error); return; }
+  }
+  if (!online) window.open(waURL(`⭐ ${"★".repeat(d.stars)} Review\n\n"${d.text}"\n\n— ${d.name}${d.role?", "+d.role:""}${d.deck?"\nDeck: "+d.deck:""}`), "_blank");
+  $("#rvForm").reset(); $("#rvMain").hidden = true; $("#rvDone").hidden = false;
+  $("#rvDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>Thank you, ${esc(d.name)}! 💜</h3>
+    <p>${online ? "Your review has been received. It will appear on the website after a quick check." : "WhatsApp has opened with your review — just press Send."}</p>
+    <button class="btn btn-primary" onclick="closeReview()">Done</button>`;
+};
+
+
+/* ---------- PPT THEMES ---------- */
+// Live website par themes admin panel → "Themes" se aate hain. Ye sample designs sirf tab dikhte hain jab server na ho.
+let THEMES = [];
+const TH_FILTERS = {
+  tone: [["Dark","🌙 Dark"],["White","☀️ White"]],
+  type: [["Questions","Questions"],["Theory","Theory"],["Theory + Questions","Theory + Q"],["Screenshot","Screenshot"]],
+  lang: [["Hindi","हिंदी"],["English","English"],["Both","हिंदी + Eng"]]
+};
+const thState = { tone:"", type:"", lang:"", shown:12 };
+// Aapke apne PPT samples (bina server ke preview ke liye). Live website par ye admin panel se aate hain.
+const SAMPLE_THEMES = [
+  ["black-bilingual-questions","Black Bilingual Questions","Dark","Questions","Both",1],
+  ["red-flash-concept","Red Flash Concept","Dark","Theory","English",1],
+  ["navy-classroom","Navy Classroom","Dark","Theory + Questions","English",2],
+  ["ocean-blue-maths","Ocean Blue Maths","Dark","Theory + Questions","Both",4],
+  ["royal-blue-science","Royal Blue Science","Dark","Theory + Questions","English",4],
+  ["blue-red-gradient","Blue & Red Gradient","Dark","Theory + Questions","Both",4],
+  ["orange-corporate-training","Orange Corporate Training","White","Theory","English",4],
+  ["green-chalkboard-biology","Green Chalkboard Biology","Dark","Theory","English",3],
+  ["dark-bilingual-screenshot","Dark Bilingual Screenshot","Dark","Screenshot","Both",4],
+  ["purple-grammar","Purple Grammar","Dark","Theory","English",2],
+  ["kids-grammar-bright","Kids Grammar Bright","White","Theory","English",5],
+  ["kids-grammar-purple","Kids Grammar Purple","Dark","Theory","English",4],
+  ["hindi-marathon-pyq","Hindi Marathon PYQ","Dark","Theory + Questions","Hindi",4],
+  ["teal-practice-questions","Teal Practice Questions","Dark","Theory + Questions","Both",2],
+  ["light-paper-science","Light Paper Science","White","Theory","Hindi",4],
+  ["mission-navodaya-mat","Mission Navodaya MAT","Dark","Questions","Both",3],
+  ["dark-chalk-physics","Dark Chalk Physics","Dark","Theory + Questions","English",4],
+  ["blackboard-theory-quiz","Blackboard Theory & Quiz","Dark","Theory + Questions","English",2],
+  ["formula-board-maths","Formula Board Maths","Dark","Theory","English",4]
+].map(([slug,name,tone,type,lang,n],i) => {
+  const slides = Array.from({length:n},(_,k)=>`uploads/themes/samples/${slug}-${k+1}.webp`);
+  return { id:"s"+(i+1), name, tone, type, lang, img:slides[0], slides };
+});
+const thLangs = t => [t.lang];
+const thMatch = (t, skip) => (skip==="tone" || !thState.tone || t.tone===thState.tone) && (skip==="type" || !thState.type || t.type===thState.type) && (skip==="lang" || !thState.lang || thLangs(t).includes(thState.lang));
+const thPic = (t, k = 0) => `<img src="${esc((t.slides && t.slides[k]) || t.img)}" alt="${esc(t.name)} — ${esc(t.type)} slide ${k+1}" loading="lazy">`;
+const langLabel = l => l === "Both" ? "Hindi + English" : l;
+function renderThemeChips(){
+  document.querySelectorAll(".th-chips").forEach(box => {
+    const g = box.dataset.g, base = THEMES.filter(t => thMatch(t, g));
+    const n = v => base.filter(t => g==="lang" ? thLangs(t).includes(v) : t[g]===v).length;
+    box.innerHTML = `<button class="${!thState[g]?"on":""}" data-v="">All <small>${base.length}</small></button>` +
+      TH_FILTERS[g].map(([v,l]) => `<button class="${thState[g]===v?"on":""}" data-v="${v}">${l} <small>${n(v)}</small></button>`).join("");
+    box.querySelectorAll("button").forEach(b => b.onclick = () => { thState[g] = b.dataset.v; thState.shown = 12; renderThemes(); });
+  });
+}
+let thList = [];
+/* Card par slides apne aap swipe hoti hain */
+function cardSlides(t){
+  const sl = t.slides && t.slides.length ? t.slides : [t.img];
+  if (sl.length < 2) return thPic(t);
+  const imgs = [...sl, sl[0]].map((u,k) => `<img src="${esc(u)}" alt="${esc(t.name)} slide ${k % sl.length + 1}" ${k ? 'loading="lazy"' : ""}>`).join("");
+  return `<div class="th-track" data-n="${sl.length}" data-k="0">${imgs}</div>
+    <div class="th-dots">${sl.map((_,k)=>`<i class="${k?"":"on"}"></i>`).join("")}</div>`;
+}
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let swipeTick = 0;
+function swipeCard(track){
+  const n = +track.dataset.n; let k = +track.dataset.k + 1;
+  track.style.transition = ""; track.style.transform = `translateX(-${k*100}%)`; track.dataset.k = k;
+  const dots = track.parentNode.querySelectorAll(".th-dots i");
+  dots.forEach((d,j) => d.classList.toggle("on", j === k % n));
+  if (k === n) setTimeout(() => { track.style.transition = "none"; track.style.transform = "translateX(0)"; track.dataset.k = 0; }, 750);
+}
+if (!reduceMotion) setInterval(() => {
+  if (document.hidden || $("#themeModal").classList.contains("on")) return;
+  swipeTick++;
+  document.querySelectorAll("#thGrid .th-track").forEach((tr,i) => {
+    if ((swipeTick + i) % 3 !== 0) return;              // har card ~3 sec mein, alag-alag time par
+    if (tr.closest(".th-card").matches(":hover")) return;  // mouse rakhne par ruk jaata hai
+    const r = tr.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
+    swipeCard(tr);
+  });
+}, 1000);
+
+function renderThemes(){
+  renderThemeChips();
+  thList = THEMES.filter(t => thMatch(t));
+  const show = thList.slice(0, thState.shown);
+  $("#thGrid").innerHTML = show.length ? show.map((t,i) => `
+    <div class="th-card" role="button" tabindex="0" onclick="openTheme(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTheme(${i})}" aria-label="View ${esc(t.name)}">
+      <div class="th-pic">${cardSlides(t)}<span class="zoom">🔍 View Theme</span></div>
+      <div class="th-meta"><b>${esc(t.name)}</b><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span></div></div>
+      ${t.slides && t.slides.length > 1 ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${t.slides.length} slides</span>` : ""}
+    </div>`).join("")
+    : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>No theme matches these filters. Try another combination.</p></div>`;
+  const rem = thList.length - show.length;
+  $("#thMore").parentNode.style.display = rem > 0 ? "" : "none";
+  $("#thMore").innerHTML = `Show More Themes <span style="color:var(--dim);font-size:.8rem">(${rem} more)</span>`;
+}
+$("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
+let thIdx = 0, thSlide = 0;
+let lbTimer = null;
+function lbAuto(){
+  clearInterval(lbTimer);
+  const n = thList[thIdx] && (thList[thIdx].slides || []).length;
+  if (reduceMotion || !n || n < 2) { $("#thStage")?.classList.remove("playing"); return; }
+  $("#thStage").classList.remove("playing"); void $("#thStage").offsetWidth; $("#thStage").classList.add("playing");
+  lbTimer = setInterval(() => { if (!$("#themeModal").classList.contains("on")) return clearInterval(lbTimer); showSlide(thSlide + 1, true); }, 3500);
+}
+function showSlide(k, auto){
+  const t = thList[thIdx], n = (t.slides || [t.img]).length; thSlide = (k + n) % n;
+  $("#thView").innerHTML = thPic(t, thSlide).replace(' loading="lazy"','');
+  $("#thView").firstElementChild?.classList.add("fade-in");
+  if (!auto) lbAuto(); else { $("#thStage").classList.remove("playing"); void $("#thStage").offsetWidth; $("#thStage").classList.add("playing"); }
+  document.querySelectorAll("#thStrip button").forEach((b,j) => b.classList.toggle("on", j === thSlide));
+  $("#thPos").textContent = n > 1 ? `${thSlide+1} / ${n}` : "";
+  const on = document.querySelector("#thStrip button.on"); if (on) on.scrollIntoView({block:"nearest", inline:"nearest"});
+}
+function openTheme(i){
+  thIdx = (i + thList.length) % thList.length; const t = thList[thIdx], sl = t.slides || [t.img];
+  $("#thStrip").innerHTML = sl.length > 1 ? sl.map((u,j) => `<button onclick="showSlide(${j})" aria-label="Slide ${j+1}"><img src="${esc(u)}" alt="" loading="lazy"><span>${j+1}</span></button>`).join("") : "";
+  $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span></div>
+    <a class="btn btn-primary btn-sm" href="order.html?theme=${encodeURIComponent(t.name)}">${icon("i-sparkle","width:15px")} Order in This Theme</a>`;
+  showSlide(0); showPopup("themeModal");
+}
+function stepTheme(d){ openTheme(thIdx + d); }
+// arrows: pehle is theme ki slides, last slide ke baad agli theme
+function stepSlide(d){
+  const n = (thList[thIdx].slides || [1]).length, k = thSlide + d;
+  if (k >= 0 && k < n) showSlide(k); else openTheme(thIdx + d);
+}
+document.addEventListener("keydown", e => { if (!$("#themeModal").classList.contains("on")) return; if (e.key==="ArrowRight") stepSlide(1); if (e.key==="ArrowLeft") stepSlide(-1); });
+$("#themeModal").addEventListener("click", e => { if (e.target.id==="themeModal") hidePopup("themeModal"); });
+$("#thStage").addEventListener("mouseenter", () => clearInterval(lbTimer));
+$("#thStage").addEventListener("mouseleave", () => { if ($("#themeModal").classList.contains("on")) lbAuto(); });
+
+
+/* Custom section: sample slides ka stack ghoomta rehta hai */
+(function(){
+  const imgs = [...document.querySelectorAll("#cxStack img")]; if (!imgs.length) return;
+  let o = 0; const place = () => imgs.forEach((im,i) => im.className = "p" + ((i - o + imgs.length) % imgs.length));
+  place(); if (!reduceMotion) setInterval(() => { if (!document.hidden) { o = (o + 1) % imgs.length; place(); } }, 3000);
+})();
+
+/* ---------- THEME SWITCH ---------- */
+(function(){
+  const root = document.documentElement, mq = matchMedia("(prefers-color-scheme: light)");
+  const apply = m => {
+    root.classList.toggle("light", m === "light" || (m === "system" && mq.matches));
+    root.setAttribute("data-mode", m);
+    document.querySelectorAll(".theme-sw button").forEach(b => b.setAttribute("aria-checked", String(b.dataset.mode === m)));
+  };
+  apply(root.getAttribute("data-mode") || "system");
+  document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => {
+    try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {}
+    apply(b.dataset.mode); toast({dark:"🌙 Dark theme", light:"☀️ Light theme", system:"🖥️ System default"}[b.dataset.mode]);
+  });
+  (mq.addEventListener ? mq.addEventListener.bind(mq,"change") : mq.addListener.bind(mq))(() => { if (root.getAttribute("data-mode") === "system") apply("system"); });
+})();
+/* ---------- SCROLL PROGRESS LINE ---------- */
+(function(){
+  let tick = false;
+  const upd = () => { const max = document.documentElement.scrollHeight - innerHeight;
+    document.documentElement.style.setProperty("--sp", max > 0 ? Math.min(1, Math.max(0, scrollY / max)).toFixed(4) : 0); tick = false; };
+  addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
+  addEventListener("resize", upd); addEventListener("load", upd); upd();
+})();
+/* ---------- START: server se data lo ---------- */
+async function boot(){
+  try {
+    const r = await fetch("api/data.php", { headers:{ Accept:"application/json" }, cache:"no-store" });
+    const j = await r.json();
+    if (j.ok) {
+      API = true; SETTINGS = j.settings || SETTINGS;
+      PRODUCTS = j.products || []; REVIEWS = j.reviews || []; THEMES = j.themes || [];
+      Object.assign(CONFIG, { whatsapp: SETTINGS.whatsapp || CONFIG.whatsapp, phoneDisplay: SETTINGS.phoneDisplay || CONFIG.phoneDisplay, email: SETTINGS.email || CONFIG.email });
+      FILE_RULES.maxFiles = SETTINGS.maxFiles || FILE_RULES.maxFiles; FILE_RULES.maxMB = SETTINGS.maxMB || FILE_RULES.maxMB;
+    }
+  } catch(err) { /* server nahi mila — built-in data se chalega */ }
+  if (!API) THEMES = SAMPLE_THEMES;
+  $("#themes").hidden = !THEMES.length;
+  renderThemes();
+  applySettings(); buildHero(); renderCats(); renderReviews();
+  // PPTs na hon toh Category aur PPT section chhupe rahenge; PPT add hote hi apne aap dikhenge
+  const hasPPT = PRODUCTS.length > 0;
+  $("#categories").hidden = !hasPPT; $("#shop").hidden = !hasPPT;
+  renderChips(); renderGrid(); renderCart();
+}
+boot();
+</script>
+</body>
+</html>
