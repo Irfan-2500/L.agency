@@ -1,0 +1,22 @@
+# ---- Lakshay Agency security rules ----
+Options -Indexes
+DirectoryIndex index.html index.php
+
+# Secret files ko browser se band karo
+<FilesMatch "^(config\.php|README\.md|.*\.sqlite|.*\.lock|.*\.log)$">
+  <IfModule mod_authz_core.c>Require all denied</IfModule>
+  <IfModule !mod_authz_core.c>Order allow,deny
+  Deny from all</IfModule>
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # includes/ aur storage/ folder browser se nahi khulenge
+  RewriteRule ^(includes|storage)(/|$) - [F,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

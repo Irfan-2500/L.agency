@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Order Your PPT — Lakshay Agency</title>
+<script>
+(function(){var m="system";try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
+document.documentElement.classList.toggle("light",l);})();
+</script>
+<meta name="description" content="Order your PPT from Lakshay Agency. 1 Hour. Your PPT. Ready!">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Hind:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Same look as the main website: dark + RGB glow */
+@property --angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+:root{
+  --bg:#07080c;--bg2:#0b0d14;--card:#0f121b;--card2:#141826;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.15);
+  --text:#f4f5fb;--muted:#9aa1b8;--dim:#6b7290;--green:#22c55e;--red:#fb7185;--amber:#ffb020;
+  --rgb:linear-gradient(90deg,#ff004c,#ff8a00,#ffe600,#00ff88,#00e5ff,#3d5afe,#d500f9,#ff004c);
+  --rgb-conic:conic-gradient(from var(--angle),#ff004c,#ff8a00,#ffe600,#00ff88,#00e5ff,#3d5afe,#d500f9,#ff004c);
+  --display:'Space Grotesk',system-ui,sans-serif;--body:'Plus Jakarta Sans',system-ui,sans-serif;--hindi:'Hind','Noto Sans Devanagari',system-ui,sans-serif;
+  color-scheme:dark;
+}
+@keyframes spin{to{--angle:360deg}}
+@keyframes flow{to{background-position:200% 50%}}
+@keyframes hue{to{filter:hue-rotate(360deg)}}
+@keyframes shine{0%{left:-80%}55%,100%{left:130%}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:none;opacity:1}}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:1.55;overflow-x:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background-image:radial-gradient(circle at 15% 10%,rgba(213,0,249,.18),transparent 40%),radial-gradient(circle at 85% 90%,rgba(0,229,255,.14),transparent 40%),
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:auto,auto,48px 48px,48px 48px;background-attachment:fixed}
+a{color:inherit;text-decoration:none}
+button,input,textarea{font:inherit;color:inherit}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.wrap{width:min(620px,100%);margin:0 auto;padding-block:20px 48px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:26px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;border:1.5px solid transparent;
+  background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--rgb-conic) border-box;animation:spin 4s linear infinite;box-shadow:0 0 18px rgba(139,44,255,.45)}
+.logo b{font-family:var(--display);font-size:1.05rem;display:block;line-height:1}
+.logo b span{background:var(--rgb);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+.logo small{font-size:.6rem;letter-spacing:.14em;color:var(--muted);font-weight:700}
+.back{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;background:var(--card2);border:1px solid var(--line2);font-size:.85rem;font-weight:600;color:var(--muted);transition:.2s}
+.back:hover{color:#fff;border-color:#c084fc}
+
+.card{position:relative;background:var(--card);border-radius:22px;padding:30px 28px;box-shadow:0 30px 80px -25px rgba(213,0,249,.5)}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:var(--rgb-conic);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 5s linear infinite;pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:99px;font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:linear-gradient(var(--card2),var(--card2)) padding-box,var(--rgb-conic) border-box;border:1.5px solid transparent;animation:spin 4s linear infinite}
+.badge svg{width:15px;height:15px;color:var(--amber);fill:var(--amber)}
+h1{font-family:var(--display);font-size:clamp(1.9rem,6vw,2.5rem);line-height:1.1;margin:16px 0 8px;text-wrap:balance}
+h1 .hl{color:var(--amber);text-shadow:0 0 18px rgba(255,138,0,.6)}
+h1 .rd{background:var(--rgb);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+.hi{font-family:var(--hindi);font-weight:600;font-size:1.1rem;color:#e9e3ff}
+.hi b{color:var(--amber)}
+form{display:flex;flex-direction:column;gap:18px;margin-top:26px}
+.q label,.q .lbl{display:block;font-size:.88rem;font-weight:700;margin-bottom:8px}
+.q label b,.q .lbl b{color:#f472b6}
+.q input,.q textarea{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:14px 16px;font-size:.95rem;outline:none;transition:.2s}
+.q textarea{min-height:130px;resize:vertical}
+.q input:focus,.q textarea:focus{border-color:#c084fc;box-shadow:0 0 0 3px rgba(139,44,255,.22),0 0 20px rgba(0,229,255,.2)}
+.q.bad input,.q.bad textarea{border-color:var(--red);box-shadow:0 0 0 3px rgba(251,113,133,.15)}
+.err{display:none;color:var(--red);font-size:.78rem;margin-top:6px}
+.q.bad .err{display:block}
+.phone{display:flex;align-items:stretch}
+.phone span{display:grid;place-items:center;padding:0 14px;border:1px solid var(--line2);border-right:0;border-radius:12px 0 0 12px;background:var(--card2);font-weight:700;color:var(--muted)}
+.phone input{border-radius:0 12px 12px 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chips button{padding:8px 13px;border-radius:10px;border:1px solid var(--line2);background:var(--bg2);font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;transition:.2s}
+.chips button:hover{color:#fff;border-color:#c084fc}
+.chips button[aria-pressed="true"]{color:#fff;border-color:#c084fc;background:rgba(139,44,255,.18);box-shadow:0 0 16px rgba(139,44,255,.4)}
+.hint{font-size:.76rem;color:var(--dim);margin-top:6px}
+.submit{position:relative;overflow:hidden;width:100%;padding:16px;border:0;border-radius:14px;cursor:pointer;font-weight:700;font-size:1rem;color:#fff;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  background:linear-gradient(90deg,#8b2cff,#d500f9,#06b6d4,#8b2cff);background-size:300% auto;animation:flow 6s linear infinite;
+  box-shadow:0 10px 34px -8px rgba(213,0,249,.7)}
+.submit::after{content:"";position:absolute;top:0;left:-80%;width:45%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 3.8s ease-in-out infinite}
+.submit:disabled{opacity:.7;cursor:wait}
+.form-err{color:var(--red);font-size:.85rem;text-align:center;min-height:1em}
+.note{text-align:center;color:var(--dim);font-size:.76rem}
+.picked{padding:12px 14px;border-radius:12px;background:rgba(139,44,255,.14);border:1px solid rgba(192,132,252,.45);font-size:.9rem;font-weight:600}
+.picked b{color:#fff}.picked a{margin-left:6px;color:#67e8f9;font-size:.82rem}
+.optl{color:var(--dim);font-weight:500}
+.q .drop{display:flex;margin:0;font-weight:400;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:22px 16px;border-radius:14px;cursor:pointer;
+  border:1.5px dashed rgba(192,132,252,.5);background:rgba(139,44,255,.05);transition:.25s}
+.drop:hover,.drop.drag{border-color:#00e5ff;background:rgba(0,229,255,.07);box-shadow:0 0 24px -6px rgba(0,229,255,.5)}
+.drop svg{width:30px;height:30px;color:#c084fc;margin-bottom:4px}
+.q .drop b{font-size:.95rem;color:var(--text)}
+.drop small{color:var(--dim);font-size:.78rem}
+.ftypes{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px}
+.ftypes span{font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--card2);border:1px solid var(--line)}
+.ferr{color:var(--red);font-size:.8rem;margin-top:8px}
+.ferr:empty{display:none}
+.flist{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.flist:empty{display:none}
+.fi{position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);overflow:hidden}
+.fi>svg{color:#00e5ff;width:20px;height:20px}
+.fi .nm{min-width:0}
+.fi .nm b{display:block;font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi .nm small{font-size:.74rem;color:var(--muted)}
+.fi.done .nm small{color:var(--green)}
+.fi.is-err{border-color:rgba(251,113,133,.5)}
+.fi.is-err .nm small{color:var(--red)}
+.fi button{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;border:0;background:transparent;color:var(--dim);cursor:pointer}
+.fi button:hover{color:var(--red);background:rgba(251,113,133,.1)}
+.fi .bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:linear-gradient(90deg,#d500f9,#00e5ff);transition:width .3s}
+.fi.done .bar{background:var(--green)}
+.fi.is-err .bar{display:none}
+.hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}
+:focus-visible{outline:2px solid #00e5ff;outline-offset:2px}
+
+.thanks{text-align:center;padding:16px 4px 6px}
+.tick{width:84px;height:84px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;color:var(--green);
+  background:rgba(34,197,94,.12);border:2px solid var(--green);box-shadow:0 0 34px rgba(34,197,94,.55);animation:pop .6s ease-out both}
+.tick svg{width:40px;height:40px}
+.thanks h2{font-family:var(--display);font-size:clamp(1.8rem,6vw,2.4rem);line-height:1.15}
+.thanks h2 span{background:var(--rgb);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+.tfiles{color:var(--green);font-weight:700;margin-top:10px}.tfiles:empty{display:none}
+.thanks .big{font-size:1.15rem;font-weight:600;margin-top:12px}
+.thanks .big b{color:var(--amber);text-shadow:0 0 14px rgba(255,138,0,.5)}
+.thanks .hi{margin-top:6px}
+.timer{display:inline-flex;align-items:center;gap:10px;margin:22px 0 24px;padding:12px 18px;border-radius:14px;background:var(--card2);border:1px solid var(--line2);font-weight:700}
+.timer svg{color:var(--amber)}
+.timer b{font-family:var(--display);font-size:1.3rem;font-variant-numeric:tabular-nums;color:#fff}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;font-weight:700;font-size:.9rem;border:1px solid var(--line2);background:var(--card2);cursor:pointer}
+.btn:hover{border-color:#c084fc}
+@media(max-width:480px){.card{padding:24px 18px}.top .back span{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Light theme (main website par chuna gaya theme yahan bhi lagta hai) */
+html.light{color-scheme:light;--bg:#f5f4fa;--bg2:#ecebf5;--card:#ffffff;--card2:#f1effa;--line:rgba(40,30,90,.10);--line2:rgba(40,30,90,.17);
+  --text:#16142a;--muted:#57557a;--dim:#8987a6;--amber:#d97706;
+  --rgb:linear-gradient(90deg,#e0115f,#ea580c,#ca8a04,#059669,#0284c7,#4f46e5,#a21caf,#e0115f);
+  --rgb-conic:conic-gradient(from var(--angle),#e0115f,#ea580c,#ca8a04,#059669,#0284c7,#4f46e5,#a21caf,#e0115f)}
+html.light body{background-image:radial-gradient(circle at 15% 10%,rgba(213,0,249,.10),transparent 40%),radial-gradient(circle at 85% 90%,rgba(0,180,220,.10),transparent 40%),
+  linear-gradient(rgba(40,30,90,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(40,30,90,.045) 1px,transparent 1px)}
+html.light .card{box-shadow:0 26px 60px -28px rgba(110,40,220,.45)}
+html.light .hi{color:#3f3a66}
+html.light h1 .hl,html.light .thanks .big b{text-shadow:none}
+html.light .back:hover,html.light .chips button:hover,html.light .chips button[aria-pressed="true"],html.light .picked b{color:var(--text)}
+html.light .picked{background:rgba(139,44,255,.08)}
+html.light .picked a{color:#0e7490}
+html.light .timer b{color:var(--text)}
+html.light .drop svg{color:#7c3aed}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="top">
+    <a href="./" class="logo">
+      <span class="logo-icon"><svg class="i" style="color:#c4b5fd"><use href="#i-layers"/></svg></span>
+      <span><b>LAKSHAY <span>AGENCY</span></b><small>PREMIUM PPT STORE</small></span>
+    </a>
+    <a href="./" class="back"><svg class="i"><use href="#i-left"/></svg><span>Back to Home</span></a>
+  </header>
+
+  <main class="card">
+    <section id="orderView">
+      <span class="badge"><svg class="i"><use href="#i-zap"/></svg>India's Fastest PPT Services</span>
+      <h1><span class="hl">1 Hour.</span> Your PPT. <span class="rd">Ready!</span></h1>
+      <p class="hi" lang="hi">सिर्फ <b>1 घंटे</b> में आपकी PPT तैयार!</p>
+
+      <form id="orderForm" novalidate>
+        <div class="picked" id="picked" hidden>🎨 Selected theme: <b id="pickedName"></b> <a href="./#themes">Change</a></div>
+        <div class="q" id="q-name">
+          <label for="name">Name <b>*</b></label>
+          <input type="text" id="name" name="name" autocomplete="name" maxlength="120" placeholder="Enter your name">
+          <div class="err">Please enter your name</div>
+        </div>
+
+        <div class="q" id="q-phone">
+          <label for="phone">Mobile No. <b>*</b></label>
+          <div class="phone"><span>+91</span><input type="tel" id="phone" name="phone" inputmode="numeric" autocomplete="tel-national" maxlength="14" placeholder="10-digit mobile number"></div>
+          <div class="err">Please enter a valid 10-digit mobile number</div>
+        </div>
+
+        <div class="q" id="q-desc">
+          <span class="lbl">Which PPT do you need? <b>*</b></span>
+          <div class="chips" id="chips" role="group" aria-label="PPT type">
+            <button type="button" data-type="School / Class Education">🎓 School / Class</button>
+            <button type="button" data-type="College / University">🏫 College</button>
+            <button type="button" data-type="Business">💼 Business</button>
+            <button type="button" data-type="Competitive Exam">📝 Competitive Exam</button>
+            <button type="button" data-type="Other">✨ Other</button>
+          </div>
+          <label for="desc" class="sr-label" style="font-weight:600;color:var(--muted);font-size:.8rem">Short description</label>
+          <textarea id="desc" name="desc" maxlength="1500" placeholder="e.g. Class 10 Science — Chapter 'Life Processes', 15 slides, Hindi + English"></textarea>
+          <div class="err">Please write a few words about your PPT</div>
+          <p class="hint">Topic, class/exam, number of slides, language — jo bhi pata ho likh dijiye.</p>
+        </div>
+
+        <div class="q" id="q-files">
+          <span class="lbl">Upload Files <span class="optl">(Optional)</span></span>
+          <label class="drop" id="drop" for="files">
+            <svg class="i"><use href="#i-upload"/></svg>
+            <b>Click to upload or drag &amp; drop</b>
+            <small>Upload Images, PDF, Docs, Word, Excel, ZIP etc. · Max 1 GB per file · up to 5 files</small>
+            <span class="ftypes"><span>🖼️ Images</span><span>📄 PDF</span><span>📝 Word</span><span>📊 Excel</span><span>📽️ PPT</span><span>🗜️ ZIP</span></span>
+          </label>
+          <input type="file" id="files" multiple hidden accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx,.txt,.zip,.rar,.7z">
+          <p class="ferr" id="fileErr" role="alert"></p>
+          <div class="flist" id="fileList"></div>
+        </div>
+
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button type="submit" class="submit" id="submitBtn"><svg class="i"><use href="#i-send"/></svg> Submit Order</button>
+        <p class="form-err" id="formErr" role="alert"></p>
+        <p class="note">🔒 Your details are only used to contact you about your PPT.</p>
+      </form>
+    </section>
+
+    <section id="thanksView" class="thanks" hidden>
+      <div class="tick"><svg class="i"><use href="#i-check"/></svg></div>
+      <h2>Thank You<span id="tName"></span>! 🎉</h2>
+      <p class="tfiles" id="tFiles"></p>
+      <p class="big">Our team will contact you within <b>10 minutes</b>.</p>
+      <p class="hi" lang="hi">हमारी टीम <b>10 मिनट</b> में आपसे संपर्क करेगी।</p>
+      <div class="timer" aria-live="off"><svg class="i"><use href="#i-clock"/></svg>Expect our call in <b id="countdown">10:00</b></div>
+      <div class="actions"><a href="./" class="btn"><svg class="i"><use href="#i-left"/></svg>Back to Home</a></div>
+    </section>
+  </main>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let type = "";
+// Themes gallery se "Order in This Theme" dabaya ho toh theme ka naam aata hai
+let theme = "";
+try { theme = (new URLSearchParams(location.search).get("theme") || "").slice(0, 80); } catch (e) {}
+if (theme) { $("#picked").hidden = false; $("#pickedName").textContent = theme; }
+
+// PPT type chips (optional)
+document.querySelectorAll("#chips button").forEach(b => b.onclick = () => {
+  const on = b.getAttribute("aria-pressed") === "true";
+  document.querySelectorAll("#chips button").forEach(x => x.setAttribute("aria-pressed", "false"));
+  b.setAttribute("aria-pressed", on ? "false" : "true");
+  type = on ? "" : b.dataset.type;
+  $("#q-desc").classList.remove("bad");
+});
+$("#phone").oninput = e => { e.target.value = e.target.value.replace(/[^\d ]/g, ""); };
+["name","phone","desc"].forEach(id => $("#"+id).addEventListener("input", e => e.target.closest(".q").classList.remove("bad")));
+
+
+/* ---------- FILE UPLOAD (1 GB tak, tukdon mein) ---------- */
+const MAXN = 5, EXT = ["jpg","jpeg","png","webp","gif","heic","pdf","doc","docx","xls","xlsx","csv","ppt","pptx","txt","zip","rar","7z"];
+let MAXB = 1024 ** 3, CHUNK = 5 * 1024 * 1024, upFiles = [], busy = false;
+fetch("api/upload.php", { headers: { Accept: "application/json" } }).then(r => r.json()).then(j => { if (j.ok) { MAXB = j.max; CHUNK = j.chunk; } }).catch(() => {});
+const hsize = b => b >= 1024 ** 3 ? (b / 1024 ** 3).toFixed(2) + " GB" : b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB";
+const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const rid = () => [...crypto.getRandomValues(new Uint8Array(16))].map(b => b.toString(16).padStart(2, "0")).join("");
+function addFiles(list) {
+  const errs = [];
+  [...list].forEach(f => {
+    const ext = (f.name.split(".").pop() || "").toLowerCase();
+    if (/^(video|audio)\//.test(f.type) || !EXT.includes(ext)) errs.push(`"${f.name}" — only images, PDF, Word, Excel, PowerPoint and ZIP files are allowed`);
+    else if (f.size > MAXB) errs.push(`"${f.name}" is larger than 1 GB`);
+    else if (!f.size) errs.push(`"${f.name}" is empty`);
+    else if (upFiles.length >= MAXN) errs.push(`Maximum ${MAXN} files allowed`);
+    else if (!upFiles.some(x => x.file.name === f.name && x.file.size === f.size)) upFiles.push({ id: rid(), file: f, p: 0, st: "wait" });
+  });
+  $("#fileErr").textContent = [...new Set(errs)].join(" · ");
+  renderFiles(); pump();
+}
+function renderFiles() {
+  $("#fileList").innerHTML = upFiles.map((x, i) => {
+    const pct = Math.round(x.p * 100);
+    const msg = x.st === "done" ? "✓ Uploaded · " + hsize(x.file.size) : x.st === "err" ? "⚠ " + esc(x.err) : x.st === "up" ? `Uploading ${pct}% · ${hsize(x.file.size)}` : "Waiting… · " + hsize(x.file.size);
+    return `<div class="fi ${x.st === "err" ? "is-err" : x.st}" data-id="${x.id}"><svg class="i"><use href="#i-file"/></svg>
+      <div class="nm"><b>${esc(x.file.name)}</b><small>${msg}</small></div>
+      <button type="button" onclick="removeFile(${i})" aria-label="Remove file"><svg class="i"><use href="#i-x"/></svg></button>
+      <span class="bar" style="width:${pct}%"></span></div>`;
+  }).join("");
+  $("#q-files").classList.remove("bad");
+}
+function removeFile(i) { const x = upFiles[i]; if (x) x.st = "removed"; upFiles.splice(i, 1); $("#fileErr").textContent = ""; renderFiles(); }
+async function pump() {
+  if (busy) return; const it = upFiles.find(x => x.st === "wait"); if (!it) return;
+  busy = true; await sendFile(it); busy = false; pump();
+}
+async function sendFile(it) {
+  it.st = "up"; renderFiles();
+  const f = it.file, total = Math.max(1, Math.ceil(f.size / CHUNK));
+  let i = 0, tries = 0;
+  while (i < total) {
+    if (it.st === "removed") return;
+    const fd = new FormData();
+    fd.append("upload_id", it.id); fd.append("index", i); fd.append("total", total); fd.append("name", f.name); fd.append("size", f.size);
+    fd.append("chunk", f.slice(i * CHUNK, Math.min(f.size, (i + 1) * CHUNK)), "chunk");
+    let r = null, j = {};
+    try { r = await fetch("api/upload.php", { method: "POST", body: fd, headers: { Accept: "application/json" } }); j = await r.json().catch(() => ({})); } catch (e) { r = null; }
+    if (r && r.status === 409 && typeof j.next === "number") { i = j.next; continue; }
+    if (!r || (!j.ok && r.status >= 500 && tries < 3)) {
+      if (++tries <= 3) { await new Promise(s => setTimeout(s, 1500 * tries)); continue; }
+    }
+    if (!r || !j.ok) { if (it.st === "removed") return; it.st = "err"; it.err = (r && j.error) || "Upload failed. Please check your internet and try again."; renderFiles(); return; }
+    tries = 0; i++; it.p = i / total;
+    const row = document.querySelector(`.fi[data-id="${it.id}"]`);
+    if (row) { row.querySelector(".bar").style.width = Math.round(it.p * 100) + "%"; row.querySelector("small").textContent = `Uploading ${Math.round(it.p * 100)}% · ${hsize(f.size)}`; }
+  }
+  it.st = "done"; it.p = 1; renderFiles();
+}
+$("#files").onchange = e => { addFiles(e.target.files); e.target.value = ""; };
+const drop = $("#drop");
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("drag"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("drag"); }));
+drop.addEventListener("drop", e => addFiles(e.dataTransfer.files));
+addEventListener("beforeunload", e => { if (upFiles.some(x => x.st === "up" || x.st === "wait")) { e.preventDefault(); e.returnValue = ""; } });
+const pending = () => upFiles.some(x => x.st === "up" || x.st === "wait");
+const overall = () => { const t = upFiles.reduce((a, x) => a + x.file.size, 0) || 1; return Math.round(upFiles.reduce((a, x) => a + x.file.size * x.p, 0) / t * 100); };
+$("#orderForm").onsubmit = async e => {
+  e.preventDefault();
+  const name = $("#name").value.trim();
+  const phone = $("#phone").value.replace(/\D/g, "").replace(/^(91|0)(?=\d{10}$)/, "");
+  const desc = $("#desc").value.trim();
+  const bad = [["q-name", name.length < 2], ["q-phone", !/^[6-9]\d{9}$/.test(phone)], ["q-desc", desc.length < 5]];
+  bad.forEach(([id, b]) => $("#"+id).classList.toggle("bad", b));
+  const first = bad.find(x => x[1]);
+  if (first) { $("#"+first[0]+" input, #"+first[0]+" textarea").focus(); return; }
+
+  if (upFiles.some(x => x.st === "err")) { $("#q-files").classList.add("bad"); $("#formErr").textContent = "A file did not upload. Remove it (✕) or add it again, then submit."; return; }
+  const btn = $("#submitBtn"), label = btn.innerHTML;
+  btn.disabled = true; $("#formErr").textContent = "";
+  if (pending()) {
+    await new Promise(res => { const t = setInterval(() => { btn.textContent = `Uploading files… ${overall()}%`; if (!pending()) { clearInterval(t); res(); } }, 300); });
+    if (upFiles.some(x => x.st === "err")) { btn.disabled = false; btn.innerHTML = label; $("#formErr").textContent = "A file did not upload. Remove it (✕) or add it again, then submit."; return; }
+  }
+  btn.textContent = "Sending…";
+  const fd = new FormData();
+  fd.append("source", "order-page");
+  fd.append("name", name); fd.append("phone", phone);
+  fd.append("topic", type || "PPT Order");
+  fd.append("requirements", (theme ? "Theme: " + theme + "\n" : "") + desc);
+  fd.append("website", document.querySelector(".hp").value);
+  fd.append("uploads", JSON.stringify(upFiles.filter(x => x.st === "done").map(x => x.id)));
+  let res = {};
+  try {
+    const r = await fetch("api/request.php", { method: "POST", body: fd, headers: { Accept: "application/json" } });
+    res = await r.json().catch(() => ({}));
+    if (!r.ok) res.ok = false;
+  } catch (err) { res = { ok: false, error: "Could not send your order. Please check your internet and try again." }; }
+  btn.disabled = false; btn.innerHTML = label;
+  if (!res.ok) { $("#formErr").textContent = res.error || "Could not send your order. Please try again in a moment."; return; }
+
+  // Thank you screen
+  $("#tName").textContent = ", " + name.split(" ")[0];
+  const nf = upFiles.length; $("#tFiles").textContent = nf ? `✓ ${nf} file${nf > 1 ? "s" : ""} received` : ""; upFiles = [];
+  $("#orderView").hidden = true; $("#thanksView").hidden = false;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  let left = 600;
+  const tick = () => { const m = Math.floor(left / 60), s = left % 60; $("#countdown").textContent = `${m}:${String(s).padStart(2, "0")}`; if (left-- > 0) setTimeout(tick, 1000); else $("#countdown").textContent = "any moment"; };
+  tick();
+};
+</script>
+</body>
+</html>
