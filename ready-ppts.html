@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ready to Use PPTs — Lakshay Agency</title>
+<script>
+/* Theme: homepage wali setting yahan bhi lagti hai */
+(function(){var m="system";try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
+document.documentElement.classList.toggle("light",l);})();
+</script>
+<meta name="description" content="Ready to use, fully editable PowerPoint presentations. Filter by class, subject and language. Instant download after payment." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Hind:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== COLORS (homepage jaise) ===== */
+:root{
+  --bg:#07080c; --bg2:#0b0d14; --card:#0f121b; --card2:#141826;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+  --text:#f4f5fb; --muted:#9aa1b8; --dim:#6b7290;
+  --violet:#8b2cff; --cyan:#06b6d4; --pink:#ec4899; --green:#22c55e; --amber:#f59e0b; --gold:#fde047;
+  --grad:linear-gradient(90deg,#8b2cff,#06b6d4);
+  --shadow:0 20px 60px -20px rgba(139,44,255,.45);
+}
+html.light{
+  --bg:#f6f5fb; --bg2:#eeedf6; --card:#ffffff; --card2:#f3f2fa;
+  --line:rgba(20,16,40,.09); --line2:rgba(20,16,40,.16);
+  --text:#16131f; --muted:#5d5873; --dim:#8a85a0; --shadow:0 18px 40px -22px rgba(139,44,255,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:'Plus Jakarta Sans','Hind',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Space Grotesk','Hind',sans-serif;line-height:1.2;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+img{max-width:100%;display:block}
+.container{width:min(1240px,100% - 32px);margin-inline:auto}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:12px;font-weight:700;font-size:.9rem;transition:.2s;white-space:nowrap}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:var(--shadow)}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-gold{background:linear-gradient(135deg,#fde047,#f59e0b);color:#1a1200}
+.btn-gold:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.btn-ghost{background:var(--card2);border:1px solid var(--line2)}
+.btn-ghost:hover{border-color:var(--violet)}
+.btn-wa{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.4);color:#22c55e}
+.btn-sm{padding:9px 12px;font-size:.82rem;border-radius:10px}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ===== HEADER ===== */
+header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:14px;height:68px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;border:1.5px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--grad) border-box}
+.logo b{font-family:'Space Grotesk';font-size:1rem;display:block;line-height:1}
+.logo small{font-size:.58rem;letter-spacing:.14em;color:var(--muted);font-weight:700}
+.back{margin-left:auto;color:var(--muted);font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px}
+.back:hover{color:var(--text);background:var(--card2)}
+.cart-btn{position:relative;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line2);background:var(--card)}
+.cart-btn:hover{border-color:var(--violet)}
+.cart-count{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:var(--gold);color:#1a1200;font-size:.72rem;font-weight:800;display:grid;place-items:center}
+.cart-count[data-n="0"]{display:none}
+
+/* ===== HERO ===== */
+.hero{padding:42px 0 18px}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;border-radius:99px;background:rgba(253,224,71,.12);color:#facc15;border:1px solid rgba(253,224,71,.35)}
+html.light .kicker{color:#a16207;background:#fef9c3}
+.kicker i{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+.hero h1{font-size:clamp(1.9rem,4.5vw,3rem);margin:14px 0 8px;text-wrap:balance}
+.hero p{color:var(--muted);max-width:640px}
+.perks{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;font-size:.86rem;color:var(--muted);font-weight:600}
+.perks span{display:inline-flex;align-items:center;gap:6px}
+.perks svg{color:var(--green);width:16px;height:16px}
+
+/* ===== FILTERS ===== */
+.toolbar{position:sticky;top:68px;z-index:30;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);padding:12px 0;border-bottom:1px solid var(--line)}
+.trow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search{flex:1 1 260px;position:relative}
+.search input{width:100%;background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:11px 14px 11px 40px;font-size:.9rem;outline:none}
+.search input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,44,255,.2)}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--dim)}
+.cats{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.cats::-webkit-scrollbar{display:none}
+.cats button{padding:8px 14px;border-radius:99px;border:1px solid var(--line2);background:var(--card);font-size:.84rem;font-weight:600;color:var(--muted);white-space:nowrap}
+.cats button.on{background:linear-gradient(135deg,#8b2cff,#a855f7);color:#fff;border-color:transparent}
+.ftoggle{display:none}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.fsel{display:flex;flex-direction:column;gap:2px;background:var(--card);border:1px solid var(--line2);border-radius:11px;padding:5px 10px;min-width:130px;flex:1 1 130px;max-width:200px}
+.fsel.on{border-color:var(--violet);box-shadow:0 0 0 2px rgba(139,44,255,.18)}
+.fsel span{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.fsel select{background:transparent;border:0;outline:none;font-size:.86rem;font-weight:600;padding:1px 0;width:100%}
+.fsel select option{background:var(--card);color:var(--text)}
+.result{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 14px;color:var(--muted);font-size:.88rem;flex-wrap:wrap}
+.clear{color:var(--cyan);font-weight:700;font-size:.85rem}
+
+/* ===== CARDS ===== */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;padding-bottom:60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:.25s}
+.card:hover{transform:translateY(-3px);border-color:var(--line2);box-shadow:var(--shadow)}
+.thumb{position:relative;aspect-ratio:16/9;background-size:cover;background-position:center;cursor:zoom-in;display:block;width:100%}
+.thumb .gt{position:absolute;inset:auto 14px 14px;font-family:'Space Grotesk','Hind';font-weight:700;color:#fff;font-size:1.1rem;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.ribbon{position:absolute;top:10px;left:10px;font-size:.66rem;font-weight:800;letter-spacing:.06em;padding:4px 9px;border-radius:7px;color:#fff}
+.r-best{background:linear-gradient(135deg,#f59e0b,#ef4444)} .r-new{background:linear-gradient(135deg,#22c55e,#06b6d4)} .r-feat{background:linear-gradient(135deg,#8b2cff,#ec4899)}
+.sl-badge{position:absolute;bottom:10px;right:10px;display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;padding:4px 8px;border-radius:8px;background:rgba(0,0,0,.62);color:#fff}
+.sl-badge svg{width:13px;height:13px}
+.peek{position:absolute;top:10px;right:10px;font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:8px;background:rgba(0,0,0,.62);color:#fff;opacity:0;transition:.2s}
+.thumb:hover .peek,.thumb:focus-visible .peek{opacity:1}
+.c-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:9px;flex:1}
+.sold{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:700;color:#fb923c;align-self:flex-start;padding:3px 9px;border-radius:99px;background:rgba(251,146,60,.12)}
+.sold .sh{display:none}
+.sold.fresh{color:var(--cyan);background:rgba(6,182,212,.12)}
+.card h3{font-size:1.02rem;font-weight:700}
+.card p{font-size:.84rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tags span{font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:7px;background:var(--card2);border:1px solid var(--line);color:var(--muted)}
+.price{display:flex;align-items:baseline;gap:8px;margin-top:auto;padding-top:6px}
+.price b{font-size:1.35rem;font-family:'Space Grotesk'}
+.price s{color:var(--dim);font-size:.86rem}
+.price em{font-style:normal;font-size:.74rem;font-weight:800;color:var(--green)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.add.added{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.45);color:var(--green)}
+.empty{grid-column:1/-1;text-align:center;padding:60px 16px;color:var(--muted);background:var(--card);border:1px dashed var(--line2);border-radius:18px}
+.empty b{display:block;color:var(--text);font-size:1.05rem;margin-bottom:6px}
+.more{display:flex;justify-content:center;padding-bottom:60px;margin-top:-30px}
+
+/* ===== DRAWER + MODALS ===== */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:.25s;z-index:60}
+.overlay.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(400px,100%);background:var(--bg2);border-left:1px solid var(--line2);z-index:70;transform:translateX(100%);transition:.3s;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.d-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line)}
+.d-body{flex:1;overflow-y:auto;padding:14px 20px;display:grid;align-content:start;gap:10px}
+.d-foot{padding:16px 20px;border-top:1px solid var(--line);display:grid;gap:10px}
+.total{display:flex;justify-content:space-between;font-weight:700;font-size:1.05rem}
+.ci{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px}
+.mini{width:72px;aspect-ratio:16/9;border-radius:8px;background-size:cover;background-position:center}
+.ci b{font-size:.86rem;display:block;line-height:1.3}
+.ci small{color:var(--muted);font-weight:700}
+.ci button{color:var(--dim);padding:6px} .ci button:hover{color:#ef4444}
+.close-x{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--card2);border:1px solid var(--line)}
+.modal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:16px;opacity:0;pointer-events:none;transition:.25s}
+.modal.on{opacity:1;pointer-events:auto}
+.m-box{position:relative;width:min(860px,100%);max-height:calc(100vh - 32px);overflow-y:auto;background:var(--bg2);border:1px solid var(--line2);border-radius:20px;padding:20px}
+.m-box.sm{width:min(480px,100%)}
+.m-close{position:absolute;top:12px;right:12px;z-index:2}
+.stage{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:var(--card2) center/cover}
+.stage img{width:100%;height:100%;object-fit:cover}
+.s-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
+.s-prev{left:10px} .s-next{right:10px}
+.s-pos{position:absolute;bottom:10px;right:12px;font-size:.75rem;font-weight:700;padding:3px 8px;border-radius:7px;background:rgba(0,0,0,.6);color:#fff}
+.strip{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:4px}
+.strip button{flex:0 0 110px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:2px solid transparent;opacity:.65}
+.strip button.on{border-color:var(--violet);opacity:1}
+.strip img{width:100%;height:100%;object-fit:cover}
+.m-info{display:grid;gap:10px;margin-top:16px}
+.m-info h3{font-size:1.35rem;padding-right:40px}
+.m-info p{color:var(--muted)}
+.m-buy{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:14px}
+.m-buy .price{margin:0;padding:0}
+.m-buy .grow{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.form{display:grid;gap:12px;margin-top:12px}
+.form label{display:grid;gap:5px;font-size:.84rem;font-weight:700}
+.form input{background:var(--card);border:1px solid var(--line2);border-radius:11px;padding:11px 13px;outline:none;font-size:.95rem}
+.form input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,44,255,.2)}
+.form .bad input{border-color:#ef4444}
+.err{color:#f87171;font-size:.78rem;font-weight:600;display:none}
+.bad .err{display:block}
+.pay-items{display:grid;gap:8px;margin-top:12px}
+.pi{display:flex;justify-content:space-between;gap:10px;font-size:.88rem;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.pi b{font-weight:600}
+.pi.tot{font-weight:800;background:transparent;border-style:dashed}
+.note{font-size:.76rem;color:var(--dim);text-align:center}
+.done{text-align:center;display:grid;gap:12px;padding:10px 0}
+.tick{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto;background:rgba(34,197,94,.15);color:var(--green)}
+.tick svg{width:34px;height:34px}
+.dl a{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border-radius:11px;background:var(--card);border:1px solid var(--line);font-weight:600;margin-top:8px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,30px);background:var(--card2);border:1px solid var(--line2);padding:11px 18px;border-radius:12px;font-weight:600;font-size:.88rem;opacity:0;transition:.25s;z-index:99;pointer-events:none;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.hidden-sm{display:inline}
+
+@media(max-width:760px){
+  .hidden-sm{display:none}
+  .ftoggle{display:inline-flex}
+  .filters{display:none}
+  .filters.open{display:grid;grid-template-columns:1fr 1fr}
+  .fsel{max-width:none}
+  .toolbar{position:static}
+  .sold .lg{display:none} .sold .sh{display:inline}
+  .grid{grid-template-columns:1fr 1fr;gap:12px}
+  .c-body{padding:11px 11px 12px;gap:7px}
+  .card h3{font-size:.9rem}
+  .card p,.tags{display:none}
+  .price b{font-size:1.1rem}
+  .acts{grid-template-columns:1fr}
+  .acts .btn{padding:8px 6px;font-size:.78rem}
+}
+@media(max-width:380px){.grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M20 16.6A5 5 0 0 0 18 7h-1.3A8 8 0 1 0 4 15.3"/><path d="M12 12v9M8 17l4 4 4-4"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 21l2.2-5.4A8.5 8.5 0 1 1 21 11.5z"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+</svg>
+
+<header>
+  <div class="container nav">
+    <a href="index.html" class="logo" aria-label="Lakshay Agency home">
+      <span class="logo-icon"><svg class="i" style="color:#c084fc"><use href="#i-layers"/></svg></span>
+      <span><b>LAKSHAY <span class="grad-text">AGENCY</span></b><small>PREMIUM PPT STORE</small></span>
+    </a>
+    <a href="index.html" class="back"><svg class="i" style="width:16px"><use href="#i-left"/></svg><span class="hidden-sm">Back to Home</span></a>
+    <button class="cart-btn" id="cartBtn" aria-label="Open cart"><svg class="i"><use href="#i-bag"/></svg><span class="cart-count" id="cartCount" data-n="0">0</span></button>
+  </div>
+</header>
+
+<section class="hero container">
+  <span class="kicker"><i></i>Ready to Use PPT</span>
+  <h1>Turant download karein, <span class="grad-text">ready-made PPTs</span></h1>
+  <p>Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.</p>
+  <div class="perks">
+    <span><svg class="i"><use href="#i-check"/></svg>100% Editable .pptx</span>
+    <span><svg class="i"><use href="#i-check"/></svg>Instant Download</span>
+    <span><svg class="i"><use href="#i-check"/></svg>UPI · Cards · Net Banking</span>
+    <span><svg class="i"><use href="#i-check"/></svg>Google Slides & Keynote</span>
+  </div>
+</section>
+
+<div class="toolbar">
+  <div class="container">
+    <div class="trow">
+      <label class="search"><svg class="i"><use href="#i-search"/></svg><input id="q" type="search" placeholder="Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" aria-label="Search PPTs"></label>
+      <button class="btn btn-ghost btn-sm ftoggle" id="ftoggle"><svg class="i" style="width:15px"><use href="#i-sliders"/></svg>Filters <span id="fcount"></span></button>
+    </div>
+    <div class="trow" style="margin-top:10px"><div class="cats" id="cats"></div></div>
+    <div class="filters" id="filters"></div>
+  </div>
+</div>
+
+<main class="container">
+  <div class="result"><span id="resultTxt"></span><button class="clear" id="clear" hidden>Clear all filters ✕</button></div>
+  <div class="grid" id="grid"></div>
+  <div class="more"><button class="btn btn-ghost" id="more" hidden>Load more PPTs</button></div>
+</main>
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="drawer" id="drawer" aria-label="Shopping cart">
+  <div class="d-head"><h3>Your Cart</h3><button class="close-x" id="closeCart" aria-label="Close cart"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="d-body" id="cartBody"></div>
+  <div class="d-foot">
+    <div class="total"><span>Total</span><b id="cartTotal">₹0</b></div>
+    <button class="btn btn-gold" id="checkout"><svg class="i"><use href="#i-card"/></svg>Checkout</button>
+    <p class="note">Payment ke turant baad download link milega.</p>
+  </div>
+</aside>
+
+<div class="modal" id="previewModal" role="dialog" aria-modal="true" aria-label="PPT preview">
+  <div class="m-box">
+    <button class="close-x m-close" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+    <div id="previewBody"></div>
+  </div>
+</div>
+
+<div class="modal" id="payModal" role="dialog" aria-modal="true" aria-labelledby="payTitle">
+  <div class="m-box sm">
+    <button class="close-x m-close" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+    <div id="payMain">
+      <h3 id="payTitle">Checkout</h3>
+      <div class="pay-items" id="payItems"></div>
+      <form class="form" id="payForm" novalidate>
+        <label id="p-name">Full Name *<input id="payName" autocomplete="name" placeholder="Enter your name"><span class="err">Please enter your name</span></label>
+        <label id="p-email">Email * <small style="color:var(--dim);font-weight:500">(download link yahan aayega)</small><input id="payEmail" inputmode="email" autocomplete="email" placeholder="you@example.com"><span class="err">Please enter a valid email</span></label>
+        <label id="p-phone">WhatsApp Number *<input id="payPhone" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="10-digit mobile number"><span class="err">Please enter a valid 10-digit mobile number</span></label>
+        <input type="text" class="hp" id="payHp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn btn-gold" id="paySubmit" type="submit"></button>
+        <button class="btn btn-wa" id="payWa" type="button" hidden><svg class="i"><use href="#i-msg"/></svg>WhatsApp par order karein</button>
+        <p class="note" id="payNote">🔒 Secure payment by Razorpay · UPI, Cards, Net Banking</p>
+      </form>
+    </div>
+    <div class="done" id="payDone" hidden></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* =========================================================
+   ⚙️ SETTINGS (live website par ye admin panel / config.php se aate hain)
+   ========================================================= */
+const CONFIG = { whatsapp:"919711069435", perPage:12 };
+const CATEGORIES = [
+  { id:"edu",  name:"Educational" }, { id:"biz", name:"Business" }, { id:"mkt", name:"Marketing" }, { id:"anim", name:"Animated" }
+];
+/* Server na mile (jaise sirf HTML preview) tab ye 5 demo PPTs dikhti hain */
+const DEMO = [
+  { id:1, title:"Photosynthesis — Class 10 Science", desc:"Photosynthesis ka poora chapter: equation, chloroplast, light & dark reactions, diagram aur 5 practice questions.", cat:"edu", price:49, mrp:99, slides:10, lang:"English", theme:"Dark", board:["CBSE","State Board"], level:["Class 10"], subject:"Biology", anim:false, badge:"best", colors:["#065f46","#22c55e"], slug:"photosynthesis" },
+  { id:2, title:"भारत का संविधान — Class 8 SST", desc:"संविधान की प्रस्तावना, मौलिक अधिकार, मौलिक कर्तव्य और संसद — आसान हिंदी में, प्रश्नों के साथ।", cat:"edu", price:39, mrp:79, slides:10, lang:"Hindi", theme:"Light", board:["CBSE","State Board"], level:["Class 8"], subject:"Political Science / Civics", anim:false, badge:"new", colors:["#ea580c","#f59e0b"], slug:"samvidhan" },
+  { id:3, title:"Newton's Laws of Motion — Class 9", desc:"Teeno laws, inertia, momentum, F = ma ke solved numericals aur daily-life examples. Theory + Questions.", cat:"edu", price:59, mrp:119, slides:10, lang:"Both", theme:"Dark", board:["CBSE","ICSE"], level:["Class 9"], subject:"Physics", anim:false, badge:"feat", colors:["#1e3a8a","#06b6d4"], slug:"newton" },
+  { id:4, title:"Fractions Made Easy — Class 5 Maths", desc:"Bachchon ke liye rangeen slides: fraction kya hai, like/unlike fractions, jodna-ghatana aur quiz.", cat:"edu", price:29, mrp:59, slides:10, lang:"Both", theme:"Light", board:["CBSE","State Board"], level:["Class 5"], subject:"Mathematics", anim:false, badge:"", colors:["#7c3aed","#ec4899"], slug:"fractions" },
+  { id:5, title:"Startup Business Plan Pitch Deck", desc:"Investor-ready pitch deck: problem, solution, market size, business model, roadmap aur team slides. Fully editable.", cat:"biz", price:99, mrp:199, slides:10, lang:"English", theme:"Dark", board:["Corporate"], level:["Other"], subject:"Business", anim:false, badge:"feat", colors:["#0f172a","#8b2cff"], slug:"pitch" }
+].map((p,i) => { const prev = [1,2,3,4].map(k => `uploads/previews/demo-${p.slug}-${k}.webp`); return { ...p, thumb:prev[0], previews:prev, sales:0, added:5-i }; });
+
+/* =========================================================
+   APP (isko chhedne ki zarurat nahi)
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const inr = n => "₹" + Number(n).toLocaleString("en-IN");
+const icon = (id, st = "") => `<svg class="i" style="${st}"><use href="#${id}"/></svg>`;
+const arr = v => Array.isArray(v) ? v : (v ? [v] : []);
+const waURL = m => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(m)}`;
+const cssUrl = u => `url('${String(u).replace(/['"\\\n()]/g,"")}')`;
+const langTxt = l => l === "Both" ? "Hindi + English" : l;
+const thumbStyle = p => p.thumb ? `background-image:${cssUrl(p.thumb)}` : `background:linear-gradient(135deg,${p.colors[0]},${p.colors[1]})`;
+
+let PRODUCTS = [], API = false, PAY = false;
+let cart = [];
+try { cart = JSON.parse(localStorage.getItem("la_cart")) || []; } catch(e) {}
+const st = { q:"", cat:"all", f:{}, sort:"popular", shown:CONFIG.perPage };
+
+/* ---------- FILTERS ---------- */
+const PRICE = [[29,"₹29 tak"],[49,"₹49 tak"],[99,"₹99 tak"],[199,"₹199 tak"],[Infinity,"₹199 se zyada"]];
+const FILTERS = [
+  { key:"level",   label:"Class",    get:p => arr(p.level), order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
+  { key:"subject", label:"Subject",  get:p => arr(p.subject) },
+  { key:"lang",    label:"Language", get:p => p.lang === "Both" ? ["Hindi + English","Hindi","English"] : [p.lang], fixed:["Hindi","English","Hindi + English"] },
+  { key:"board",   label:"Board",    get:p => arr(p.board) },
+  { key:"theme",   label:"Theme",    get:p => [p.theme === "Light" ? "☀️ Light" : "🌙 Dark"] },
+  { key:"style",   label:"Style",    get:p => [p.anim ? "Animated" : "Without Animation"] },
+  { key:"price",   label:"Price",    get:p => PRICE.filter(b => p.price <= b[0]).map(b => b[1]), fixed:PRICE.map(b => b[1]) }
+];
+const matchQ = p => { const q = st.q.trim().toLowerCase(); if (!q) return true;
+  const hay = [p.title, p.desc, p.subject, langTxt(p.lang), ...arr(p.level), ...arr(p.board)].join(" ").toLowerCase();
+  return q.split(/\s+/).every(w => hay.includes(w)); };
+const matchF = (p, skip) => FILTERS.every(f => f.key === skip || !st.f[f.key] || f.get(p).includes(st.f[f.key]));
+const matchC = p => st.cat === "all" || p.cat === st.cat || (st.cat === "anim" && p.anim);
+const SORTS = { popular:(a,b) => b.sales - a.sales || b.added - a.added, low:(a,b) => a.price - b.price, high:(a,b) => b.price - a.price, new:(a,b) => b.added - a.added };
+
+function renderCats(){
+  const used = CATEGORIES.filter(c => PRODUCTS.some(p => p.cat === c.id || (c.id === "anim" && p.anim)));
+  $("#cats").innerHTML = [{id:"all",name:`All PPTs (${PRODUCTS.length})`}, ...used]
+    .map(c => `<button class="${st.cat === c.id ? "on" : ""}" data-cat="${c.id}">${esc(c.name)}</button>`).join("");
+}
+$("#cats").onclick = e => { const b = e.target.closest("button"); if (!b) return; st.cat = b.dataset.cat; st.shown = CONFIG.perPage; render(); };
+
+function renderFilters(){
+  $("#filters").innerHTML = FILTERS.map(f => {
+    const base = PRODUCTS.filter(p => matchC(p) && matchQ(p) && matchF(p, f.key));
+    let vals = f.fixed || [...new Set(PRODUCTS.flatMap(f.get))];
+    if (f.order) vals = [...vals].sort((a,b) => f.order(a) - f.order(b) || a.localeCompare(b));
+    else if (!f.fixed) vals.sort((a,b) => a.localeCompare(b));
+    const cur = st.f[f.key] || "";
+    if (vals.length < 2 && !cur) return "";
+    return `<label class="fsel ${cur ? "on" : ""}"><span>${f.label}</span><select data-f="${f.key}"><option value="">All</option>${
+      vals.map(v => `<option value="${esc(v)}" ${v === cur ? "selected" : ""}>${esc(v)} (${base.filter(p => f.get(p).includes(v)).length})</option>`).join("")}</select></label>`;
+  }).join("") + `<label class="fsel"><span>Sort by</span><select id="sort">${[["popular","Most Popular"],["low","Price: Low to High"],["high","Price: High to Low"],["new","Newest"]]
+      .map(([v,t]) => `<option value="${v}" ${st.sort === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>`;
+  const n = Object.values(st.f).filter(Boolean).length + (st.cat !== "all" ? 1 : 0);
+  $("#fcount").textContent = n ? `(${n})` : "";
+  $("#clear").hidden = !(n || st.q);
+}
+$("#filters").onchange = e => {
+  if (e.target.id === "sort") st.sort = e.target.value;
+  else if (e.target.dataset.f) st.f[e.target.dataset.f] = e.target.value;
+  st.shown = CONFIG.perPage; render();
+};
+$("#ftoggle").onclick = () => $("#filters").classList.toggle("open");
+$("#clear").onclick = () => { st.f = {}; st.cat = "all"; st.q = ""; $("#q").value = ""; render(); };
+let qt; $("#q").oninput = e => { clearTimeout(qt); qt = setTimeout(() => { st.q = e.target.value; st.shown = CONFIG.perPage; render(); }, 120); };
+
+/* ---------- GRID ---------- */
+const ribbon = b => ({ best:`<span class="ribbon r-best">BEST SELLER</span>`, new:`<span class="ribbon r-new">NEW</span>`, feat:`<span class="ribbon r-feat">FEATURED</span>` })[b] || "";
+const soldTag = p => p.sales > 0
+  ? `<span class="sold">🔥 ${p.sales.toLocaleString("en-IN")} <span class="lg">${p.sales === 1 ? "vyakti ne" : "logon ne"} khareeda</span><span class="sh">bike</span></span>`
+  : `<span class="sold fresh">✨ Naya<span class="lg"> · pehle khareedne wale baniye</span></span>`;
+function card(p){
+  const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, inCart = cart.includes(p.id);
+  return `<article class="card">
+    <button class="thumb" style="${thumbStyle(p)}" onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
+      ${ribbon(p.badge)}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
+      <span class="peek">👁 Preview</span>
+      <span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>
+    </button>
+    <div class="c-body">
+      ${soldTag(p)}
+      <h3>${esc(p.title)}</h3>
+      <p>${esc(p.desc)}</p>
+      <div class="tags">${[langTxt(p.lang), ...arr(p.level).filter(l => l !== "Other"), p.subject, p.anim ? "Animated" : ""].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
+      <div class="acts">
+        <button class="btn btn-ghost btn-sm add ${inCart ? "added" : ""}" onclick="toggleCart(${p.id})">${inCart ? "✓ In Cart" : "+ Add to Cart"}</button>
+        <button class="btn btn-gold btn-sm" onclick="openPay([${p.id}])">${icon("i-zap","width:14px")}Buy Now</button>
+      </div>
+    </div></article>`;
+}
+function render(){
+  renderCats(); renderFilters();
+  const list = PRODUCTS.filter(p => matchC(p) && matchQ(p) && matchF(p)).sort(SORTS[st.sort]);
+  const show = list.slice(0, st.shown);
+  $("#resultTxt").textContent = PRODUCTS.length ? `${list.length} PPT${list.length === 1 ? "" : "s"} mili` : "";
+  $("#grid").innerHTML = show.length ? show.map(card).join("")
+    : `<div class="empty"><b>${PRODUCTS.length ? "Is filter mein koi PPT nahi mili" : "Ready PPTs jald aa rahi hain"}</b>Filter badal kar dekhiye, ya apni custom PPT banwaiye. <a class="clear" href="order.html">PPT Order Now →</a></div>`;
+  $("#more").hidden = list.length <= show.length;
+  renderCart();
+}
+$("#more").onclick = () => { st.shown += CONFIG.perPage; render(); };
+
+/* ---------- CART ---------- */
+function saveCart(){ try { localStorage.setItem("la_cart", JSON.stringify(cart)); } catch(e) {} render(); }
+function toggleCart(id){
+  if (cart.includes(id)) { cart = cart.filter(x => x !== id); toast("Cart se hata diya"); }
+  else { cart.push(id); toast("✓ Cart mein add ho gaya"); }
+  saveCart();
+}
+function renderCart(){
+  const items = cart.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
+  $("#cartCount").textContent = items.length; $("#cartCount").dataset.n = items.length;
+  $("#cartBody").innerHTML = items.length ? items.map(p => `<div class="ci"><span class="mini" style="${thumbStyle(p)}"></span>
+      <div><b>${esc(p.title)}</b><small>${inr(p.price)}</small></div>
+      <button onclick="toggleCart(${p.id})" aria-label="Remove ${esc(p.title)}">${icon("i-trash")}</button></div>`).join("")
+    : `<div class="empty" style="padding:40px 10px"><b>Cart khaali hai</b>PPT par "Add to Cart" dabaiye.</div>`;
+  $("#cartTotal").textContent = inr(items.reduce((s,p) => s + p.price, 0));
+  $("#checkout").disabled = !items.length; $("#checkout").style.opacity = items.length ? 1 : .5;
+}
+const overlayOn = () => $("#overlay").classList.toggle("on", $("#drawer").classList.contains("on") || !!document.querySelector(".modal.on"));
+function openCart(o){ $("#drawer").classList.toggle("on", o); overlayOn(); }
+$("#cartBtn").onclick = () => openCart(true);
+$("#closeCart").onclick = () => openCart(false);
+$("#checkout").onclick = () => { const ids = cart.filter(id => PRODUCTS.some(p => p.id === id)); if (ids.length) { openCart(false); openPay(ids); } };
+
+/* ---------- POPUPS ---------- */
+function showModal(id){ $("#"+id).classList.add("on"); overlayOn(); }
+function hideModal(id){ $("#"+id).classList.remove("on"); overlayOn(); }
+document.querySelectorAll(".modal").forEach(m => m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-close]")) hideModal(m.id); }));
+$("#overlay").onclick = () => { openCart(false); document.querySelectorAll(".modal.on").forEach(m => hideModal(m.id)); };
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { openCart(false); document.querySelectorAll(".modal.on").forEach(m => hideModal(m.id)); }
+  if ($("#previewModal").classList.contains("on") && (e.key === "ArrowRight" || e.key === "ArrowLeft")) slide(e.key === "ArrowRight" ? 1 : -1);
+});
+
+/* ---------- PREVIEW ---------- */
+let pv = { p:null, k:0 };
+function openPreview(id){
+  const p = PRODUCTS.find(x => x.id === id); if (!p) return;
+  pv = { p, k:0 };
+  const imgs = p.previews && p.previews.length ? p.previews : (p.thumb ? [p.thumb] : []);
+  const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
+  $("#previewBody").innerHTML = `
+    <div class="stage" id="stage" style="${imgs.length ? "" : thumbStyle(p)}">
+      ${imgs.length ? `<img id="stageImg" src="${esc(imgs[0])}" alt="${esc(p.title)} slide 1">` : `<span class="gt" style="position:absolute;inset:auto 20px 20px;color:#fff;font:700 1.5rem 'Space Grotesk','Hind'">${esc(p.title)}</span>`}
+      ${imgs.length > 1 ? `<button class="s-nav s-prev" onclick="slide(-1)" aria-label="Previous slide">${icon("i-left")}</button><button class="s-nav s-next" onclick="slide(1)" aria-label="Next slide">${icon("i-right")}</button><span class="s-pos" id="spos">1 / ${imgs.length}</span>` : ""}
+    </div>
+    ${imgs.length > 1 ? `<div class="strip">${imgs.map((u,k) => `<button class="${k ? "" : "on"}" onclick="slide(${k},true)" aria-label="Slide ${k+1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
+    <div class="m-info">
+      ${soldTag(p)}
+      <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
+      <div class="tags">${[`${p.slides} Slides`, langTxt(p.lang), `${p.theme} Theme`, ...arr(p.level).filter(l => l !== "Other"), p.subject, ...arr(p.board), "16:9 HD", "Editable .pptx"].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      ${imgs.length ? `<p style="font-size:.78rem;color:var(--dim)">Preview mein ${imgs.length} slides dikhayi gayi hain. Poori PPT mein ${p.slides} slides hain.</p>` : ""}
+      <div class="m-buy">
+        <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
+        <div class="grow">
+          <button class="btn btn-ghost btn-sm" onclick="toggleCart(${p.id});hideModal('previewModal')">${cart.includes(p.id) ? "Remove from Cart" : "+ Add to Cart"}</button>
+          <button class="btn btn-gold btn-sm" onclick="hideModal('previewModal');openPay([${p.id}])">${icon("i-zap","width:14px")}Buy Now</button>
+        </div>
+      </div>
+    </div>`;
+  showModal("previewModal");
+}
+function slide(d, abs){
+  const imgs = pv.p.previews && pv.p.previews.length ? pv.p.previews : []; if (imgs.length < 2) return;
+  pv.k = abs ? d : (pv.k + d + imgs.length) % imgs.length;
+  $("#stageImg").src = imgs[pv.k]; $("#stageImg").alt = `${pv.p.title} slide ${pv.k+1}`;
+  $("#spos").textContent = `${pv.k+1} / ${imgs.length}`;
+  document.querySelectorAll(".strip button").forEach((b,k) => b.classList.toggle("on", k === pv.k));
+}
+
+/* ---------- CHECKOUT ---------- */
+let payIds = [];
+const cleanPhone = v => v.replace(/\D/g,"").replace(/^(91|0)(?=\d{10}$)/,"");
+function openPay(ids){
+  payIds = ids.filter(id => PRODUCTS.some(p => p.id === id)); if (!payIds.length) return;
+  const items = payIds.map(id => PRODUCTS.find(p => p.id === id)), total = items.reduce((s,p) => s + p.price, 0);
+  $("#payItems").innerHTML = items.map(p => `<div class="pi"><b>${esc(p.title)}</b><span>${inr(p.price)}</span></div>`).join("") + `<div class="pi tot"><span>Total</span><span>${inr(total)}</span></div>`;
+  $("#paySubmit").innerHTML = `${icon("i-card")} Pay ${inr(total)} Securely`;
+  $("#paySubmit").hidden = !PAY; $("#payWa").hidden = PAY;
+  $("#payNote").textContent = PAY ? "🔒 Secure payment by Razorpay · UPI, Cards, Net Banking" : "Online payment jald shuru hoga. Abhi WhatsApp par order karein, hum payment link bhej denge.";
+  $("#payMain").hidden = false; $("#payDone").hidden = true;
+  try { const s = JSON.parse(localStorage.getItem("la_buyer") || "{}"); ["payName","payEmail","payPhone"].forEach(k => { if (s[k] && !$("#"+k).value) $("#"+k).value = s[k]; }); } catch(e) {}
+  showModal("payModal"); setTimeout(() => $("#payName").focus(), 250);
+}
+["payName","payEmail","payPhone"].forEach(id => $("#"+id).addEventListener("input", e => e.target.closest("label").classList.remove("bad")));
+$("#payPhone").addEventListener("input", e => { e.target.value = e.target.value.replace(/[^\d+ ]/g,""); });
+function buyer(){
+  const d = { name:$("#payName").value.trim(), email:$("#payEmail").value.trim(), phone:cleanPhone($("#payPhone").value) };
+  const bad = [["p-name", d.name.length < 2], ["p-email", !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)], ["p-phone", !/^[6-9]\d{9}$/.test(d.phone)]];
+  bad.forEach(([id,b]) => $("#"+id).classList.toggle("bad", b));
+  const first = bad.find(x => x[1]); if (first) { $("#"+first[0]+" input").focus(); return null; }
+  try { localStorage.setItem("la_buyer", JSON.stringify({ payName:d.name, payEmail:d.email, payPhone:$("#payPhone").value })); } catch(e) {}
+  return d;
+}
+$("#payWa").onclick = () => {
+  const d = buyer(); if (!d) return;
+  const items = payIds.map(id => PRODUCTS.find(p => p.id === id));
+  window.open(waURL(`Hi Lakshay Agency! Mujhe ye Ready PPT${items.length > 1 ? "s" : ""} chahiye:\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(items.reduce((s,p) => s + p.price, 0))}\n\nName: ${d.name}\nEmail: ${d.email}\nPhone: ${d.phone}`), "_blank");
+};
+async function post(url, fields){
+  const fd = new FormData(); Object.entries(fields).forEach(([k,v]) => fd.append(k, v ?? ""));
+  try { const r = await fetch(url, { method:"POST", body:fd, headers:{ Accept:"application/json" } }); const j = await r.json().catch(() => ({}));
+    return r.ok && j.ok ? j : { ok:false, error:j.error || "Kuch gadbad ho gayi. Dobara try karein." }; }
+  catch(e) { return { ok:false, error:"Internet check karein aur dobara try karein." }; }
+}
+function loadRazorpay(){
+  return new Promise((ok, no) => { if (window.Razorpay) return ok();
+    const s = document.createElement("script"); s.src = "https://checkout.razorpay.com/v1/checkout.js"; s.onload = ok; s.onerror = () => no(new Error("Payment page load nahi hua. Internet check karein.")); document.head.appendChild(s); });
+}
+$("#payForm").onsubmit = async e => {
+  e.preventDefault(); if (!PAY) return;
+  const d = buyer(); if (!d) return;
+  const btn = $("#paySubmit"), label = btn.innerHTML, reset = () => { btn.disabled = false; btn.innerHTML = label; };
+  btn.disabled = true; btn.textContent = "Please wait…";
+  const o = await post("api/order.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
+  if (!o.ok) { reset(); toast("⚠ " + o.error); return; }
+  try { await loadRazorpay(); } catch(err) { reset(); toast("⚠ " + err.message); return; }
+  const rzp = new Razorpay({ key:o.key, amount:o.amount, currency:"INR", name:o.name, order_id:o.rzpOrderId, prefill:o.prefill, theme:{ color:"#8b2cff" },
+    description: payIds.length > 1 ? `${payIds.length} PPTs` : PRODUCTS.find(p => p.id === payIds[0]).title,
+    modal:{ ondismiss:reset },
+    handler: async resp => {
+      btn.textContent = "Payment verify ho raha hai…";
+      const v = await post("api/verify.php", resp); reset();
+      if (!v.ok) { toast("⚠ " + v.error); return; }
+      cart = cart.filter(id => !payIds.includes(id)); saveCart();
+      $("#payMain").hidden = true; $("#payDone").hidden = false;
+      $("#payDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>Payment Successful! 🎉</h3>
+        <p style="color:var(--muted)">Thank you, ${esc(d.name)}! Order #${v.orderId}. Neeche se PPT download karein. Links <b>${esc(v.email)}</b> par bhi bheje gaye hain.</p>
+        <div class="dl">${v.links.map(l => `<a href="${esc(l.url)}">${esc(l.title)} <span style="color:var(--green)">⬇ Download</span></a>`).join("")}</div>
+        <button class="btn btn-ghost" data-close>Close</button>`;
+    } });
+  rzp.on("payment.failed", r => { reset(); toast("⚠ Payment fail: " + (r.error?.description || "dobara try karein")); });
+  rzp.open();
+};
+
+let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 2200); }
+
+/* ---------- START ---------- */
+(async function boot(){
+  try {
+    const r = await fetch("api/data.php", { headers:{ Accept:"application/json" }, cache:"no-store" });
+    const j = await r.json();
+    if (j.ok) { API = true; PRODUCTS = j.products || []; PAY = !!(j.settings && j.settings.payments); if (j.settings && j.settings.whatsapp) CONFIG.whatsapp = j.settings.whatsapp; }
+  } catch(e) { /* server nahi mila: demo PPTs dikhengi */ }
+  if (!API) PRODUCTS = DEMO;
+  const q = new URLSearchParams(location.search).get("q"); if (q) { st.q = q; $("#q").value = q; }
+  render();
+})();
+</script>
+</body>
+</html>

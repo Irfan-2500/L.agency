@@ -8,8 +8,10 @@
 | Admin Panel | `yourdomain.com/admin` |
 | Settings (WhatsApp, Email, Razorpay, Database) | `config.php` |
 | PPT theme samples (19 themes) | `uploads/themes/samples/` |
-| Customer files (private) | `uploads/requests/` |
+| Customer files (private) | `storage/requests/` |
 | PPT files for sale (private) | `storage/ppt/` |
+| Ready PPTs page (filter + cart + Buy Now) | `ready-ppts.html` |
+| 5 demo PPTs (.pptx) | `demo/ppt/` |
 
 **Website par:** ⚡ "1 Hour. Your PPT. Ready!" hero · Smart Board par Pricing + Bulk offer (har 5 sec badalta) · 🎨 PPT Themes gallery (Dark/White, Questions/Theory/Theory+Q/Screenshot, Hindi/English/Both filters, auto-swipe) · Custom PPT section · ₹ Pricing popup · 🌙 Dark / ☀️ Light / 🖥️ System theme · scroll progress line · Reviews · FAQ · Contact.
 
@@ -44,23 +46,22 @@ Browser mein kholo: `https://yourdomain.com/install.php`
 - Admin username + password banao → **Install Now**
 - ✅ Uske baad File Manager se **`install.php` delete kar do**
 
-### Step 5 — PPT files upload karo
-`https://yourdomain.com/admin` → login → **PPTs**
-- Har PPT par **Edit** → "PPT File for customers" mein asli .pptx / .zip daalo → Save
-- Jis PPT par laal **Missing** likha hai, uski file abhi baaki hai
-- Thumbnail photo bhi daal sakte ho (warna gradient colour dikhega)
+### Step 5 — Ready PPTs upload karo
+`https://yourdomain.com/admin` → login → **🗂️ Ready PPTs** → **+ Nayi PPT upload karo**
+- Naam, price, MRP, slides, class, subject, language bharo
+- **Cover photo** + **Preview slides** (kai photos ek saath) daalo — customer "Preview" mein yahi dekhega
+- **PPT file** (.pptx / .ppt / .pdf / .zip) daalo — ye customer ko sirf payment ke baad milti hai
+- Jis PPT par **⚠ PPT file nahi hai** likha hai, uski file abhi baaki hai
+- Install ke time **5 demo PPTs** (asli .pptx ke saath) lag jaati hain — inhe edit ya delete kar sakte ho
+- Saari PPTs `ready-ppts.html` page par dikhti hain (homepage ka sunehra **Ready to Use PPT** button yahi kholta hai). Wahan filter, Add to Cart aur Buy Now hai
+- **🔥 Kitne logon ne khareeda:** website ke paid orders apne aap gine jaate hain. WhatsApp / offline bikri ho to PPT edit karke "Pehle ki bikri" mein asli number daal do — dono jud kar card par dikhte hain
 
 
-### Step 5B — PPT Themes upload karo (100 themes)
-- Install ke time aapke **19 PPT samples** pehle se lag jaate hain ("Mere 19 sample themes add karo" button se wapas bhi daal sakte ho)
-- Admin → **🎨 Themes** → upar do tarike:
-  - **🖼️🖼️🖼️ Ek theme, kai slides** — ek PPT ki 2–10 slides ek saath chuno, theme ka naam likho → 1 theme banegi, website par slides swipe hongi
-  - **🖼️ | 🖼️ Har image alag theme** — alag PPTs ki 1-1 image → har image alag theme
-- Theme / Slide Type / Language set karo → **Upload**
-- Baad mein kisi bhi theme card par:
-  - **＋ Add slides** — us theme mein aur slides jodo (max 10)
-  - slide par mouse le jao → **★** cover banao · **‹ ›** aage-peeche · **✕** hatao
-- Naam ya tag badlo → **Save All Changes** · "Live" tick hatao toh theme chhup jayegi
+### Step 5B — PPT Themes upload karo
+- Agar `uploads/themes/samples/` folder mein aapki 19 sample images hain, to install ke time wo themes apne aap lag jaati hain
+- Admin → **🎨 Themes** → naam, rang (Dark/White), type, language chuno → **Slide images** mein ek theme ki kai slides ek saath chuno → **Save theme**
+- Kisi theme par click karke aur slides jodo, ya "Hatao" tick karke slide hatao
+- "Website par dikhao" tick hatao toh theme chhup jayegi
 - PowerPoint se slide image: **File → Export → Change File Type → PNG**
 
 ### Step 6 — Razorpay (online payment) chalu karo
@@ -100,7 +101,7 @@ hPanel → **Security → SSL** → free SSL install karo. Payment ke liye https
 5. Price hamesha database se liya jaata hai — koi browser se price badal kar sasta nahi khareed sakta
 
 **Customer bole "paise kat gaye par link nahi mila":**
-Admin → **Orders → Not completed** → Razorpay Dashboard mein payment "Captured" check karo → Payment ID daal kar **Mark Paid & Send Links**. Paid order mein **"Send links on WhatsApp"** button bhi hai.
+Admin → **Orders → Payment adhoora** → Razorpay Dashboard mein payment "Captured" check karo → Payment ID (`pay_...`) daal kar **Mark Paid**. Paid order mein **"📲 Link WhatsApp par bhejo"** button bhi hai.
 
 ---
 
@@ -113,8 +114,8 @@ Admin → **Orders → Not completed** → Razorpay Dashboard mein payment "Capt
 - `install.php` delete karna mat bhoolna
 
 ## 🛠️ Chhote badlaav
-- **Naya subject / board / class option:** `includes/options.php` (admin ke liye) **aur** `index.html` mein `SUBJECTS` / `FILTERS` (website ke liye) — dono jagah same naam likho
-- **Category naam:** `includes/options.php` mein `CATS` aur `index.html` mein `CATEGORIES`
+- **Naya subject / board option:** `admin/products.php` mein `SUBJECTS` / `BOARDS` (admin ke liye) **aur** `index.html` mein `SUBJECTS` / `FILTERS` — dono jagah same naam likho. `ready-ppts.html` ke filters apne aap PPTs se bante hain
+- **Category naam:** `includes/bootstrap.php` mein `CATS`, `index.html` aur `ready-ppts.html` mein `CATEGORIES`
 - **FAQ:** `index.html` mein `FAQS`
 
 ## 💡 Backup

@@ -46,7 +46,7 @@ if (is_installed()) {
     <label>Password (min 8)<input type="password" name="password" required minlength="8"></label>
     <label>Confirm Password<input type="password" name="password2" required minlength="8"></label>
     <label class="check"><input type="checkbox" name="themes" value="1" checked> Mere 19 PPT theme samples website par daal do</label>
-    <label class="check"><input type="checkbox" name="seed" value="1"> 12 sample (demo) PPTs bhi daal do (baad mein edit/delete kar sakte ho)</label>
+    <label class="check"><input type="checkbox" name="seed" value="1" checked> 5 demo Ready PPTs bhi daal do (baad mein admin panel se edit/delete kar sakte ho)</label>
     <button class="btn">Install Now</button>
   </form>
 <?php endif; ?>

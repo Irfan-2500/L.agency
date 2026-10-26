@@ -1,0 +1,7 @@
+# Server par banne wali files (GitHub par nahi jaani chahiye)
+storage/
+uploads/thumbs/
+uploads/themes/*
+!uploads/themes/samples/
+uploads/previews/*
+!uploads/previews/demo-*
