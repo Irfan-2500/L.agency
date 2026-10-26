@@ -157,6 +157,19 @@ function mark_order_paid(array $o, string $paymentId): array {
     return $links;
 }
 
+/* Razorpay API call. [http code, json] */
+function rzp_api(string $method, string $path, ?array $body = null): array {
+    global $CFG;
+    $ch = curl_init('https://api.razorpay.com/v1/' . $path);
+    curl_setopt_array($ch, [CURLOPT_CUSTOMREQUEST => $method, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 20,
+        CURLOPT_USERPWD => $CFG['razorpay']['key_id'] . ':' . $CFG['razorpay']['key_secret'], CURLOPT_HTTPHEADER => ['Content-Type: application/json']]);
+    if ($body !== null) curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+    $res = json_decode((string)curl_exec($ch), true);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return [$code, is_array($res) ? $res : []];
+}
+
 /* ---------- FILE UPLOAD HELPERS ---------- */
 function upload_error_text(int $code): string {
     return [UPLOAD_ERR_INI_SIZE => 'File bahut badi hai (server limit).', UPLOAD_ERR_FORM_SIZE => 'File bahut badi hai.',

@@ -72,7 +72,7 @@ Browser mein kholo: `https://yourdomain.com/install.php`
 
 Is tareeke mein payment ke baad customer UTR daalta hai aur aap admin mein check karke link bhejte ho.
 
-> **Payment hote hi turant download chahiye?** Toh Step 6B (Razorpay) karo. Razorpay keys daalte hi checkout apne aap PhonePe / Google Pay / Paytm buttons se Razorpay chalata hai: amount fixed, payment verify, aur customer ko "Congratulations" ke saath turant Download. Razorpay keys hon toh UPI ID wala tareeka use nahi hota.
+> **Payment hote hi turant download chahiye?** Toh Step 6B (Razorpay) karo. Razorpay keys daalte hi checkout apne aap PhonePe / Google Pay / Paytm buttons se Razorpay chalata hai: amount fixed, payment verify, aur customer ko "Congratulations" ke saath turant Download. Razorpay keys hon toh UPI ID wala tareeka use nahi hota. Checkout par Razorpay ka QR bhi dikhta hai (amount fixed, scan karke pay karte hi download): iske liye Razorpay Dashboard mein **QR Codes** feature chalu hona chahiye.
 
 ### Step 6B — Razorpay (online payment, optional)
 1. https://dashboard.razorpay.com par account banao, KYC complete karo

@@ -38,7 +38,7 @@ admin_header('Orders', 'orders');
 <td><?= e($o['name']) ?><small><?= e($o['email']) ?></small><small><a href="https://wa.me/91<?= e($o['phone']) ?>" target="_blank" rel="noopener">WhatsApp <?= e($o['phone']) ?></a></small></td>
 <td><?= e(implode(', ', array_map(fn($i) => $titles[$i] ?? "#$i", json_decode($o['items'], true) ?: []))) ?></td>
 <td><b><?= inr($o['amount'] / 100) ?></b></td>
-<td><span class="tag <?= $cls ?>"><?= e($txt) ?></span><small><?= $o['method'] === 'upi' ? 'UPI QR' : 'Razorpay' ?></small>
+<td><span class="tag <?= $cls ?>"><?= e($txt) ?></span><small><?= ['upi' => 'UPI ID (UTR)', 'qr' => 'Razorpay QR'][$o['method']] ?? 'Razorpay' ?></small>
   <?php if ($o['utr']): ?><small>UTR: <b><?= e($o['utr']) ?></b></small><?php endif; ?>
   <?php if ($o['proof']): ?><small><a href="proof.php?o=<?= (int)$o['id'] ?>" target="_blank">🧾 Screenshot dekho</a></small><?php endif; ?>
   <?php if ($o['rzp_payment_id'] && $o['rzp_payment_id'] !== $o['utr']): ?><small><?= e($o['rzp_payment_id']) ?></small><?php endif; ?></td>
