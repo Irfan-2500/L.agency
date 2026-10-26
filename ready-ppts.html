@@ -391,7 +391,7 @@ let qt; $("#q").oninput = e => { clearTimeout(qt); qt = setTimeout(() => { st.q 
 /* ---------- GRID ---------- */
 const ribbon = b => ({ best:`<span class="ribbon r-best">BEST SELLER</span>`, new:`<span class="ribbon r-new">NEW</span>`, feat:`<span class="ribbon r-feat">FEATURED</span>` })[b] || "";
 const soldTag = p => p.sales > 0
-  ? `<span class="sold">🔥 ${p.sales.toLocaleString("en-IN")} <span class="lg">${p.sales === 1 ? "vyakti ne" : "logon ne"} khareeda</span><span class="sh">ne khareedi</span></span>`
+  ? `<span class="sold">🔥 ${p.sales.toLocaleString("en-IN")} <span class="lg">${p.sales === 1 ? "vyakti ne" : "logon ne"} khareeda</span><span class="sh">baar khareedi gayi</span></span>`
   : `<span class="sold fresh">✨ Naya<span class="lg"> · pehle khareedne wale baniye</span></span>`;
 function card(p){
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, inCart = cart.includes(p.id);
