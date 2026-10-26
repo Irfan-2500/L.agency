@@ -70,7 +70,9 @@ Browser mein kholo: `https://yourdomain.com/install.php`
 3. Chaho toh apne QR ki photo bhi upload karo (UPI ID na ho tab wahi dikhegi)
 4. **Save** → ab Cart mein **Proceed to Pay** dabate hi customer ko aapka QR (amount ke saath), UPI ID aur PhonePe / GPay / Paytm buttons dikhenge
 
-UPI set ho toh website Razorpay ki jagah UPI QR checkout dikhati hai. UPI ID khaali karke Save karo toh wapas Razorpay / WhatsApp chalega.
+Is tareeke mein payment ke baad customer UTR daalta hai aur aap admin mein check karke link bhejte ho.
+
+> **Payment hote hi turant download chahiye?** Toh Step 6B (Razorpay) karo. Razorpay keys daalte hi checkout apne aap PhonePe / Google Pay / Paytm buttons se Razorpay chalata hai: amount fixed, payment verify, aur customer ko "Congratulations" ke saath turant Download. Razorpay keys hon toh UPI ID wala tareeka use nahi hota.
 
 ### Step 6B — Razorpay (online payment, optional)
 1. https://dashboard.razorpay.com par account banao, KYC complete karo

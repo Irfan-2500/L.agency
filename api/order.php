@@ -10,7 +10,7 @@ if (empty($rz['key_id']) || empty($rz['key_secret'])) json_err('Online payment a
 $name = clean($_POST['name'] ?? '', 120);
 $email = clean($_POST['email'] ?? '', 190);
 $phone = clean_phone($_POST['phone'] ?? '');
-if (mb_strlen($name) < 2) json_err('Please enter your name');
+if ($name === '') $name = 'Customer';
 if (!valid_email($email)) json_err('Please enter a valid email');
 if (!valid_phone($phone)) json_err('Please enter a valid 10-digit mobile number');
 
