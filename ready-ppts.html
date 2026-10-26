@@ -328,13 +328,13 @@ html.light .kicker{color:#a16207;background:#fef9c3}
     <div id="payMain">
       <h3 id="payTitle">Checkout</h3>
       <div class="pay-items" id="payItems"></div>
-      <div class="pay-alert" id="payAlert" role="alert" hidden>⚠ Pehle apna <b>Name</b> aur <b>Mobile number</b> bharein, tab QR aur payment khulega.</div>
+      <div class="pay-alert" id="payAlert" role="alert" hidden>⚠ Pehle apna <b>Name</b>, <b>Mobile number</b> aur <b>Email</b> bharein, tab QR aur payment khulega.</div>
       <form class="form" id="payForm" novalidate>
         <div class="row2">
           <label id="p-name">Name *<input id="payName" autocomplete="name" placeholder="Aapka naam"><span class="err">Naam likhiye</span></label>
           <label id="p-phone">Mobile (WhatsApp) *<input id="payPhone" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="10-digit mobile"><span class="err">Sahi 10-digit number likhiye</span></label>
         </div>
-        <label id="p-email">Email <small style="color:var(--dim);font-weight:500">(optional, download link yahan bhi aayega)</small><input id="payEmail" inputmode="email" autocomplete="email" placeholder="you@example.com"><span class="err">Sahi email likhiye</span></label>
+        <label id="p-email">Email * <small style="color:var(--dim);font-weight:500">(download link aur login OTP yahan aayega)</small><input id="payEmail" inputmode="email" autocomplete="email" placeholder="you@example.com"><span class="err">Sahi email likhiye</span></label>
         <input type="text" class="hp" id="payHp" tabindex="-1" autocomplete="off" aria-hidden="true">
       </form>
       <div class="upi" id="upiBox"></div>
@@ -579,7 +579,7 @@ function openPay(ids){
   $("#upiBox").hidden = m === "wa"; $("#payWa").hidden = m !== "wa"; $("#utrWrap").hidden = m !== "upi" && m !== "demo"; $("#payUtr").value = "";
   $("#upiBox").innerHTML = m === "wa" ? "" : `<h4>QR scan karke <b>${inr(payTotal)}</b> pay karein</h4>
     <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg">${(!hasId && u.qr) ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""}</div>
-      <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name aur Mobile bharein,<br>QR khul jayega</span></button></div>
+      <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
     ${m === "rzp" ? `<div class="live" id="qrLive" hidden>● Payment ka intezaar… pay hote hi download khulega</div>` : hasId ? `<div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed ${inr(payTotal)}</div>` : ""}
     ${m === "demo" ? `<button type="button" class="note" id="demoQrPaid" style="text-decoration:underline">(Demo) QR se payment ho gaya maan lo</button>` : ""}
     ${showApps ? `<div class="or">ya app se pay karein</div>
@@ -597,16 +597,17 @@ function openPay(ids){
   if (m === "rzp") makeQr();
 }
 /* Name + Mobile bhare bina QR blur, aur app / QR dabane par alert + Name par le jao */
-const ready = () => $("#payName").value.trim().length >= 2 && /^[6-9]\d{9}$/.test(cleanPhone($("#payPhone").value));
+const emailOk = () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("#payEmail").value.trim());
+const ready = () => $("#payName").value.trim().length >= 2 && /^[6-9]\d{9}$/.test(cleanPhone($("#payPhone").value)) && emailOk();
 function lockQr(){ const b = $("#qrBox"); if (b) b.classList.toggle("locked", !ready()); if (ready()) $("#payAlert").hidden = true; }
 function nudge(){
   const a = $("#payAlert"); a.hidden = false; a.classList.remove("shake"); void a.offsetWidth; a.classList.add("shake");
-  const name = $("#payName").value.trim().length < 2;
-  $("#p-name").classList.toggle("bad", name); $("#p-phone").classList.toggle("bad", !/^[6-9]\d{9}$/.test(cleanPhone($("#payPhone").value)));
+  const bad = [["p-name", $("#payName").value.trim().length < 2], ["p-phone", !/^[6-9]\d{9}$/.test(cleanPhone($("#payPhone").value))], ["p-email", !emailOk()]];
+  bad.forEach(([id,b]) => $("#"+id).classList.toggle("bad", b));
   $("#payModal .m-box").scrollTo({ top:0, behavior:"smooth" });
-  setTimeout(() => (name ? $("#payName") : $("#payPhone")).focus({ preventScroll:true }), 250);
+  const first = bad.find(x => x[1]); setTimeout(() => $("#"+(first ? first[0] : "p-name")+" input").focus({ preventScroll:true }), 250);
 }
-["payName","payPhone"].forEach(id => $("#"+id).addEventListener("input", lockQr));
+["payName","payPhone","payEmail"].forEach(id => $("#"+id).addEventListener("input", lockQr));
 document.addEventListener("click", e => { if (e.target.closest("#qrLock")) nudge(); });
 
 /* Razorpay QR: details bharte hi single-use QR (amount fixed), phir har 4 sec "payment aaya?" */
@@ -640,11 +641,8 @@ $("#payPhone").addEventListener("input", e => { e.target.value = e.target.value.
 $("#payForm").onsubmit = e => e.preventDefault();
 function buyer(silent){
   const d = { name:$("#payName").value.trim(), email:$("#payEmail").value.trim(), phone:cleanPhone($("#payPhone").value) };
-  const badEmail = d.email !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email);
-  if (silent) return ready() && !badEmail ? d : null;
+  if (silent) return ready() ? d : null;
   if (!ready()) { nudge(); return null; }
-  $("#p-email").classList.toggle("bad", badEmail);
-  if (badEmail) { $("#payEmail").focus(); return null; }
   try { localStorage.setItem("la_buyer", JSON.stringify({ payName:d.name, payEmail:d.email, payPhone:$("#payPhone").value })); } catch(e) {}
   return d;
 }

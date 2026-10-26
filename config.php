@@ -44,10 +44,11 @@ return [
     ],
 
     // ---------- 3C. MY PPTs LOGIN ----------
-    // otp => false: customer sirf wahi mobile number daal kar login karta hai jo payment ke time bhara tha.
-    // otp => true: number ke baad OTP bhi (fast2sms.com ki API key daalo, khaali = OTP email par).
+    // otp => true: mobile number ke baad OTP, jo customer ke email par jata hai (order wala email).
+    //   fast2sms.com ki API key daaloge toh OTP SMS par jayega.
+    // otp => false: sirf wahi mobile number daal kar login (jo payment ke time bhara tha).
     'sms' => [
-        'otp'          => false,
+        'otp'          => true,
         'fast2sms_key' => '',
     ],
 

@@ -11,7 +11,7 @@ $name = clean($_POST['name'] ?? '', 120);
 $email = clean($_POST['email'] ?? '', 190);
 $phone = clean_phone($_POST['phone'] ?? '');
 if ($name === '') $name = 'Customer';
-if ($email !== '' && !valid_email($email)) json_err('Please enter a valid email');
+if (!valid_email($email)) json_err('Please enter a valid email');
 if (!valid_phone($phone)) json_err('Please enter a valid 10-digit mobile number');
 
 $ids = array_values(array_unique(array_filter(array_map('intval', (array)json_decode((string)($_POST['items'] ?? '[]'), true)))));

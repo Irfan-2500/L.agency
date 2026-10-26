@@ -130,11 +130,11 @@ input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,44,255,.2)}
   <!-- Login -->
   <section class="box" id="login" hidden>
     <span class="ic"><svg class="i"><use href="#i-user"/></svg></span>
-    <div><h1>My PPTs</h1><p>Wahi mobile number daalein jo PPT khareedte samay bhara tha, aur apni PPTs kabhi bhi dobara download karein.</p></div>
+    <div><h1>My PPTs</h1><p>Wahi mobile number daalein jo PPT khareedte samay bhara tha. OTP aapke order wale email par aayega.</p></div>
     <form id="fPhone" novalidate style="display:grid;gap:14px">
       <label>Mobile Number<span class="phone"><span>+91</span><input id="phone" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="10-digit mobile number"></span></label>
       <input type="text" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-      <button class="btn btn-gold" id="sendBtn">Login</button>
+      <button class="btn btn-gold" id="sendBtn">OTP Bhejo</button>
     </form>
     <form id="fOtp" novalidate hidden style="display:grid;gap:14px">
       <p id="sentTo"></p>
@@ -179,9 +179,9 @@ let demoIn = false;
 function demoApi(f){
   const items = [{ id:1, title:"Photosynthesis — Class 10 Science", thumb:"uploads/previews/demo-photosynthesis-1.webp", orderId:12, date:"2026-10-20 18:42:00", url:"#demo" },
                  { id:3, title:"Newton's Laws of Motion — Class 9", thumb:"uploads/previews/demo-newton-1.webp", orderId:15, date:"2026-10-24 11:05:00", url:"#demo" }];
-  if (!f) return demoIn ? { ok:true, loggedIn:true, phone:"******" + phone.slice(-4), items } : { ok:true, loggedIn:false, otp:false };
+  if (!f) return demoIn ? { ok:true, loggedIn:true, phone:"******" + phone.slice(-4), items } : { ok:true, loggedIn:false, otp:true };
   if (f.action === "login") { demoIn = true; return demoApi(); }
-  if (f.action === "send") return { ok:true, via:"sms", to:"******" + f.phone.slice(-4) };
+  if (f.action === "send") return { ok:true, via:"email", to:"a***@gmail.com (Demo OTP: 123456)" };
   if (f.action === "verify") { if (f.otp !== "123456") return { ok:false, error:"OTP galat hai. (Demo OTP: 123456)" }; demoIn = true; return demoApi(); }
   if (f.action === "logout") { demoIn = false; return { ok:true }; }
 }

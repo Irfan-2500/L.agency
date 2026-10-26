@@ -105,8 +105,9 @@ hPanel → **Security → SSL** → free SSL install karo. Payment ke liye https
 
 ## 👤 My PPTs (customer login)
 - Website par **My PPTs** (`account.html`): customer wahi mobile number daalta hai jo payment ke time bhara tha → login → apni khareedi saari PPTs kabhi bhi dobara download
-- Abhi OTP band hai (`config.php` → `sms` → `otp => false`). Dhyan rahe: jise kisi customer ka number pata ho, woh uski PPTs download kar sakta hai. Zyada security chahiye toh `otp => true` karo
-- **OTP chalu karke SMS par bhejna ho:** fast2sms.com par account banao → Dev API → API key `config.php` → `sms` → `fast2sms_key` mein daalo. Khaali chhodoge toh OTP customer ke **email** par jayega (jo order ke time diya tha)
+- Mobile number ke baad **OTP customer ke email par** jata hai (checkout mein email zaroori hai). Iske liye Step 7 (Email) zaroor karna — `mail_from` mein Hostinger par bana email
+- OTP band karna ho toh `config.php` → `sms` → `otp => false` (tab sirf mobile number se login)
+- **OTP SMS par bhejna ho:** fast2sms.com par account banao → Dev API → API key `config.php` → `sms` → `fast2sms_key` mein daalo. Khaali chhodoge toh OTP customer ke **email** par jayega (jo order ke time diya tha)
 - Login 30 din tak yaad rehta hai
 
 ## 📱 UPI QR payment kaise kaam karta hai

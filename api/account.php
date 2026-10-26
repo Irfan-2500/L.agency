@@ -42,7 +42,7 @@ if ($action === 'send') {
     if (!empty($_POST['website'])) json_out(['ok' => true]);
     $phone = clean_phone($_POST['phone'] ?? '');
     if (!valid_phone($phone)) json_err('Sahi 10-digit mobile number likhiye.');
-    $last = q("SELECT email FROM orders WHERE phone=? AND status='paid' ORDER BY paid_at DESC LIMIT 1", [$phone])->fetch();
+    $last = q("SELECT email FROM orders WHERE phone=? AND status IN ('paid','review') AND email<>'' ORDER BY id DESC LIMIT 1", [$phone])->fetch();
     if (!$last) json_err('Is number se koi purchase nahi mili. Wahi number daalein jo payment ke time diya tha.');
     $recent = (int)q('SELECT COUNT(*) FROM otps WHERE phone=? AND created_at > ?', [$phone, date('Y-m-d H:i:s', time() - 900)])->fetchColumn();
     if ($recent >= 3) json_err('Bahut baar OTP maanga gaya. 15 minute baad try karein.', 429);
