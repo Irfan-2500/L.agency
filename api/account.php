@@ -13,13 +13,27 @@ $action = $_SERVER['REQUEST_METHOD'] === 'POST' ? (string)($_POST['action'] ?? '
 $mask_email = fn(string $m) => preg_replace('/^(.)(.*)(@.*)$/u', '$1***$3', $m);
 $me = function () {
     $phone = cust_phone();
-    if ($phone === '') return ['ok' => true, 'loggedIn' => false];
+    if ($phone === '') return ['ok' => true, 'loggedIn' => false, 'otp' => $GLOBALS['useOtp']];
     return ['ok' => true, 'loggedIn' => true, 'phone' => '******' . substr($phone, -4), 'items' => array_values(array_map(fn($p) => [
         'id' => $p['id'], 'title' => $p['title'], 'thumb' => $p['thumb'], 'orderId' => $p['order_id'], 'date' => $p['paid_at'],
         'url' => $p['has_file'] ? 'my-download.php?id=' . $p['id'] : ''], cust_purchases($phone)))];
 };
 
+$useOtp = !empty($CFG['sms']['otp']);
 if ($action === 'me') json_out($me());
+
+/* Sirf mobile number se login (OTP band ho tab): wahi number jo payment ke time diya tha */
+if ($action === 'login') {
+    if ($useOtp) json_err('OTP se login karein.');
+    rate_limit('mobile-login', 10, 900);
+    if (!empty($_POST['website'])) json_out(['ok' => true]);
+    $phone = clean_phone($_POST['phone'] ?? '');
+    if (!valid_phone($phone)) json_err('Sahi 10-digit mobile number likhiye.');
+    if (!cust_purchases($phone)) json_err('Is number se koi purchase nahi mili. Wahi number daalein jo payment ke time diya tha.');
+    session_regenerate_id(true);
+    $_SESSION['cust_phone'] = $phone;
+    json_out($me());
+}
 
 if ($action === 'logout') { $_SESSION = []; session_destroy(); json_out(['ok' => true]); }
 

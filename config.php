@@ -43,9 +43,11 @@ return [
         'qr'   => 'uploads/payment/upi-qr.png',   // aapka QR photo (UPI ID na chale tab dikhega)
     ],
 
-    // ---------- 3C. MOBILE OTP (customer "My PPTs" login) ----------
-    // fast2sms.com par account banao → Dev API → API key yahan daalo. Khaali = OTP customer ke email par jayega.
+    // ---------- 3C. MY PPTs LOGIN ----------
+    // otp => false: customer sirf wahi mobile number daal kar login karta hai jo payment ke time bhara tha.
+    // otp => true: number ke baad OTP bhi (fast2sms.com ki API key daalo, khaali = OTP email par).
     'sms' => [
+        'otp'          => false,
         'fast2sms_key' => '',
     ],
 
