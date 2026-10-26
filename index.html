@@ -94,6 +94,14 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.75);backdrop-fil
 .hero h1{font-size:clamp(2.4rem,5.5vw,4rem);margin:22px 0 18px}
 .hero p.lead{color:var(--muted);font-size:1.05rem;max-width:480px}
 .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0}
+/* "Ready to Use PPT" button — highlight + blink */
+.btn-ready{position:relative;overflow:hidden;color:#fff;background:linear-gradient(135deg,#f59e0b,#ef4444 55%,#ec4899);border:1px solid rgba(255,255,255,.25);animation:readyGlow 1.4s ease-in-out infinite}
+.btn-ready::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);animation:readyShine 2.4s ease-in-out infinite}
+.btn-ready:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.btn-ready .ready-dot{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff;animation:readyBlink 1s steps(2,start) infinite}
+@keyframes readyGlow{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.7),0 8px 24px -6px rgba(239,68,68,.6)}50%{box-shadow:0 0 0 7px rgba(245,158,11,0),0 8px 34px -4px rgba(236,72,153,.9)}}
+@keyframes readyShine{0%,40%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+@keyframes readyBlink{to{visibility:hidden}}
 .hero-feats{display:flex;gap:22px;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--line);font-size:.86rem;color:var(--muted)}
 .hero-feats span{display:flex;align-items:center;gap:7px}
 .stats{display:flex;gap:32px;margin-top:28px}
@@ -1049,6 +1057,8 @@ html.light header::before{background:#fff}
       <div class="hero-cta">
         <a href="#themes" class="btn btn-primary">Explore Themes <svg class="i"><use href="#i-arrow"/></svg></a>
         <a href="order.html" class="btn btn-ghost"><svg class="i" style="color:#c084fc"><use href="#i-sparkle"/></svg> PPT Order Now</a>
+        <!-- Ready to Use PPT: link baad me set karna hai -->
+        <a href="#" class="btn btn-ready" id="readyPptBtn"><span class="ready-dot" aria-hidden="true"></span><svg class="i"><use href="#i-cloud"/></svg> Ready to Use PPT</a>
       </div>
     </div>
 
