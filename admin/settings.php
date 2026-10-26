@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($id !== '' && !valid_upi($id)) throw new RuntimeException('UPI ID sahi nahi lag rahi. Aisi dikhti hai: 9711069435@ybl');
         set_setting('upi_id', $id);
         set_setting('upi_name', clean($_POST['upi_name'] ?? '', 60));
+        set_setting('upi_instant', empty($_POST['upi_instant']) ? '0' : '1');
         $qf = files_list('qr');
         if ($qf) set_setting('upi_qr', save_image($qf[0], 'uploads/payment'));
         elseif (!empty($_POST['remove_qr'])) set_setting('upi_qr', '');
@@ -25,6 +26,8 @@ admin_header('UPI / QR Payment', 'settings');
   <label>Naam (customer ke app mein dikhega)<input name="upi_name" value="<?= e($u['name']) ?>" maxlength="60"></label>
   <label>Apna QR code (photo)<input type="file" name="qr" accept="image/jpeg,image/png,image/webp"><small>Optional. UPI ID na ho, ya customer QR photo chahe, tab ye dikhega.</small></label>
   <?php if ($u['qr']): ?><div class="pv"><img src="../<?= e($u['qr']) ?>" alt="QR" style="aspect-ratio:auto;width:180px"><label class="check"><input type="checkbox" name="remove_qr" value="1"> QR hatao</label></div><?php endif; ?>
+  <label class="check"><input type="checkbox" name="upi_instant" value="1"<?= upi_instant() ? ' checked' : '' ?>> UTR daalte hi customer ko PPT download karne do</label>
+  <small>Baad mein Orders → "UPI check karo" mein UTR milao. Paisa na aaya ho toh <b>Reject</b> dabao, download turant band ho jayega. Tick hatao toh download sirf aapke ✓ Paid ke baad milega.</small>
   <div class="actions"><button class="btn">💾 Save</button><a class="btn ghost" href="../ready-ppts.html" target="_blank">Checkout dekho</a></div>
 </form>
 <?php admin_footer();

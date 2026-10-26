@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$o) { flash('Order nahi mila.', false); go('orders.php'); }
     if (($_POST['action'] ?? '') === 'reject') {
         q("UPDATE orders SET status='rejected' WHERE id=?", [$o['id']]);
-        flash('Order #' . $o['id'] . ' reject kar diya. Customer ko WhatsApp par wajah bata dein.');
+        flash('Order #' . $o['id'] . ' reject kar diya, uske download links band ho gaye. Customer ko WhatsApp par wajah bata dein.');
         go('orders.php?s=review');
     }
     $pid = strtoupper(clean($_POST['payment_id'] ?? '', 64));

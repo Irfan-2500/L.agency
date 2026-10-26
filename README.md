@@ -116,7 +116,9 @@ hPanel → **Security → SSL** → free SSL install karo. Payment ke liye https
 4. Apne UPI app / bank mein UTR aur amount milao → paise aaye hon tabhi **✓ Paid** dabao → customer ko download link email ho jata hai (WhatsApp par bhejne ka button bhi hai)
 5. Paise nahi aaye toh **✕ Reject**
 
-> UPI mein website khud payment check nahi kar sakti, isliye ye ek click aapko karna padta hai.
+> **UTR daalte hi download (default ON):** customer ko UTR bharte hi PPT mil jaati hai. Aap baad mein UTR milao; paisa na aaya ho toh **Reject** dabao, uske download links aur My PPTs se woh PPT turant band ho jaati hai. Admin → UPI / QR mein tick hata kar band kar sakte ho.
+>
+> **Test ke liye** "Fractions Made Easy" demo PPT ka daam ₹1 rakha hai. Test ke baad Admin → Ready PPTs mein daam wapas badal dena.
 
 ## 💳 Razorpay payment kaise kaam karta hai
 1. Customer Buy Now / Cart → naam, email, WhatsApp bharta hai

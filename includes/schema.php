@@ -41,7 +41,7 @@ function demo_products(): array {
         ['Photosynthesis — Class 10 Science', 'Photosynthesis ka poora chapter: equation, chloroplast, light & dark reactions, diagram aur 5 practice questions.', 'edu', 49, 99, 10, 'English', 'Dark', 'CBSE,State Board', 'Class 10', 'Biology', 0, 'best', '#065f46', '#22c55e', 'photosynthesis'],
         ['भारत का संविधान — Class 8 SST', 'संविधान की प्रस्तावना, मौलिक अधिकार, मौलिक कर्तव्य और संसद — आसान हिंदी में, प्रश्नों के साथ।', 'edu', 39, 79, 10, 'Hindi', 'Light', 'CBSE,State Board', 'Class 8', 'Political Science / Civics', 0, 'new', '#ea580c', '#f59e0b', 'samvidhan'],
         ["Newton's Laws of Motion — Class 9", "Teeno laws, inertia, momentum, F = ma ke solved numericals aur daily-life examples. Theory + Questions.", 'edu', 59, 119, 10, 'Both', 'Dark', 'CBSE,ICSE', 'Class 9', 'Physics', 0, 'feat', '#1e3a8a', '#06b6d4', 'newton'],
-        ['Fractions Made Easy — Class 5 Maths', 'Bachchon ke liye rangeen slides: fraction kya hai, like/unlike fractions, jodna-ghatana aur quiz.', 'edu', 29, 59, 10, 'Both', 'Light', 'CBSE,State Board', 'Class 5', 'Mathematics', 0, '', '#7c3aed', '#ec4899', 'fractions'],
+        ['Fractions Made Easy — Class 5 Maths', 'Bachchon ke liye rangeen slides: fraction kya hai, like/unlike fractions, jodna-ghatana aur quiz.', 'edu', 1, 59, 10, 'Both', 'Light', 'CBSE,State Board', 'Class 5', 'Mathematics', 0, '', '#7c3aed', '#ec4899', 'fractions'],
         ['Startup Business Plan Pitch Deck', 'Investor-ready pitch deck: problem, solution, market size, business model, roadmap aur team slides. Fully editable.', 'biz', 99, 199, 10, 'English', 'Dark', 'Corporate', 'Other', 'Business', 0, 'feat', '#0f172a', '#8b2cff', 'pitch'],
     ];
 }

@@ -132,22 +132,25 @@ function product_public(array $p, array $sales): array {
 }
 
 /* Order ko paid mark karo, download links banao, customer + admin ko email. Links lauta deta hai. */
-function mark_order_paid(array $o, string $paymentId): array {
+/* Order ke download tokens (pehle se hon toh wahi) */
+function order_links(array $o): array {
     global $CFG;
-    $fresh = false;
-    if ($o['status'] !== 'paid') {
-        db()->beginTransaction();
-        q("UPDATE orders SET status='paid', rzp_payment_id=?, paid_at=? WHERE id=?", [$paymentId, now(), $o['id']]);
+    if (!(int)q('SELECT COUNT(*) FROM downloads WHERE order_id=?', [$o['id']])->fetchColumn()) {
         $exp = date('Y-m-d H:i:s', time() + 86400 * (int)$CFG['download']['expiry_days']);
         foreach (json_decode($o['items'], true) ?: [] as $prod) {
             q('INSERT INTO downloads (order_id,product_id,token,count,expires_at,created_at) VALUES (?,?,?,0,?,?)', [$o['id'], (int)$prod, bin2hex(random_bytes(24)), $exp, now()]);
         }
-        db()->commit();
-        $fresh = true;
     }
-    $links = array_map(fn($d) => ['title' => $d['title'], 'url' => site_url() . '/download.php?t=' . $d['token']],
+    return array_map(fn($d) => ['title' => $d['title'], 'url' => site_url() . '/download.php?t=' . $d['token']],
         q('SELECT d.token, p.title FROM downloads d JOIN products p ON p.id=d.product_id WHERE d.order_id=?', [$o['id']])->fetchAll());
-    if ($fresh) {
+}
+function mark_order_paid(array $o, string $paymentId): array {
+    global $CFG;
+    $fresh = $o['status'] !== 'paid';
+    $early = $o['status'] === 'review' && (int)q('SELECT COUNT(*) FROM downloads WHERE order_id=?', [$o['id']])->fetchColumn() > 0;
+    if ($fresh) q("UPDATE orders SET status='paid', rzp_payment_id=?, paid_at=? WHERE id=?", [$paymentId, now(), $o['id']]);
+    $links = order_links($o);
+    if ($fresh && !$early) {
         $li = implode('', array_map(fn($l) => '<li style="margin:8px 0"><a href="' . e($l['url']) . '">' . e($l['title']) . ' — Download</a></li>', $links));
         send_mail($o['email'], 'Your PPT download — Order #' . $o['id'],
             '<div style="font-family:Arial,sans-serif;font-size:15px"><p>Hi ' . e($o['name']) . ',</p><p>Thank you for your order! Download your PPT here:</p><ul>' . $li
@@ -193,10 +196,13 @@ function cust_start(): void {
     session_start();
 }
 function cust_phone(): string { cust_start(); return (string)($_SESSION['cust_phone'] ?? ''); }
+/* UPI: UTR daalte hi download do? (admin → UPI / QR). Reject karne par download band ho jata hai. */
+function upi_instant(): bool { return setting('upi_instant', '1') === '1'; }
+
 /* Customer ki khareedi PPTs: [product_id => ['id','title','thumb','order_id','paid_at','has_file']] */
 function cust_purchases(string $phone): array {
     $out = [];
-    foreach (q("SELECT id, items, paid_at FROM orders WHERE phone=? AND status='paid' ORDER BY paid_at DESC", [$phone])->fetchAll() as $o) {
+    foreach (q("SELECT id, items, COALESCE(paid_at, created_at) AS paid_at FROM orders WHERE phone=? AND status IN ('paid','review') ORDER BY id DESC", [$phone])->fetchAll() as $o) {
         foreach (json_decode($o['items'], true) ?: [] as $pid) {
             if (isset($out[(int)$pid])) continue;
             $p = q('SELECT id, title, thumb, file_path FROM products WHERE id=?', [(int)$pid])->fetch();
