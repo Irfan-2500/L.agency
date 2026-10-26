@@ -182,8 +182,10 @@ async function api(fields){
 /* Preview (bina server) */
 let demoIn = false;
 function demoApi(f){
-  const items = [{ id:1, title:"Photosynthesis — Class 10 Science", thumb:"uploads/previews/demo-photosynthesis-1.webp", orderId:12, date:"2026-10-20 18:42:00", url:"#demo" },
-                 { id:3, title:"Newton's Laws of Motion — Class 9", thumb:"uploads/previews/demo-newton-1.webp", orderId:15, date:"2026-10-24 11:05:00", url:"#demo" }];
+  const DEMO = { 1:["Photosynthesis — Class 10 Science","photosynthesis"], 2:["भारत का संविधान — Class 8 SST","samvidhan"], 3:["Newton's Laws of Motion — Class 9","newton"],
+                 4:["Fractions Made Easy — Class 5 Maths","fractions"], 5:["Startup Business Plan Pitch Deck","pitch"] };
+  const ids = (new URLSearchParams(location.search).get("ids") || "1,3").split(",").filter(i => DEMO[i]);
+  const items = ids.map(i => ({ id:+i, title:DEMO[i][0], thumb:`uploads/previews/demo-${DEMO[i][1]}-1.webp`, orderId:"Demo", date:new Date().toISOString(), url:"#demo", slug:DEMO[i][1] }));
   if (!f) return demoIn ? { ok:true, loggedIn:true, phone:"******" + phone.slice(-4), items } : { ok:true, loggedIn:false, otp:true };
   if (f.action === "login") { demoIn = true; return demoApi(); }
   if (f.action === "send") return { ok:true, via:"email", to:"a***@gmail.com (Demo OTP: 123456)" };
@@ -201,7 +203,7 @@ function show(me){
   $("#list").innerHTML = me.items.length ? me.items.map(p => `<div class="item${fresh && fresh.includes(p.id) ? " new" : ""}">
       <div class="thumb" style="background-image:url('${esc(p.thumb).replace(/'/g,"")}')"></div>
       <div class="b"><b>${esc(p.title)}</b><small>Order #${p.orderId} · ${new Date(p.date.replace(" ","T")).toLocaleDateString("en-IN",{ day:"numeric", month:"short", year:"numeric" })}</small>
-        ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(p.url)}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">File tayyar ho rahi hai</span>`}</div></div>`).join("")
+        ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(p.url)}" data-slug="${esc(p.slug || "")}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">File tayyar ho rahi hai</span>`}</div></div>`).join("")
     : `<div class="empty" style="grid-column:1/-1"><p>Is number par abhi koi PPT nahi hai.</p><a class="btn btn-gold" href="ready-ppts.html">Ready PPTs dekhein</a></div>`;
 }
 function startTimer(){

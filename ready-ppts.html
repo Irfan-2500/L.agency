@@ -700,7 +700,7 @@ function paid(d, orderId, links){
   cart = cart.filter(id => !payIds.includes(id)); saveCart();
   $("#payMain").hidden = true; $("#payDone").hidden = false;
   /* Download page (My PPTs) par le jao: wahan khareedi PPT download hoti hai */
-  const go = `account.html?new=${orderId || "demo"}`;
+  const go = `account.html?new=${orderId || "demo&ids=" + payIds.join(",")}`;
   $("#payDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>🎉 Congratulations! Payment Successful</h3>
     <p style="color:var(--muted)">Aapka download page khul raha hai…</p>
     <a class="btn btn-gold" href="${go}">${icon("i-dl")} Download page kholein</a>`;
