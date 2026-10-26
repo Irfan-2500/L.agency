@@ -176,7 +176,7 @@ admin_header('Ready PPTs', 'products');
   <div class="pitem <?= $p['active'] ? '' : 'off' ?>">
     <a href="?edit=<?= (int)$p['id'] ?>" class="pthumb" style="background:<?= $p['thumb'] ? 'url(\'../' . e($p['thumb']) . '\') center/cover' : 'linear-gradient(135deg,' . e($p['color1']) . ',' . e($p['color2']) . ')' ?>"></a>
     <div class="pinfo"><a href="?edit=<?= (int)$p['id'] ?>"><b><?= e($p['title']) ?></b></a>
-      <small><?= inr($p['price']) ?><?= $p['mrp'] > $p['price'] ? ' <s>' . inr($p['mrp']) . '</s>' : '' ?> · <?= (int)$p['slides'] ?> slides · <?= e($p['lang'] === 'Both' ? 'Hindi + English' : $p['lang']) ?> · 🔥 <?= $s ?> baar khareedi gayi</small>
+      <small><?= inr($p['price']) ?><?= $p['mrp'] > $p['price'] ? ' <s>' . inr($p['mrp']) . '</s>' : '' ?> · <?= (int)$p['slides'] ?> slides · <?= e($p['lang'] === 'Both' ? 'Hindi + English' : $p['lang']) ?> · 🔥 <?= $s ?> sold</small>
       <small><?= $p['file_path'] ? '✓ File uploaded' : '<span class="warn">⚠ PPT file nahi hai</span>' ?><?= $p['active'] ? '' : ' · <span class="warn">Chhupi hui</span>' ?></small></div>
     <div class="pact"><a class="btn sm ghost" href="?edit=<?= (int)$p['id'] ?>">Edit</a>
       <form method="post"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$p['id'] ?>"><input type="hidden" name="action" value="toggle"><button class="btn sm ghost"><?= $p['active'] ? 'Chhupao' : 'Dikhao' ?></button></form></div>
