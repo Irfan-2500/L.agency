@@ -195,6 +195,7 @@ function cust_start(): void {
     ini_set('session.gc_maxlifetime', (string)(30 * 86400));
     session_start();
 }
+function cust_login(string $phone): void { cust_start(); session_regenerate_id(true); $_SESSION['cust_phone'] = $phone; }
 function cust_phone(): string { cust_start(); return (string)($_SESSION['cust_phone'] ?? ''); }
 /* UPI: UTR daalte hi download do? (admin → UPI / QR). Reject karne par download band ho jata hai. */
 function upi_instant(): bool { return setting('upi_instant', '1') === '1'; }

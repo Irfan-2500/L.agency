@@ -20,4 +20,5 @@ if ($o['status'] !== 'paid') {
 } else {
     $links = mark_order_paid($o, (string)$o['rzp_payment_id']);
 }
+cust_login($o['phone']);
 json_out(['ok' => true, 'paid' => true, 'orderId' => (int)$o['id'], 'email' => $o['email'], 'links' => $links]);

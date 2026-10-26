@@ -16,4 +16,5 @@ $o = q('SELECT * FROM orders WHERE rzp_order_id=?', [$oid])->fetch();
 if (!$o) json_err('Order nahi mila.', 404);
 
 $links = mark_order_paid($o, $pid);
+cust_login($o['phone']);
 json_out(['ok' => true, 'orderId' => (int)$o['id'], 'email' => $o['email'], 'links' => $links]);

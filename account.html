@@ -88,6 +88,9 @@ input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,44,255,.2)}
 .item .b{padding:14px;display:grid;gap:10px}
 .item b{font-family:'Space Grotesk','Hind';font-size:1rem;line-height:1.3}
 .item small{color:var(--muted);font-size:.78rem;font-weight:600}
+.congrats{display:flex;gap:14px;align-items:center;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.45);border-radius:16px;padding:16px 18px;margin-bottom:20px}
+.congrats>span{font-size:2rem} .congrats b{font-size:1.05rem} .congrats p{color:var(--muted);font-size:.88rem;margin-top:2px}
+.item.new{border-color:var(--gold);box-shadow:0 0 0 2px rgba(253,224,71,.35)}
 .empty{text-align:center;color:var(--muted);padding:50px 10px;display:grid;gap:14px;justify-items:center}
 .empty .btn{width:auto}
 .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,30px);background:var(--card2);border:1px solid var(--line2);padding:11px 18px;border-radius:12px;font-weight:600;font-size:.88rem;opacity:0;transition:.25s;z-index:99;pointer-events:none}
@@ -147,6 +150,7 @@ input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,44,255,.2)}
 
   <!-- My PPTs -->
   <section id="mine" hidden>
+    <div class="congrats" id="congrats" hidden><span>🎉</span><div><b>Congratulations! Payment successful.</b><p>Aapki PPT neeche ready hai, <b>Download PPT</b> dabaiye. Ye page kabhi bhi dobara "My PPTs" mein mobile number se khol sakte hain.</p></div></div>
     <div class="top">
       <div><h1>My PPTs 📂</h1><p id="who"></p></div>
       <button class="btn btn-ghost btn-sm" id="logout">Logout</button>
@@ -165,6 +169,7 @@ const icon = id => `<svg class="i"><use href="#${id}"/></svg>`;
 let tt; const toast = m => { const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 2200); };
 const msg = m => { $("#msg").textContent = m || ""; };
 let phone = "", timer = 0, API = true, OTP = false;
+const NEW = new URLSearchParams(location.search).get("new");   // payment ke turant baad aaye
 
 async function api(fields){
   if (!API) return demoApi(fields);
@@ -190,7 +195,10 @@ function show(me){
   $("#login").hidden = me.loggedIn; $("#mine").hidden = !me.loggedIn;
   if (!me.loggedIn) { if (me.otp !== undefined) OTP = !!me.otp; $("#sendBtn").textContent = OTP ? "OTP Bhejo" : "Login"; $("#fPhone").hidden = false; $("#fOtp").hidden = true; return; }
   $("#who").textContent = `Mobile ${me.phone} · ${me.items.length} PPT${me.items.length === 1 ? "" : "s"}`;
-  $("#list").innerHTML = me.items.length ? me.items.map(p => `<div class="item">
+  const fresh = NEW && me.items.filter(p => String(p.orderId) === NEW || NEW === "demo").map(p => p.id);
+  $("#congrats").hidden = !NEW;
+  if (fresh && fresh.length) me.items.sort((a,b) => fresh.includes(b.id) - fresh.includes(a.id));
+  $("#list").innerHTML = me.items.length ? me.items.map(p => `<div class="item${fresh && fresh.includes(p.id) ? " new" : ""}">
       <div class="thumb" style="background-image:url('${esc(p.thumb).replace(/'/g,"")}')"></div>
       <div class="b"><b>${esc(p.title)}</b><small>Order #${p.orderId} · ${new Date(p.date.replace(" ","T")).toLocaleDateString("en-IN",{ day:"numeric", month:"short", year:"numeric" })}</small>
         ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(p.url)}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">File tayyar ho rahi hai</span>`}</div></div>`).join("")
@@ -232,7 +240,9 @@ document.addEventListener("click", e => { if (e.target.closest('a[href="#demo"]'
 (async function boot(){
   let me = await api();
   if (!me.ok && CONFIG.demo) { API = false; me = await api(); }
+  if (NEW === "demo" && !API) { demoIn = true; me = await api(); }
   show(me.ok ? me : { loggedIn:false });
+  if (NEW && me.loggedIn) { history.replaceState(null, "", location.pathname); const a = document.querySelector(".item.new a.btn"); if (a && a.getAttribute("href") !== "#demo") setTimeout(() => a.click(), 800); }
   if (!me.ok && !CONFIG.demo) msg(me.error);
 })();
 </script>

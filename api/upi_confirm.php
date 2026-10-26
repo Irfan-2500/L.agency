@@ -32,6 +32,7 @@ if (!upi_instant()) json_out(['ok' => true, 'status' => 'review', 'orderId' => $
 // UTR ke saath turant download. Admin baad mein check karke Paid / Reject karega (Reject = download band).
 $o['status'] = 'review';
 $links = order_links($o);
+cust_login($o['phone']);   // seedha "My PPTs" download page khule
 if ($o['email'] !== '') {
     $li = implode('', array_map(fn($l) => '<li style="margin:8px 0"><a href="' . e($l['url']) . '">' . e($l['title']) . ' — Download</a></li>', $links));
     send_mail($o['email'], 'Your PPT download — Order #' . $id, '<div style="font-family:Arial,sans-serif;font-size:15px"><p>Hi ' . e($o['name']) . ',</p><p>Thank you! Download your PPT here:</p><ul>' . $li . '</ul><p>— ' . e($CFG['site']['name']) . '</p></div>');

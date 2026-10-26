@@ -341,7 +341,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
       </form>
       <div class="upi" id="upiBox"></div>
       <div class="form" id="utrWrap" hidden>
-        <label id="p-utr">Payment ho gaya? UTR / Transaction ID daalein
+        <label id="p-utr">Payment ho gaya? UTR number daalein
           <span class="utr"><input id="payUtr" inputmode="numeric" maxlength="30" autocomplete="off" placeholder="12 digit UTR number"><button class="btn btn-gold" id="utrBtn" type="button">Confirm</button></span>
           <span class="err">Payment app ki history mein milne wala 12 digit UTR likhiye</span></label>
         <button type="button" class="utr-help" id="utrHelpBtn" aria-expanded="false">❓ UTR kahan milega? Example dekhein</button>
@@ -699,12 +699,12 @@ function paid(d, orderId, links){
   stopQr();
   cart = cart.filter(id => !payIds.includes(id)); saveCart();
   $("#payMain").hidden = true; $("#payDone").hidden = false;
+  /* Download page (My PPTs) par le jao: wahan khareedi PPT download hoti hai */
+  const go = `account.html?new=${orderId || "demo"}`;
   $("#payDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>🎉 Congratulations! Payment Successful</h3>
-    <p style="color:var(--muted)">${orderId ? `Order #${orderId}. ` : ""}Aapki PPT ready hai, neeche se download karein.${d.email ? ` Link <b>${esc(d.email)}</b> par bhi bheja gaya hai.` : ""}</p>
-    <div class="dl">${links.map(l => `<a class="btn btn-gold" href="${esc(l.url)}" download>${icon("i-dl")} Download: ${esc(l.title)}</a>`).join("")}</div>
-    <p class="note">Baad mein dobara chahiye? <a href="account.html" style="color:var(--cyan);font-weight:700">My PPTs</a> par apne mobile number se login karke kabhi bhi download karein.</p>
-    <button class="btn btn-ghost" data-close>Close</button>`;
-  setTimeout(() => { const a = $("#payDone .dl a"); if (a) a.click(); }, 700);
+    <p style="color:var(--muted)">Aapka download page khul raha hai…</p>
+    <a class="btn btn-gold" href="${go}">${icon("i-dl")} Download page kholein</a>`;
+  setTimeout(() => { location.href = go; }, 1200);
 }
 
 $("#utrHelpBtn").onclick = () => { const pic = $("#utrPic"), img = pic.querySelector("img"); if (!img.src) img.src = img.dataset.src;
