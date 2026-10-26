@@ -413,7 +413,7 @@ function card(p){
       <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
       <div class="acts">
         <button class="btn btn-ghost btn-sm add ${inCart ? "added" : ""}" onclick="toggleCart(${p.id})">${inCart ? "✓ In Cart" : "+ Add to Cart"}</button>
-        <button class="btn btn-gold btn-sm" onclick="openPay([${p.id}])">${icon("i-zap","width:14px")}Buy Now</button>
+        <button class="btn btn-gold btn-sm" onclick="buyNow(${p.id})">${icon("i-zap","width:14px")}Buy Now</button>
       </div>
     </div></article>`;
 }
@@ -436,6 +436,11 @@ function toggleCart(id){
   else { cart.push(id); toast("✓ Cart mein add ho gaya"); }
   saveCart();
 }
+/* Buy Now: PPT cart mein jodo aur cart kholo, wahan total dekh kar aage badho */
+function buyNow(id){
+  if (!cart.includes(id)) { cart.push(id); saveCart(); }
+  openCart(true);
+}
 function renderCart(){
   const items = cart.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
   $("#cartCount").textContent = items.length; $("#cartCount").dataset.n = items.length;
@@ -443,7 +448,9 @@ function renderCart(){
       <div><b>${esc(p.title)}</b><small>${inr(p.price)}</small></div>
       <button onclick="toggleCart(${p.id})" aria-label="Remove ${esc(p.title)}">${icon("i-trash")}</button></div>`).join("")
     : `<div class="empty" style="padding:40px 10px"><b>Cart khaali hai</b>PPT par "Add to Cart" dabaiye.</div>`;
-  $("#cartTotal").textContent = inr(items.reduce((s,p) => s + p.price, 0));
+  const total = items.reduce((s,p) => s + p.price, 0);
+  $("#cartTotal").textContent = inr(total);
+  $("#checkout").innerHTML = `${icon("i-card")} ${items.length ? `Proceed to Pay ${inr(total)}` : "Checkout"}`;
   $("#checkout").disabled = !items.length; $("#checkout").style.opacity = items.length ? 1 : .5;
 }
 const overlayOn = () => $("#overlay").classList.toggle("on", $("#drawer").classList.contains("on") || !!document.querySelector(".modal.on"));
@@ -484,7 +491,7 @@ function openPreview(id){
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
         <div class="grow">
           <button class="btn btn-ghost btn-sm" onclick="toggleCart(${p.id});hideModal('previewModal')">${cart.includes(p.id) ? "Remove from Cart" : "+ Add to Cart"}</button>
-          <button class="btn btn-gold btn-sm" onclick="hideModal('previewModal');openPay([${p.id}])">${icon("i-zap","width:14px")}Buy Now</button>
+          <button class="btn btn-gold btn-sm" onclick="hideModal('previewModal');buyNow(${p.id})">${icon("i-zap","width:14px")}Buy Now</button>
         </div>
       </div>
     </div>`;
