@@ -210,6 +210,8 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .or{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:.76rem;font-weight:700}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line2)}
 .live{font-size:.76rem;color:var(--green);font-weight:700}
+.utr-help{justify-self:start;font-size:.8rem;font-weight:700;color:var(--cyan);padding:2px 0}
+.utr-pic{display:grid;gap:6px} .utr-pic img{width:min(300px,100%);margin:0 auto;border-radius:12px;border:1px solid var(--line2)}
 .utr{display:flex;gap:8px} .utr input{flex:1;min-width:0}
 .dl .btn{width:100%;margin-top:8px;white-space:normal;text-align:left}
 .row2>label{min-width:0} .row2 input{width:100%;min-width:0}
@@ -342,6 +344,9 @@ html.light .kicker{color:#a16207;background:#fef9c3}
         <label id="p-utr">Payment ho gaya? UTR / Transaction ID daalein
           <span class="utr"><input id="payUtr" inputmode="numeric" maxlength="30" autocomplete="off" placeholder="12 digit UTR number"><button class="btn btn-gold" id="utrBtn" type="button">Confirm</button></span>
           <span class="err">Payment app ki history mein milne wala 12 digit UTR likhiye</span></label>
+        <button type="button" class="utr-help" id="utrHelpBtn" aria-expanded="false">❓ UTR kahan milega? Example dekhein</button>
+        <div class="utr-pic" id="utrPic" hidden><img alt="PhonePe payment screen par UTR number ki jagah" loading="lazy" data-src="uploads/payment/utr-help.webp">
+          <p class="note">Payment app → History → apni payment kholiye → <b>UTR</b> (12 digit) copy karke upar daaliye.</p></div>
       </div>
       <button class="btn btn-wa" id="payWa" type="button" hidden style="width:100%;margin-top:12px"><svg class="i"><use href="#i-msg"/></svg>WhatsApp par order karein</button>
       <p class="note" id="payNote" style="margin-top:10px"></p>
@@ -588,7 +593,7 @@ function openPay(ids){
   if (hasId || m === "rzp") loadQR().then(() => { if (qrSt.orderId) return; const q = qrcode(0, "M"); q.addData(hasId ? upiLink("upi://pay", payTotal) : location.origin + "/ready-ppts.html"); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:"UPI QR code" }); })
     .catch(() => { $("#qrImg").innerHTML = u.qr ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""; });
   $("#payNote").textContent = { rzp:"🔒 Amount fixed hai. Payment hote hi PPT yahin download hogi.", demo:"Demo: asli paisa nahi katega.",
-    upi:"Payment check karke download link Email + WhatsApp par aayega (10–30 min).", wa:"Online payment jald shuru hoga. Abhi WhatsApp par order karein." }[m];
+    upi: CONFIG.upiInstant ? "UTR daalte hi PPT yahin download ho jayegi." : "Payment check karke download link Email + WhatsApp par aayega (10–30 min).", wa:"Online payment jald shuru hoga. Abhi WhatsApp par order karein." }[m];
   $("#payMain").hidden = false; $("#payDone").hidden = true;
   try { const s = JSON.parse(localStorage.getItem("la_buyer") || "{}"); ["payName","payEmail","payPhone"].forEach(k => { if (s[k] && !$("#"+k).value) $("#"+k).value = s[k]; }); } catch(e) {}
   $("#payAlert").hidden = true; ["p-name","p-phone","p-email"].forEach(id => $("#"+id).classList.remove("bad"));
@@ -702,6 +707,8 @@ function paid(d, orderId, links){
   setTimeout(() => { const a = $("#payDone .dl a"); if (a) a.click(); }, 700);
 }
 
+$("#utrHelpBtn").onclick = () => { const pic = $("#utrPic"), img = pic.querySelector("img"); if (!img.src) img.src = img.dataset.src;
+  pic.hidden = !pic.hidden; $("#utrHelpBtn").setAttribute("aria-expanded", String(!pic.hidden)); $("#utrHelpBtn").textContent = pic.hidden ? "❓ UTR kahan milega? Example dekhein" : "✕ Example band karein"; };
 /* Sirf UPI ID wala tareeka: UTR se confirm */
 $("#utrBtn").onclick = async () => {
   const d = buyer(); if (!d) return;
@@ -737,7 +744,7 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   try {
     const r = await fetch("api/data.php", { headers:{ Accept:"application/json" }, cache:"no-store" });
     const j = await r.json();
-    if (j.ok) { API = true; PRODUCTS = j.products || []; PAY = !!(j.settings && j.settings.payments); if (j.settings && j.settings.whatsapp) CONFIG.whatsapp = j.settings.whatsapp; if (j.settings && j.settings.upi) CONFIG.upi = j.settings.upi; }
+    if (j.ok) { API = true; PRODUCTS = j.products || []; PAY = !!(j.settings && j.settings.payments); if (j.settings && j.settings.whatsapp) CONFIG.whatsapp = j.settings.whatsapp; if (j.settings && j.settings.upi) CONFIG.upi = j.settings.upi; CONFIG.upiInstant = !!(j.settings && j.settings.upiInstant); }
   } catch(e) { /* server nahi mila: demo PPTs dikhengi */ }
   if (!API) PRODUCTS = DEMO;
   if (!API && CONFIG.demoPay) PRODUCTS.forEach((p,i) => p.sales = [128,64,97,41,23][i] || 0); /* preview ke sample numbers */

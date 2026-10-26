@@ -15,7 +15,7 @@ $themes = array_map(function ($t) {
 json_out(['ok' => true, 'products' => $products, 'reviews' => $reviews, 'themes' => array_values(array_filter($themes, fn($t) => $t['img'])),
     'settings' => [
         'payments' => !empty($CFG['razorpay']['key_id']) && !empty($CFG['razorpay']['key_secret']),
-        'upi' => upi_config(),
+        'upi' => upi_config(), 'upiInstant' => upi_instant(),
         'whatsapp' => $CFG['site']['whatsapp'], 'phoneDisplay' => $CFG['site']['phone_display'], 'email' => $CFG['site']['email'],
         'maxFiles' => (int)$CFG['uploads']['max_files'], 'maxMB' => (int)$CFG['uploads']['max_mb'],
     ]]);

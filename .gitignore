@@ -7,3 +7,4 @@ uploads/previews/*
 !uploads/previews/demo-*
 uploads/payment/*
 !uploads/payment/upi-qr.png
+!uploads/payment/utr-help.webp
