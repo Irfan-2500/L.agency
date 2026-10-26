@@ -195,15 +195,17 @@ function cust_start(): void {
     ini_set('session.gc_maxlifetime', (string)(30 * 86400));
     session_start();
 }
-function cust_login(string $phone): void { cust_start(); session_regenerate_id(true); $_SESSION['cust_phone'] = $phone; }
+/* Customer pehchaan: 10-digit mobile ya email (lowercase) */
+function cust_login(string $key): void { cust_start(); session_regenerate_id(true); $_SESSION['cust_phone'] = $key; }
 function cust_phone(): string { cust_start(); return (string)($_SESSION['cust_phone'] ?? ''); }
 /* UPI: UTR daalte hi download do? (admin → UPI / QR). Reject karne par download band ho jata hai. */
 function upi_instant(): bool { return setting('upi_instant', '1') === '1'; }
 
 /* Customer ki khareedi PPTs: [product_id => ['id','title','thumb','order_id','paid_at','has_file']] */
-function cust_purchases(string $phone): array {
+function cust_purchases(string $key): array {
     $out = [];
-    foreach (q("SELECT id, items, COALESCE(paid_at, created_at) AS paid_at FROM orders WHERE phone=? AND status IN ('paid','review') ORDER BY id DESC", [$phone])->fetchAll() as $o) {
+    $by = str_contains($key, '@') ? 'LOWER(email)=?' : 'phone=?';
+    foreach (q("SELECT id, items, COALESCE(paid_at, created_at) AS paid_at FROM orders WHERE $by AND status IN ('paid','review') ORDER BY id DESC", [strtolower($key)])->fetchAll() as $o) {
         foreach (json_decode($o['items'], true) ?: [] as $pid) {
             if (isset($out[(int)$pid])) continue;
             $p = q('SELECT id, title, thumb, file_path FROM products WHERE id=?', [(int)$pid])->fetch();
