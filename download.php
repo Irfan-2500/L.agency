@@ -24,11 +24,4 @@ $path = ROOT . '/storage/ppt/' . basename((string)$d['file_path']);
 if (!$d['file_path'] || !is_file($path)) dl_error('This file is being prepared — please contact us on WhatsApp');
 
 q('UPDATE downloads SET count=count+1 WHERE id=?', [$d['id']]);
-$name = $d['file_name'] ?: (preg_replace('/[^\w\- ]+/', '', $d['title']) . '.' . pathinfo($path, PATHINFO_EXTENSION));
-while (ob_get_level()) ob_end_clean();
-header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename="' . str_replace('"', '', $name) . '"; filename*=UTF-8\'\'' . rawurlencode($name));
-header('Content-Length: ' . filesize($path));
-header('X-Content-Type-Options: nosniff');
-header('Cache-Control: private, no-store');
-readfile($path);
+stream_ppt($d);

@@ -38,8 +38,15 @@ return [
     // ---------- 3B. UPI (QR code se seedha payment) ----------
     // Admin panel → "UPI / QR" se bhi badal sakte ho. Wahan bhari value yahan wali se upar maani jaati hai.
     'upi' => [
-        'id'   => '',   // aapki UPI ID, jaise 9711069435@ybl
-        'name' => 'Lakshay Agency',   // customer ke app mein ye naam dikhega
+        'id'   => '7290933116@ybl',   // aapki UPI ID (aapke QR se li gayi)
+        'name' => 'MOHAMMAD IRFAN',   // customer ke app mein ye naam dikhega (bank wala naam)
+        'qr'   => 'uploads/payment/upi-qr.png',   // aapka QR photo (UPI ID na chale tab dikhega)
+    ],
+
+    // ---------- 3C. MOBILE OTP (customer "My PPTs" login) ----------
+    // fast2sms.com par account banao → Dev API → API key yahan daalo. Khaali = OTP customer ke email par jayega.
+    'sms' => [
+        'fast2sms_key' => '',
     ],
 
     // ---------- 4. DOWNLOAD LINK RULES ----------

@@ -102,7 +102,7 @@ function set_setting(string $name, string $value): void {
 /* UPI: admin setting > config.php */
 function upi_config(): array {
     global $CFG;
-    return ['id' => setting('upi_id', (string)($CFG['upi']['id'] ?? '')), 'name' => setting('upi_name', (string)($CFG['upi']['name'] ?? $CFG['site']['name'])), 'qr' => setting('upi_qr')];
+    return ['id' => setting('upi_id', (string)($CFG['upi']['id'] ?? '')), 'name' => setting('upi_name', (string)($CFG['upi']['name'] ?? $CFG['site']['name'])), 'qr' => setting('upi_qr', (string)($CFG['upi']['qr'] ?? ''))];
 }
 function valid_upi(string $v): bool { return (bool)preg_match('/^[A-Za-z0-9._-]{2,256}@[A-Za-z][A-Za-z0-9.]{1,64}$/', $v); }
 
@@ -168,6 +168,53 @@ function rzp_api(string $method, string $path, ?array $body = null): array {
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     return [$code, is_array($res) ? $res : []];
+}
+
+/* PPT file browser ko bhejo (download.php aur My PPTs dono yahi use karte hain) */
+function stream_ppt(array $p): void {
+    $path = ROOT . '/storage/ppt/' . basename((string)$p['file_path']);
+    $name = $p['file_name'] ?: (preg_replace('/[^\w\- ]+/', '', $p['title']) . '.' . pathinfo($path, PATHINFO_EXTENSION));
+    while (ob_get_level()) ob_end_clean();
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . str_replace('"', '', $name) . '"; filename*=UTF-8\'\'' . rawurlencode($name));
+    header('Content-Length: ' . filesize($path));
+    header('X-Content-Type-Options: nosniff');
+    header('Cache-Control: private, no-store');
+    readfile($path);
+    exit;
+}
+
+/* ---------- CUSTOMER LOGIN (mobile OTP) ---------- */
+function cust_start(): void {
+    if (session_status() === PHP_SESSION_ACTIVE) return;
+    session_name('la_cust');
+    session_set_cookie_params(['lifetime' => 30 * 86400, 'httponly' => true, 'samesite' => 'Lax', 'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off']);
+    ini_set('session.gc_maxlifetime', (string)(30 * 86400));
+    session_start();
+}
+function cust_phone(): string { cust_start(); return (string)($_SESSION['cust_phone'] ?? ''); }
+/* Customer ki khareedi PPTs: [product_id => ['id','title','thumb','order_id','paid_at','has_file']] */
+function cust_purchases(string $phone): array {
+    $out = [];
+    foreach (q("SELECT id, items, paid_at FROM orders WHERE phone=? AND status='paid' ORDER BY paid_at DESC", [$phone])->fetchAll() as $o) {
+        foreach (json_decode($o['items'], true) ?: [] as $pid) {
+            if (isset($out[(int)$pid])) continue;
+            $p = q('SELECT id, title, thumb, file_path FROM products WHERE id=?', [(int)$pid])->fetch();
+            if ($p) $out[(int)$pid] = ['id' => (int)$p['id'], 'title' => $p['title'], 'thumb' => $p['thumb'], 'order_id' => (int)$o['id'], 'paid_at' => $o['paid_at'],
+                'has_file' => $p['file_path'] !== '' && is_file(ROOT . '/storage/ppt/' . basename($p['file_path']))];
+        }
+    }
+    return $out;
+}
+function send_sms_otp(string $phone, string $code): bool {
+    global $CFG;
+    $key = (string)($CFG['sms']['fast2sms_key'] ?? '');
+    if ($key === '' || !function_exists('curl_init')) return false;
+    $ch = curl_init('https://www.fast2sms.com/dev/bulkV2?' . http_build_query(['authorization' => $key, 'route' => 'otp', 'variables_values' => $code, 'flash' => 0, 'numbers' => $phone]));
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15]);
+    $res = json_decode((string)curl_exec($ch), true);
+    curl_close($ch);
+    return !empty($res['return']);
 }
 
 /* ---------- FILE UPLOAD HELPERS ---------- */

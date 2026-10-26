@@ -103,6 +103,12 @@ hPanel → **Security → SSL** → free SSL install karo. Payment ke liye https
 
 ---
 
+## 👤 My PPTs (customer login)
+- Website par **My PPTs** (`account.html`): customer apna mobile number daalta hai → OTP aata hai → login karke apni khareedi saari PPTs kabhi bhi dobara download kar sakta hai
+- Sirf wahi number chalega jisse paid order hua ho; doosre ki PPT koi download nahi kar sakta
+- **OTP SMS par bhejna ho:** fast2sms.com par account banao → Dev API → API key `config.php` → `sms` → `fast2sms_key` mein daalo. Khaali chhodoge toh OTP customer ke **email** par jayega (jo order ke time diya tha)
+- Login 30 din tak yaad rehta hai
+
 ## 📱 UPI QR payment kaise kaam karta hai
 1. Customer Cart → **Proceed to Pay** → aapka QR + UPI ID dikhta hai (mobile par PhonePe / GPay / Paytm button, amount pehle se bhara)
 2. Customer pay karke apna naam, email, WhatsApp aur **UTR number** (12 digit) bharta hai, screenshot optional

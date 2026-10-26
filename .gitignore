@@ -5,3 +5,5 @@ uploads/themes/*
 !uploads/themes/samples/
 uploads/previews/*
 !uploads/previews/demo-*
+uploads/payment/*
+!uploads/payment/upi-qr.png
