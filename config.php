@@ -35,6 +35,13 @@ return [
         'key_secret' => '',
     ],
 
+    // ---------- 3B. UPI (QR code se seedha payment) ----------
+    // Admin panel → "UPI / QR" se bhi badal sakte ho. Wahan bhari value yahan wali se upar maani jaati hai.
+    'upi' => [
+        'id'   => '',   // aapki UPI ID, jaise 9711069435@ybl
+        'name' => 'Lakshay Agency',   // customer ke app mein ye naam dikhega
+    ],
+
     // ---------- 4. DOWNLOAD LINK RULES ----------
     'download' => [
         'expiry_days'   => 7,   // link kitne din chalega

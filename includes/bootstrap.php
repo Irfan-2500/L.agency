@@ -87,6 +87,25 @@ function rate_limit(string $key, int $max, int $seconds): void {
     if (limit_hit($key, $max, $seconds)) json_err('Bahut zyada requests. Thodi der baad try karein.', 429);
 }
 
+/* ---------- SETTINGS (admin panel se badalne wali) ---------- */
+function setting(string $name, string $default = ''): string {
+    static $all = null;
+    if ($all === null) {
+        try { $all = array_column(q('SELECT name, value FROM settings')->fetchAll(), 'value', 'name'); } catch (Throwable $e) { $all = []; }
+    }
+    return isset($all[$name]) && $all[$name] !== '' ? (string)$all[$name] : $default;
+}
+function set_setting(string $name, string $value): void {
+    q('DELETE FROM settings WHERE name=?', [$name]);
+    q('INSERT INTO settings (name, value) VALUES (?, ?)', [$name, $value]);
+}
+/* UPI: admin setting > config.php */
+function upi_config(): array {
+    global $CFG;
+    return ['id' => setting('upi_id', (string)($CFG['upi']['id'] ?? '')), 'name' => setting('upi_name', (string)($CFG['upi']['name'] ?? $CFG['site']['name'])), 'qr' => setting('upi_qr')];
+}
+function valid_upi(string $v): bool { return (bool)preg_match('/^[A-Za-z0-9._-]{2,256}@[A-Za-z][A-Za-z0-9.]{1,64}$/', $v); }
+
 /* ---------- PRODUCTS ---------- */
 const CATS = ['edu' => 'Educational & Teaching PPTs', 'biz' => 'Business Presentations', 'mkt' => 'Marketing & Sales PPTs', 'anim' => 'Animated PPTs'];
 function csv_list($s): array { return array_values(array_filter(array_map('trim', explode(',', (string)$s)), 'strlen')); }

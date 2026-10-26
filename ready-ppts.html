@@ -182,6 +182,21 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .tick svg{width:34px;height:34px}
 .dl a{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border-radius:11px;background:var(--card);border:1px solid var(--line);font-weight:600;margin-top:8px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+/* UPI QR checkout */
+.upi{margin-top:14px;border:1px solid var(--line2);border-radius:16px;padding:16px;background:var(--card);display:grid;gap:12px;text-align:center}
+.upi h4{font-size:1rem} .upi h4 b{color:var(--gold)}
+.qr{width:220px;max-width:100%;aspect-ratio:1;margin:0 auto;background:#fff;border-radius:14px;padding:10px;display:grid;place-items:center}
+.qr svg,.qr img{width:100%;height:100%;display:block;object-fit:contain}
+.upi-id{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-size:.9rem}
+.upi-id code{font-family:inherit;font-weight:800;background:var(--card2);border:1px dashed var(--line2);border-radius:9px;padding:6px 10px;word-break:break-all}
+.upi-id button{font-size:.78rem;font-weight:700;color:var(--gold);padding:6px 8px}
+.apps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.apps a{display:grid;gap:4px;justify-items:center;padding:9px 4px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:.72rem;font-weight:700}
+.apps a:hover{border-color:var(--violet)}
+.apps i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:.8rem;color:#fff}
+.steps{display:flex;gap:6px;justify-content:center;font-size:.74rem;color:var(--dim);flex-wrap:wrap}
+.steps b{color:var(--text)}
+.form input[type=file]{padding:8px;font-size:.82rem}
 .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,30px);background:var(--card2);border:1px solid var(--line2);padding:11px 18px;border-radius:12px;font-weight:600;font-size:.88rem;opacity:0;transition:.25s;z-index:99;pointer-events:none;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .hidden-sm{display:inline}
@@ -291,10 +306,15 @@ html.light .kicker{color:#a16207;background:#fef9c3}
     <div id="payMain">
       <h3 id="payTitle">Checkout</h3>
       <div class="pay-items" id="payItems"></div>
+      <div class="upi" id="upiBox" hidden></div>
       <form class="form" id="payForm" novalidate>
         <label id="p-name">Full Name *<input id="payName" autocomplete="name" placeholder="Enter your name"><span class="err">Please enter your name</span></label>
         <label id="p-email">Email * <small style="color:var(--dim);font-weight:500">(download link yahan aayega)</small><input id="payEmail" inputmode="email" autocomplete="email" placeholder="you@example.com"><span class="err">Please enter a valid email</span></label>
         <label id="p-phone">WhatsApp Number *<input id="payPhone" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="10-digit mobile number"><span class="err">Please enter a valid 10-digit mobile number</span></label>
+        <div id="utrWrap" hidden style="display:grid;gap:12px">
+          <label id="p-utr">UPI Transaction ID / UTR *<input id="payUtr" inputmode="numeric" maxlength="30" autocomplete="off" placeholder="12 digit number, payment app ki history mein"><span class="err">Payment ke baad milne wala 12 digit UTR number likhiye</span></label>
+          <label>Payment Screenshot <small style="color:var(--dim);font-weight:500">(optional, jaldi verify hoga)</small><input id="payProof" type="file" accept="image/png,image/jpeg,image/webp"></label>
+        </div>
         <input type="text" class="hp" id="payHp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button class="btn btn-gold" id="paySubmit" type="submit"></button>
         <button class="btn btn-wa" id="payWa" type="button" hidden><svg class="i"><use href="#i-msg"/></svg>WhatsApp par order karein</button>
@@ -311,7 +331,9 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 /* =========================================================
    ⚙️ SETTINGS (live website par ye admin panel / config.php se aate hain)
    ========================================================= */
-const CONFIG = { whatsapp:"919711069435", perPage:12 };
+const CONFIG = { whatsapp:"919711069435", perPage:12,
+  /* UPI: admin panel → "UPI / QR" se aata hai. Server na ho tab yahan likhi UPI ID chalegi. */
+  upi:{ id:"", name:"Lakshay Agency", qr:"" } };
 const CATEGORIES = [
   { id:"edu",  name:"Educational" }, { id:"biz", name:"Business" }, { id:"mkt", name:"Marketing" }, { id:"anim", name:"Animated" }
 ];
@@ -513,13 +535,66 @@ function openPay(ids){
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id)), total = items.reduce((s,p) => s + p.price, 0);
   $("#payItems").innerHTML = items.map(p => `<div class="pi"><b>${esc(p.title)}</b><span>${inr(p.price)}</span></div>`).join("") + `<div class="pi tot"><span>Total</span><span>${inr(total)}</span></div>`;
   $("#paySubmit").innerHTML = `${icon("i-card")} Pay ${inr(total)} Securely`;
-  $("#paySubmit").hidden = !PAY; $("#payWa").hidden = PAY;
-  $("#payNote").textContent = PAY ? "🔒 Secure payment by Razorpay · UPI, Cards, Net Banking" : "Online payment jald shuru hoga. Abhi WhatsApp par order karein, hum payment link bhej denge.";
+  const upi = upiOn();
+  $("#upiBox").hidden = !upi; $("#utrWrap").hidden = !upi; $("#payProof").value = "";
+  if (upi) { renderUpi(total); $("#paySubmit").innerHTML = `${icon("i-check")} Maine Pay Kar Diya — Confirm`; }
+  $("#paySubmit").hidden = !(PAY || upi); $("#payWa").hidden = PAY || upi;
+  $("#payNote").textContent = upi ? "Payment check karke download link aapke Email + WhatsApp par bhej diya jayega (aam taur par 10–30 min)."
+    : PAY ? "🔒 Secure payment by Razorpay · UPI, Cards, Net Banking" : "Online payment jald shuru hoga. Abhi WhatsApp par order karein, hum payment link bhej denge.";
   $("#payMain").hidden = false; $("#payDone").hidden = true;
   try { const s = JSON.parse(localStorage.getItem("la_buyer") || "{}"); ["payName","payEmail","payPhone"].forEach(k => { if (s[k] && !$("#"+k).value) $("#"+k).value = s[k]; }); } catch(e) {}
-  showModal("payModal"); setTimeout(() => $("#payName").focus(), 250);
+  showModal("payModal"); if (!upi) setTimeout(() => $("#payName").focus(), 250); else $("#payModal .m-box").scrollTop = 0;
 }
-["payName","payEmail","payPhone"].forEach(id => $("#"+id).addEventListener("input", e => e.target.closest("label").classList.remove("bad")));
+["payName","payEmail","payPhone","payUtr"].forEach(id => $("#"+id).addEventListener("input", e => e.target.closest("label").classList.remove("bad")));
+
+/* ---------- UPI QR ---------- */
+const upiOn = () => !!(CONFIG.upi && (/^[\w.-]{2,}@[a-z][a-z0-9.]+$/i.test(CONFIG.upi.id || "") || CONFIG.upi.qr));
+const upiLink = (scheme, total) => `${scheme}?` + new URLSearchParams({ pa:CONFIG.upi.id, pn:CONFIG.upi.name || "Lakshay Agency", am:total.toFixed(2), cu:"INR", tn:"Lakshay PPT" }).toString().replace(/\+/g,"%20").replace(/%40/g,"@");
+const UPI_APPS = [["PhonePe","phonepe://pay","#5f259f","Pe"], ["GPay","tez://upi/pay","#1a73e8","G"], ["Paytm","paytmmp://pay","#00baf2","P"], ["Other UPI","upi://pay","#22c55e","₹"]];
+function loadQR(){
+  return new Promise((ok, no) => { if (window.qrcode) return ok();
+    const s = document.createElement("script"); s.src = "js/qrcode.js"; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+}
+function renderUpi(total){
+  const u = CONFIG.upi, hasId = /@/.test(u.id || ""), mobile = matchMedia("(pointer:coarse)").matches;
+  $("#upiBox").innerHTML = `<h4>Scan karke <b>${inr(total)}</b> pay karein</h4>
+    <div class="qr" id="qrImg">${!hasId ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""}</div>
+    <div class="steps"><span>PhonePe</span>·<span>Google Pay</span>·<span>Paytm</span>·<span>BHIM</span>·<span>koi bhi UPI app</span></div>
+    ${hasId ? `<div class="upi-id">UPI ID: <code id="upiId">${esc(u.id)}</code><button type="button" id="upiCopy">Copy</button></div>` : `<p class="note">Amount <b>${inr(total)}</b> khud daalna hai.</p>`}
+    ${hasId && mobile ? `<div class="apps">${UPI_APPS.map(([n,sc,c,t]) => `<a href="${esc(upiLink(sc,total))}"><i style="background:${c}">${t}</i>${n}</a>`).join("")}</div>` : ""}
+    <p class="note">Pay karne ke baad neeche apni details aur <b>UTR number</b> likh kar Confirm dabayein.</p>`;
+  if (hasId) {
+    $("#upiCopy").onclick = async () => { try { await navigator.clipboard.writeText(u.id); toast("✓ UPI ID copy ho gayi"); } catch(e) { toast(u.id); } };
+    loadQR().then(() => { const q = qrcode(0, "M"); q.addData(upiLink("upi://pay", total)); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:"UPI QR code" }); })
+      .catch(() => { $("#qrImg").innerHTML = u.qr ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : `<p class="note" style="color:#111">QR load nahi hua. UPI ID par pay karein.</p>`; });
+  }
+}
+function upiDone(d, items, total, orderId){
+  cart = cart.filter(id => !payIds.includes(id)); saveCart();
+  const msg = `Hi Lakshay Agency! Maine UPI se payment kar diya hai.${orderId ? `\nOrder #${orderId}` : ""}\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(total)}\nUTR: ${d.utr}\n\nName: ${d.name}\nEmail: ${d.email}\nPhone: ${d.phone}`;
+  $("#payMain").hidden = true; $("#payDone").hidden = false;
+  $("#payDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>Payment details mil gayi! 🙏</h3>
+    <p style="color:var(--muted)">Thank you, ${esc(d.name)}!${orderId ? ` Order #${orderId}.` : ""} Hum UTR <b>${esc(d.utr)}</b> check karke PPT ka download link <b>${esc(d.email)}</b> aur WhatsApp par bhej denge.</p>
+    <a class="btn btn-wa" href="${esc(waURL(msg))}" target="_blank" rel="noopener">${icon("i-msg")} WhatsApp par screenshot bhejein</a>
+    <button class="btn btn-ghost" data-close>Close</button>`;
+}
+async function payUpi(d){
+  const utr = $("#payUtr").value.replace(/\s+/g,"").toUpperCase();
+  const bad = !/^[A-Z0-9]{6,30}$/.test(utr); $("#p-utr").classList.toggle("bad", bad);
+  if (bad) { $("#payUtr").focus(); return; }
+  d.utr = utr;
+  const items = payIds.map(id => PRODUCTS.find(p => p.id === id)), total = items.reduce((s,p) => s + p.price, 0);
+  if (!API) { upiDone(d, items, total, 0); return; }
+  const btn = $("#paySubmit"), label = btn.innerHTML; btn.disabled = true; btn.textContent = "Please wait…";
+  const o = await post("api/upi_order.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
+  if (!o.ok) { btn.disabled = false; btn.innerHTML = label; toast("⚠ " + o.error); return; }
+  const fd = new FormData(); fd.append("orderId", o.orderId); fd.append("phone", d.phone); fd.append("utr", utr);
+  const f = $("#payProof").files[0]; if (f) fd.append("proof", f);
+  let c; try { const r = await fetch("api/upi_confirm.php", { method:"POST", body:fd, headers:{ Accept:"application/json" } }); c = await r.json(); } catch(e) { c = { ok:false, error:"Internet check karein aur dobara try karein." }; }
+  btn.disabled = false; btn.innerHTML = label;
+  if (!c.ok) { toast("⚠ " + (c.error || "Kuch gadbad ho gayi.")); return; }
+  upiDone(d, items, total, o.orderId);
+}
 $("#payPhone").addEventListener("input", e => { e.target.value = e.target.value.replace(/[^\d+ ]/g,""); });
 function buyer(){
   const d = { name:$("#payName").value.trim(), email:$("#payEmail").value.trim(), phone:cleanPhone($("#payPhone").value) };
@@ -545,7 +620,9 @@ function loadRazorpay(){
     const s = document.createElement("script"); s.src = "https://checkout.razorpay.com/v1/checkout.js"; s.onload = ok; s.onerror = () => no(new Error("Payment page load nahi hua. Internet check karein.")); document.head.appendChild(s); });
 }
 $("#payForm").onsubmit = async e => {
-  e.preventDefault(); if (!PAY) return;
+  e.preventDefault();
+  if (upiOn()) { const d = buyer(); if (d) payUpi(d); return; }
+  if (!PAY) return;
   const d = buyer(); if (!d) return;
   const btn = $("#paySubmit"), label = btn.innerHTML, reset = () => { btn.disabled = false; btn.innerHTML = label; };
   btn.disabled = true; btn.textContent = "Please wait…";
@@ -577,11 +654,14 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   try {
     const r = await fetch("api/data.php", { headers:{ Accept:"application/json" }, cache:"no-store" });
     const j = await r.json();
-    if (j.ok) { API = true; PRODUCTS = j.products || []; PAY = !!(j.settings && j.settings.payments); if (j.settings && j.settings.whatsapp) CONFIG.whatsapp = j.settings.whatsapp; }
+    if (j.ok) { API = true; PRODUCTS = j.products || []; PAY = !!(j.settings && j.settings.payments); if (j.settings && j.settings.whatsapp) CONFIG.whatsapp = j.settings.whatsapp; if (j.settings && j.settings.upi) CONFIG.upi = j.settings.upi; }
   } catch(e) { /* server nahi mila: demo PPTs dikhengi */ }
   if (!API) PRODUCTS = DEMO;
-  const q = new URLSearchParams(location.search).get("q"); if (q) { st.q = q; $("#q").value = q; }
+  const qs = new URLSearchParams(location.search), q = qs.get("q"); if (q) { st.q = q; $("#q").value = q; }
   render();
+  /* homepage se "Buy / Checkout": seedha payment kholo */
+  const pay = (qs.get("pay") || "").split(",").map(Number).filter(id => PRODUCTS.some(p => p.id === id));
+  if (pay.length) { pay.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart(); history.replaceState(null, "", location.pathname); openPay(pay); }
 })();
 </script>
 </body>

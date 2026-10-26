@@ -1732,6 +1732,10 @@ $("#checkout").onclick = () => {
   openCart(false); openPay(items.map(p=>p.id));
 };
 function buyNow(id){ closeModal(); openPay([id]); }
+/* UPI QR checkout ready-ppts.html par hai: wahi cart (la_cart) wahan khul jata hai */
+const upiOn = () => API && SETTINGS.upi && (SETTINGS.upi.id || SETTINGS.upi.qr);
+const _openPay = openPay;
+openPay = ids => upiOn() ? (location.href = "ready-ppts.html?pay=" + ids.join(",")) : _openPay(ids);
 
 /* ---------- PREVIEW MODAL ---------- */
 function openPreview(id){

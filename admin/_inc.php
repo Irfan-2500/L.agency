@@ -27,11 +27,12 @@ function inr($n): string { return '₹' . number_format((float)$n); }
 
 function admin_header(string $title, string $active): void {
     $nav = ['index' => ['🏠', 'Dashboard'], 'products' => ['🗂️', 'Ready PPTs'], 'orders' => ['💳', 'Orders'], 'requests' => ['📝', 'Custom Requests'],
-            'themes' => ['🎨', 'Themes'], 'reviews' => ['⭐', 'Reviews'], 'messages' => ['✉️', 'Messages'], 'password' => ['🔐', 'Password']];
+            'themes' => ['🎨', 'Themes'], 'reviews' => ['⭐', 'Reviews'], 'messages' => ['✉️', 'Messages'], 'settings' => ['💰', 'UPI / QR'], 'password' => ['🔐', 'Password']];
     $newReq = (int)q("SELECT COUNT(*) FROM requests WHERE status='new'")->fetchColumn();
     $newRev = (int)q('SELECT COUNT(*) FROM reviews WHERE approved=0')->fetchColumn();
     $newMsg = (int)q('SELECT COUNT(*) FROM messages WHERE is_read=0')->fetchColumn();
-    $badge = ['requests' => $newReq, 'reviews' => $newRev, 'messages' => $newMsg];
+    $newPay = (int)q("SELECT COUNT(*) FROM orders WHERE status='review'")->fetchColumn();
+    $badge = ['orders' => $newPay, 'requests' => $newReq, 'reviews' => $newRev, 'messages' => $newMsg];
     echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">'
        . '<title>' . e($title) . ' — Admin</title><link rel="stylesheet" href="admin.css"></head><body><div class="shell"><aside class="side" id="side">'
        . '<a class="brand" href="index.php"><b>Lakshay</b> Admin</a><nav>';

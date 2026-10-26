@@ -64,7 +64,15 @@ Browser mein kholo: `https://yourdomain.com/install.php`
 - "Website par dikhao" tick hatao toh theme chhup jayegi
 - PowerPoint se slide image: **File → Export → Change File Type → PNG**
 
-### Step 6 — Razorpay (online payment) chalu karo
+### Step 6 — Apna UPI QR lagao (sabse aasaan, koi KYC nahi)
+1. Admin panel → **💰 UPI / QR**
+2. Apni **UPI ID** daalo (PhonePe / GPay / Paytm app ki profile mein milti hai, jaise `9711069435@ybl`)
+3. Chaho toh apne QR ki photo bhi upload karo (UPI ID na ho tab wahi dikhegi)
+4. **Save** → ab Cart mein **Proceed to Pay** dabate hi customer ko aapka QR (amount ke saath), UPI ID aur PhonePe / GPay / Paytm buttons dikhenge
+
+UPI set ho toh website Razorpay ki jagah UPI QR checkout dikhati hai. UPI ID khaali karke Save karo toh wapas Razorpay / WhatsApp chalega.
+
+### Step 6B — Razorpay (online payment, optional)
 1. https://dashboard.razorpay.com par account banao, KYC complete karo
 2. **Account & Settings → API Keys → Generate Test Key**
 3. `config.php` mein `key_id` aur `key_secret` daalo
@@ -93,7 +101,16 @@ hPanel → **Security → SSL** → free SSL install karo. Payment ke liye https
 
 ---
 
-## 💳 Payment kaise kaam karta hai
+## 📱 UPI QR payment kaise kaam karta hai
+1. Customer Cart → **Proceed to Pay** → aapka QR + UPI ID dikhta hai (mobile par PhonePe / GPay / Paytm button, amount pehle se bhara)
+2. Customer pay karke apna naam, email, WhatsApp aur **UTR number** (12 digit) bharta hai, screenshot optional
+3. Aapko email aata hai, aur Admin → **Orders → 🔔 UPI check karo** mein order dikhta hai
+4. Apne UPI app / bank mein UTR aur amount milao → paise aaye hon tabhi **✓ Paid** dabao → customer ko download link email ho jata hai (WhatsApp par bhejne ka button bhi hai)
+5. Paise nahi aaye toh **✕ Reject**
+
+> UPI mein website khud payment check nahi kar sakti, isliye ye ek click aapko karna padta hai.
+
+## 💳 Razorpay payment kaise kaam karta hai
 1. Customer Buy Now / Cart → naam, email, WhatsApp bharta hai
 2. Razorpay se UPI / Card / Net Banking se pay karta hai
 3. Payment verify hote hi **screen par Download button** + **email par link**
