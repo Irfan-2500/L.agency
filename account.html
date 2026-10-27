@@ -104,6 +104,8 @@ input:focus-visible{outline:none}
 @media(max-width:420px){.theme-sw button{width:28px}}
 @media(max-width:560px){.nav{gap:8px}.logo b{white-space:nowrap;font-size:.92rem}.logo small{display:none}.back{padding:8px 4px;font-size:.8rem;white-space:nowrap}}
 @media(max-width:420px){.back{font-size:0;padding:8px}.theme-sw button{width:27px}}
+/* Theme: band rahe to sirf chuni hui theme dikhe, click par teeno khulein */
+.theme-sw:not(.open) button:not([aria-checked="true"]){display:none}
 </style>
 </head>
 <body>
@@ -199,7 +201,7 @@ function demoApi(f){
   const DEMO = { 1:["Photosynthesis — Class 10 Science","photosynthesis"], 2:["भारत का संविधान — Class 8 SST","samvidhan"], 3:["Newton's Laws of Motion — Class 9","newton"],
                  4:["Fractions Made Easy — Class 5 Maths","fractions"], 5:["Startup Business Plan Pitch Deck","pitch"] };
   const ids = (new URLSearchParams(location.search).get("ids") || "1,3").split(",").filter(i => DEMO[i]);
-  const items = ids.map(i => ({ id:+i, title:DEMO[i][0], thumb:`uploads/previews/demo-${DEMO[i][1]}-1.webp`, orderId:"Demo", date:new Date().toISOString(), url:window.claude ? "#demo" : `demo/ppt/${DEMO[i][1]}.pptx`, slug:DEMO[i][1] }));
+  const items = ids.map(i => ({ id:+i, title:DEMO[i][0], thumb:`uploads/previews/demo-${DEMO[i][1]}-1.webp`, orderId:"Demo", date:new Date().toISOString(), url:"#demo", slug:DEMO[i][1] }));
   if (!f) return demoIn ? { ok:true, loggedIn:true, phone:phone.includes("@") ? phone.replace(/^(.).*@/,"$1***@") : "******" + phone.slice(-4), items } : { ok:true, loggedIn:false, otp:true };
   if (f.action === "login") { demoIn = true; return demoApi(); }
   if (f.action === "send") return { ok:true, via:"email", to:(phone.includes("@") ? phone.replace(/^(.).*@/,"$1***@") : "a***@gmail.com") + " (Demo OTP: 123456)" };
@@ -271,6 +273,15 @@ document.addEventListener("click", e => { if (e.target.closest('a[href="#demo"]'
   document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => { try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {} apply(b.dataset.mode); });
   (mq.addEventListener ? mq.addEventListener.bind(mq,"change") : mq.addListener.bind(mq))(() => { if (root.getAttribute("data-mode") === "system") apply("system"); });
 })();
+</script>
+<script>/* Theme button: pehle click par teeno option khulein, chunne par wapas band */
+document.addEventListener("click", e => {
+  const sw = e.target.closest(".theme-sw");
+  document.querySelectorAll(".theme-sw.open").forEach(s => s !== sw && s.classList.remove("open"));
+  if (!sw || !e.target.closest("button")) return;
+  if (sw.classList.contains("open")) { sw.classList.remove("open"); return; }
+  e.stopPropagation(); e.preventDefault(); sw.classList.add("open");
+}, true);
 </script>
 </body>
 </html>

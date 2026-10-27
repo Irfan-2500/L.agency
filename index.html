@@ -74,6 +74,8 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.75);backdrop-fil
 .nav-links a.nav-shop:hover{background:linear-gradient(135deg,#06b6d4,#3b82f6);filter:brightness(1.12);transform:translateY(-1px)}
 .nav-links a.nav-custom{background:var(--card2);border:1px solid rgba(192,132,252,.45)}
 .nav-links a.nav-custom svg{color:#c084fc}
+.nav-links a.nav-my{display:inline-flex;align-items:center;gap:7px;color:var(--text);background:var(--card);border:1px solid rgba(192,132,252,.6)}
+.nav-links a.nav-my:hover{border-color:#c084fc;background:rgba(139,44,255,.12)}
 .nav-links a.nav-custom:hover{background:rgba(139,44,255,.18);border-color:#c084fc}
 .nav-links a.active{color:#fff;background:linear-gradient(135deg,#8b2cff,#a855f7);box-shadow:0 6px 20px -4px rgba(139,44,255,.7)}
 .cart-btn{position:relative;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line2);background:var(--card)}
@@ -1253,6 +1255,8 @@ html.light .more-menu{background:#fff;box-shadow:0 24px 50px -18px rgba(60,30,14
 @media(max-width:700px){.pay-grid{grid-template-columns:1fr}.pay-grid .pcard.qr{grid-row:auto}.pay-confirm{grid-template-columns:auto 1fr}.pay-confirm .btn{grid-column:1/-1}}
 html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110,40,220,.45)}
 
+/* Theme: band rahe to sirf chuni hui theme dikhe, click par teeno khulein */
+.theme-sw:not(.open) button:not([aria-checked="true"]){display:none}
 </style>
 </head>
 <body>
@@ -1268,6 +1272,7 @@ html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110
   <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
   <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
   <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
@@ -1320,7 +1325,7 @@ html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110
       <a href="ready-ppts.html" class="nav-shop" data-ui="nav_shop"><svg class="i" style="width:16px"><use href="#i-bag"/></svg>Shop PPTs</a>
       <a href="#custom" class="nav-custom js-custom" data-ui="nav_custom"><svg class="i" style="width:16px"><use href="#i-sparkle"/></svg>Custom PPT</a>
       <a href="#pricing" class="nav-price js-pricing" data-ui="nav_pricing"><span class="rs">₹</span>Pricing</a>
-      <a href="account.html" data-ui="nav_my" title="Khareedi PPTs dobara download karein">My PPTs</a>
+      <a href="account.html" class="nav-my" data-ui="nav_my" title="Khareedi PPTs dobara download karein"><svg class="i" style="width:16px"><use href="#i-user"/></svg>My PPTs</a>
       <div class="nav-more" data-ui="nav_more">
         <button type="button" class="more-btn" id="moreBtn" aria-haspopup="true" aria-expanded="false"><svg class="i" style="width:16px"><use href="#i-grid"/></svg><span class="mo-l">More Offerings</span><span class="mo-s">More</span><svg class="i chev" style="width:14px"><use href="#i-down"/></svg></button>
         <div class="more-menu" id="moreMenu" role="menu"><a href="service.html?s=ready-to-use-presentations" role="menuitem" style="--c:#a855f7"><span class="mo-ic"><svg class="i"><use href="#i-ppt"/></svg></span><span><b>Ready-to-Use Presentations</b><small>Editable PPTs, ready to teach</small></span></a><a href="service.html?s=lecture-recording" role="menuitem" style="--c:#ef4444"><span class="mo-ic"><svg class="i"><use href="#i-mic"/></svg></span><span><b>Lecture Recording</b><small>Clear audio + slide recording</small></span></a><a href="service.html?s=thumbnail-design" role="menuitem" style="--c:#f59e0b"><span class="mo-ic"><svg class="i"><use href="#i-image"/></svg></span><span><b>Thumbnail Design</b><small>YouTube & class thumbnails</small></span></a><a href="service.html?s=study-material-creation" role="menuitem" style="--c:#22c55e"><span class="mo-ic"><svg class="i"><use href="#i-book"/></svg></span><span><b>Study Material Creation</b><small>Notes, worksheets, test papers</small></span></a><a href="service.html?s=video-editing" role="menuitem" style="--c:#06b6d4"><span class="mo-ic"><svg class="i"><use href="#i-film"/></svg></span><span><b>Video Editing</b><small>Lectures, Shorts & Reels</small></span></a><a href="service.html?s=social-media-management" role="menuitem" style="--c:#ec4899"><span class="mo-ic"><svg class="i"><use href="#i-share"/></svg></span><span><b>Social Media Management</b><small>YouTube, Instagram & Facebook</small></span></a><a href="service.html" class="mo-all" role="menuitem">View all offerings →</a></div>
@@ -1611,7 +1616,7 @@ html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110
       <div><h5>CATEGORIES</h5><ul id="footCats"></ul></div>
       <div data-ui="foot_more"><h5>MORE OFFERINGS</h5><ul><li><a href="service.html?s=ready-to-use-presentations">Ready-to-Use Presentations</a></li><li><a href="service.html?s=lecture-recording">Lecture Recording</a></li><li><a href="service.html?s=thumbnail-design">Thumbnail Design</a></li><li><a href="service.html?s=study-material-creation">Study Material Creation</a></li><li><a href="service.html?s=video-editing">Video Editing</a></li><li><a href="service.html?s=social-media-management">Social Media Management</a></li></ul></div>
       <div><h5>TRUST & LEGAL</h5><ul>
-        <li><a href="#faq">Privacy Policy</a></li><li><a href="#faq">Terms & Conditions</a></li><li><a href="#faq">Refund & Replacement</a></li></ul>
+        <li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms & Conditions</a></li><li><a href="refund.html">Refund & Cancellation</a></li><li><a href="delivery.html">Shipping & Delivery</a></li><li><a href="contact.html">Contact Us</a></li></ul>
         <h5 style="margin-top:22px">FOLLOW US</h5>
         <div class="socials">
           <a href="#" data-ui="soc_linkedin" data-soc="linkedin" aria-label="LinkedIn" title="LinkedIn" style="--sc:#0a66c2"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
@@ -2930,6 +2935,15 @@ async function boot(){
   } catch(err) { /* net slow — jo dikh raha hai wahi rahega */ }
 }
 boot();
+</script>
+<script>/* Theme button: pehle click par teeno option khulein, chunne par wapas band */
+document.addEventListener("click", e => {
+  const sw = e.target.closest(".theme-sw");
+  document.querySelectorAll(".theme-sw.open").forEach(s => s !== sw && s.classList.remove("open"));
+  if (!sw || !e.target.closest("button")) return;
+  if (sw.classList.contains("open")) { sw.classList.remove("open"); return; }
+  e.stopPropagation(); e.preventDefault(); sw.classList.add("open");
+}, true);
 </script>
 </body>
 </html>
