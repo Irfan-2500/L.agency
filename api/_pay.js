@@ -9,7 +9,8 @@ const KEY_ID = (process.env.RAZORPAY_KEY_ID || "").trim();   // paste karte waqt
 const SECRET = (process.env.RAZORPAY_KEY_SECRET || "").trim();
 const LINK_DAYS = 7;   // download link kitne din chalega
 
-const enabled = () => !!(KEY_ID && SECRET);
+/* Key ID rzp_live_/rzp_test_ se shuru na ho to Razorpay band, website UPI QR + UTR par chalti rahe */
+const enabled = () => /^rzp_(live|test)_/.test(KEY_ID) && !!SECRET;
 const hmac = s => crypto.createHmac("sha256", SECRET).update(s).digest("hex");
 const same = (a, b) => typeof a === "string" && a.length === b.length && crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
 const send = (res, code, obj) => res.status(code).setHeader("Cache-Control", "no-store").json(obj);
