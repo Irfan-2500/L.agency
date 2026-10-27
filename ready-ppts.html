@@ -376,6 +376,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 <footer style="text-align:center;padding:28px 16px 40px;font-size:.85rem;color:var(--muted)"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refund</a> · <a href="delivery.html">Delivery</a> · <a href="contact.html">Contact</a></footer>
 <div class="toast" id="toast" role="status"></div>
 
+<script src="config.js"></script>
 <script src="catalog.js"></script>
 <script>
 /* =========================================================
@@ -405,7 +406,13 @@ const cssUrl = u => `url('${String(u).replace(/['"\\\n()]/g,"")}')`;
 const langTxt = l => l === "Both" ? "Hindi + English" : l;
 const thumbStyle = p => p.thumb ? `background-image:${cssUrl(p.thumb)}` : `background:linear-gradient(135deg,${p.colors[0]},${p.colors[1]})`;
 
-let PRODUCTS = [], API = false, PAY = false, VPAY = false;   /* VPAY: Vercel par Razorpay (api/pay-*.js) */
+let PRODUCTS = [], API = false, PAY = false, VPAY = false, SPAY = false;   /* VPAY: Vercel par Razorpay (api/pay-*.js) · SPAY: admin panel wali PPTs (Google Script) */
+const SCRIPT = String((window.LA_CONFIG || {}).orderUrl || "").trim();
+async function postS(action, body){   /* Google Script (admin panel) */
+  try { const r = await fetch(SCRIPT, { method:"POST", body:JSON.stringify({ action, ...body }), headers:{ "Content-Type":"text/plain;charset=utf-8" } }); const j = await r.json().catch(() => ({}));
+    return j.ok ? j : { ok:false, error:j.error || "Kuch gadbad ho gayi. Dobara try karein." }; }
+  catch(e) { return { ok:false, error:"Internet check karein aur dobara try karein." }; }
+}
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem("la_cart")) || []; } catch(e) {}
 const st = { q:"", cat:"all", f:{}, sort:"popular", shown:CONFIG.perPage };
@@ -471,7 +478,7 @@ function card(p){
     <button class="thumb" style="${thumbStyle(p)}" onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
       ${ribbon(p.badge)}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
       <span class="peek">👁 Preview</span>
-      <span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>
+      ${p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
     </button>
     <div class="c-body">
       ${soldTag(p)}
@@ -553,7 +560,7 @@ function openPreview(id){
     <div class="m-info">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
-      <div class="tags">${[`${p.slides} Slides`, langTxt(p.lang), `${p.theme} Theme`, ...arr(p.level).filter(l => l !== "Other"), p.subject, ...arr(p.board), "16:9 HD", "Editable .pptx"].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      <div class="tags">${[p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...arr(p.level).filter(l => l !== "Other"), p.subject, ...arr(p.board), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "ZIP file" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       ${imgs.length ? `<p style="font-size:.78rem;color:var(--dim)">Preview mein ${imgs.length} slides dikhayi gayi hain. Poori PPT mein ${p.slides} slides hain.</p>` : ""}
       <div class="m-buy">
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
@@ -586,7 +593,7 @@ const APPS = [
   { id:"other", name:"Other UPI", ic:`<i style="background:#22c55e">₹</i>`, deep:"upi://pay", rzp:"" }
 ];
 const isMobile = () => matchMedia("(pointer:coarse)").matches;
-const payMode = () => PAY ? "rzp" : upiOn() ? "upi" : (!API && CONFIG.demoPay) ? "demo" : "wa";
+const payMode = () => PAY ? "rzp" : upiOn() ? "upi" : (!API && CONFIG.demoPay && PRODUCTS === DEMO) ? "demo" : "wa";
 const upiOn = () => !!(CONFIG.upi && (/^[\w.-]{2,}@[a-z][a-z0-9.]+$/i.test(CONFIG.upi.id || "") || CONFIG.upi.qr));
 const upiLink = (scheme, total) => `${scheme}?` + new URLSearchParams({ pa:CONFIG.upi.id, pn:CONFIG.upi.name || "Lakshay Agency", am:total.toFixed(2), cu:"INR", tn:"Lakshay PPT" }).toString().replace(/\+/g,"%20").replace(/%40/g,"@");
 
@@ -700,7 +707,8 @@ $("#upiBox").onclick = async e => {
   appsBusy(true, btn);
   if (m === "demo") { await new Promise(r => setTimeout(r, 1200)); appsBusy(false, btn);
     paid(d, 0, payIds.map(id => PRODUCTS.find(p => p.id === id)).map(p => ({ title:p.title, url:`demo/ppt/${p.slug}.pptx` }))); return; }
-  const o = VPAY ? await postJ("api/pay-order", { ...d, items:payIds, website:$("#payHp").value })
+  const o = SPAY ? await postS("payOrder", { ...d, items:payIds })
+          : VPAY ? await postJ("api/pay-order", { ...d, items:payIds, website:$("#payHp").value })
                  : await post("api/order.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
   if (!o.ok) { appsBusy(false, btn); toast("⚠ " + o.error); return; }
   try { await loadRazorpay(); } catch(err) { appsBusy(false, btn); toast("⚠ " + err.message); return; }
@@ -709,7 +717,7 @@ $("#upiBox").onclick = async e => {
     modal:{ ondismiss:() => appsBusy(false, btn) },
     handler: async resp => {
       $("#payNote").textContent = "Payment verify ho raha hai…";
-      const v = VPAY ? await postJ("api/pay-verify", resp) : await post("api/verify.php", resp); appsBusy(false, btn);
+      const v = SPAY ? await postS("payVerify", resp) : VPAY ? await postJ("api/pay-verify", resp) : await post("api/verify.php", resp); appsBusy(false, btn);
       if (!v.ok) { toast("⚠ " + v.error); return; }
       paid(d, VPAY ? v.paymentId : v.orderId, v.links);
     } };
@@ -728,7 +736,7 @@ function paid(d, orderId, links){
   if (VPAY) {   /* Vercel: links yahin, 7 din chalenge */
     try { const old = JSON.parse(localStorage.getItem("la_bought") || "[]"); localStorage.setItem("la_bought", JSON.stringify([...links, ...old].slice(0, 30))); } catch(e) {}
     $("#payDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>🎉 Congratulations! Payment Successful</h3>
-      <p style="color:var(--muted)">Abhi download kar lein (link 7 din chalega). Payment ID: <b>${esc(orderId)}</b></p>
+      <p style="color:var(--muted)">Abhi download kar lein${SPAY ? "" : " (link 7 din chalega)"}. Payment ID: <b>${esc(orderId)}</b></p>
       ${links.map(l => `<a class="btn btn-gold" style="width:100%;margin-top:8px" href="${esc(l.url)}">${icon("i-dl")} ${esc(l.title)}</a>`).join("")}
       <p style="color:var(--dim);font-size:.82rem;margin-top:12px">Koi dikkat? WhatsApp par Payment ID bhejein.</p>`;
     const a = $("#payDone a.btn-gold"); if (a) setTimeout(() => a.click(), 900);
@@ -786,9 +794,17 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
     const j = await r.json();
     if (j.ok) { API = true; PRODUCTS = j.products || []; PAY = !!(j.settings && j.settings.payments); if (j.settings && j.settings.whatsapp) CONFIG.whatsapp = j.settings.whatsapp; if (j.settings && j.settings.upi) CONFIG.upi = j.settings.upi; CONFIG.upiInstant = !!(j.settings && j.settings.upiInstant); }
   } catch(e) { /* server nahi mila: demo PPTs dikhengi */ }
-  if (!API) PRODUCTS = DEMO;
-  if (!API) try { const v = await (await fetch("api/pay-config", { cache:"no-store" })).json(); if (v.ok && v.payments) VPAY = PAY = true; } catch(e) {}
-  if (!API && CONFIG.demoPay) PRODUCTS.forEach((p,i) => p.sales = [128,64,97,41,23][i] || 0); /* preview ke sample numbers */
+  /* Admin panel se upload ki hui PPTs (Google Script). Ek bhi ho to wahi dikhengi */
+  if (!API && SCRIPT && !window.claude) try {
+    const j = await (await fetch(SCRIPT + "?action=ppts", { cache:"no-store" })).json();
+    if (j.ok && j.products && j.products.length) {
+      PRODUCTS = j.products.map(p => ({ ...p, thumb:(p.previews || [])[0] || "", previews:p.previews || [], colors:["#4c1d95","#a855f7"] }));
+      SPAY = !!j.payments; VPAY = PAY = SPAY;
+    }
+  } catch(e) {}
+  if (!API && !PRODUCTS.length) PRODUCTS = DEMO;
+  if (!API && PRODUCTS === DEMO) try { const v = await (await fetch("api/pay-config", { cache:"no-store" })).json(); if (v.ok && v.payments) VPAY = PAY = true; } catch(e) {}
+  if (!API && PRODUCTS === DEMO && CONFIG.demoPay) PRODUCTS.forEach((p,i) => p.sales = [128,64,97,41,23][i] || 0); /* preview ke sample numbers */
   const qs = new URLSearchParams(location.search), q = qs.get("q"); if (q) { st.q = q; $("#q").value = q; }
   render();
   /* homepage se "Buy / Checkout": seedha payment kholo */
@@ -816,5 +832,6 @@ document.addEventListener("click", e => {
   e.stopPropagation(); e.preventDefault(); sw.classList.add("open");
 }, true);
 </script>
+<script src="js/track.js" defer></script>
 </body>
 </html>
