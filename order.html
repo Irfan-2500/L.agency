@@ -174,6 +174,8 @@ html.light .drop svg{color:#7c3aed}
 .theme-sw button[aria-checked="true"]{color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);box-shadow:0 0 12px rgba(139,44,255,.45)}
 @media(max-width:420px){.theme-sw button{width:28px}}
 .top .back{margin-left:auto}
+/* Theme: band rahe to sirf chuni hui theme dikhe, click par teeno khulein */
+.theme-sw:not(.open) button:not([aria-checked="true"]){display:none}
 </style>
 </head>
 <body>
@@ -572,6 +574,15 @@ $("#orderForm").onsubmit = async e => {
   document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => { try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {} apply(b.dataset.mode); });
   (mq.addEventListener ? mq.addEventListener.bind(mq,"change") : mq.addListener.bind(mq))(() => { if (root.getAttribute("data-mode") === "system") apply("system"); });
 })();
+</script>
+<script>/* Theme button: pehle click par teeno option khulein, chunne par wapas band */
+document.addEventListener("click", e => {
+  const sw = e.target.closest(".theme-sw");
+  document.querySelectorAll(".theme-sw.open").forEach(s => s !== sw && s.classList.remove("open"));
+  if (!sw || !e.target.closest("button")) return;
+  if (sw.classList.contains("open")) { sw.classList.remove("open"); return; }
+  e.stopPropagation(); e.preventDefault(); sw.classList.add("open");
+}, true);
 </script>
 </body>
 </html>

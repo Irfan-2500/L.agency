@@ -250,6 +250,8 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 @media(max-width:420px){.theme-sw button{width:28px}}
 @media(max-width:560px){.nav{gap:8px}.logo b{white-space:nowrap;font-size:.92rem}.logo small{display:none}.back{padding:8px 4px}}
 @media(max-width:420px){.nav{gap:6px}.nav .back{display:none}.theme-sw{margin-left:auto}.theme-sw button{width:27px}}
+/* Theme: band rahe to sirf chuni hui theme dikhe, click par teeno khulein */
+.theme-sw:not(.open) button:not([aria-checked="true"]){display:none}
 </style>
 </head>
 <body>
@@ -588,7 +590,7 @@ const APPS = [
   { id:"other", name:"Other UPI", ic:`<i style="background:#22c55e">₹</i>`, deep:"upi://pay", rzp:"" }
 ];
 const isMobile = () => matchMedia("(pointer:coarse)").matches;
-const payMode = () => PAY ? "rzp" : (!API && CONFIG.demoPay) ? "demo" : upiOn() ? "upi" : "wa";
+const payMode = () => PAY ? "rzp" : upiOn() ? "upi" : (!API && CONFIG.demoPay) ? "demo" : "wa";
 const upiOn = () => !!(CONFIG.upi && (/^[\w.-]{2,}@[a-z][a-z0-9.]+$/i.test(CONFIG.upi.id || "") || CONFIG.upi.qr));
 const upiLink = (scheme, total) => `${scheme}?` + new URLSearchParams({ pa:CONFIG.upi.id, pn:CONFIG.upi.name || "Lakshay Agency", am:total.toFixed(2), cu:"INR", tn:"Lakshay PPT" }).toString().replace(/\+/g,"%20").replace(/%40/g,"@");
 
@@ -596,21 +598,21 @@ function openPay(ids){
   payIds = ids.filter(id => PRODUCTS.some(p => p.id === id)); if (!payIds.length) return;
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id)); payTotal = items.reduce((s,p) => s + p.price, 0);
   $("#payItems").innerHTML = items.map(p => `<div class="pi"><b>${esc(p.title)}</b><span>${inr(p.price)}</span></div>`).join("") + (items.length > 1 ? `<div class="pi tot"><span>Total</span><span>${inr(payTotal)}</span></div>` : "");
-  const m = payMode(), u = CONFIG.upi || {}, hasId = /@/.test(u.id || ""), showApps = m !== "upi" || (hasId && isMobile());
+  const m = payMode(), u = CONFIG.upi || {}, hasId = /@/.test(u.id || ""), showApps = m !== "upi" || hasId;
   stopQr(); qrSt = { orderId:0, busy:false, timer:0 };
   $("#upiBox").hidden = m === "wa"; $("#payWa").hidden = m !== "wa"; $("#utrWrap").hidden = m !== "upi" && m !== "demo"; $("#payUtr").value = "";
   $("#upiBox").innerHTML = m === "wa" ? "" : `<h4>QR scan karke <b>${inr(payTotal)}</b> pay karein</h4>
     <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg">${(!hasId && u.qr) ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""}</div>
       <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
     ${m === "rzp" ? `<div class="live" id="qrLive" hidden>● Payment ka intezaar… pay hote hi download khulega</div>` : hasId ? `<div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed ${inr(payTotal)}</div>` : ""}
-    ${m === "demo" ? `<button type="button" class="note" id="demoQrPaid" style="text-decoration:underline">(Demo) QR se payment ho gaya maan lo</button>` : ""}
+    ${m === "demo" && window.claude ? `<button type="button" class="note" id="demoQrPaid" style="text-decoration:underline">(Demo) QR se payment ho gaya maan lo</button>` : ""}
     ${showApps ? `<div class="or">ya app se pay karein</div>
     <div class="apps">${APPS.map(a => `<button type="button" data-app="${a.id}">${a.ic}${a.name}</button>`).join("")}</div>` : ""}`;
   /* rzp: asli QR details ke baad banta hai, tab tak blur ke peeche ek namuna QR */
   if (hasId || m === "rzp") loadQR().then(() => { if (qrSt.orderId) return; const q = qrcode(0, "M"); q.addData(hasId ? upiLink("upi://pay", payTotal) : location.origin + "/ready-ppts.html"); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:"UPI QR code" }); })
     .catch(() => { $("#qrImg").innerHTML = u.qr ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""; });
   $("#payNote").textContent = { rzp:"🔒 Amount fixed hai. Payment hote hi PPT yahin download hogi.", demo:"Demo: asli paisa nahi katega.",
-    upi: CONFIG.upiInstant ? "UTR daalte hi PPT yahin download ho jayegi." : "Payment check hone ke baad download link Email par aayega aur My PPTs mein khulega (10–30 min).", wa:"Online payment jald shuru hoga. Abhi WhatsApp par order karein." }[m];
+    upi: !API ? "Pay karke UTR (12 digit) daalein. Payment check hone ke baad hi PPT milegi." : CONFIG.upiInstant ? "UTR daalte hi PPT yahin download ho jayegi." : "Payment check hone ke baad download link Email par aayega aur My PPTs mein khulega (10–30 min).", wa:"Online payment jald shuru hoga. Abhi WhatsApp par order karein." }[m];
   $("#payMain").hidden = false; $("#payDone").hidden = true;
   try { const s = JSON.parse(localStorage.getItem("la_buyer") || "{}"); ["payName","payEmail","payPhone"].forEach(k => { if (s[k] && !$("#"+k).value) $("#"+k).value = s[k]; }); } catch(e) {}
   $("#payAlert").hidden = true; ["p-name","p-phone","p-email"].forEach(id => $("#"+id).classList.remove("bad"));
@@ -688,7 +690,10 @@ $("#upiBox").onclick = async e => {
   const btn = e.target.closest("[data-app]"); if (!btn) return;
   const app = APPS.find(a => a.id === btn.dataset.app), d = buyer(); if (!d) return;
   const m = payMode();
-  if (m === "upi") { location.href = upiLink(app.deep, payTotal); setTimeout(() => { $("#utrWrap").hidden = false; $("#payUtr").focus(); }, 800); return; }
+  if (m === "upi") {
+    if (!isMobile()) { toast("📱 App mobile par khulega. Computer par QR scan karein."); return; }
+    /* App khulta hai (amount fixed). Wapas aakar UTR daalna zaroori, tabhi order aage badhega */
+    location.href = upiLink(app.deep, payTotal); setTimeout(() => { $("#utrWrap").hidden = false; $("#payUtr").focus(); }, 800); return; }
   appsBusy(true, btn);
   if (m === "demo") { await new Promise(r => setTimeout(r, 1200)); appsBusy(false, btn);
     paid(d, 0, payIds.map(id => PRODUCTS.find(p => p.id === id)).map(p => ({ title:p.title, url:`demo/ppt/${p.slug}.pptx` }))); return; }
@@ -732,7 +737,7 @@ $("#utrBtn").onclick = async () => {
   const utr = $("#payUtr").value.replace(/\s+/g,"");
   const bad = !/^\d{12}$/.test(utr); $("#p-utr").classList.toggle("bad", bad);
   if (bad) { $("#payUtr").focus(); return; }
-  if (payMode() === "demo") { checking(d, 0, utr); return; }
+  if (!API) { checking(d, 0, utr); return; }   /* PHP nahi (Vercel): admin WhatsApp par UTR check karke PPT bhejega */
   const btn = $("#utrBtn"); btn.disabled = true; btn.textContent = "Wait…";
   const o = await post("api/upi_order.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
   const c = o.ok ? await post("api/upi_confirm.php", { orderId:o.orderId, phone:d.phone, utr }) : o;
@@ -745,12 +750,12 @@ $("#utrBtn").onclick = async () => {
 function checking(d, orderId, utr){
   cart = cart.filter(id => !payIds.includes(id)); saveCart();
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id));
-  const msg = `Hi Lakshay Agency! Maine UPI se payment kar diya hai.\nOrder #${orderId}\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\nUTR: ${utr}\nEmail: ${d.email}`;
+  const msg = `Hi Lakshay Agency! Maine UPI se payment kar diya hai.\n${orderId ? `Order #${orderId}\n` : ""}${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\nUTR: ${utr}\nEmail: ${d.email}`;
   $("#payMain").hidden = true; $("#payDone").hidden = false;
   $("#payDone").innerHTML = `<div class="tick" style="background:rgba(245,158,11,.15);color:#f59e0b">⏳</div><h3>पेमेंट चेक हो रहा है 🙏</h3>
-    <p style="color:var(--muted)">Order #${orderId || "Demo"} · UTR <b>${esc(utr)}</b><br>पेमेंट मिलते ही PPT का download link <b>${esc(d.email)}</b> पर आ जाएगा और <b>My PPTs</b> में download खुल जाएगा (आमतौर पर 10–30 मिनट)।<br><small style="color:var(--dim)">We'll verify your payment, then send the download link.</small></p>
+    <p style="color:var(--muted)">${orderId ? `Order #${orderId} · ` : ""}UTR <b>${esc(utr)}</b><br>${orderId ? `पेमेंट मिलते ही PPT का download link <b>${esc(d.email)}</b> पर आ जाएगा और <b>My PPTs</b> में download खुल जाएगा (आमतौर पर 10–30 मिनट)।` : `नीचे बटन से WhatsApp पर UTR भेजें। हमारे खाते में पेमेंट आया है, यह check करके PPT <b>${esc(d.email)}</b> / WhatsApp पर भेजी जाएगी।`}<br><small style="color:var(--dim)">We'll verify your payment, then send the download link.</small></p>
     <a class="btn btn-wa" href="${esc(waURL(msg))}" target="_blank" rel="noopener">${icon("i-msg")} जल्दी चाहिए? WhatsApp पर screenshot भेजें</a>
-    ${orderId ? `<a class="btn btn-ghost" href="account.html">My PPTs खोलें</a>` : `<button class="btn btn-ghost" id="demoApprove">(Demo) Admin ने ✓ Paid किया → Download देखें</button>`}`;
+    ${orderId ? `<a class="btn btn-ghost" href="account.html">My PPTs खोलें</a>` : window.claude ? `<button class="btn btn-ghost" id="demoApprove">(Demo) Admin ने ✓ Paid किया → Download देखें</button>` : ""}`;
   const da = $("#demoApprove"); if (da) da.onclick = () => paid(d, 0, []);
 }
 $("#payWa").onclick = () => {
@@ -787,6 +792,15 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => { try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {} apply(b.dataset.mode); });
   (mq.addEventListener ? mq.addEventListener.bind(mq,"change") : mq.addListener.bind(mq))(() => { if (root.getAttribute("data-mode") === "system") apply("system"); });
 })();
+</script>
+<script>/* Theme button: pehle click par teeno option khulein, chunne par wapas band */
+document.addEventListener("click", e => {
+  const sw = e.target.closest(".theme-sw");
+  document.querySelectorAll(".theme-sw.open").forEach(s => s !== sw && s.classList.remove("open"));
+  if (!sw || !e.target.closest("button")) return;
+  if (sw.classList.contains("open")) { sw.classList.remove("open"); return; }
+  e.stopPropagation(); e.preventDefault(); sw.classList.add("open");
+}, true);
 </script>
 </body>
 </html>
