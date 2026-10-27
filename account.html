@@ -176,7 +176,7 @@ input:focus-visible{outline:none}
 
 <script>
 /* demo:true sirf preview ke liye: koi bhi number, OTP 123456 */
-const CONFIG = { demo:false };
+const CONFIG = { demo:/\.(vercel\.app|github\.io)$/.test(location.hostname) };   /* PHP ke bina (Vercel) demo login */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const icon = id => `<svg class="i"><use href="#${id}"/></svg>`;
@@ -199,7 +199,7 @@ function demoApi(f){
   const DEMO = { 1:["Photosynthesis — Class 10 Science","photosynthesis"], 2:["भारत का संविधान — Class 8 SST","samvidhan"], 3:["Newton's Laws of Motion — Class 9","newton"],
                  4:["Fractions Made Easy — Class 5 Maths","fractions"], 5:["Startup Business Plan Pitch Deck","pitch"] };
   const ids = (new URLSearchParams(location.search).get("ids") || "1,3").split(",").filter(i => DEMO[i]);
-  const items = ids.map(i => ({ id:+i, title:DEMO[i][0], thumb:`uploads/previews/demo-${DEMO[i][1]}-1.webp`, orderId:"Demo", date:new Date().toISOString(), url:"#demo", slug:DEMO[i][1] }));
+  const items = ids.map(i => ({ id:+i, title:DEMO[i][0], thumb:`uploads/previews/demo-${DEMO[i][1]}-1.webp`, orderId:"Demo", date:new Date().toISOString(), url:window.claude ? "#demo" : `demo/ppt/${DEMO[i][1]}.pptx`, slug:DEMO[i][1] }));
   if (!f) return demoIn ? { ok:true, loggedIn:true, phone:phone.includes("@") ? phone.replace(/^(.).*@/,"$1***@") : "******" + phone.slice(-4), items } : { ok:true, loggedIn:false, otp:true };
   if (f.action === "login") { demoIn = true; return demoApi(); }
   if (f.action === "send") return { ok:true, via:"email", to:(phone.includes("@") ? phone.replace(/^(.).*@/,"$1***@") : "a***@gmail.com") + " (Demo OTP: 123456)" };

@@ -379,8 +379,9 @@ html.light .kicker{color:#a16207;background:#fef9c3}
    ========================================================= */
 const CONFIG = { whatsapp:"919711069435", perPage:12,
   /* UPI: admin panel → "UPI / QR" se aata hai. Server na ho tab yahan likhi UPI ID chalegi. */
-  upi:{ id:"", name:"Lakshay Agency", qr:"" },
-  demoPay:false /* true sirf preview ke liye: sample sold count + bina asli payment ke download */ };
+  upi:{ id:"7290933116@ybl", name:"MOHAMMAD IRFAN", qr:"uploads/payment/upi-qr.png" },
+  /* Vercel / GitHub Pages par PHP nahi chalta: wahan demo checkout (asli server par kabhi nahi) */
+  demoPay:/\.(vercel\.app|github\.io)$/.test(location.hostname) };
 const CATEGORIES = [
   { id:"edu",  name:"Educational" }, { id:"biz", name:"Business" }, { id:"mkt", name:"Marketing" }, { id:"anim", name:"Animated" }
 ];
