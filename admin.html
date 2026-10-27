@@ -69,7 +69,7 @@ svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke
 .btn.wa{background:#16a34a;border-color:transparent;color:#fff}
 .btn.wa:hover{filter:brightness(1.08)}
 .btn:disabled{opacity:.55;cursor:wait}
-input[type=text],input[type=password],input[type=email],input[type=tel],input[type=number],input[type=search],select,textarea{
+input[type=text],input[type=password],input[type=email],input[type=tel],input[type=number],input[type=search],input[type=date],select,textarea{
   width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;outline:none;transition:.18s}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 label.f{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:700;color:var(--muted)}
@@ -341,6 +341,19 @@ label.f span{font-weight:500;color:var(--dim)}
 .drop .up .tb{height:10px}
 .drop .up.done b{color:var(--ok)}
 @media(max-width:560px){.bars.b30 .b span{display:none}}
+.rtbl{overflow-x:auto}
+.rtbl table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:tabular-nums}
+.rtbl th,.rtbl td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+.rtbl th:first-child,.rtbl td:first-child{text-align:left}
+.rtbl th{color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.rtbl tr.now td{background:var(--accent-soft);font-weight:700}
+.cform{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end}
+.clist{display:flex;flex-direction:column;gap:8px}
+.crow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg2)}
+.crow.off{opacity:.55}
+.crow b{font-family:var(--display);letter-spacing:.06em;font-size:1rem}
+.crow small{display:block;color:var(--dim);font-size:.78rem}
+@media(max-width:560px){.crow{grid-template-columns:1fr}}
 /* ---------- mobile ---------- */
 .scrim{display:none}
 @media(max-width:900px){
@@ -425,10 +438,12 @@ label.f span{font-weight:500;color:var(--dim)}
         <span class="lbl">Overview</span>
         <button data-t="dash"><svg class="i"><use href="#i-home"/></svg>Dashboard</button>
         <button data-t="stats"><svg class="i"><use href="#i-chart"/></svg>Analytics (Visitors)</button>
+        <button data-t="report"><svg class="i"><use href="#i-pie"/></svg>Kamai Report</button>
         <span class="lbl">Business</span>
         <button data-t="orders"><svg class="i"><use href="#i-cart"/></svg>Orders<span class="n" id="nOrders" hidden></span></button>
         <button data-t="sales"><svg class="i"><use href="#i-pie"/></svg>Sales (Online)</button>
         <button data-t="customers"><svg class="i"><use href="#i-phone"/></svg>Customers (Login)</button>
+        <button data-t="coupons"><svg class="i"><use href="#i-tag"/></svg>Coupons</button>
         <button data-t="messages"><svg class="i"><use href="#i-msg"/></svg>Messages / Tickets</button>
         <button data-t="reviews"><svg class="i"><use href="#i-star"/></svg>Reviews<span class="n" id="nReviews" hidden></span></button>
         <span class="lbl">Website</span>
@@ -531,7 +546,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", stats: "Analytics", sales: "Sales", customers: "Customers", ppts: "Ready PPTs", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Kamai Report", coupons: "Coupons", sales: "Sales", customers: "Customers", ppts: "Ready PPTs", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -598,6 +613,8 @@ const DEMO = (() => {
     messages: [{name:"Sanjay Kumar",email:"sanjay@example.com",phone:"9876543210",subject:"[TKT-1022-4821] Custom PPT Request",message:"Mujhe 100 slides chahiye Hindi mein, kal tak mil sakti hain?",time:iso(1)},
       {name:"Ritu Sharma",email:"ritu@example.com",phone:"",subject:"[TKT-1021-3307] Invoice Request",message:"Pichhle order ka invoice bhej dijiye.",time:iso(28)}],
     pay: { on: false },
+    coupons: [{code:"DIWALI20",type:"%",value:20,min:0,max:100,used:6,expiry:new Date(now + 9 * 864e5).toISOString(),active:true,note:"Diwali offer"},
+      {code:"WELCOME10",type:"₹",value:10,min:49,max:0,used:2,expiry:"",active:false,note:""}],
     customers: [{key:"9876500022",name:"Neha Singh",email:"neha@example.com",mobile:"9876500022",orders:2,spent:397,ppts:["Class 10 Science — Light","Business Pitch Deck"],first:iso(300),last:iso(30),logins:4,lastLogin:iso(3),device:"Mobile",resetAt:"",blocked:false},
       {key:"9876500011",name:"Rahul Verma",email:"rahul@example.com",mobile:"9876500011",orders:1,spent:99,ppts:["Class 10 Science — Light"],first:iso(2),last:iso(2),logins:0,lastLogin:"",device:"",resetAt:"",blocked:false}],
     sales: [{time:iso(2),name:"Rahul Verma",email:"rahul@example.com",mobile:"9876500011",items:"Class 10 Science — Light",amount:99,payment:"pay_DemoA1",order:"order_DemoA1"},
@@ -642,6 +659,15 @@ async function demoCall(a, d) {
         devices: [["Mobile", 900], ["Computer", 250], ["Tablet", 30]], browsers: [["Chrome", 820], ["Safari", 160], ["Samsung Internet", 110], ["Edge", 60]], sheetUrl: "#" });
     }
     case "adminSales": return ok({ sales: D.sales.slice() });
+    case "adminReport": {
+      const months = [...Array(12)].map((_, i) => { const d = new Date(); d.setDate(15); d.setMonth(d.getMonth() - 11 + i); const r = i < 6 ? 0 : [99, 248, 397, 520, 690, 815][i - 6];
+        return { month: d.toISOString().slice(0, 7), sales: Math.round(r / 60), revenue: r, orders: 3 + i, done: 2 + Math.floor(i / 2), cancelled: i % 4 ? 0 : 1, visitors: 120 + i * 45, newCustomers: Math.round(r / 90), coupons: i > 8 ? i - 8 : 0, discount: 0 }; });
+      return ok({ months, topPpts: [["Class 10 Science — Light", 14, 1386], ["Business Pitch Deck", 3, 597]], coupons: [["DIWALI20", 6], ["WELCOME10", 2]] });
+    }
+    case "adminCoupons": return ok({ coupons: D.coupons.map(c => Object.assign({}, c)) });
+    case "adminCouponSave": { const exp = d.expiry ? new Date(d.expiry + "T23:59:00+05:30").toISOString() : ""; let c = D.coupons.find(x => x.code === (d.old || d.code));
+      if (!c) { c = { used: 0 }; D.coupons.unshift(c); } Object.assign(c, { code: d.code, type: d.type, value: d.value, min: d.min, max: d.max, expiry: exp, active: d.active, note: d.note }); return ok({ coupon: Object.assign({}, c) }); }
+    case "adminCouponDelete": D.coupons = D.coupons.filter(c => c.code !== d.code); return ok();
     case "adminCustomers": return ok({ customers: D.customers.map(c => Object.assign({}, c)) });
     case "adminCustomerSet": { const c = D.customers.find(x => x.key === d.key); if (c && d.blocked != null) c.blocked = d.blocked; return ok(); }
     case "adminSaleResend": return ok({ to: "r***@example.com" });
@@ -711,7 +737,7 @@ function go(t) {
   $("#pageTitle").textContent = TITLES[t] || "";
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   window.scrollTo(0, 0);
-  ({ dash, stats, sales, customers, ppts, orders, themes, prices, reviews, messages, site, settings })[t]();
+  ({ dash, stats, report, sales, customers, coupons, ppts, orders, themes, prices, reviews, messages, site, settings })[t]();
 }
 async function startApp() {
   $("#app").hidden = false;
@@ -1293,7 +1319,7 @@ function toplist(rows, total, col) {
   const mx = Math.max(1, ...rows.map(r => r[1]));
   return `<div class="toplist">${rows.map(([k, n]) => `<div><span class="tl" title="${esc(k)}">${esc(k)}</span><span class="tb"><i style="width:${n / mx * 100}%;background:${col || "var(--accent)"}"></i></span><b>${nf(n)}</b>${total ? `<small>${Math.round(n / total * 100)}%</small>` : ""}</div>`).join("")}</div>`;
 }
-const PAGE_NAMES = { "/": "Home", "/ready-ppts": "Ready to Use PPTs", "/order": "PPT Order", "/account": "My PPTs", "/about": "About", "/service": "Services", "/thank-you": "Thank you",
+const PAGE_NAMES = { "/": "Home", "/ready-ppts": "Ready to Use PPTs", "/order": "PPT Order", "/account": "My PPTs", "/about": "About", "/service": "Services", "/thank-you": "Thank you", "/track": "Track Order",
   "/privacy": "Privacy", "/terms": "Terms", "/refund": "Refund", "/delivery": "Delivery", "/contact": "Contact" };
 async function stats() {
   loading();
@@ -1376,6 +1402,103 @@ function drawSales() {
     : `<div class="empty"><b>🧾</b>${SALES.length ? "Is search mein kuch nahi mila." : "Abhi tak koi sale nahi. Razorpay keys Settings mein daalein aur Ready PPTs add karein."}</div>`;
 }
 
+
+
+/* ---------- Kamai Report (12 mahine) ---------- */
+async function report() {
+  loading();
+  const r = await call("adminReport");
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Kamai Report", "") + NEW_SCRIPT) : fail(r.error);
+  const M = r.months, mx = Math.max(1, ...M.map(m => m.revenue)), name = k => new Date(k + "-15").toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
+  const sum = f => M.reduce((s, m) => s + m[f], 0), cur = M[M.length - 1], prev = M[M.length - 2];
+  const diff = prev.revenue ? Math.round((cur.revenue - prev.revenue) / prev.revenue * 100) : null;
+  V(head("Kamai Report", "Har mahine kitni kamai hui, kitne order aaye aur kitne log website par aaye. (Online kamai = Razorpay se biki Ready PPTs.)") + `
+  <div class="stats">
+    <div class="stat" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(cur.revenue)}</b><small>Is mahine ki online kamai${diff == null ? "" : ` · ${diff >= 0 ? "▲" : "▼"} ${Math.abs(diff)}% pichhle mahine se`}</small></div>
+    <div class="stat" style="--c:var(--accent)"><span class="ic">₹</span><b>${rs(sum("revenue"))}</b><small>Last 12 mahine · ${nf(sum("sales"))} sale</small></div>
+    <div class="stat" style="--c:var(--warn)"><span class="ic">${ic("i-cart")}</span><b>${nf(sum("orders"))}</b><small>Custom PPT orders (12 mahine) · ${nf(sum("done"))} complete</small></div>
+    <div class="stat" style="--c:var(--cyan)"><span class="ic">${ic("i-eye")}</span><b>${nf(cur.visitors)}</b><small>Is mahine ke visitors</small></div>
+  </div>
+  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>${ic("i-chart", "color:var(--ok)")} Online kamai — har mahina</h3></div>
+    <div class="bars">${M.map((m, i) => `<div class="bc" title="${name(m.month)}: ${rs(m.revenue)} · ${m.sales} sale"><div class="b ${m.revenue ? "" : "zero"}" style="height:${Math.max(3, m.revenue / mx * 100)}%;${i === M.length - 1 ? "" : "opacity:.75"}"><span>${m.revenue ? "₹" + nf(Math.round(m.revenue)) : ""}</span></div><small>${name(m.month)}</small></div>`).join("")}</div></div>
+  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>📅 Mahine ke hisaab se</h3></div>
+    <div class="rtbl"><table><thead><tr><th>Mahina</th><th>Visitors</th><th>Custom orders</th><th>Complete</th><th>Cancel</th><th>Online sale</th><th>Naye customer</th><th>Coupon</th><th>Kamai</th></tr></thead>
+    <tbody>${M.slice().reverse().map((m, i) => `<tr class="${i ? "" : "now"}"><td>${name(m.month)}</td><td>${nf(m.visitors)}</td><td>${nf(m.orders)}</td><td>${nf(m.done)}</td><td>${nf(m.cancelled)}</td><td>${nf(m.sales)}</td><td>${nf(m.newCustomers)}</td><td>${nf(m.coupons)}</td><td><b>${rs(m.revenue)}</b></td></tr>`).join("")}</tbody></table></div></div>
+  <div class="dgrid">
+    <div class="card"><div class="ch"><h3>🏆 Sabse zyada kamai wali PPTs</h3></div>${toplist(r.topPpts.map(p => [p[0] + " · " + p[1] + " sale", Math.round(p[2])]), 0, "var(--ok)")}</div>
+    <div class="card"><div class="ch"><h3>🏷️ Coupon kitni baar lage</h3><button class="btn sm" data-go="coupons" style="margin-left:auto">Coupons</button></div>${toplist(r.coupons, 0, "var(--warn)")}</div>
+  </div>
+  <p class="note">ℹ️ Custom PPT orders ka daam website par nahi bharta, isliye unki kamai yahan nahi judti. Unki ginti dikhti hai.</p>`);
+  $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+}
+
+/* ---------- Coupons ---------- */
+let CPN = [], CE = null;
+async function coupons() {
+  loading();
+  const r = await call("adminCoupons");
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Coupons", "") + NEW_SCRIPT) : fail(r.error);
+  CPN = r.coupons;
+  V(head("Coupons", "Discount code banaiye (jaise DIWALI20). Customer Ready PPT khareedte waqt checkout par lagayega. Sirf online payment (Razorpay) par chalta hai.") + `
+  <form class="card" id="cpForm" style="margin-bottom:14px;display:flex;flex-direction:column;gap:12px">
+    <h3 id="cpTitle" style="font-family:var(--display)">➕ Naya coupon</h3>
+    <div class="cform">
+      <label class="f">Code<input type="text" id="cpCode" maxlength="30" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="DIWALI20" style="text-transform:uppercase"></label>
+      <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Discount type</span><div class="seg" id="cpType"></div></div>
+      <label class="f">Discount<input type="number" id="cpVal" min="1" step="1" placeholder="20"></label>
+      <label class="f">Kam se kam khareed (₹) <span>optional</span><input type="number" id="cpMin" min="0" step="1" placeholder="0"></label>
+      <label class="f">Kitni baar chalega <span>0 = unlimited</span><input type="number" id="cpMax" min="0" step="1" placeholder="0"></label>
+      <label class="f">Last date <span>optional</span><input type="date" id="cpExp"></label>
+    </div>
+    <label class="f">Note <span>sirf aapke liye · optional</span><input type="text" id="cpNote" maxlength="120" placeholder="e.g. Diwali offer WhatsApp group ke liye"></label>
+    <label class="check"><input type="checkbox" id="cpOn" checked> Chalu (active)</label>
+    <div class="row"><button class="btn pri" type="submit" id="cpSave">Save Coupon</button><button class="btn" type="button" id="cpNew" hidden>Cancel edit</button><span class="err" id="cpErr" role="alert"></span></div>
+  </form>
+  <div class="card"><div class="ch"><h3>🏷️ Aapke coupons</h3><span class="note">${CPN.length} code</span></div><div class="clist" id="cpList"></div></div>`);
+  $("#cpForm").onsubmit = saveCoupon; $("#cpNew").onclick = () => editCoupon(null);
+  editCoupon(null); drawCoupons();
+}
+function editCoupon(c) {
+  CE = c ? Object.assign({}, c) : { code: "", type: "%", value: "", min: 0, max: 0, expiry: "", active: true, note: "" };
+  $("#cpTitle").textContent = c ? "✏️ Edit " + c.code : "➕ Naya coupon"; $("#cpNew").hidden = !c; $("#cpErr").textContent = "";
+  $("#cpCode").value = CE.code; $("#cpVal").value = CE.value; $("#cpMin").value = CE.min || ""; $("#cpMax").value = CE.max || "";
+  $("#cpExp").value = CE.expiry ? new Date(new Date(CE.expiry).getTime() + 19800000).toISOString().slice(0, 10) : ""; $("#cpNote").value = CE.note; $("#cpOn").checked = CE.active;
+  ED = CE; seg($("#cpType"), [["%", "% off"], ["₹", "₹ off"]], CE.type, "type");
+  if (c) $("#cpForm").scrollIntoView({ behavior: "smooth" });
+}
+async function saveCoupon(e) {
+  e.preventDefault();
+  const d = { old: CE.code || "", code: $("#cpCode").value.trim().toUpperCase(), type: CE.type, value: +$("#cpVal").value, min: +$("#cpMin").value || 0, max: +$("#cpMax").value || 0,
+    expiry: $("#cpExp").value, note: $("#cpNote").value.trim(), active: $("#cpOn").checked };
+  if (!/^[A-Z0-9_-]{3,30}$/.test(d.code)) return $("#cpErr").textContent = "Code 3-30 akshar ka ho (A-Z, 0-9), jaise DIWALI20";
+  if (!(d.value > 0)) return $("#cpErr").textContent = "Discount likhein";
+  $("#cpSave").disabled = true; const r = await call("adminCouponSave", d); $("#cpSave").disabled = false;
+  if (!r.ok) return $("#cpErr").textContent = r.error;
+  const i = CPN.findIndex(x => x.code === (d.old || r.coupon.code)); if (i >= 0) CPN[i] = r.coupon; else CPN.unshift(r.coupon);
+  toast(`Coupon ${r.coupon.code} saved ✓`); editCoupon(null); drawCoupons();
+}
+function drawCoupons() {
+  const now = Date.now();
+  $("#cpList").innerHTML = CPN.length ? CPN.map((c, i) => {
+    const exp = c.expiry && new Date(c.expiry).getTime() < now, full = c.max && c.used >= c.max, live = c.active && !exp && !full;
+    return `<div class="crow ${live ? "" : "off"}"><div><b>${esc(c.code)}</b> <span class="pill ${live ? "ok" : "off"}">${live ? "● Chalu" : exp ? "Expire" : full ? "Khatam" : "Band"}</span>
+      <small>${c.type === "%" ? c.value + "% off" : "₹" + c.value + " off"}${c.min ? ` · ₹${c.min}+ par` : ""} · ${c.used} baar laga${c.max ? ` / ${c.max}` : ""}${c.expiry ? ` · last date ${new Date(c.expiry).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}` : ""}${c.note ? " · " + esc(c.note) : ""}</small>
+      <div class="cf" data-ccf="${i}"></div></div>
+      <div class="row" style="gap:6px"><button class="btn sm" data-cpc="${i}" title="Code copy karein">${ic("i-copy")}</button><button class="btn sm" data-cpe="${i}">✏️ Edit</button><button class="btn sm danger" data-cpd="${i}" aria-label="Delete">🗑</button></div></div>`;
+  }).join("") : `<div class="empty"><b>🏷️</b>Abhi koi coupon nahi. Upar se pehla coupon banaiye.</div>`;
+  $$("[data-cpc]").forEach(b => b.onclick = () => copy(CPN[+b.dataset.cpc].code));
+  $$("[data-cpe]").forEach(b => b.onclick = () => editCoupon(CPN[+b.dataset.cpe]));
+  $$("[data-cpd]").forEach(b => b.onclick = () => {
+    const i = +b.dataset.cpd, box = document.querySelector(`[data-ccf="${i}"]`);
+    box.innerHTML = `<div class="confirm" style="margin-top:8px">Delete ${esc(CPN[i].code)}? <button class="btn sm danger" data-yes type="button">Yes, delete</button><button class="btn sm" data-no type="button">No</button></div>`;
+    box.querySelector("[data-no]").onclick = () => box.innerHTML = "";
+    box.querySelector("[data-yes]").onclick = async ev => {
+      ev.target.disabled = true; const r = await call("adminCouponDelete", { code: CPN[i].code });
+      if (!r.ok) return toast(r.error, true);
+      CPN.splice(i, 1); drawCoupons(); toast("Coupon deleted");
+    };
+  });
+}
 
 /* ---------- Customers (My PPTs login) ---------- */
 let CUS = [], CQ = "";

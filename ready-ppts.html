@@ -357,6 +357,11 @@ html.light .kicker{color:#a16207;background:#fef9c3}
         <label id="p-email">Email * <small style="color:var(--dim);font-weight:500">(download link aur login OTP yahan aayega)</small><input id="payEmail" inputmode="email" autocomplete="email" placeholder="you@example.com"><span class="err">Sahi email likhiye</span></label>
         <input type="text" class="hp" id="payHp" tabindex="-1" autocomplete="off" aria-hidden="true">
       </form>
+      <div class="form" id="cpnBox" hidden style="margin-top:12px">
+        <label id="p-cpn">Coupon code hai? <small style="color:var(--dim);font-weight:500">(optional)</small>
+          <span class="utr"><input id="cpnIn" maxlength="30" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. DIWALI20" style="text-transform:uppercase"><button class="btn btn-gold" id="cpnBtn" type="button">Apply</button></span></label>
+        <p class="note" id="cpnMsg" role="status"></p>
+      </div>
       <div class="upi" id="upiBox"></div>
       <div class="form" id="utrWrap" hidden>
         <label id="p-utr">Payment ho gaya? UTR number daalein
@@ -600,13 +605,14 @@ const upiLink = (scheme, total) => `${scheme}?` + new URLSearchParams({ pa:CONFI
 function openPay(ids){
   payIds = ids.filter(id => PRODUCTS.some(p => p.id === id)); if (!payIds.length) return;
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id)); payTotal = items.reduce((s,p) => s + p.price, 0);
+  COUPON = null; $("#cpnBox").hidden = !SPAY; $("#cpnIn").value = ""; $("#cpnMsg").textContent = "";
   $("#payItems").innerHTML = items.map(p => `<div class="pi"><b>${esc(p.title)}</b><span>${inr(p.price)}</span></div>`).join("") + (items.length > 1 ? `<div class="pi tot"><span>Total</span><span>${inr(payTotal)}</span></div>` : "");
   const m = payMode(), u = CONFIG.upi || {}, hasId = /@/.test(u.id || ""), showApps = m !== "upi" || hasId;
   stopQr(); qrSt = { orderId:0, busy:false, timer:0 };
   $("#upiBox").hidden = m === "wa"; $("#payWa").hidden = m !== "wa"; $("#utrWrap").hidden = m !== "upi" && m !== "demo"; $("#payUtr").value = "";
-  $("#upiBox").innerHTML = m === "wa" ? "" : VPAY ? `<h4>PhonePe / Google Pay / Paytm se <b>${inr(payTotal)}</b> pay karein</h4>
+  $("#upiBox").innerHTML = m === "wa" ? "" : VPAY ? `<h4>PhonePe / Google Pay / Paytm se <b class="js-amt">${inr(payTotal)}</b> pay karein</h4>
     <div class="apps">${APPS.map(a => `<button type="button" data-app="${a.id}">${a.ic}${a.name}</button>`).join("")}</div>
-    <button type="button" class="btn btn-gold" data-app="other" style="width:100%;margin-top:12px">💳 Pay ${inr(payTotal)} — UPI QR / Card / Netbanking</button>` : `<h4>QR scan karke <b>${inr(payTotal)}</b> pay karein</h4>
+    <button type="button" class="btn btn-gold" data-app="other" style="width:100%;margin-top:12px">💳 Pay <span class="js-amt">${inr(payTotal)}</span> — UPI QR / Card / Netbanking</button>` : `<h4>QR scan karke <b>${inr(payTotal)}</b> pay karein</h4>
     <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg">${(!hasId && u.qr) ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""}</div>
       <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
     ${m === "rzp" ? `<div class="live" id="qrLive" hidden>● Payment ka intezaar… pay hote hi download khulega</div>` : hasId ? `<div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed ${inr(payTotal)}</div>` : ""}
@@ -625,6 +631,20 @@ function openPay(ids){
   lockQr();
   if (m === "rzp" && !VPAY) makeQr();
 }
+/* Coupon (sirf admin panel wali PPTs + Razorpay) */
+let COUPON = null;
+$("#cpnBtn").onclick = async () => {
+  const code = $("#cpnIn").value.trim().toUpperCase(); if (!code) { $("#cpnIn").focus(); return; }
+  const b = $("#cpnBtn"); b.disabled = true; b.textContent = "…";
+  const r = await postS("coupon", { code, items:payIds }); b.disabled = false; b.textContent = "Apply";
+  const items = payIds.map(id => PRODUCTS.find(p => p.id === id)), full = items.reduce((s,p) => s + p.price, 0);
+  $("#payItems .pi.cpn")?.remove();
+  if (!r.ok) { COUPON = null; payTotal = full; $("#cpnMsg").style.color = "#f87171"; $("#cpnMsg").textContent = "⚠ " + r.error; }
+  else { COUPON = r; payTotal = r.total; $("#cpnMsg").style.color = "#22c55e"; $("#cpnMsg").textContent = `✓ ${r.code} lag gaya: ${r.label}. Ab sirf ${inr(r.total)} dena hai.`;
+    $("#payItems").insertAdjacentHTML("beforeend", `<div class="pi tot cpn"><span>Coupon ${esc(r.code)}</span><span style="color:#22c55e">−${inr(r.off)} → ${inr(r.total)}</span></div>`); }
+  document.querySelectorAll(".js-amt").forEach(x => x.textContent = inr(payTotal));
+};
+$("#cpnIn").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("#cpnBtn").click(); } });
 /* Name + Mobile bhare bina QR blur, aur app / QR dabane par alert + Name par le jao */
 const emailOk = () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("#payEmail").value.trim());
 const ready = () => $("#payName").value.trim().length >= 2 && /^[6-9]\d{9}$/.test(cleanPhone($("#payPhone").value)) && emailOk();
@@ -707,7 +727,7 @@ $("#upiBox").onclick = async e => {
   appsBusy(true, btn);
   if (m === "demo") { await new Promise(r => setTimeout(r, 1200)); appsBusy(false, btn);
     paid(d, 0, payIds.map(id => PRODUCTS.find(p => p.id === id)).map(p => ({ title:p.title, url:`demo/ppt/${p.slug}.pptx` }))); return; }
-  const o = SPAY ? await postS("payOrder", { ...d, items:payIds })
+  const o = SPAY ? await postS("payOrder", { ...d, items:payIds, coupon:COUPON ? COUPON.code : "" })
           : VPAY ? await postJ("api/pay-order", { ...d, items:payIds, website:$("#payHp").value })
                  : await post("api/order.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
   if (!o.ok) { appsBusy(false, btn); toast("⚠ " + o.error); return; }
