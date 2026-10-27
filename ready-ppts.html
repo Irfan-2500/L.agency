@@ -376,6 +376,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 <footer style="text-align:center;padding:28px 16px 40px;font-size:.85rem;color:var(--muted)"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refund</a> · <a href="delivery.html">Delivery</a> · <a href="contact.html">Contact</a></footer>
 <div class="toast" id="toast" role="status"></div>
 
+<script src="catalog.js"></script>
 <script>
 /* =========================================================
    ⚙️ SETTINGS (live website par ye admin panel / config.php se aate hain)
@@ -389,13 +390,7 @@ const CATEGORIES = [
   { id:"edu",  name:"Educational" }, { id:"biz", name:"Business" }, { id:"mkt", name:"Marketing" }, { id:"anim", name:"Animated" }
 ];
 /* Server na mile (jaise sirf HTML preview) tab ye 5 demo PPTs dikhti hain */
-const DEMO = [
-  { id:1, title:"Photosynthesis — Class 10 Science", desc:"Photosynthesis ka poora chapter: equation, chloroplast, light & dark reactions, diagram aur 5 practice questions.", cat:"edu", price:49, mrp:99, slides:10, lang:"English", theme:"Dark", board:["CBSE","State Board"], level:["Class 10"], subject:"Biology", anim:false, badge:"best", colors:["#065f46","#22c55e"], slug:"photosynthesis" },
-  { id:2, title:"भारत का संविधान — Class 8 SST", desc:"संविधान की प्रस्तावना, मौलिक अधिकार, मौलिक कर्तव्य और संसद — आसान हिंदी में, प्रश्नों के साथ।", cat:"edu", price:39, mrp:79, slides:10, lang:"Hindi", theme:"Light", board:["CBSE","State Board"], level:["Class 8"], subject:"Political Science / Civics", anim:false, badge:"new", colors:["#ea580c","#f59e0b"], slug:"samvidhan" },
-  { id:3, title:"Newton's Laws of Motion — Class 9", desc:"Teeno laws, inertia, momentum, F = ma ke solved numericals aur daily-life examples. Theory + Questions.", cat:"edu", price:59, mrp:119, slides:10, lang:"Both", theme:"Dark", board:["CBSE","ICSE"], level:["Class 9"], subject:"Physics", anim:false, badge:"feat", colors:["#1e3a8a","#06b6d4"], slug:"newton" },
-  { id:4, title:"Fractions Made Easy — Class 5 Maths", desc:"Bachchon ke liye rangeen slides: fraction kya hai, like/unlike fractions, jodna-ghatana aur quiz.", cat:"edu", price:1, mrp:59, slides:10, lang:"Both", theme:"Light", board:["CBSE","State Board"], level:["Class 5"], subject:"Mathematics", anim:false, badge:"", colors:["#7c3aed","#ec4899"], slug:"fractions" },
-  { id:5, title:"Startup Business Plan Pitch Deck", desc:"Investor-ready pitch deck: problem, solution, market size, business model, roadmap aur team slides. Fully editable.", cat:"biz", price:99, mrp:199, slides:10, lang:"English", theme:"Dark", board:["Corporate"], level:["Other"], subject:"Business", anim:false, badge:"feat", colors:["#0f172a","#8b2cff"], slug:"pitch" }
-].map((p,i) => { const prev = [1,2,3,4].map(k => `uploads/previews/demo-${p.slug}-${k}.webp`); return { ...p, thumb:prev[0], previews:prev, sales:0, added:5-i }; });
+const DEMO = LA_CATALOG.map((p,i) => { const prev = [1,2,3,4].map(k => `uploads/previews/demo-${p.slug}-${k}.webp`); return { ...p, thumb:prev[0], previews:prev, sales:0, added:5-i }; });
 
 /* =========================================================
    APP (isko chhedne ki zarurat nahi)
@@ -410,7 +405,7 @@ const cssUrl = u => `url('${String(u).replace(/['"\\\n()]/g,"")}')`;
 const langTxt = l => l === "Both" ? "Hindi + English" : l;
 const thumbStyle = p => p.thumb ? `background-image:${cssUrl(p.thumb)}` : `background:linear-gradient(135deg,${p.colors[0]},${p.colors[1]})`;
 
-let PRODUCTS = [], API = false, PAY = false;
+let PRODUCTS = [], API = false, PAY = false, VPAY = false;   /* VPAY: Vercel par Razorpay (api/pay-*.js) */
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem("la_cart")) || []; } catch(e) {}
 const st = { q:"", cat:"all", f:{}, sort:"popular", shown:CONFIG.perPage };
@@ -602,7 +597,9 @@ function openPay(ids){
   const m = payMode(), u = CONFIG.upi || {}, hasId = /@/.test(u.id || ""), showApps = m !== "upi" || hasId;
   stopQr(); qrSt = { orderId:0, busy:false, timer:0 };
   $("#upiBox").hidden = m === "wa"; $("#payWa").hidden = m !== "wa"; $("#utrWrap").hidden = m !== "upi" && m !== "demo"; $("#payUtr").value = "";
-  $("#upiBox").innerHTML = m === "wa" ? "" : `<h4>QR scan karke <b>${inr(payTotal)}</b> pay karein</h4>
+  $("#upiBox").innerHTML = m === "wa" ? "" : VPAY ? `<h4>PhonePe / Google Pay / Paytm se <b>${inr(payTotal)}</b> pay karein</h4>
+    <div class="apps">${APPS.map(a => `<button type="button" data-app="${a.id}">${a.ic}${a.name}</button>`).join("")}</div>
+    <button type="button" class="btn btn-gold" data-app="other" style="width:100%;margin-top:12px">💳 Pay ${inr(payTotal)} — UPI QR / Card / Netbanking</button>` : `<h4>QR scan karke <b>${inr(payTotal)}</b> pay karein</h4>
     <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg">${(!hasId && u.qr) ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""}</div>
       <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
     ${m === "rzp" ? `<div class="live" id="qrLive" hidden>● Payment ka intezaar… pay hote hi download khulega</div>` : hasId ? `<div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed ${inr(payTotal)}</div>` : ""}
@@ -610,16 +607,16 @@ function openPay(ids){
     ${showApps ? `<div class="or">ya app se pay karein</div>
     <div class="apps">${APPS.map(a => `<button type="button" data-app="${a.id}">${a.ic}${a.name}</button>`).join("")}</div>` : ""}`;
   /* rzp: asli QR details ke baad banta hai, tab tak blur ke peeche ek namuna QR */
-  if (hasId || m === "rzp") loadQR().then(() => { if (qrSt.orderId) return; const q = qrcode(0, "M"); q.addData(hasId ? upiLink("upi://pay", payTotal) : location.origin + "/ready-ppts.html"); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:"UPI QR code" }); })
+  if (!VPAY && (hasId || m === "rzp")) loadQR().then(() => { if (qrSt.orderId) return; const q = qrcode(0, "M"); q.addData(hasId ? upiLink("upi://pay", payTotal) : location.origin + "/ready-ppts.html"); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:"UPI QR code" }); })
     .catch(() => { $("#qrImg").innerHTML = u.qr ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""; });
-  $("#payNote").textContent = { rzp:"🔒 Amount fixed hai. Payment hote hi PPT yahin download hogi.", demo:"Demo: asli paisa nahi katega.",
+  $("#payNote").textContent = { rzp:"🔒 Razorpay se safe payment. Amount fixed hai, payment hote hi PPT yahin download hogi.", demo:"Demo: asli paisa nahi katega.",
     upi: !API ? "Pay karke UTR (12 digit) daalein. Payment check hone ke baad hi PPT milegi." : CONFIG.upiInstant ? "UTR daalte hi PPT yahin download ho jayegi." : "Payment check hone ke baad download link Email par aayega aur My PPTs mein khulega (10–30 min).", wa:"Online payment jald shuru hoga. Abhi WhatsApp par order karein." }[m];
   $("#payMain").hidden = false; $("#payDone").hidden = true;
   try { const s = JSON.parse(localStorage.getItem("la_buyer") || "{}"); ["payName","payEmail","payPhone"].forEach(k => { if (s[k] && !$("#"+k).value) $("#"+k).value = s[k]; }); } catch(e) {}
   $("#payAlert").hidden = true; ["p-name","p-phone","p-email"].forEach(id => $("#"+id).classList.remove("bad"));
   showModal("payModal"); $("#payModal .m-box").scrollTop = 0;
   lockQr();
-  if (m === "rzp") makeQr();
+  if (m === "rzp" && !VPAY) makeQr();
 }
 /* Name + Mobile bhare bina QR blur, aur app / QR dabane par alert + Name par le jao */
 const emailOk = () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("#payEmail").value.trim());
@@ -639,7 +636,7 @@ document.addEventListener("click", e => { if (e.target.closest("#qrLock")) nudge
 let qrSt = { orderId:0, busy:false, timer:0 };
 const stopQr = () => clearTimeout(qrSt.timer);
 async function makeQr(){
-  if (payMode() !== "rzp" || qrSt.orderId || qrSt.busy) return;
+  if (payMode() !== "rzp" || VPAY || qrSt.orderId || qrSt.busy) return;
   const d = buyer(true); if (!d) return;
   qrSt.busy = true; $("#qrImg").innerHTML = `<div class="qr-wait">QR ban raha hai…</div>`;
   const o = await post("api/qr.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
@@ -681,6 +678,11 @@ async function post(url, fields){
     return r.ok && j.ok ? j : { ok:false, error:j.error || "Kuch gadbad ho gayi. Dobara try karein." }; }
   catch(e) { return { ok:false, error:"Internet check karein aur dobara try karein." }; }
 }
+async function postJ(url, body){
+  try { const r = await fetch(url, { method:"POST", body:JSON.stringify(body), headers:{ "Content-Type":"application/json", Accept:"application/json" } }); const j = await r.json().catch(() => ({}));
+    return r.ok && j.ok ? j : { ok:false, error:j.error || "Kuch gadbad ho gayi. Dobara try karein." }; }
+  catch(e) { return { ok:false, error:"Internet check karein aur dobara try karein." }; }
+}
 function loadRazorpay(){
   return new Promise((ok, no) => { if (window.Razorpay) return ok();
     const s = document.createElement("script"); s.src = "https://checkout.razorpay.com/v1/checkout.js"; s.onload = ok; s.onerror = () => no(new Error("Payment page load nahi hua. Internet check karein.")); document.head.appendChild(s); });
@@ -698,7 +700,8 @@ $("#upiBox").onclick = async e => {
   appsBusy(true, btn);
   if (m === "demo") { await new Promise(r => setTimeout(r, 1200)); appsBusy(false, btn);
     paid(d, 0, payIds.map(id => PRODUCTS.find(p => p.id === id)).map(p => ({ title:p.title, url:`demo/ppt/${p.slug}.pptx` }))); return; }
-  const o = await post("api/order.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
+  const o = VPAY ? await postJ("api/pay-order", { ...d, items:payIds, website:$("#payHp").value })
+                 : await post("api/order.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
   if (!o.ok) { appsBusy(false, btn); toast("⚠ " + o.error); return; }
   try { await loadRazorpay(); } catch(err) { appsBusy(false, btn); toast("⚠ " + err.message); return; }
   const opts = { key:o.key, amount:o.amount, currency:"INR", name:o.name, order_id:o.rzpOrderId, prefill:o.prefill, theme:{ color:"#8b2cff" },
@@ -706,9 +709,9 @@ $("#upiBox").onclick = async e => {
     modal:{ ondismiss:() => appsBusy(false, btn) },
     handler: async resp => {
       $("#payNote").textContent = "Payment verify ho raha hai…";
-      const v = await post("api/verify.php", resp); appsBusy(false, btn);
+      const v = VPAY ? await postJ("api/pay-verify", resp) : await post("api/verify.php", resp); appsBusy(false, btn);
       if (!v.ok) { toast("⚠ " + v.error); return; }
-      paid(d, v.orderId, v.links);
+      paid(d, VPAY ? v.paymentId : v.orderId, v.links);
     } };
   if (app.rzp) opts.config = { display:{ blocks:{ app:{ name:`Pay with ${app.name}`, instruments:[{ method:"upi", flows:["intent","qr"], apps:[app.rzp] }] } },
     sequence:["block.app"], preferences:{ show_default_blocks:false } } };
@@ -722,6 +725,15 @@ function paid(d, orderId, links){
   stopQr();
   cart = cart.filter(id => !payIds.includes(id)); saveCart();
   $("#payMain").hidden = true; $("#payDone").hidden = false;
+  if (VPAY) {   /* Vercel: links yahin, 7 din chalenge */
+    try { const old = JSON.parse(localStorage.getItem("la_bought") || "[]"); localStorage.setItem("la_bought", JSON.stringify([...links, ...old].slice(0, 30))); } catch(e) {}
+    $("#payDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>🎉 Congratulations! Payment Successful</h3>
+      <p style="color:var(--muted)">Abhi download kar lein (link 7 din chalega). Payment ID: <b>${esc(orderId)}</b></p>
+      ${links.map(l => `<a class="btn btn-gold" style="width:100%;margin-top:8px" href="${esc(l.url)}">${icon("i-dl")} ${esc(l.title)}</a>`).join("")}
+      <p style="color:var(--dim);font-size:.82rem;margin-top:12px">Koi dikkat? WhatsApp par Payment ID bhejein.</p>`;
+    const a = $("#payDone a.btn-gold"); if (a) setTimeout(() => a.click(), 900);
+    return;
+  }
   /* Download page (My PPTs) par le jao: wahan khareedi PPT download hoti hai */
   const go = `account.html?new=${orderId || "demo&ids=" + payIds.join(",")}`;
   $("#payDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>🎉 Congratulations! Payment Successful</h3>
@@ -775,6 +787,7 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
     if (j.ok) { API = true; PRODUCTS = j.products || []; PAY = !!(j.settings && j.settings.payments); if (j.settings && j.settings.whatsapp) CONFIG.whatsapp = j.settings.whatsapp; if (j.settings && j.settings.upi) CONFIG.upi = j.settings.upi; CONFIG.upiInstant = !!(j.settings && j.settings.upiInstant); }
   } catch(e) { /* server nahi mila: demo PPTs dikhengi */ }
   if (!API) PRODUCTS = DEMO;
+  if (!API) try { const v = await (await fetch("api/pay-config", { cache:"no-store" })).json(); if (v.ok && v.payments) VPAY = PAY = true; } catch(e) {}
   if (!API && CONFIG.demoPay) PRODUCTS.forEach((p,i) => p.sales = [128,64,97,41,23][i] || 0); /* preview ke sample numbers */
   const qs = new URLSearchParams(location.search), q = qs.get("q"); if (q) { st.q = q; $("#q").value = q; }
   render();

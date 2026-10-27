@@ -1,0 +1,10 @@
+/* Ready PPTs ki list (naam, daam, file). Website aur payment server (api/pay-*.js) dono yahi list padhte hain,
+   isliye daam sirf yahan badlein. */
+var LA_CATALOG = [
+  { id:1, title:"Photosynthesis — Class 10 Science", desc:"Photosynthesis ka poora chapter: equation, chloroplast, light & dark reactions, diagram aur 5 practice questions.", cat:"edu", price:49, mrp:99, slides:10, lang:"English", theme:"Dark", board:["CBSE","State Board"], level:["Class 10"], subject:"Biology", anim:false, badge:"best", colors:["#065f46","#22c55e"], slug:"photosynthesis" },
+  { id:2, title:"भारत का संविधान — Class 8 SST", desc:"संविधान की प्रस्तावना, मौलिक अधिकार, मौलिक कर्तव्य और संसद — आसान हिंदी में, प्रश्नों के साथ।", cat:"edu", price:39, mrp:79, slides:10, lang:"Hindi", theme:"Light", board:["CBSE","State Board"], level:["Class 8"], subject:"Political Science / Civics", anim:false, badge:"new", colors:["#ea580c","#f59e0b"], slug:"samvidhan" },
+  { id:3, title:"Newton's Laws of Motion — Class 9", desc:"Teeno laws, inertia, momentum, F = ma ke solved numericals aur daily-life examples. Theory + Questions.", cat:"edu", price:59, mrp:119, slides:10, lang:"Both", theme:"Dark", board:["CBSE","ICSE"], level:["Class 9"], subject:"Physics", anim:false, badge:"feat", colors:["#1e3a8a","#06b6d4"], slug:"newton" },
+  { id:4, title:"Fractions Made Easy — Class 5 Maths", desc:"Bachchon ke liye rangeen slides: fraction kya hai, like/unlike fractions, jodna-ghatana aur quiz.", cat:"edu", price:1, mrp:59, slides:10, lang:"Both", theme:"Light", board:["CBSE","State Board"], level:["Class 5"], subject:"Mathematics", anim:false, badge:"", colors:["#7c3aed","#ec4899"], slug:"fractions" },
+  { id:5, title:"Startup Business Plan Pitch Deck", desc:"Investor-ready pitch deck: problem, solution, market size, business model, roadmap aur team slides. Fully editable.", cat:"biz", price:99, mrp:199, slides:10, lang:"English", theme:"Dark", board:["Corporate"], level:["Other"], subject:"Business", anim:false, badge:"feat", colors:["#0f172a","#8b2cff"], slug:"pitch" }
+];
+if (typeof module !== "undefined") module.exports = LA_CATALOG;
