@@ -12,7 +12,7 @@ DirectoryIndex index.html index.php
 <IfModule mod_rewrite.c>
   RewriteEngine On
   # includes/ aur storage/ folder browser se nahi khulenge
-  RewriteRule ^(includes|storage)(/|$) - [F,L]
+  RewriteRule ^(includes|storage|demo)(/|$) - [F,L]
 </IfModule>
 
 <IfModule mod_headers.c>

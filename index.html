@@ -94,6 +94,14 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.75);backdrop-fil
 .hero h1{font-size:clamp(2.4rem,5.5vw,4rem);margin:22px 0 18px}
 .hero p.lead{color:var(--muted);font-size:1.05rem;max-width:480px}
 .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0}
+/* "Ready to Use PPT" button — highlight + blink */
+.btn-ready{position:relative;overflow:hidden;color:#1a1200;background:linear-gradient(135deg,#fde047,#f59e0b);border:1px solid rgba(255,255,255,.35);animation:readyGlow 1.4s ease-in-out infinite}
+.btn-ready::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);animation:readyShine 2.4s ease-in-out infinite}
+.btn-ready:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.btn-ready .ready-dot{width:8px;height:8px;border-radius:50%;background:#1a1200;animation:readyBlink 1s steps(2,start) infinite}
+@keyframes readyGlow{0%,100%{box-shadow:0 0 0 0 rgba(250,204,21,.7),0 8px 24px -6px rgba(245,158,11,.6)}50%{box-shadow:0 0 0 7px rgba(250,204,21,0),0 8px 34px -4px rgba(250,204,21,.9)}}
+@keyframes readyShine{0%,40%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+@keyframes readyBlink{to{visibility:hidden}}
 .hero-feats{display:flex;gap:22px;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--line);font-size:.86rem;color:var(--muted)}
 .hero-feats span{display:flex;align-items:center;gap:7px}
 .stats{display:flex;gap:32px;margin-top:28px}
@@ -1021,6 +1029,7 @@ html.light header::before{background:#fff}
       <a href="#shop" class="nav-shop"><svg class="i" style="width:16px"><use href="#i-bag"/></svg>Shop PPTs</a>
       <a href="#custom" class="nav-custom js-custom"><svg class="i" style="width:16px"><use href="#i-sparkle"/></svg>Custom PPT</a>
       <a href="#pricing" class="nav-price js-pricing"><span class="rs">₹</span>Pricing</a>
+      <a href="account.html" title="Khareedi PPTs dobara download karein">My PPTs</a>
       <div class="theme-sw" role="radiogroup" aria-label="Website theme">
         <button type="button" role="radio" data-mode="dark" title="Dark theme"><svg class="i"><use href="#i-moon"/></svg><span>Dark</span></button>
         <button type="button" role="radio" data-mode="light" title="Light theme"><svg class="i"><use href="#i-sun"/></svg><span>Light</span></button>
@@ -1049,6 +1058,7 @@ html.light header::before{background:#fff}
       <div class="hero-cta">
         <a href="#themes" class="btn btn-primary">Explore Themes <svg class="i"><use href="#i-arrow"/></svg></a>
         <a href="order.html" class="btn btn-ghost"><svg class="i" style="color:#c084fc"><use href="#i-sparkle"/></svg> PPT Order Now</a>
+        <a href="ready-ppts.html" class="btn btn-ready" id="readyPptBtn"><span class="ready-dot" aria-hidden="true"></span><svg class="i"><use href="#i-cloud"/></svg> Ready to Use PPT</a>
       </div>
     </div>
 
@@ -1704,7 +1714,8 @@ function toggleCart(id){
 }
 function renderCart(){
   const items = cart.map(id => PRODUCTS.find(p=>p.id===id)).filter(Boolean);
-  const cc = $("#cartCount"); cc.textContent = items.length; cc.dataset.n = items.length;
+  const n = items.length || cart.length;   /* Shop PPTs page par add ki gayi PPT bhi gino */
+  const cc = $("#cartCount"); cc.textContent = n; cc.dataset.n = n;
   $("#cartBody").innerHTML = items.length ? items.map(p => `
     <div class="ci"><span class="mini" style="background:${thumbBg(p)}"></span>
       <div><b>${esc(p.title)}</b><small>${inr(p.price)}</small> <s style="color:var(--dim);font-size:.75rem">${inr(p.mrp)}</s></div>
@@ -1714,7 +1725,8 @@ function renderCart(){
   $("#checkout").disabled = !items.length; $("#checkout").style.opacity = items.length ? 1 : .5;
 }
 function openCart(o){ $("#drawer").classList.toggle("on",o); $("#overlay").classList.toggle("on",o); }
-$("#cartBtn").onclick = () => openCart(true);
+/* Cart mein aisi PPT ho jo is page ki list mein nahi (Shop PPTs se add ki), to Shop PPTs page ka cart kholo */
+$("#cartBtn").onclick = () => cart.some(id => !PRODUCTS.some(p => p.id === id)) ? (location.href = "ready-ppts.html?cart=1") : openCart(true);
 $("#closeCart").onclick = () => openCart(false);
 $("#overlay").onclick = () => { openCart(false); closeAllPopups(); };
 $("#checkout").onclick = () => {
@@ -1723,6 +1735,10 @@ $("#checkout").onclick = () => {
   openCart(false); openPay(items.map(p=>p.id));
 };
 function buyNow(id){ closeModal(); openPay([id]); }
+/* Payment (PhonePe / GPay / Paytm) ready-ppts.html par hota hai: wahi cart (la_cart) wahan khul jata hai */
+const payOn = () => API && (SETTINGS.payments || (SETTINGS.upi && (SETTINGS.upi.id || SETTINGS.upi.qr)));
+const _openPay = openPay;
+openPay = ids => payOn() ? (location.href = "ready-ppts.html?pay=" + ids.join(",")) : _openPay(ids);
 
 /* ---------- PREVIEW MODAL ---------- */
 function openPreview(id){

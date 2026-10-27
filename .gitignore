@@ -1,0 +1,10 @@
+# Server par banne wali files (GitHub par nahi jaani chahiye)
+storage/
+uploads/thumbs/
+uploads/themes/*
+!uploads/themes/samples/
+uploads/previews/*
+!uploads/previews/demo-*
+uploads/payment/*
+!uploads/payment/upi-qr.png
+!uploads/payment/utr-help.webp

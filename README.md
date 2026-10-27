@@ -8,8 +8,10 @@
 | Admin Panel | `yourdomain.com/admin` |
 | Settings (WhatsApp, Email, Razorpay, Database) | `config.php` |
 | PPT theme samples (19 themes) | `uploads/themes/samples/` |
-| Customer files (private) | `uploads/requests/` |
+| Customer files (private) | `storage/requests/` |
 | PPT files for sale (private) | `storage/ppt/` |
+| Ready PPTs page (filter + cart + Buy Now) | `ready-ppts.html` |
+| 5 demo PPTs (.pptx) | `demo/ppt/` |
 
 **Website par:** ⚡ "1 Hour. Your PPT. Ready!" hero · Smart Board par Pricing + Bulk offer (har 5 sec badalta) · 🎨 PPT Themes gallery (Dark/White, Questions/Theory/Theory+Q/Screenshot, Hindi/English/Both filters, auto-swipe) · Custom PPT section · ₹ Pricing popup · 🌙 Dark / ☀️ Light / 🖥️ System theme · scroll progress line · Reviews · FAQ · Contact.
 
@@ -44,26 +46,35 @@ Browser mein kholo: `https://yourdomain.com/install.php`
 - Admin username + password banao → **Install Now**
 - ✅ Uske baad File Manager se **`install.php` delete kar do**
 
-### Step 5 — PPT files upload karo
-`https://yourdomain.com/admin` → login → **PPTs**
-- Har PPT par **Edit** → "PPT File for customers" mein asli .pptx / .zip daalo → Save
-- Jis PPT par laal **Missing** likha hai, uski file abhi baaki hai
-- Thumbnail photo bhi daal sakte ho (warna gradient colour dikhega)
+### Step 5 — Ready PPTs upload karo
+`https://yourdomain.com/admin` → login → **🗂️ Ready PPTs** → **+ Nayi PPT upload karo**
+- Naam, price, MRP, slides, class, subject, language bharo
+- **Cover photo** + **Preview slides** (kai photos ek saath) daalo — customer "Preview" mein yahi dekhega
+- **PPT file** (.pptx / .ppt / .pdf / .zip) daalo — ye customer ko sirf payment ke baad milti hai
+- Jis PPT par **⚠ PPT file nahi hai** likha hai, uski file abhi baaki hai
+- Install ke time **5 demo PPTs** (asli .pptx ke saath) lag jaati hain — inhe edit ya delete kar sakte ho
+- Saari PPTs `ready-ppts.html` page par dikhti hain (homepage ka sunehra **Ready to Use PPT** button yahi kholta hai). Wahan filter, Add to Cart aur Buy Now hai
+- **🔥 Kitne logon ne khareeda:** website ke paid orders apne aap gine jaate hain. WhatsApp / offline bikri ho to PPT edit karke "Pehle ki bikri" mein asli number daal do — dono jud kar card par dikhte hain
 
 
-### Step 5B — PPT Themes upload karo (100 themes)
-- Install ke time aapke **19 PPT samples** pehle se lag jaate hain ("Mere 19 sample themes add karo" button se wapas bhi daal sakte ho)
-- Admin → **🎨 Themes** → upar do tarike:
-  - **🖼️🖼️🖼️ Ek theme, kai slides** — ek PPT ki 2–10 slides ek saath chuno, theme ka naam likho → 1 theme banegi, website par slides swipe hongi
-  - **🖼️ | 🖼️ Har image alag theme** — alag PPTs ki 1-1 image → har image alag theme
-- Theme / Slide Type / Language set karo → **Upload**
-- Baad mein kisi bhi theme card par:
-  - **＋ Add slides** — us theme mein aur slides jodo (max 10)
-  - slide par mouse le jao → **★** cover banao · **‹ ›** aage-peeche · **✕** hatao
-- Naam ya tag badlo → **Save All Changes** · "Live" tick hatao toh theme chhup jayegi
+### Step 5B — PPT Themes upload karo
+- Agar `uploads/themes/samples/` folder mein aapki 19 sample images hain, to install ke time wo themes apne aap lag jaati hain
+- Admin → **🎨 Themes** → naam, rang (Dark/White), type, language chuno → **Slide images** mein ek theme ki kai slides ek saath chuno → **Save theme**
+- Kisi theme par click karke aur slides jodo, ya "Hatao" tick karke slide hatao
+- "Website par dikhao" tick hatao toh theme chhup jayegi
 - PowerPoint se slide image: **File → Export → Change File Type → PNG**
 
-### Step 6 — Razorpay (online payment) chalu karo
+### Step 6 — Apna UPI QR lagao (sabse aasaan, koi KYC nahi)
+1. Admin panel → **💰 UPI / QR**
+2. Apni **UPI ID** daalo (PhonePe / GPay / Paytm app ki profile mein milti hai, jaise `9711069435@ybl`)
+3. Chaho toh apne QR ki photo bhi upload karo (UPI ID na ho tab wahi dikhegi)
+4. **Save** → ab Cart mein **Proceed to Pay** dabate hi customer ko aapka QR (amount ke saath), UPI ID aur PhonePe / GPay / Paytm buttons dikhenge
+
+Is tareeke mein payment ke baad customer UTR daalta hai aur aap admin mein check karke link bhejte ho.
+
+> **Payment hote hi turant download chahiye?** Toh Step 6B (Razorpay) karo. Razorpay keys daalte hi checkout apne aap PhonePe / Google Pay / Paytm buttons se Razorpay chalata hai: amount fixed, payment verify, aur customer ko "Congratulations" ke saath turant Download. Razorpay keys hon toh UPI ID wala tareeka use nahi hota. Checkout par Razorpay ka QR bhi dikhta hai (amount fixed, scan karke pay karte hi download): iske liye Razorpay Dashboard mein **QR Codes** feature chalu hona chahiye.
+
+### Step 6B — Razorpay (online payment, optional)
 1. https://dashboard.razorpay.com par account banao, KYC complete karo
 2. **Account & Settings → API Keys → Generate Test Key**
 3. `config.php` mein `key_id` aur `key_secret` daalo
@@ -92,7 +103,25 @@ hPanel → **Security → SSL** → free SSL install karo. Payment ke liye https
 
 ---
 
-## 💳 Payment kaise kaam karta hai
+## 👤 My PPTs (customer login)
+- Website par **My PPTs** (`account.html`): customer wahi mobile number daalta hai jo payment ke time bhara tha → login → apni khareedi saari PPTs kabhi bhi dobara download
+- Mobile number ke baad **OTP customer ke email par** jata hai (checkout mein email zaroori hai). Iske liye Step 7 (Email) zaroor karna — `mail_from` mein Hostinger par bana email
+- OTP band karna ho toh `config.php` → `sms` → `otp => false` (tab sirf mobile number se login)
+- **OTP SMS par bhejna ho:** fast2sms.com par account banao → Dev API → API key `config.php` → `sms` → `fast2sms_key` mein daalo. Khaali chhodoge toh OTP customer ke **email** par jayega (jo order ke time diya tha)
+- Login 30 din tak yaad rehta hai
+
+## 📱 UPI QR payment kaise kaam karta hai
+1. Customer Cart → **Proceed to Pay** → aapka QR + UPI ID dikhta hai (mobile par PhonePe / GPay / Paytm button, amount pehle se bhara)
+2. Customer pay karke apna naam, email, WhatsApp aur **UTR number** (12 digit) bharta hai, screenshot optional
+3. Aapko email aata hai, aur Admin → **Orders → 🔔 UPI check karo** mein order dikhta hai
+4. Apne UPI app / bank mein UTR aur amount milao → paise aaye hon tabhi **✓ Paid** dabao → customer ko download link email ho jata hai (WhatsApp par bhejne ka button bhi hai)
+5. Paise nahi aaye toh **✕ Reject**
+
+> **Safety:** UTR 12 digit honi chahiye, ek UTR sirf ek order mein chalti hai, aur purani date wali UTR par admin mein ⚠️ warning dikhti hai. Download sirf aapke **✓ Paid** ke baad khulta hai (tab tak My PPTs mein "पेमेंट चेक हो रहा है"). Bina check auto-download chahiye to Razorpay keys lagao. Admin → UPI / QR mein "bina check kiye download" ka risky option hai, default OFF.
+>
+> **Test ke liye** "Fractions Made Easy" demo PPT ka daam ₹1 rakha hai. Test ke baad Admin → Ready PPTs mein daam wapas badal dena.
+
+## 💳 Razorpay payment kaise kaam karta hai
 1. Customer Buy Now / Cart → naam, email, WhatsApp bharta hai
 2. Razorpay se UPI / Card / Net Banking se pay karta hai
 3. Payment verify hote hi **screen par Download button** + **email par link**
@@ -100,7 +129,7 @@ hPanel → **Security → SSL** → free SSL install karo. Payment ke liye https
 5. Price hamesha database se liya jaata hai — koi browser se price badal kar sasta nahi khareed sakta
 
 **Customer bole "paise kat gaye par link nahi mila":**
-Admin → **Orders → Not completed** → Razorpay Dashboard mein payment "Captured" check karo → Payment ID daal kar **Mark Paid & Send Links**. Paid order mein **"Send links on WhatsApp"** button bhi hai.
+Admin → **Orders → Payment adhoora** → Razorpay Dashboard mein payment "Captured" check karo → Payment ID (`pay_...`) daal kar **Mark Paid**. Paid order mein **"📲 Link WhatsApp par bhejo"** button bhi hai.
 
 ---
 
@@ -113,8 +142,8 @@ Admin → **Orders → Not completed** → Razorpay Dashboard mein payment "Capt
 - `install.php` delete karna mat bhoolna
 
 ## 🛠️ Chhote badlaav
-- **Naya subject / board / class option:** `includes/options.php` (admin ke liye) **aur** `index.html` mein `SUBJECTS` / `FILTERS` (website ke liye) — dono jagah same naam likho
-- **Category naam:** `includes/options.php` mein `CATS` aur `index.html` mein `CATEGORIES`
+- **Naya subject / board option:** `admin/products.php` mein `SUBJECTS` / `BOARDS` (admin ke liye) **aur** `index.html` mein `SUBJECTS` / `FILTERS` — dono jagah same naam likho. `ready-ppts.html` ke filters apne aap PPTs se bante hain
+- **Category naam:** `includes/bootstrap.php` mein `CATS`, `index.html` aur `ready-ppts.html` mein `CATEGORIES`
 - **FAQ:** `index.html` mein `FAQS`
 
 ## 💡 Backup

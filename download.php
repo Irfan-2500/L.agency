@@ -15,7 +15,7 @@ function dl_error(string $msg): void {
 
 $t = preg_replace('/[^a-f0-9]/', '', (string)($_GET['t'] ?? ''));
 if (strlen($t) !== 48) dl_error('Invalid download link');
-$d = q('SELECT d.*, p.file_path, p.file_name, p.title FROM downloads d JOIN products p ON p.id=d.product_id JOIN orders o ON o.id=d.order_id WHERE d.token=? AND o.status=?', [$t, 'paid'])->fetch();
+$d = q('SELECT d.*, p.file_path, p.file_name, p.title FROM downloads d JOIN products p ON p.id=d.product_id JOIN orders o ON o.id=d.order_id WHERE d.token=? AND o.status IN (?,?)', [$t, 'paid', upi_instant() ? 'review' : 'paid'])->fetch();
 if (!$d) dl_error('Invalid download link');
 if (strtotime($d['expires_at']) < time()) dl_error('This download link has expired');
 if ((int)$d['count'] >= (int)$CFG['download']['max_downloads']) dl_error('Download limit reached for this link');
@@ -24,11 +24,4 @@ $path = ROOT . '/storage/ppt/' . basename((string)$d['file_path']);
 if (!$d['file_path'] || !is_file($path)) dl_error('This file is being prepared — please contact us on WhatsApp');
 
 q('UPDATE downloads SET count=count+1 WHERE id=?', [$d['id']]);
-$name = $d['file_name'] ?: (preg_replace('/[^\w\- ]+/', '', $d['title']) . '.' . pathinfo($path, PATHINFO_EXTENSION));
-while (ob_get_level()) ob_end_clean();
-header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename="' . str_replace('"', '', $name) . '"; filename*=UTF-8\'\'' . rawurlencode($name));
-header('Content-Length: ' . filesize($path));
-header('X-Content-Type-Options: nosniff');
-header('Cache-Control: private, no-store');
-readfile($path);
+stream_ppt($d);
