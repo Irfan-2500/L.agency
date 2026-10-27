@@ -240,6 +240,16 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 }
 @media(max-width:380px){.grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* Dark / Light / System switch (homepage jaisa) */
+.theme-sw{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:12px;background:var(--card);border:1px solid var(--line2);flex:none}
+.theme-sw button{display:inline-flex;align-items:center;justify-content:center;width:32px;height:30px;border-radius:9px;color:var(--muted);transition:.2s;background:none;border:0;cursor:pointer}
+.theme-sw button svg{width:16px;height:16px}
+.theme-sw button:hover{color:var(--text);background:var(--card2)}
+.theme-sw button[aria-checked="true"]{color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);box-shadow:0 0 12px rgba(139,44,255,.45)}
+@media(max-width:420px){.theme-sw button{width:28px}}
+@media(max-width:560px){.nav{gap:8px}.logo b{white-space:nowrap;font-size:.92rem}.logo small{display:none}.back{padding:8px 4px}}
+@media(max-width:420px){.nav{gap:6px}.nav .back{display:none}.theme-sw{margin-left:auto}.theme-sw button{width:27px}}
 </style>
 </head>
 <body>
@@ -248,7 +258,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
   <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
   <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
-  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol><symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol><symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
@@ -272,6 +282,11 @@ html.light .kicker{color:#a16207;background:#fef9c3}
       <span><b>LAKSHAY <span class="grad-text">AGENCY</span></b><small>PREMIUM PPT STORE</small></span>
     </a>
     <a href="index.html" class="back"><svg class="i" style="width:16px"><use href="#i-left"/></svg><span class="hidden-sm">Back to Home</span></a>
+    <div class="theme-sw" role="radiogroup" aria-label="Website theme">
+      <button type="button" role="radio" data-mode="dark" title="Dark theme" aria-label="Dark"><svg class="i"><use href="#i-moon"/></svg></button>
+      <button type="button" role="radio" data-mode="light" title="Light theme" aria-label="Light"><svg class="i"><use href="#i-sun"/></svg></button>
+      <button type="button" role="radio" data-mode="system" title="System default" aria-label="System"><svg class="i"><use href="#i-monitor"/></svg></button>
+    </div>
     <a href="account.html" class="my-btn" title="Pehle khareedi PPTs dobara download karein"><svg class="i"><use href="#i-user"/></svg><span class="hidden-sm">My PPTs</span></a>
     <button class="cart-btn" id="cartBtn" aria-label="Open cart"><svg class="i"><use href="#i-bag"/></svg><span class="cart-count" id="cartCount" data-n="0">0</span></button>
   </div>
@@ -760,6 +775,16 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   const pay = (qs.get("pay") || "").split(",").map(Number).filter(id => PRODUCTS.some(p => p.id === id));
   if (pay.length) { pay.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart(); history.replaceState(null, "", location.pathname); openPay(pay); }
   else if (qs.has("cart")) { history.replaceState(null, "", location.pathname); openCart(true); }   /* homepage ka cart button */
+})();
+</script>
+<script>/* Theme switch: homepage wali choice (la_theme) har page par same */
+(function(){
+  const root = document.documentElement, mq = matchMedia("(prefers-color-scheme: light)");
+  const apply = m => { root.classList.toggle("light", m === "light" || (m === "system" && mq.matches)); root.setAttribute("data-mode", m);
+    document.querySelectorAll(".theme-sw button").forEach(b => b.setAttribute("aria-checked", String(b.dataset.mode === m))); };
+  apply(root.getAttribute("data-mode") || "system");
+  document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => { try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {} apply(b.dataset.mode); });
+  (mq.addEventListener ? mq.addEventListener.bind(mq,"change") : mq.addListener.bind(mq))(() => { if (root.getAttribute("data-mode") === "system") apply("system"); });
 })();
 </script>
 </body>
