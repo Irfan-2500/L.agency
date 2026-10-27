@@ -117,7 +117,7 @@ hPanel → **Security → SSL** → free SSL install karo. Payment ke liye https
 4. Apne UPI app / bank mein UTR aur amount milao → paise aaye hon tabhi **✓ Paid** dabao → customer ko download link email ho jata hai (WhatsApp par bhejne ka button bhi hai)
 5. Paise nahi aaye toh **✕ Reject**
 
-> **UTR daalte hi download (default ON):** customer ko UTR bharte hi PPT mil jaati hai. Aap baad mein UTR milao; paisa na aaya ho toh **Reject** dabao, uske download links aur My PPTs se woh PPT turant band ho jaati hai. Admin → UPI / QR mein tick hata kar band kar sakte ho.
+> **Safety:** UTR 12 digit honi chahiye, ek UTR sirf ek order mein chalti hai, aur purani date wali UTR par admin mein ⚠️ warning dikhti hai. Download sirf aapke **✓ Paid** ke baad khulta hai (tab tak My PPTs mein "पेमेंट चेक हो रहा है"). Bina check auto-download chahiye to Razorpay keys lagao. Admin → UPI / QR mein "bina check kiye download" ka risky option hai, default OFF.
 >
 > **Test ke liye** "Fractions Made Easy" demo PPT ka daam ₹1 rakha hai. Test ke baad Admin → Ready PPTs mein daam wapas badal dena.
 
