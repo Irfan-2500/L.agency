@@ -30,7 +30,7 @@ $me = function () use ($mask) {
     if ($key === '') return ['ok' => true, 'loggedIn' => false, 'otp' => $GLOBALS['useOtp']];
     return ['ok' => true, 'loggedIn' => true, 'phone' => $mask($key), 'items' => array_values(array_map(fn($p) => [
         'id' => $p['id'], 'title' => $p['title'], 'thumb' => $p['thumb'], 'orderId' => $p['order_id'], 'date' => $p['paid_at'],
-        'url' => $p['has_file'] ? 'my-download.php?id=' . $p['id'] : ''], cust_purchases($key)))];
+        'url' => $p['has_file'] && !$p['pending'] ? 'my-download.php?id=' . $p['id'] : '', 'pending' => $p['pending']], cust_purchases($key)))];
 };
 
 $useOtp = !empty($CFG['sms']['otp']);

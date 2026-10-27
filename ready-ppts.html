@@ -343,8 +343,8 @@ html.light .kicker{color:#a16207;background:#fef9c3}
       <div class="upi" id="upiBox"></div>
       <div class="form" id="utrWrap" hidden>
         <label id="p-utr">Payment ho gaya? UTR number daalein
-          <span class="utr"><input id="payUtr" inputmode="numeric" maxlength="30" autocomplete="off" placeholder="12 digit UTR number"><button class="btn btn-gold" id="utrBtn" type="button">Confirm</button></span>
-          <span class="err">Payment app ki history mein milne wala 12 digit UTR likhiye</span></label>
+          <span class="utr"><input id="payUtr" inputmode="numeric" maxlength="14" autocomplete="off" placeholder="12 digit UTR number"><button class="btn btn-gold" id="utrBtn" type="button">Confirm</button></span>
+          <span class="err">सही 12 अंकों का UTR डालें / Enter 12-digit UTR</span></label>
         <button type="button" class="utr-help" id="utrHelpBtn" aria-expanded="false">❓ UTR kahan milega? Example dekhein</button>
         <div class="utr-pic" id="utrPic" hidden><img alt="PhonePe payment screen par UTR number ki jagah" loading="lazy" data-src="uploads/payment/utr-help.webp">
           <p class="note">Payment app → History → apni payment kholiye → <b>UTR</b> (12 digit) copy karke upar daaliye.</p></div>
@@ -594,7 +594,7 @@ function openPay(ids){
   if (hasId || m === "rzp") loadQR().then(() => { if (qrSt.orderId) return; const q = qrcode(0, "M"); q.addData(hasId ? upiLink("upi://pay", payTotal) : location.origin + "/ready-ppts.html"); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:"UPI QR code" }); })
     .catch(() => { $("#qrImg").innerHTML = u.qr ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""; });
   $("#payNote").textContent = { rzp:"🔒 Amount fixed hai. Payment hote hi PPT yahin download hogi.", demo:"Demo: asli paisa nahi katega.",
-    upi: CONFIG.upiInstant ? "UTR daalte hi PPT yahin download ho jayegi." : "Payment check karke download link Email + WhatsApp par aayega (10–30 min).", wa:"Online payment jald shuru hoga. Abhi WhatsApp par order karein." }[m];
+    upi: CONFIG.upiInstant ? "UTR daalte hi PPT yahin download ho jayegi." : "Payment check hone ke baad download link Email par aayega aur My PPTs mein khulega (10–30 min).", wa:"Online payment jald shuru hoga. Abhi WhatsApp par order karein." }[m];
   $("#payMain").hidden = false; $("#payDone").hidden = true;
   try { const s = JSON.parse(localStorage.getItem("la_buyer") || "{}"); ["payName","payEmail","payPhone"].forEach(k => { if (s[k] && !$("#"+k).value) $("#"+k).value = s[k]; }); } catch(e) {}
   $("#payAlert").hidden = true; ["p-name","p-phone","p-email"].forEach(id => $("#"+id).classList.remove("bad"));
@@ -713,25 +713,30 @@ $("#utrHelpBtn").onclick = () => { const pic = $("#utrPic"), img = pic.querySele
 /* Sirf UPI ID wala tareeka: UTR se confirm */
 $("#utrBtn").onclick = async () => {
   const d = buyer(); if (!d) return;
-  const utr = $("#payUtr").value.replace(/\s+/g,"").toUpperCase();
-  const bad = !/^[A-Z0-9]{6,30}$/.test(utr); $("#p-utr").classList.toggle("bad", bad);
+  const utr = $("#payUtr").value.replace(/\s+/g,"");
+  const bad = !/^\d{12}$/.test(utr); $("#p-utr").classList.toggle("bad", bad);
   if (bad) { $("#payUtr").focus(); return; }
-  if (payMode() === "demo") { paid(d, 0, payIds.map(id => PRODUCTS.find(p => p.id === id)).map(p => ({ title:p.title, url:`demo/ppt/${p.slug}.pptx` }))); return; }
+  if (payMode() === "demo") { checking(d, 0, utr); return; }
   const btn = $("#utrBtn"); btn.disabled = true; btn.textContent = "Wait…";
   const o = await post("api/upi_order.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
   const c = o.ok ? await post("api/upi_confirm.php", { orderId:o.orderId, phone:d.phone, utr }) : o;
   btn.disabled = false; btn.textContent = "Confirm";
   if (!c.ok) { toast("⚠ " + c.error); return; }
   if (c.links && c.links.length) { paid(d, o.orderId, c.links); return; }
+  checking(d, o.orderId, utr);
+};
+/* UTR mil gayi: payment check hone tak download band. Approve hote hi email + My PPTs mein download */
+function checking(d, orderId, utr){
   cart = cart.filter(id => !payIds.includes(id)); saveCart();
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id));
-  const msg = `Hi Lakshay Agency! Maine UPI se payment kar diya hai.\nOrder #${o.orderId}\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\nUTR: ${utr}\nEmail: ${d.email}`;
+  const msg = `Hi Lakshay Agency! Maine UPI se payment kar diya hai.\nOrder #${orderId}\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\nUTR: ${utr}\nEmail: ${d.email}`;
   $("#payMain").hidden = true; $("#payDone").hidden = false;
-  $("#payDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>Payment details mil gayi! 🙏</h3>
-    <p style="color:var(--muted)">Order #${o.orderId}. UTR <b>${esc(utr)}</b> check karke PPT ka download link ${d.email ? `<b>${esc(d.email)}</b> aur ` : ""}WhatsApp par bhej denge.</p>
-    <a class="btn btn-wa" href="${esc(waURL(msg))}" target="_blank" rel="noopener">${icon("i-msg")} WhatsApp par screenshot bhejein</a>
-    <button class="btn btn-ghost" data-close>Close</button>`;
-};
+  $("#payDone").innerHTML = `<div class="tick" style="background:rgba(245,158,11,.15);color:#f59e0b">⏳</div><h3>पेमेंट चेक हो रहा है 🙏</h3>
+    <p style="color:var(--muted)">Order #${orderId || "Demo"} · UTR <b>${esc(utr)}</b><br>पेमेंट मिलते ही PPT का download link <b>${esc(d.email)}</b> पर आ जाएगा और <b>My PPTs</b> में download खुल जाएगा (आमतौर पर 10–30 मिनट)।<br><small style="color:var(--dim)">We'll verify your payment, then send the download link.</small></p>
+    <a class="btn btn-wa" href="${esc(waURL(msg))}" target="_blank" rel="noopener">${icon("i-msg")} जल्दी चाहिए? WhatsApp पर screenshot भेजें</a>
+    ${orderId ? `<a class="btn btn-ghost" href="account.html">My PPTs खोलें</a>` : `<button class="btn btn-ghost" id="demoApprove">(Demo) Admin ने ✓ Paid किया → Download देखें</button>`}`;
+  const da = $("#demoApprove"); if (da) da.onclick = () => paid(d, 0, []);
+}
 $("#payWa").onclick = () => {
   const d = buyer(); if (!d) return;
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id));

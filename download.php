@@ -15,7 +15,7 @@ function dl_error(string $msg): void {
 
 $t = preg_replace('/[^a-f0-9]/', '', (string)($_GET['t'] ?? ''));
 if (strlen($t) !== 48) dl_error('Invalid download link');
-$d = q('SELECT d.*, p.file_path, p.file_name, p.title FROM downloads d JOIN products p ON p.id=d.product_id JOIN orders o ON o.id=d.order_id WHERE d.token=? AND o.status IN (?,?)', [$t, 'paid', 'review'])->fetch();
+$d = q('SELECT d.*, p.file_path, p.file_name, p.title FROM downloads d JOIN products p ON p.id=d.product_id JOIN orders o ON o.id=d.order_id WHERE d.token=? AND o.status IN (?,?)', [$t, 'paid', upi_instant() ? 'review' : 'paid'])->fetch();
 if (!$d) dl_error('Invalid download link');
 if (strtotime($d['expires_at']) < time()) dl_error('This download link has expired');
 if ((int)$d['count'] >= (int)$CFG['download']['max_downloads']) dl_error('Download limit reached for this link');

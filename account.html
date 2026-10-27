@@ -202,7 +202,7 @@ function show(me){
   $("#list").innerHTML = me.items.length ? me.items.map(p => `<div class="item${fresh && fresh.includes(p.id) ? " new" : ""}">
       <div class="thumb" style="background-image:url('${esc(p.thumb).replace(/'/g,"")}')"></div>
       <div class="b"><b>${esc(p.title)}</b><small>Order #${p.orderId} · ${new Date(p.date.replace(" ","T")).toLocaleDateString("en-IN",{ day:"numeric", month:"short", year:"numeric" })}</small>
-        ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(p.url)}" data-slug="${esc(p.slug || "")}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">File तैयार हो रही है</span>`}</div></div>`).join("")
+        ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(p.url)}" data-slug="${esc(p.slug || "")}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">${p.pending ? "⏳ पेमेंट चेक हो रहा है / Verifying" : "File तैयार हो रही है"}</span>`}</div></div>`).join("")
     : `<div class="empty" style="grid-column:1/-1"><p>इस मोबाइल / ईमेल पर अभी कोई PPT नहीं है।<span class="en">No PPT found yet.</span></p><a class="btn btn-gold" href="ready-ppts.html">Ready PPTs देखें</a></div>`;
 }
 function startTimer(){

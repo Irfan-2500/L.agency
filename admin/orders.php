@@ -39,7 +39,7 @@ admin_header('Orders', 'orders');
 <td><?= e(implode(', ', array_map(fn($i) => $titles[$i] ?? "#$i", json_decode($o['items'], true) ?: []))) ?></td>
 <td><b><?= inr($o['amount'] / 100) ?></b></td>
 <td><span class="tag <?= $cls ?>"><?= e($txt) ?></span><small><?= ['upi' => 'UPI ID (UTR)', 'qr' => 'Razorpay QR'][$o['method']] ?? 'Razorpay' ?></small>
-  <?php if ($o['utr']): ?><small>UTR: <b><?= e($o['utr']) ?></b></small><?php endif; ?>
+  <?php if ($o['utr']): ?><small>UTR: <b><?= e($o['utr']) ?></b></small><?php if (!utr_date_ok($o['utr'], $o['created_at'])): ?><small style="color:#f59e0b">⚠️ UTR ki date order se match nahi karti. Purani payment ki ho sakti hai, dhyan se check karein.</small><?php endif; endif; ?>
   <?php if ($o['proof']): ?><small><a href="proof.php?o=<?= (int)$o['id'] ?>" target="_blank">🧾 Screenshot dekho</a></small><?php endif; ?>
   <?php if ($o['rzp_payment_id'] && $o['rzp_payment_id'] !== $o['utr']): ?><small><?= e($o['rzp_payment_id']) ?></small><?php endif; ?></td>
 <td><?= e(date('d M Y, h:i A', strtotime($o['paid_at'] ?? $o['created_at']))) ?>

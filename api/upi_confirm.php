@@ -6,13 +6,16 @@ rate_limit('upi-confirm', 10, 600);
 
 $id = (int)($_POST['orderId'] ?? 0);
 $phone = clean_phone($_POST['phone'] ?? '');
-$utr = strtoupper(preg_replace('/\s+/', '', clean($_POST['utr'] ?? '', 40)));
-if (!preg_match('/^[A-Z0-9]{6,30}$/', $utr)) json_err('UPI Transaction ID / UTR sahi likhiye (12 digit number, payment app ki history mein milta hai).');
+$utr = preg_replace('/\s+/', '', clean($_POST['utr'] ?? '', 40));
+if (!preg_match('/^\d{12}$/', $utr)) json_err('सही 12 अंकों का UTR डालें (payment app की history में मिलेगा)। / Enter the 12-digit UTR.');
 
 $o = q("SELECT * FROM orders WHERE id=? AND method='upi'", [$id])->fetch();
 if (!$o || $o['phone'] !== $phone) json_err('Order nahi mila. Page refresh karke dobara try karein.', 404);
 if ($o['status'] === 'paid') json_out(['ok' => true, 'status' => 'paid', 'orderId' => $id, 'email' => $o['email'], 'links' => order_links($o)]);
 if ($o['status'] === 'rejected') json_err('Ye order reject ho chuka hai. WhatsApp par contact karein.');
+// Ek UTR = ek hi order. Purani / kisi aur ki UTR dobara use nahi ho sakti
+if (q('SELECT id FROM orders WHERE utr=? AND id<>? LIMIT 1', [$utr, $id])->fetchColumn())
+    json_err('यह UTR पहले ही इस्तेमाल हो चुका है। अपनी इसी payment का UTR डालें। / This UTR is already used.');
 
 $proof = $o['proof'];
 $pf = files_list('proof');
@@ -26,7 +29,7 @@ if ($pf) {
     move_uploaded_file($f['tmp_name'], ROOT . '/storage/proofs/' . $proof);
 }
 q("UPDATE orders SET status='review', utr=?, proof=? WHERE id=?", [$utr, $proof, $id]);
-notify_admin('🔔 UPI payment check karo — Order #' . $id . ' — ₹' . ($o['amount'] / 100), ['Name' => $o['name'], 'Phone' => $o['phone'], 'Email' => $o['email'], 'UTR' => $utr, 'Screenshot' => $proof ? 'Haan' : 'Nahi']);
+notify_admin('🔔 UPI payment check karo — Order #' . $id . ' — ₹' . ($o['amount'] / 100), ['Name' => $o['name'], 'Phone' => $o['phone'], 'Email' => $o['email'], 'UTR' => $utr . (utr_date_ok($utr, $o['created_at']) ? '' : ' ⚠️ date match nahi (purani UTR ho sakti hai)'), 'Screenshot' => $proof ? 'Haan' : 'Nahi']);
 if (!upi_instant()) json_out(['ok' => true, 'status' => 'review', 'orderId' => $id]);
 
 // UTR ke saath turant download. Admin baad mein check karke Paid / Reject karega (Reject = download band).

@@ -199,17 +199,27 @@ function cust_start(): void {
 function cust_login(string $key): void { cust_start(); session_regenerate_id(true); $_SESSION['cust_phone'] = $key; }
 function cust_phone(): string { cust_start(); return (string)($_SESSION['cust_phone'] ?? ''); }
 /* UPI: UTR daalte hi download do? (admin → UPI / QR). Reject karne par download band ho jata hai. */
-function upi_instant(): bool { return setting('upi_instant', '1') === '1'; }
+/* UTR par bina check kiye download dena risky hai (koi bhi fake / purani UTR daal sakta hai), isliye default OFF */
+function upi_instant(): bool { return setting('upi_trust', '0') === '1'; }
+/* UPI UTR / RRN aksar aisa hota hai: 1st digit = saal ka aakhri digit, agle 3 = saal ka din (001-366).
+   Order ki date se match na ho to admin ko warning (sirf hint, pakka saboot nahi) */
+function utr_date_ok(string $utr, string $created): bool {
+    if (!preg_match('/^\d{12}$/', $utr)) return false;
+    $t = strtotime($created) ?: time();
+    foreach ([0, 86400] as $d) { $x = $t + $d; if (substr($utr, 0, 4) === date('y', $x)[1] . sprintf('%03d', (int)date('z', $x) + 1)) return true; }
+    return false;
+}
 
 /* Customer ki khareedi PPTs: [product_id => ['id','title','thumb','order_id','paid_at','has_file']] */
 function cust_purchases(string $key): array {
     $out = [];
     $by = str_contains($key, '@') ? 'LOWER(email)=?' : 'phone=?';
-    foreach (q("SELECT id, items, COALESCE(paid_at, created_at) AS paid_at FROM orders WHERE $by AND status IN ('paid','review') ORDER BY id DESC", [strtolower($key)])->fetchAll() as $o) {
+    foreach (q("SELECT id, items, status, COALESCE(paid_at, created_at) AS paid_at FROM orders WHERE $by AND status IN ('paid','review') ORDER BY status='paid' DESC, id DESC", [strtolower($key)])->fetchAll() as $o) {
+        $pending = $o['status'] === 'review' && !upi_instant();   // UTR abhi check nahi hui: download nahi
         foreach (json_decode($o['items'], true) ?: [] as $pid) {
             if (isset($out[(int)$pid])) continue;
             $p = q('SELECT id, title, thumb, file_path FROM products WHERE id=?', [(int)$pid])->fetch();
-            if ($p) $out[(int)$pid] = ['id' => (int)$p['id'], 'title' => $p['title'], 'thumb' => $p['thumb'], 'order_id' => (int)$o['id'], 'paid_at' => $o['paid_at'],
+            if ($p) $out[(int)$pid] = ['id' => (int)$p['id'], 'title' => $p['title'], 'thumb' => $p['thumb'], 'order_id' => (int)$o['id'], 'paid_at' => $o['paid_at'], 'pending' => $pending,
                 'has_file' => $p['file_path'] !== '' && is_file(ROOT . '/storage/ppt/' . basename($p['file_path']))];
         }
     }
