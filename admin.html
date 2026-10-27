@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin Panel — Lakshay Agency</title>
+<script>
+/* Admin theme: "dark" | "light" — pehle admin ki apni choice, warna website wali / system */
+(function(){var t="";try{t=localStorage.getItem("la_admin_theme")||"";if(!t){var m=localStorage.getItem("la_theme")||"system";t=m==="system"?"":m}}catch(e){}
+if(!t)t=window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";
+document.documentElement.setAttribute("data-theme",t);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   LAKSHAY AGENCY — ADMIN PANEL
+   Dark (default) + Light theme. Colors sirf yahan badlein.
+   ========================================================= */
+:root,[data-theme="dark"]{
+  --bg:#090a10;--bg2:#0f111a;--side:#0c0e16;--card:#131622;--card2:#1a1e2d;--hover:#20253a;
+  --line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.14);
+  --text:#eef0f8;--muted:#a3a9c2;--dim:#6d7390;
+  --accent:#a855f7;--accent2:#7c3aed;--accent-soft:rgba(168,85,247,.14);--cyan:#22d3ee;
+  --ok:#22c55e;--ok-soft:rgba(34,197,94,.12);--warn:#f59e0b;--warn-soft:rgba(245,158,11,.12);--bad:#fb7185;--bad-soft:rgba(251,113,133,.12);--info:#38bdf8;--info-soft:rgba(56,189,248,.12);
+  --shadow:0 10px 30px -12px rgba(0,0,0,.6);--glow:0 0 0 1px rgba(168,85,247,.35),0 12px 34px -14px rgba(168,85,247,.6);
+  --display:'Space Grotesk',system-ui,sans-serif;--body:'Plus Jakarta Sans',system-ui,sans-serif;
+  --rgb:linear-gradient(90deg,#ff004c,#ff8a00,#ffe600,#00ff88,#00e5ff,#3d5afe,#d500f9,#ff004c);
+  color-scheme:dark;
+}
+[data-theme="light"]{
+  --bg:#f4f5fa;--bg2:#eceef6;--side:#ffffff;--card:#ffffff;--card2:#f4f3fb;--hover:#efedf9;
+  --line:rgba(30,25,70,.08);--line2:rgba(30,25,70,.16);
+  --text:#171530;--muted:#57577a;--dim:#8a8aa6;
+  --accent:#7c3aed;--accent2:#6d28d9;--accent-soft:rgba(124,58,237,.10);--cyan:#0891b2;
+  --ok:#16a34a;--ok-soft:rgba(22,163,74,.10);--warn:#d97706;--warn-soft:rgba(217,119,6,.10);--bad:#e11d48;--bad-soft:rgba(225,29,72,.08);--info:#0284c7;--info-soft:rgba(2,132,199,.09);
+  --shadow:0 10px 30px -16px rgba(40,30,90,.25);--glow:0 0 0 1px rgba(124,58,237,.3),0 12px 30px -16px rgba(124,58,237,.45);
+  --rgb:linear-gradient(90deg,#e0115f,#ea580c,#ca8a04,#059669,#0284c7,#4f46e5,#a21caf,#e0115f);
+  color-scheme:light;
+}
+@keyframes flow{to{background-position:200% 50%}}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes shimmer{to{background-position:-200% 0}}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{font-family:var(--body);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+::selection{background:var(--accent);color:#fff}
+
+/* ---------- buttons & inputs ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 15px;border-radius:10px;border:1px solid var(--line2);background:var(--card2);color:var(--text);font-weight:600;white-space:nowrap;transition:.18s}
+.btn:hover{border-color:var(--accent);text-decoration:none}
+.btn.pri{background:linear-gradient(135deg,var(--accent2),#c026d3);border-color:transparent;color:#fff;box-shadow:0 8px 20px -10px rgba(168,85,247,.8)}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn.sm{padding:6px 11px;font-size:.8rem;border-radius:8px;gap:5px}
+.btn.sm svg.i{width:15px;height:15px}
+.btn.icon{padding:8px;width:38px;height:38px}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.btn.danger:hover{background:var(--bad-soft)}
+.btn.wa{background:#16a34a;border-color:transparent;color:#fff}
+.btn.wa:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.55;cursor:wait}
+input[type=text],input[type=password],input[type=email],input[type=tel],input[type=number],input[type=search],select,textarea{
+  width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;outline:none;transition:.18s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+label.f{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:700;color:var(--muted)}
+label.f span{font-weight:500;color:var(--dim)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sp{flex:1}
+.note{font-size:.8rem;color:var(--dim)}
+.err{color:var(--bad);font-size:.85rem;min-height:1.2em}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.72rem;font-weight:700;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
+.pill.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent);background:var(--ok-soft)}
+.pill.off{color:var(--dim)}
+.pill.new{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent);background:var(--warn-soft)}
+.pill.info{color:var(--info);border-color:color-mix(in srgb,var(--info) 40%,transparent);background:var(--info-soft)}
+.pill.tk{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:var(--accent-soft);font-family:var(--display);letter-spacing:.03em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.empty{padding:44px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line2);border-radius:16px;background:var(--card)}
+.empty b{display:block;font-size:2rem;margin-bottom:6px}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--card);color:var(--text);border:1px solid var(--line2);padding:12px 18px;border-radius:12px;font-weight:600;z-index:90;box-shadow:0 14px 34px rgba(0,0,0,.35);max-width:calc(100% - 32px);display:flex;align-items:center;gap:9px;animation:fade .25s}
+.toast::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);flex-shrink:0}
+.toast.bad{border-color:var(--bad)}
+.toast.bad::before{background:var(--bad);box-shadow:0 0 8px var(--bad)}
+.loading{display:grid;gap:12px}
+.loading i{display:block;height:84px;border-radius:14px;background:linear-gradient(90deg,var(--card) 0%,var(--card2) 50%,var(--card) 100%);background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+.loading i:first-child{height:34px;width:40%}
+
+/* ---------- theme toggle ---------- */
+.tgl{position:relative;display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:11px;background:var(--bg2);border:1px solid var(--line2)}
+.tgl button{display:grid;place-items:center;width:32px;height:30px;border:0;border-radius:8px;background:transparent;color:var(--dim);transition:.18s}
+.tgl button svg{width:16px;height:16px}
+.tgl button.on{background:var(--card);color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.tgl button:hover{color:var(--text)}
+
+/* ---------- login ---------- */
+.login{min-height:100vh;display:grid;place-items:center;padding:24px 16px;
+  background:radial-gradient(circle at 20% 15%,rgba(168,85,247,.20),transparent 45%),radial-gradient(circle at 80% 85%,rgba(34,211,238,.14),transparent 45%)}
+.login .card{width:min(400px,100%);padding:30px 28px;display:flex;flex-direction:column;gap:16px;position:relative}
+.login .card::before{content:"";position:absolute;inset:0;height:3px;border-radius:16px 16px 0 0;background:var(--rgb);background-size:200% auto;animation:flow 5s linear infinite}
+.login h1{font-family:var(--display);font-size:1.5rem;text-align:center}
+.login p{color:var(--muted);text-align:center;font-size:.88rem}
+.login .err{text-align:center}
+.login .tgl{position:absolute;top:14px;right:14px}
+.pwbox{position:relative}
+.pwbox input{padding-right:44px}
+.pwbox button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--dim);padding:6px;border-radius:7px}
+.pwbox button:hover{color:var(--text)}
+
+/* ---------- brand ---------- */
+.brand{display:flex;align-items:center;gap:11px}
+.brand i{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-style:normal;font-size:18px;color:#fff;background:linear-gradient(135deg,var(--accent2),#d500f9);box-shadow:0 0 18px rgba(168,85,247,.45)}
+.brand b{font-family:var(--display);font-size:1.02rem;display:block;line-height:1.1}
+.brand small{color:var(--muted);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+
+/* ---------- app shell: sidebar + main ---------- */
+.shell{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+.side{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:18px;padding:20px 14px;background:var(--side);border-right:1px solid var(--line);overflow-y:auto}
+.side .brand{padding:0 6px 4px}
+.nav{display:flex;flex-direction:column;gap:3px}
+.nav .lbl{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding:12px 12px 6px}
+.nav button{display:flex;align-items:center;gap:11px;width:100%;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-weight:600;text-align:left;transition:.15s}
+.nav button:hover{background:var(--hover);color:var(--text)}
+.nav button.on{background:var(--accent-soft);color:var(--text);box-shadow:inset 3px 0 0 var(--accent)}
+.nav button.on svg{color:var(--accent)}
+.nav .n{margin-left:auto;min-width:20px;padding:0 6px;border-radius:9px;background:var(--accent2);color:#fff;font-size:.7rem;line-height:20px;text-align:center;font-weight:700}
+.side .foot{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+.side .foot .who{display:flex;align-items:center;gap:10px}
+.side .foot .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);flex-shrink:0}
+.side .foot b{font-size:.86rem;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.side .foot small{color:var(--dim);font-size:.72rem}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:14px 26px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar h2{font-family:var(--display);font-size:1.15rem}
+.topbar .crumb{color:var(--dim);font-size:.78rem}
+.topbar .menu{display:none}
+.content{padding:24px 26px 60px;max-width:1240px;width:100%;animation:fade .3s}
+.pagehead{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.pagehead h1{font-family:var(--display);font-size:1.55rem;line-height:1.2}
+.pagehead p{color:var(--muted);max-width:70ch;margin-top:4px}
+.pagehead .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---------- dashboard ---------- */
+.hello{position:relative;overflow:hidden;padding:24px;border-radius:18px;margin-bottom:18px;color:#fff;
+  background:linear-gradient(120deg,#6d28d9,#a21caf 55%,#0e7490);box-shadow:0 20px 50px -24px rgba(124,58,237,.8)}
+.hello::after{content:"";position:absolute;right:-60px;top:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 65%)}
+.hello h1{font-family:var(--display);font-size:clamp(1.35rem,3vw,1.8rem)}
+.hello p{opacity:.88;margin-top:4px;max-width:60ch}
+.hello .row{margin-top:16px;position:relative;z-index:1}
+.hello .btn{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff}
+.hello .btn:hover{background:rgba(255,255,255,.26);border-color:#fff}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:18px}
+.stat{position:relative;display:flex;flex-direction:column;gap:10px;text-align:left;padding:16px 18px;border-radius:16px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);transition:.18s;overflow:hidden}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--glow);border-color:transparent}
+.stat .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+.stat b{font-family:var(--display);font-size:1.9rem;line-height:1;font-variant-numeric:tabular-nums}
+.stat small{color:var(--muted);font-weight:600}
+.stat.hot::after{content:"";position:absolute;top:14px;right:14px;width:9px;height:9px;border-radius:50%;background:var(--warn);box-shadow:0 0 10px var(--warn)}
+.dgrid{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:14px}
+.dgrid>*{min-width:0}
+.card h3{font-family:var(--display);font-size:1rem;display:flex;align-items:center;gap:8px}
+.card .ch{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.card .ch .note{margin-left:auto}
+.bars{display:flex;align-items:flex-end;gap:10px;height:170px;padding-top:10px}
+.bars .bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bars .b{width:100%;max-width:46px;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,var(--accent),var(--accent2));min-height:4px;position:relative;transition:height .5s}
+.bars .b.zero{background:var(--card2)}
+.bars .b span{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:.72rem;font-weight:700;color:var(--muted)}
+.bars small{font-size:.7rem;color:var(--dim);font-weight:600}
+.split{display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--card2);margin:4px 0 14px}
+.split i{display:block;height:100%}
+.legend{display:flex;flex-direction:column;gap:9px}
+.legend div{display:flex;align-items:center;gap:10px;font-size:.86rem}
+.legend i{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.legend b{margin-left:auto;font-variant-numeric:tabular-nums}
+.recent{display:flex;flex-direction:column}
+.recent a{display:flex;align-items:center;gap:12px;padding:10px 4px;border-top:1px solid var(--line);color:var(--text)}
+.recent a:first-child{border-top:0}
+.recent a:hover{text-decoration:none;background:var(--hover);border-radius:10px}
+.recent .av{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:700;background:var(--accent-soft);color:var(--accent);flex-shrink:0}
+.recent .tx{flex:1;min-width:0}
+.recent .tx b{display:block;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent .tx small{color:var(--dim);font-size:.76rem}
+.quick{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.quick a,.quick button{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);color:var(--text);text-align:left;font-weight:600;transition:.15s}
+.quick a:hover,.quick button:hover{border-color:var(--accent);text-decoration:none;transform:translateY(-1px)}
+.quick .qi{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);flex-shrink:0}
+.quick small{display:block;font-weight:500;color:var(--dim);font-size:.74rem}
+
+/* ---------- toolbar / chips ---------- */
+.fbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.search{position:relative;flex:1;min-width:220px}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--dim);width:17px;height:17px}
+.search input{padding-left:38px}
+.fbar select{width:auto}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:99px;border:1px solid var(--line2);background:var(--card);color:var(--muted);font-weight:600;font-size:.82rem;transition:.15s}
+.chip:hover{color:var(--text)}
+.chip.on{color:#fff;background:var(--accent2);border-color:var(--accent2)}
+.chip em{font-style:normal;font-size:.72rem;padding:0 6px;border-radius:9px;background:var(--card2);color:var(--muted)}
+.chip.on em{background:rgba(255,255,255,.22);color:#fff}
+
+/* ---------- orders ---------- */
+.olist{display:flex;flex-direction:column;gap:10px}
+.order{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--line2);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:10px 16px;box-shadow:var(--shadow);animation:fade .25s}
+.order.s-New{border-left-color:var(--warn)}.order.s-Done,.order.s-Paid{border-left-color:var(--ok)}.order.s-Cancelled{border-left-color:var(--bad);opacity:.72}.order.s-In{border-left-color:var(--info)}
+.order h3{font-size:1rem;font-family:var(--display);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.order .meta{color:var(--muted);font-size:.8rem;margin-top:2px}
+.order .det{grid-column:1/-1;white-space:pre-wrap;background:var(--bg2);border-radius:10px;padding:10px 12px;font-size:.88rem;min-width:0;overflow-wrap:anywhere}
+.order .files{grid-column:1/-1;font-size:.84rem;overflow-wrap:anywhere}
+.order .side2{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.order .side2 .row{gap:6px;justify-content:flex-end}
+.order select{width:auto;padding:7px 10px;font-weight:600}
+.kv{display:flex;flex-wrap:wrap;gap:6px;font-size:.82rem;grid-column:1/-1}
+.kv div{padding:4px 10px;border-radius:8px;background:var(--card2);border:1px solid var(--line)}
+.kv span{color:var(--dim)}
+
+/* ---------- themes ---------- */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.18s}
+.tcard:hover{transform:translateY(-2px);box-shadow:var(--glow);border-color:transparent}
+.tcard.hid{opacity:.55}
+.tcard .pic{aspect-ratio:16/9;background:var(--bg2);position:relative;max-width:100%}
+.tcard .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.tcard .pic .cnt{position:absolute;right:8px;top:8px;background:rgba(0,0,0,.65);color:#fff;padding:2px 8px;border-radius:7px;font-size:.72rem;font-weight:700}
+.tcard .body{padding:12px 14px;display:flex;flex-direction:column;gap:9px;flex:1}
+.tcard b{font-size:.94rem}
+.tags{display:flex;gap:5px;flex-wrap:wrap}
+.tcard .acts{display:flex;gap:6px;margin-top:auto;flex-wrap:wrap}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;background:rgba(3,4,10,.7);backdrop-filter:blur(5px);z-index:50;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;
+  padding:calc(24px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 24px max(12px,env(safe-area-inset-left,0px))}
+.mbox{background:var(--card);border:1px solid var(--line2);border-radius:18px;width:min(780px,100%);padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 30px 80px rgba(0,0,0,.45);animation:fade .25s}
+.mbox h2{font-family:var(--display);font-size:1.2rem}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.phead{color:var(--dim);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{padding:7px 13px;border-radius:9px;border:1px solid var(--line2);background:var(--bg2);color:var(--muted);font-weight:600}
+.seg button.on{color:var(--text);border-color:var(--accent);background:var(--accent-soft)}
+.slides{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.sl{position:relative;border-radius:10px;overflow:hidden;background:var(--bg2);border:1px solid var(--line)}
+.sl img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;max-width:100%}
+.sl .no{position:absolute;left:6px;top:6px;background:rgba(0,0,0,.7);color:#fff;border-radius:6px;padding:0 7px;font-size:.72rem;font-weight:700}
+.sl .ctr{display:flex;justify-content:space-between;padding:4px}
+.sl .ctr button{border:0;background:transparent;color:var(--muted);padding:3px 7px;border-radius:6px}
+.sl .ctr button:hover{background:var(--card2);color:var(--text)}
+.sl.up{display:grid;place-items:center;aspect-ratio:16/9;color:var(--muted);font-size:.8rem;text-align:center;padding:8px}
+.drop{border:1.5px dashed color-mix(in srgb,var(--accent) 55%,transparent);border-radius:12px;padding:18px;text-align:center;cursor:pointer;color:var(--muted);background:var(--accent-soft)}
+.drop:hover,.drop.on{border-color:var(--cyan);color:var(--text)}
+.drop b{color:var(--text)}
+.check{display:flex;align-items:center;gap:8px;font-weight:600;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--accent)}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-radius:10px;background:var(--bad-soft);border:1px solid color-mix(in srgb,var(--bad) 40%,transparent);font-size:.86rem}
+
+/* ---------- prices ---------- */
+.ptable{display:flex;flex-direction:column;gap:8px}
+.prow{display:grid;grid-template-columns:56px 1.4fr 1.1fr .8fr .7fr 46px auto auto;gap:8px;align-items:center}
+.prow input[type=color]{width:46px;height:40px;border:1px solid var(--line2);border-radius:10px;background:var(--bg2);padding:3px}
+.preview{display:flex;flex-direction:column;gap:8px}
+.preview li{list-style:none;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--bg2);border-left:3px solid var(--c)}
+.preview li b{flex:1;font-size:.88rem}
+.preview li i{font-style:normal;color:var(--dim);font-size:.78rem;font-weight:500}
+.preview li em{font-style:normal;font-family:var(--display);font-weight:700;color:var(--c)}
+@media(max-width:760px){.prow{grid-template-columns:52px 1fr 1fr}.prow .phead-x{display:none}.ptable .phead{display:none}}
+
+/* ---------- reviews / messages ---------- */
+.list{display:flex;flex-direction:column;gap:10px}
+.rv{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);animation:fade .25s}
+.rv .stars{color:#fbbf24;letter-spacing:2px}
+.rv p{white-space:pre-wrap;overflow-wrap:anywhere}
+.rv .av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);flex-shrink:0}
+
+/* ---------- settings ---------- */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;align-items:start}
+.sgrid form,.sgrid .card{display:flex;flex-direction:column;gap:12px}
+.sgrid h3{font-family:var(--display);font-size:1.05rem}
+.themepick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.themepick button{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:12px;border:1.5px solid var(--line2);background:var(--bg2);font-weight:700;text-align:left}
+.themepick button.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.themepick .sw{height:54px;border-radius:8px;border:1px solid var(--line2)}
+.themepick .sw.d{background:linear-gradient(135deg,#090a10 50%,#1a1e2d 50%)}
+.themepick .sw.l{background:linear-gradient(135deg,#f4f5fa 50%,#ffffff 50%)}
+
+
+/* ---------- website controls ---------- */
+.wc-imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.wc-img{background:var(--bg2);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.wc-img .pic{position:relative;aspect-ratio:16/9;background:#000}
+.wc-img .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.wc-img .pic .no{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.7);color:#fff;border-radius:7px;padding:1px 8px;font-size:.72rem;font-weight:700}
+.wc-img .pic .busy{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.6);color:#fff;font-weight:700;font-size:.85rem}
+.wc-img .row{padding:10px;gap:6px}
+.wc-list{display:flex;flex-direction:column}
+.wc-grp{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:14px 4px 6px}
+.wc-row{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);margin-bottom:6px}
+.wc-row b{font-size:.9rem}
+.wc-row small{display:block;color:var(--dim);font-size:.76rem}
+.wc-row.is-hide{opacity:.6}
+.sw{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer;user-select:none;white-space:nowrap}
+.sw input{position:absolute;opacity:0;pointer-events:none}
+.sw i{position:relative;width:38px;height:22px;border-radius:99px;background:var(--line2);transition:.2s;flex-shrink:0}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.2s}
+.sw input:checked+i{background:var(--ok)}
+.sw input:checked+i::after{left:19px}
+.sw input:disabled+i{opacity:.4}
+.sw input:focus-visible+i{outline:2px solid var(--cyan);outline-offset:2px}
+.savebar{position:sticky;bottom:12px;z-index:5;display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--accent);box-shadow:var(--glow)}
+/* orders: select + delete */
+.order .pick{display:inline-flex;align-items:center;margin-right:2px}
+.order .pick input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
+.order.sel{box-shadow:0 0 0 2px var(--accent)}
+.bulkbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:10px 12px;border-radius:12px;background:var(--bad-soft);border:1px solid color-mix(in srgb,var(--bad) 40%,transparent)}
+@media(max-width:560px){.wc-row{grid-template-columns:1fr;gap:8px}}
+/* ---------- mobile ---------- */
+.scrim{display:none}
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .side{position:fixed;left:0;top:0;bottom:0;width:270px;height:auto;z-index:60;transform:translateX(-105%);transition:transform .25s;box-shadow:20px 0 50px rgba(0,0,0,.4)}
+  .side.open{transform:none}
+  .scrim.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55}
+  .topbar{padding:12px 16px}
+  .topbar .menu{display:grid}
+  .topbar .hide-m{display:none}
+  .content{padding:18px 16px 60px}
+  .dgrid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .order{grid-template-columns:1fr}
+  .order .side2{align-items:stretch}
+  .order .side2 .row{justify-content:flex-start}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat b{font-size:1.6rem}
+  .pagehead .acts{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 21l2.2-5.4A8.5 8.5 0 1 1 21 11.5z"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></symbol>
+  <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16v-5M12 16V8M17 16v-8"/></symbol>
+  <symbol id="i-pie" viewBox="0 0 24 24"><path d="M21.2 15.9A10 10 0 1 1 8 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+</svg>
+
+<!-- LOGIN -->
+<section class="login" id="loginView" hidden>
+  <div class="card">
+    <div class="tgl js-tgl" aria-label="Theme"></div>
+    <div class="brand" style="margin:6px auto 0"><i>📊</i><span><b>Lakshay Agency</b><small>Admin Panel</small></span></div>
+    <div id="loginBox"><h1>Admin Login</h1><p>Apna Admin ID aur password daalein.</p></div>
+    <form id="loginForm" style="display:flex;flex-direction:column;gap:12px">
+      <label class="f">Admin ID<input type="text" id="uid" autocomplete="username" autocapitalize="off" spellcheck="false" required></label>
+      <label class="f">Password<span class="pwbox"><input type="password" id="pw" autocomplete="current-password" required><button type="button" id="pwEye" aria-label="Show password"><svg class="i"><use href="#i-eye"/></svg></button></span></label>
+      <button class="btn pri" id="loginBtn" type="submit" style="padding:12px"><svg class="i"><use href="#i-lock"/></svg> Login</button>
+      <div class="err" id="loginErr" role="alert"></div>
+    </form>
+    <p class="note" style="text-align:center"><a href="./">← Back to website</a></p>
+  </div>
+</section>
+
+<!-- APP -->
+<section id="app" hidden>
+  <div class="shell">
+    <aside class="side" id="side">
+      <div class="brand"><i>📊</i><span><b>Lakshay Agency</b><small>Admin Panel</small></span></div>
+      <nav class="nav" id="tabs" aria-label="Admin sections">
+        <span class="lbl">Overview</span>
+        <button data-t="dash"><svg class="i"><use href="#i-home"/></svg>Dashboard</button>
+        <span class="lbl">Business</span>
+        <button data-t="orders"><svg class="i"><use href="#i-cart"/></svg>Orders<span class="n" id="nOrders" hidden></span></button>
+        <button data-t="messages"><svg class="i"><use href="#i-msg"/></svg>Messages / Tickets</button>
+        <button data-t="reviews"><svg class="i"><use href="#i-star"/></svg>Reviews<span class="n" id="nReviews" hidden></span></button>
+        <span class="lbl">Website</span>
+        <button data-t="themes"><svg class="i"><use href="#i-image"/></svg>Themes</button>
+        <button data-t="prices"><svg class="i"><use href="#i-tag"/></svg>Prices</button>
+        <button data-t="site"><svg class="i"><use href="#i-sliders"/></svg>Website Controls</button>
+        <button data-t="settings"><svg class="i"><use href="#i-gear"/></svg>Settings</button>
+      </nav>
+      <div class="foot">
+        <div class="who"><span class="av" id="whoAv">A</span><span style="min-width:0"><b id="whoName">Admin</b><small>Logged in</small></span></div>
+        <div class="row" style="gap:6px"><a class="btn sm" href="./" target="_blank" rel="noopener" style="flex:1"><svg class="i"><use href="#i-ext"/></svg> Website</a><button class="btn sm danger" id="logout"><svg class="i"><use href="#i-out"/></svg> Logout</button></div>
+      </div>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn icon ghost menu" id="menuBtn" aria-label="Open menu"><svg class="i"><use href="#i-menu"/></svg></button>
+        <div><div class="crumb">Admin Panel</div><h2 id="pageTitle">Dashboard</h2></div>
+        <span class="sp"></span>
+        <span class="note hide-m" id="lastSync"></span>
+        <button class="btn icon" id="refresh" aria-label="Refresh" title="Refresh"><svg class="i"><use href="#i-refresh"/></svg></button>
+        <div class="tgl js-tgl" aria-label="Theme"></div>
+      </header>
+      <main class="content" id="view"></main>
+    </div>
+  </div>
+</section>
+
+<!-- THEME EDITOR -->
+<div class="modal" id="themeModal" hidden role="dialog" aria-modal="true" aria-labelledby="teTitle">
+  <div class="mbox">
+    <div class="row"><h2 id="teTitle">Add Theme</h2><span class="sp"></span><button class="btn sm" data-close>✕ Close</button></div>
+    <div class="grid2">
+      <label class="f">Theme name<input type="text" id="teName" maxlength="80" placeholder="e.g. Blue Science Theory"></label>
+      <label class="f">Position <span>(chhota number = pehle dikhega)</span><input type="number" id="teOrder" min="1" step="1"></label>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Background</span><div class="seg" id="teTone"></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Type</span><div class="seg" id="teType"></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Language</span><div class="seg" id="teLang"></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Class <span style="text-transform:none;letter-spacing:0;font-weight:500">— kai chun sakte hain · kuch na chunein = sab classes</span></span><div class="seg" id="teCls"></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Subject <span style="text-transform:none;letter-spacing:0;font-weight:500">— kai chun sakte hain · kuch na chunein = naam se apne aap</span></span><div class="seg" id="teSubj"></div></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="row"><span class="phead">Slides (pehli image = card ki photo)</span><span class="sp"></span><span class="note" id="teCount"></span></div>
+      <div class="slides" id="teSlides"></div>
+      <label class="drop" id="teDrop" for="teFiles"><b>+ Add slide images</b><br><small>JPG, PNG, WEBP · ek saath kai images chun sakte ho · apne aap chhoti (fast) ho jaati hain</small></label>
+      <input type="file" id="teFiles" accept="image/jpeg,image/png,image/webp" multiple hidden>
+    </div>
+    <label class="check"><input type="checkbox" id="teShow" checked> Website par dikhao</label>
+    <div class="err" id="teErr" role="alert"></div>
+    <div class="row"><button class="btn pri" id="teSave">Save Theme</button><button class="btn" data-close>Cancel</button></div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const LA = window.LA_CONFIG || {};
+const API = String(LA.orderUrl || "").trim();
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const esc = t => String(t == null ? "" : t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#${id}"/></svg>`;
+const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
+const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Corporate / Training"];
+const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
+const TITLES = { dash: "Dashboard", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
+let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
+let SUM = {}, tab = "dash";
+
+/* ---------- THEME (dark / light) ---------- */
+function setTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  try { localStorage.setItem("la_admin_theme", t); } catch (e) {}
+  $$(".js-tgl button").forEach(b => b.classList.toggle("on", b.dataset.th === t));
+  $$(".themepick button").forEach(b => b.classList.toggle("on", b.dataset.th === t));
+}
+$$(".js-tgl").forEach(el => {
+  el.innerHTML = `<button type="button" data-th="dark" aria-label="Dark theme" title="Dark">${ic("i-moon")}</button><button type="button" data-th="light" aria-label="Light theme" title="Light">${ic("i-sun")}</button>`;
+  el.querySelectorAll("button").forEach(b => b.onclick = () => setTheme(b.dataset.th));
+});
+setTheme(document.documentElement.getAttribute("data-theme") || "dark");
+
+/* ---------- helpers ---------- */
+function toast(msg, bad) {
+  $$(".toast").forEach(x => x.remove());
+  const t = document.createElement("div"); t.className = "toast" + (bad ? " bad" : ""); t.textContent = msg; t.setAttribute("role", "status");
+  document.body.appendChild(t); setTimeout(() => t.remove(), bad ? 5000 : 2600);
+}
+async function call(action, data) {
+  if (LA.previewDemo) return demoCall(action, data || {});
+  if (!API) return { ok: false, error: "config.js mein orderUrl (Google Script link) nahi hai" };
+  try {
+    const r = await fetch(API, { method: "POST", body: JSON.stringify(Object.assign({ action, token: TOKEN }, data || {})), headers: { "Content-Type": "text/plain;charset=utf-8" } });
+    const j = await r.json();
+    if (j && j.auth) { logout(true); return j; }
+    if (j && j.ok) $("#lastSync").textContent = "Updated " + new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+    return j || { ok: false, error: "Empty reply" };
+  } catch (e) { return { ok: false, error: "Internet / server problem. Please try again." }; }
+}
+
+/* ---------- PREVIEW DEMO (sirf Claude preview — config.js mein previewDemo:true ho tab) ----------
+   Asli website par ye kabhi nahi chalta. Sample data ke saath poora panel chala kar dekh sakte hain. */
+const DEMO = (() => {
+  const now = Date.now(), H = 36e5, iso = h => new Date(now - h * H).toISOString();
+  const img = n => "uploads/themes/samples/" + n + ".webp";
+  const names = ["Rahul Sharma","Priya Verma","Amit Kumar","Neha Singh","Vikas Yadav","Sunita Devi","Rohit Gupta","Anjali Mishra","Deepak Jain","Pooja Rani","Arjun Mehta","Kiran Patel"];
+  const topics = ["Physics Class 12 — Electric Charges","Hindi Vyakaran — Sandhi","Maths — Trigonometry","Biology — Cell Structure","Chemistry — Periodic Table","GK Quiz 100 Questions","English Grammar — Tenses","History — 1857 Revolt","Geography — Rivers of India","Navodaya MAT Practice","Science Class 8 — Force","Economics — Demand"];
+  const st = ["New","New","In Progress","Done","Paid","New","Cancelled","Done","In Progress","Paid","Done","New"];
+  const hrs = [0.3,3,7,20,26,30,49,55,75,98,120,140];
+  const orders = names.map((n, i) => ({ row: i + 2, id: "LA-10" + (22 - Math.floor(hrs[i] / 24)) + "-" + (4100 + i * 37), time: iso(hrs[i]), name: n, mobile: "98765" + String(43210 + i * 111).slice(0, 5), from: i % 3 ? "Website" : "PPT Order Now",
+    status: st[i], topic: topics[i], theme: i % 2 ? "Dark Chalk Physics" : "—", slides: ["1–20 Slides","20–50 Slides","50–100 Slides","100+ Slides"][i % 4], language: ["Hindi","English","Hindi + English"][i % 3],
+    details: "Theory + questions, animation ke saath. Deadline: " + (i % 2 ? "kal subah 10 baje." : "aaj shaam tak."), files: i === 0 ? "chapter-notes.pdf → #\nquestions.docx → #" : "—", failed: "—", wa: "https://wa.me/9198765" + String(43210 + i * 111).slice(0, 5) }));
+  const th = (id, name, tone, type, lang, sl, show, order) => ({ id, name, tone, type, lang, order, show, slides: sl.map(img), refs: sl, row: order + 1 });
+  return {
+    user: "Lakshay7216",
+    orders, statuses: ["New","In Progress","Done","Paid","Cancelled"],
+    themes: [Object.assign(th("t1","Dark Chalk Physics","Dark","Theory","Both",["dark-chalk-physics-1","dark-chalk-physics-2","dark-chalk-physics-3"],true,1), { classes: ["Class 9","Class 10","Class 11","Class 12"], subjects: ["Physics","Science"], views: 248 }),
+      th("t2","Formula Board Maths","Dark","Theory + Questions","English",["formula-board-maths-1","formula-board-maths-2"],true,2),
+      th("t3","Hindi Marathon PYQ","Dark","Questions","Hindi",["hindi-marathon-pyq-1","hindi-marathon-pyq-2"],true,3),
+      th("t4","Light Paper Science","White","Theory","English",["light-paper-science-1","light-paper-science-2"],true,4),
+      th("t5","Kids Grammar Bright","White","Questions","English",["kids-grammar-bright-1","kids-grammar-bright-2"],true,5),
+      th("t6","Royal Blue Science","Dark","Theory","Both",["royal-blue-science-1"],false,6)],
+    prices: [{icon:"🎬",name:"Animated Slides",note:"",price:"₹10",unit:"/slide",color:"#f472b6",show:true},{icon:"❓",name:"Question Slides",note:"",price:"₹2–₹3",unit:"/slide",color:"#facc15",show:true},
+      {icon:"📚",name:"Theory Slides",note:"",price:"₹3–₹5",unit:"/slide",color:"#38bdf8",show:true},{icon:"📝",name:"Theory + Questions",note:"Without Animation",price:"₹5",unit:"/slide",color:"#34d399",show:true},
+      {icon:"🎞️",name:"Theory + Questions",note:"With Animation",price:"₹10",unit:"/slide",color:"#c084fc",show:true}],
+    settings: { pricingTitle:"PPT Design & Pricing", offerBig:"15% OFF", offerSmall:"on final payment · Limited time", bulkMin:"200+", whatsapp: LA.whatsapp || "919711069435", phoneDisplay: LA.phoneDisplay || "", email: LA.email || "" },
+    reviews: [{row:2,time:iso(2),name:"Kavita Rao",role:"Science Teacher",deck:"Physics Class 12",stars:5,text:"Bahut achhi PPT bani aur 1 ghante mein mil gayi. Animation bhi perfect the!",show:true},
+      {row:3,time:iso(30),name:"Manoj Tiwari",role:"YouTube Educator",deck:"",stars:4,text:"Design achha hai, thode changes bhi turant kar diye.",show:true},
+      {row:4,time:iso(80),name:"Spam Test",role:"",deck:"",stars:1,text:"Buy cheap followers here...",show:false}],
+    messages: [{name:"Sanjay Kumar",email:"sanjay@example.com",phone:"9876543210",subject:"[TKT-1022-4821] Custom PPT Request",message:"Mujhe 100 slides chahiye Hindi mein, kal tak mil sakti hain?",time:iso(1)},
+      {name:"Ritu Sharma",email:"ritu@example.com",phone:"",subject:"[TKT-1021-3307] Invoice Request",message:"Pichhle order ka invoice bhej dijiye.",time:iso(28)}]
+  };
+})();
+async function demoCall(a, d) {
+  await new Promise(r => setTimeout(r, 250));
+  const D = DEMO, ok = o => { $("#lastSync").textContent = "Demo data"; return Object.assign({ ok: true }, o || {}); };
+  switch (a) {
+    case "adminLogin": return d.user && d.password ? ok({ token: "demo", user: d.user }) : { ok: false, error: "Admin ID aur password daalein" };
+    case "adminSummary": return ok({ user: D.user, newOrders: D.orders.filter(o => o.status === "New").length, orders: D.orders.length, themes: D.themes.length, liveThemes: D.themes.filter(t => t.show).length,
+      pendingReviews: D.reviews.filter(r => !r.show).length, messages: D.messages.length, sheetUrl: "#", filesUrl: "#", imagesUrl: "#" });
+    case "adminOrders": return ok({ orders: D.orders.map(o => Object.assign({}, o)), statuses: D.statuses });
+    case "adminOrderStatus": { const o = D.orders.find(x => x.row === d.row); if (o) o.status = d.status; return ok(); }
+    case "adminThemes": return ok({ themes: D.themes.map(t => Object.assign({}, t)) });
+    case "adminThemeSave": {
+      let t = D.themes.find(x => x.id === d.id);
+      const urls = (d.slides || []).map(r => DEMO_IMG[r] || ("uploads/themes/samples/" + r + ".webp"));
+      if (!t) { t = { id: "t" + Date.now(), row: D.themes.length + 2 }; D.themes.push(t); }
+      Object.assign(t, { name: d.name, tone: d.tone, type: d.type, lang: d.lang, order: +d.order || D.themes.length, show: !!d.show, refs: d.slides || [], slides: urls, classes: (d.classes || []).slice(), subjects: (d.subjects || []).slice() });
+      return ok({ theme: Object.assign({}, t) });
+    }
+    case "adminThemeDelete": D.themes = D.themes.filter(t => t.id !== d.id); return ok();
+    case "adminImage": { const ref = "demo-" + Date.now() + Math.random().toString(36).slice(2, 6); DEMO_IMG[ref] = "data:" + d.mime + ";base64," + d.data; return ok({ ref, url: DEMO_IMG[ref] }); }
+    case "adminPrices": return ok({ prices: D.prices.map(p => Object.assign({}, p)), settings: Object.assign({}, D.settings) });
+    case "adminPricesSave": D.prices = d.prices.map(p => Object.assign({}, p)); Object.assign(D.settings, d.settings); return ok();
+    case "adminSettingsSave": Object.assign(D.settings, d.settings); return ok({ settings: D.settings });
+    case "adminReviews": return ok({ reviews: D.reviews.map(r => Object.assign({}, r)) });
+    case "adminReviewSet": { const r = D.reviews.find(x => x.row === d.row); if (d.remove) D.reviews = D.reviews.filter(x => x !== r); else if (r) r.show = !!d.show; return ok(); }
+    case "adminMessages": return ok({ messages: D.messages });
+    case "adminOrderDelete": { const keys = (d.rows || []).map(x => x.row + "|" + x.id); const before = D.orders.length; D.orders = D.orders.filter(o => !keys.includes(o.row + "|" + o.id)); D.orders.forEach((o, i) => o.row = i + 2); return ok({ deleted: before - D.orders.length }); }
+    case "adminUiSave": Object.assign(D.settings, d.settings); return ok({ settings: Object.assign({}, D.settings) });
+    case "adminPassword": if (!d.current) return { ok: false, error: "Current password is wrong" }; D.user = d.user || D.user; return ok({ token: "demo", user: D.user });
+  }
+  return { ok: false, error: "Unknown admin action" };
+}
+const DEMO_IMG = {};
+if (LA.previewDemo) document.addEventListener("DOMContentLoaded", () => {
+  const b = document.createElement("div");
+  b.textContent = "👀 Preview demo · sample data"; b.title = "Sirf preview: koi bhi Admin ID / password chalega, yahan ke badlav asli website par nahi jaate";
+  b.style.cssText = "position:fixed;left:10px;bottom:10px;z-index:99;padding:5px 12px;border-radius:99px;font-size:.74rem;font-weight:700;background:#f59e0b;color:#1c1917;box-shadow:0 6px 18px rgba(0,0,0,.25);max-width:calc(100% - 24px);text-align:center";
+  document.body.appendChild(b);
+});
+function setToken(t) { TOKEN = t || ""; try { t ? sessionStorage.setItem("la_admin", t) : sessionStorage.removeItem("la_admin"); } catch (e) {} }
+function logout(expired) { setToken(""); $("#app").hidden = true; showLogin(); if (expired === true) toast("Session expired — please log in again", true); }
+async function copy(v) {
+  try { await navigator.clipboard.writeText(v); toast("Copied: " + v); }
+  catch (e) { toast("Copy nahi hua — " + v, true); }
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-copy]"); if (b) copy(b.dataset.copy); });
+const initials = n => String(n || "?").trim().split(/\s+/).slice(0, 2).map(w => w[0] || "").join("").toUpperCase() || "?";
+const ticketOf = s => (String(s || "").match(/\[(TKT-[\w-]+)\]/) || [])[1] || "";
+const stripTicket = s => String(s || "").replace(/\[TKT-[\w-]+\]\s*/, "");
+const waNum = m => { const d = String(m || "").replace(/\D/g, ""); return d.length === 10 ? "91" + d : d; };
+
+/* ---------- LOGIN (sirf aapka Admin ID + password) ---------- */
+function showLogin() {
+  $("#loginView").hidden = false; $("#loginErr").textContent = "";
+  ($("#uid").value ? $("#pw") : $("#uid")).focus();
+}
+$("#pwEye").onclick = () => { const p = $("#pw"); p.type = p.type === "password" ? "text" : "password"; p.focus(); };
+$("#loginForm").onsubmit = async e => {
+  e.preventDefault();
+  const user = $("#uid").value.trim(), pw = $("#pw").value;
+  if (!user || !pw) return $("#loginErr").textContent = "Admin ID aur password dono daalein";
+  $("#loginBtn").disabled = true; $("#loginErr").textContent = "";
+  const r = await call("adminLogin", { user, password: pw });
+  $("#loginBtn").disabled = false;
+  if (!r.ok) return $("#loginErr").textContent = r.error || "Login failed";
+  setToken(r.token); $("#pw").value = "";
+  $("#loginView").hidden = true; startApp();
+};
+$("#logout").onclick = () => logout();
+
+/* ---------- APP ---------- */
+$$("#tabs button").forEach(b => b.onclick = () => go(b.dataset.t));
+const closeMenu = () => { $("#side").classList.remove("open"); $("#scrim").classList.remove("open"); };
+$("#menuBtn").onclick = () => { $("#side").classList.add("open"); $("#scrim").classList.add("open"); };
+$("#scrim").onclick = closeMenu;
+$("#refresh").onclick = () => go(tab);
+function go(t) {
+  tab = t; closeMenu();
+  $$("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.t === t));
+  $("#pageTitle").textContent = TITLES[t] || "";
+  try { history.replaceState(null, "", "#" + t); } catch (e) {}
+  window.scrollTo(0, 0);
+  ({ dash, orders, themes, prices, reviews, messages, site, settings })[t]();
+}
+async function startApp() {
+  $("#app").hidden = false;
+  const h = (location.hash || "").slice(1);
+  go(Object.keys(TITLES).includes(h) ? h : "dash");
+}
+function badge(id, n) { const el = $(id); el.hidden = !n; el.textContent = n || ""; }
+const V = html => { $("#view").innerHTML = html; };
+const loading = () => V(`<div class="loading"><i></i><i></i><i></i></div>`);
+const fail = msg => V(`<div class="empty"><b>⚠️</b>${esc(msg)}<div class="row" style="justify-content:center;margin-top:14px"><button class="btn sm" onclick="go(tab)">${ic("i-refresh")} Try again</button></div></div>`);
+const fmtTime = t => { const d = new Date(t); return isNaN(d) ? esc(t) : d.toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }); };
+const ago = t => { const d = new Date(t); if (isNaN(d)) return ""; const m = Math.round((Date.now() - d) / 60000); if (m < 1) return "just now"; if (m < 60) return m + " min ago"; const h = Math.round(m / 60); if (h < 24) return h + " hr ago"; const dd = Math.round(h / 24); return dd + " day" + (dd > 1 ? "s" : "") + " ago"; };
+const head = (title, sub, acts) => `<div class="pagehead"><div><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${acts ? `<div class="acts">${acts}</div>` : ""}</div>`;
+function setWho() { const u = SUM.user || "Admin"; $("#whoName").textContent = u; $("#whoAv").textContent = initials(u); }
+
+/* ---------- Dashboard ---------- */
+const STATUS_COL = { New: "var(--warn)", In: "var(--info)", Done: "var(--ok)", Paid: "var(--ok)", Cancelled: "var(--bad)" };
+const stCol = s => STATUS_COL[String(s).split(" ")[0]] || "var(--accent)";
+async function dash() {
+  loading();
+  const [s, o] = await Promise.all([call("adminSummary"), call("adminOrders")]);
+  if (!s.ok) return fail(s.error);
+  SUM = s; setWho(); badge("#nOrders", s.newOrders); 
+  const list = o.ok ? o.orders : [], stats = o.ok ? o.statuses : [];
+  if (o.ok) { ORD = list; STAT = stats; }
+  const hr = new Date().getHours(), greet = hr < 12 ? "Good morning" : hr < 17 ? "Good afternoon" : "Good evening";
+  const today = new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  // last 7 days
+  const days = [...Array(7)].map((_, k) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (6 - k)); return d; });
+  const per = days.map(d => list.filter(x => { const t = new Date(x.time); return !isNaN(t) && t >= d && t < new Date(d.getTime() + 864e5); }).length);
+  const mx = Math.max(1, ...per), week = per.reduce((a, b) => a + b, 0), todayN = per[6];
+  // status split
+  const counts = (stats.length ? stats : [...new Set(list.map(x => x.status))]).map(st => [st, list.filter(x => x.status === st).length]).filter(x => x[1]);
+  const total = list.length || 1;
+  V(`<div class="hello"><h1>${greet}${SUM.user ? ", " + esc(SUM.user) : ""}! 👋</h1><p>${today} · Aapki website ka poora control yahan hai. Jo bhi yahan badlenge, website par turant dikhega.</p>
+    <div class="row"><button class="btn sm" data-go="orders">${ic("i-cart")} View orders</button><button class="btn sm" data-go="themes" data-add="1">${ic("i-plus")} Add theme</button><a class="btn sm" href="./" target="_blank" rel="noopener">${ic("i-ext")} Open website</a></div></div>
+  <div class="stats">
+    <button class="stat ${s.newOrders ? "hot" : ""}" data-go="orders" style="--c:var(--warn)"><span class="ic">${ic("i-zap")}</span><b>${s.newOrders}</b><small>New orders</small></button>
+    <button class="stat" data-go="orders" style="--c:var(--accent)"><span class="ic">${ic("i-cart")}</span><b>${s.orders}</b><small>Total orders${o.ok ? ` · ${todayN} today` : ""}</small></button>
+    <button class="stat" data-go="themes" style="--c:var(--cyan)"><span class="ic">${ic("i-image")}</span><b>${s.liveThemes}</b><small>Themes live${s.themes > s.liveThemes ? ` · ${s.themes - s.liveThemes} hidden` : ""}</small></button>
+    <button class="stat" data-go="reviews" style="--c:#fbbf24"><span class="ic">${ic("i-star")}</span><b>${s.pendingReviews}</b><small>Hidden reviews</small></button>
+    <button class="stat" data-go="messages" style="--c:var(--ok)"><span class="ic">${ic("i-msg")}</span><b>${s.messages}</b><small>Messages / tickets</small></button>
+  </div>
+  <div class="dgrid">
+    <div class="card"><div class="ch"><h3>${ic("i-chart", "color:var(--accent)")} Orders — last 7 days</h3><span class="note">${week} this week</span></div>
+      ${o.ok ? `<div class="bars">${per.map((n, k) => `<div class="bc"><div class="b ${n ? "" : "zero"}" style="height:${Math.max(3, n / mx * 100)}%"><span>${n || ""}</span></div><small>${k === 6 ? "Today" : days[k].toLocaleDateString("en-IN", { weekday: "short" })}</small></div>`).join("")}</div>` : `<p class="note">${esc(o.error || "")}</p>`}</div>
+    <div class="card"><div class="ch"><h3>${ic("i-pie", "color:var(--cyan)")} Order status</h3></div>
+      ${counts.length ? `<div class="split">${counts.map(([st, n]) => `<i style="width:${n / total * 100}%;background:${stCol(st)}" title="${esc(st)}: ${n}"></i>`).join("")}</div>
+      <div class="legend">${counts.map(([st, n]) => `<div><i style="background:${stCol(st)}"></i>${esc(st)}<b>${n}</b></div>`).join("")}</div>` : `<p class="note">Abhi tak koi order nahi.</p>`}</div>
+  </div>
+  <div class="dgrid">
+    <div class="card"><div class="ch"><h3>${ic("i-clock", "color:var(--warn)")} Recent orders</h3><button class="btn sm" data-go="orders" style="margin-left:auto">View all</button></div>
+      <div class="recent">${list.slice(0, 6).map(x => `<a href="#orders" data-go="orders" data-q="${esc(x.id)}"><span class="av">${esc(initials(x.name))}</span><span class="tx"><b>#${esc(x.id)} · ${esc(x.name)}</b><small>${esc(x.topic)} · ${ago(x.time)}</small></span><span class="pill" style="color:${stCol(x.status)};border-color:currentColor">${esc(x.status)}</span></a>`).join("") || `<p class="note">Abhi tak koi order nahi aaya.</p>`}</div></div>
+    <div class="card"><div class="ch"><h3>${ic("i-zap", "color:var(--accent)")} Quick links</h3></div>
+      <div class="quick">
+        <a href="${esc(s.sheetUrl)}" target="_blank" rel="noopener" style="--c:var(--ok)"><span class="qi">${ic("i-sheet")}</span><span>Google Sheet<small>Saara data</small></span></a>
+        <a href="${esc(s.filesUrl)}" target="_blank" rel="noopener" style="--c:var(--warn)"><span class="qi">${ic("i-folder")}</span><span>Customer files<small>Orders ki files</small></span></a>
+        <a href="${esc(s.imagesUrl)}" target="_blank" rel="noopener" style="--c:var(--cyan)"><span class="qi">${ic("i-image")}</span><span>Theme images<small>Uploaded slides</small></span></a>
+        <button data-go="prices" style="--c:#f472b6"><span class="qi">${ic("i-tag")}</span><span>Edit prices<small>Smart Board pricing</small></span></button>
+        <button data-go="settings" style="--c:var(--accent)"><span class="qi">${ic("i-gear")}</span><span>Settings<small>Contact &amp; password</small></span></button>
+        <a href="./" target="_blank" rel="noopener" style="--c:var(--info)"><span class="qi">${ic("i-globe")}</span><span>Website<small>Changes check karein</small></span></a>
+      </div></div>
+  </div>`);
+  $$("#view [data-go]").forEach(b => b.onclick = e => { e.preventDefault(); if (b.dataset.q) OQ = b.dataset.q; if (b.dataset.add) ADD_AFTER = true; go(b.dataset.go); });
+}
+
+/* ---------- Orders ---------- */
+let ORD = [], STAT = [], OQ = "", OST = "", OSORT = "new";
+async function orders() {
+  loading();
+  const r = await call("adminOrders"); if (!r.ok) return fail(r.error);
+  ORD = r.orders; STAT = r.statuses;
+  badge("#nOrders", ORD.filter(o => String(o.status).split(" ")[0] === "New").length);
+  V(head("Orders", "Har order yahan aata hai. Status badlein — Google Sheet mein bhi update ho jayega.", `<button class="btn sm" id="oCsv">${ic("i-down")} Export CSV</button>`) + `
+  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="oq" placeholder="Search name, mobile, topic, order ID…" aria-label="Search orders"></label>
+    <select id="osort" aria-label="Sort"><option value="new">Newest first</option><option value="old">Oldest first</option></select></div>
+  <div class="chips" id="ochips"></div>
+  <div class="bulkbar" id="obulk" hidden></div>
+  <div class="olist" id="olist"></div>`);
+  OSEL.clear();
+  $("#oq").value = OQ; $("#osort").value = OSORT;
+  $("#oq").oninput = () => { OQ = $("#oq").value; drawOrders(); };
+  $("#osort").onchange = () => { OSORT = $("#osort").value; drawOrders(); };
+  $("#oCsv").onclick = exportCsv;
+  drawOrders();
+}
+function drawChips() {
+  const all = [["", "All", ORD.length], ...STAT.map(s => [s, s, ORD.filter(o => o.status === s).length])];
+  $("#ochips").innerHTML = all.map(([v, l, n]) => `<button class="chip ${v === OST ? "on" : ""}" data-st="${esc(v)}">${esc(l)}<em>${n}</em></button>`).join("");
+  $$("#ochips .chip").forEach(b => b.onclick = () => { OST = b.dataset.st; drawOrders(); });
+}
+function filteredOrders() {
+  const q = OQ.toLowerCase();
+  const list = ORD.filter(o => (!OST || o.status === OST) && (!q || [o.name, o.mobile, o.topic, o.details, o.theme, String(o.id)].join(" ").toLowerCase().includes(q)));
+  return OSORT === "old" ? list.slice().reverse() : list;
+}
+/* Orders delete: ek-ek ya kai ek saath (test orders hatane ke liye) */
+const OSEL = new Set();
+const okey = o => o.row + "|" + o.id;
+function drawBulk() {
+  const bar = $("#obulk"); if (!bar) return;
+  bar.hidden = !OSEL.size;
+  if (!OSEL.size) return;
+  bar.innerHTML = `<b>${OSEL.size} order${OSEL.size > 1 ? "s" : ""} selected</b><button class="btn sm" id="oAll">Select all shown</button><button class="btn sm" id="oNone">Clear</button><span class="sp"></span><button class="btn sm danger" id="oDel">${ic("i-trash")} Delete selected</button>`;
+  $("#oAll").onclick = () => { filteredOrders().forEach(o => OSEL.add(okey(o))); drawOrders(); };
+  $("#oNone").onclick = () => { OSEL.clear(); drawOrders(); };
+  $("#oDel").onclick = () => {
+    bar.innerHTML = `<b>${OSEL.size} order${OSEL.size > 1 ? "s" : ""} hamesha ke liye delete karein?</b> <span class="note">Google Sheet se bhi hat jayenge.</span><span class="sp"></span><button class="btn sm danger" id="oYes">Yes, delete</button><button class="btn sm" id="oNo">No</button>`;
+    $("#oNo").onclick = drawBulk;
+    $("#oYes").onclick = e => delOrders([...OSEL].map(k => { const [row, id] = k.split("|"); return { row: +row, id }; }), e.target);
+  };
+}
+async function delOrders(rows, btn) {
+  if (btn) btn.disabled = true;
+  const r = await call("adminOrderDelete", { rows });
+  if (!r.ok) { if (btn) btn.disabled = false; return toast(r.error, true); }
+  toast(`${r.deleted} order${r.deleted > 1 ? "s" : ""} deleted`);
+  orders();
+}
+function drawOrders() {
+  drawChips();
+  const list = filteredOrders();
+  $("#olist").innerHTML = list.length ? list.map(o => {
+    const files = o.files && o.files !== "—" ? o.files.split("\n").map(l => { const m = l.split(" → "); return m[1] ? `📎 <a href="${esc(m[1])}" target="_blank" rel="noopener">${esc(m[0])}</a>` : esc(l); }).join("<br>") : "";
+    const wa = /^https:\/\/wa\.me\/\d+$/.test(o.wa) ? o.wa : "";
+    const tel = String(o.mobile || "").replace(/[^\d+]/g, "");
+    return `<article class="order s-${esc(String(o.status).split(" ")[0])}${OSEL.has(okey(o)) ? " sel" : ""}">
+      <div><h3><label class="pick" title="Select"><input type="checkbox" data-pick="${esc(okey(o))}" ${OSEL.has(okey(o)) ? "checked" : ""} aria-label="Select order ${esc(o.id)}"></label>#${esc(o.id)} · ${esc(o.name)}</h3><div class="meta">${fmtTime(o.time)} · ${ago(o.time)} · ${esc(o.mobile)} · ${esc(o.from)}</div></div>
+      <div class="side2"><select data-row="${o.row}" data-id="${esc(o.id)}" aria-label="Order status">${STAT.map(s => `<option ${s === o.status ? "selected" : ""}>${s}</option>`).join("")}</select>
+        <div class="row">${wa ? `<a class="btn sm wa" href="${wa}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}${tel ? `<a class="btn sm" href="tel:${esc(tel)}">${ic("i-phone")} Call</a>` : ""}${o.mobile ? `<button class="btn sm" data-copy="${esc(o.mobile)}" aria-label="Copy mobile">${ic("i-copy")}</button>` : ""}<button class="btn sm danger" data-odel="${esc(okey(o))}" aria-label="Delete order" title="Delete order">${ic("i-trash")}</button></div><div data-ocf="${esc(okey(o))}"></div></div>
+      <div class="kv"><div><span>PPT:</span> ${esc(o.topic)}</div>${o.theme !== "—" ? `<div><span>Theme:</span> ${esc(o.theme)}</div>` : ""}${o.slides !== "—" ? `<div><span>Slides:</span> ${esc(o.slides)}</div>` : ""}${o.language !== "—" ? `<div><span>Language:</span> ${esc(o.language)}</div>` : ""}</div>
+      <div class="det">${esc(o.details)}</div>
+      ${files ? `<div class="files">${files}</div>` : ""}
+      ${o.failed && o.failed !== "—" ? `<div class="files" style="color:var(--warn)">⚠ Not uploaded: ${esc(o.failed)}</div>` : ""}
+    </article>`;
+  }).join("") : `<div class="empty"><b>📭</b>${ORD.length ? "Is filter mein koi order nahi." : "Abhi tak koi order nahi aaya."}</div>`;
+  $$("#olist [data-pick]").forEach(c => c.onchange = () => { c.checked ? OSEL.add(c.dataset.pick) : OSEL.delete(c.dataset.pick); c.closest(".order").classList.toggle("sel", c.checked); drawBulk(); });
+  $$("#olist [data-odel]").forEach(b => b.onclick = () => {
+    const k = b.dataset.odel, box = document.querySelector(`[data-ocf="${CSS.escape(k)}"]`), [row, id] = k.split("|");
+    box.innerHTML = `<div class="confirm" style="margin-top:6px">Delete #${esc(id)}? <button class="btn sm danger" data-yes>Yes</button><button class="btn sm" data-no>No</button></div>`;
+    box.querySelector("[data-no]").onclick = () => box.innerHTML = "";
+    box.querySelector("[data-yes]").onclick = e => delOrders([{ row: +row, id }], e.target);
+  });
+  drawBulk();
+  $$("#olist select").forEach(s => s.onchange = async () => {
+    s.disabled = true;
+    const r = await call("adminOrderStatus", { row: +s.dataset.row, id: s.dataset.id, status: s.value });
+    s.disabled = false;
+    if (!r.ok) return toast(r.error, true);
+    const o = ORD.find(x => x.row === +s.dataset.row); if (o) o.status = s.value;
+    s.closest(".order").className = "order s-" + s.value.split(" ")[0];
+    drawChips(); badge("#nOrders", ORD.filter(o => String(o.status).split(" ")[0] === "New").length);
+    toast("Status: " + s.value);
+  });
+}
+function exportCsv() {
+  const cols = [["id", "Order ID"], ["time", "Time"], ["name", "Name"], ["mobile", "Mobile"], ["status", "Status"], ["topic", "PPT"], ["theme", "Theme"], ["slides", "Slides"], ["language", "Language"], ["details", "Details"], ["files", "Files"], ["from", "From"]];
+  const cell = v => { let t = String(v == null ? "" : v); if (/^[=+\-@]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
+  const rows = [cols.map(c => cell(c[1])).join(",")].concat(filteredOrders().map(o => cols.map(c => cell(o[c[0]])).join(",")));
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["﻿" + rows.join("\r\n")], { type: "text/csv;charset=utf-8" }));
+  a.download = "lakshay-orders-" + new Date().toISOString().slice(0, 10) + ".csv";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast("CSV downloaded");
+}
+
+/* ---------- Themes ---------- */
+let TH = [], ADD_AFTER = false, TQ = "", TF = "";
+async function themes() {
+  loading();
+  const r = await call("adminThemes"); if (!r.ok) return fail(r.error);
+  TH = r.themes;
+  V(head("Themes", `Website ke "Choose Your PPT Theme" section mein yahi themes dikhti hain. Nayi theme add karein, slides badlein, ya chhupa dein.`, `<button class="btn pri" id="addTheme">${ic("i-plus")} Add Theme</button>`) + `
+  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="tq" placeholder="Search theme name…" aria-label="Search themes"></label>
+    <select id="tf" aria-label="Filter"><option value="">All themes</option><option value="live">Live only</option><option value="hidden">Hidden only</option><option value="views">Most viewed first</option>${TYPES.map(t => `<option value="t:${esc(t)}">${esc(t)}</option>`).join("")}</select></div>
+  <div class="tgrid" id="tgrid"></div>`);
+  $("#tq").value = TQ; $("#tf").value = TF;
+  $("#tq").oninput = () => { TQ = $("#tq").value; drawThemes(); };
+  $("#tf").onchange = () => { TF = $("#tf").value; drawThemes(); };
+  $("#addTheme").onclick = () => editTheme(null);
+  drawThemes();
+  if (ADD_AFTER) { ADD_AFTER = false; editTheme(null); }
+}
+const langName = l => (LANGS.find(x => x[0] === l) || [l, l])[1];
+function drawThemes() {
+  const q = TQ.toLowerCase();
+  const vis = TH.map((t, i) => [t, i]).filter(([t]) => (!q || t.name.toLowerCase().includes(q)) && (!TF || TF === "views" || (TF === "live" ? t.show : TF === "hidden" ? !t.show : t.type === TF.slice(2))));
+  if (TF === "views") vis.sort((a, b) => (+b[0].views || 0) - (+a[0].views || 0));
+  $("#tgrid").innerHTML = vis.length ? vis.map(([t, i]) => `<div class="tcard ${t.show ? "" : "hid"}">
+    <div class="pic">${t.slides[0] ? `<img src="${esc(t.slides[0])}" alt="" loading="lazy">` : ""}<span class="cnt">${t.slides.length} slide${t.slides.length > 1 ? "s" : ""}</span><span class="cnt" style="left:8px;right:auto">👁 ${(+t.views || 0).toLocaleString("en-IN")} views</span></div>
+    <div class="body"><b>${esc(t.name)}</b>
+      <div class="tags"><span class="pill ${t.show ? "ok" : "off"}">${t.show ? "● Live" : "Hidden"}</span><span class="pill">${esc(t.tone)}</span><span class="pill">${esc(t.type)}</span><span class="pill">${esc(langName(t.lang))}</span>${(t.subjects || []).slice(0, 2).map(x => `<span class="pill info">📖 ${esc(x)}</span>`).join("")}${(t.classes || []).length ? `<span class="pill info">🎓 ${t.classes.length > 2 ? esc(t.classes[0]) + " – " + esc(t.classes[t.classes.length - 1]) : esc(t.classes.join(", "))}</span>` : ""}</div>
+      <div class="acts"><button class="btn sm" data-e="${i}">✏️ Edit</button><button class="btn sm" data-v="${i}">${t.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-d="${i}" aria-label="Delete">🗑</button></div>
+      <div class="cf" data-cf="${i}"></div>
+    </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>🎨</b>${TH.length ? "Is filter mein koi theme nahi." : `Koi theme nahi. "+ Add Theme" dabayein.`}</div>`;
+  $$("[data-e]").forEach(b => b.onclick = () => editTheme(TH[+b.dataset.e]));
+  $$("[data-v]").forEach(b => b.onclick = async () => {
+    const t = TH[+b.dataset.v]; b.disabled = true;
+    const r = await call("adminThemeSave", { id: t.id, name: t.name, tone: t.tone, type: t.type, lang: t.lang, slides: t.refs, order: t.order, show: !t.show, classes: t.classes || [], subjects: t.subjects || [] });
+    if (!r.ok) { b.disabled = false; return toast(r.error, true); }
+    TH[+b.dataset.v] = r.theme; drawThemes(); toast(r.theme.show ? "Theme website par dikh rahi hai" : "Theme chhupa di");
+  });
+  $$("[data-d]").forEach(b => b.onclick = () => {
+    const i = +b.dataset.d, box = document.querySelector(`[data-cf="${i}"]`);
+    box.innerHTML = `<div class="confirm">Delete "${esc(TH[i].name)}"? <button class="btn sm danger" data-yes>Yes, delete</button><button class="btn sm" data-no>No</button></div>`;
+    box.querySelector("[data-no]").onclick = () => box.innerHTML = "";
+    box.querySelector("[data-yes]").onclick = async e => {
+      e.target.disabled = true;
+      const r = await call("adminThemeDelete", { id: TH[i].id });
+      if (!r.ok) return toast(r.error, true);
+      TH.splice(i, 1); drawThemes(); toast("Theme deleted");
+    };
+  });
+}
+// --- editor ---
+let ED = null;
+function seg(el, opts, val, key) {
+  el.innerHTML = opts.map(o => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<button type="button" class="${v === val ? "on" : ""}" data-v="${esc(v)}">${esc(l)}</button>`; }).join("");
+  el.querySelectorAll("button").forEach(b => b.onclick = () => { ED[key] = b.dataset.v; el.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); });
+}
+function mseg(el, opts, key) {
+  const draw = () => {
+    el.innerHTML = opts.map(v => `<button type="button" class="${ED[key].includes(v) ? "on" : ""}" data-v="${esc(v)}">${ED[key].includes(v) ? "✓ " : ""}${esc(v)}</button>`).join("") +
+      (ED[key].length ? `<button type="button" data-clear style="color:var(--bad)">✕ Clear</button>` : "");
+    el.querySelectorAll("[data-v]").forEach(b => b.onclick = () => { const v = b.dataset.v, a = ED[key]; a.includes(v) ? a.splice(a.indexOf(v), 1) : a.push(v); a.sort((x, y) => opts.indexOf(x) - opts.indexOf(y)); draw(); });
+    const c = el.querySelector("[data-clear]"); if (c) c.onclick = () => { ED[key] = []; draw(); };
+  };
+  draw();
+}
+function editTheme(t) {
+  ED = t ? { id: t.id, name: t.name, tone: t.tone, type: t.type, lang: t.lang, order: t.order, show: t.show, classes: (t.classes || []).slice(), subjects: (t.subjects || []).slice(), slides: t.refs.map((r, k) => ({ ref: r, url: t.slides[k] })) }
+         : { id: "", name: "", tone: "Dark", type: "Theory", lang: "English", order: "", show: true, classes: [], subjects: [], slides: [] };
+  $("#teTitle").textContent = t ? "Edit Theme" : "Add Theme";
+  $("#teName").value = ED.name; $("#teOrder").value = ED.order || ""; $("#teShow").checked = ED.show; $("#teErr").textContent = "";
+  seg($("#teTone"), [["Dark", "🌙 Dark"], ["White", "☀️ White"]], ED.tone, "tone");
+  seg($("#teType"), TYPES, ED.type, "type");
+  seg($("#teLang"), LANGS, ED.lang, "lang");
+  mseg($("#teCls"), CLASSES, "classes");
+  mseg($("#teSubj"), SUBJECTS, "subjects");
+  drawSlides(); $("#themeModal").hidden = false; $("#teName").focus();
+}
+function drawSlides() {
+  const s = ED.slides;
+  $("#teSlides").innerHTML = s.map((x, k) => x.busy
+    ? `<div class="sl up">${esc(x.busy)}</div>`
+    : `<div class="sl"><img src="${esc(x.url)}" alt="Slide ${k + 1}"><span class="no">${k + 1}</span>
+       <div class="ctr"><button type="button" data-m="${k}" data-d="-1" aria-label="Move left" ${k ? "" : "disabled"}>←</button><button type="button" data-x="${k}" aria-label="Remove slide">✕</button><button type="button" data-m="${k}" data-d="1" aria-label="Move right" ${k < s.length - 1 ? "" : "disabled"}>→</button></div></div>`).join("");
+  $("#teCount").textContent = s.length ? s.length + " slide" + (s.length > 1 ? "s" : "") : "";
+  $$("#teSlides [data-m]").forEach(b => b.onclick = () => { const k = +b.dataset.m, j = k + +b.dataset.d; [s[k], s[j]] = [s[j], s[k]]; drawSlides(); });
+  $$("#teSlides [data-x]").forEach(b => b.onclick = () => { s.splice(+b.dataset.x, 1); drawSlides(); });
+}
+$$("[data-close]").forEach(b => b.onclick = closeEditor);
+$("#themeModal").addEventListener("click", e => { if (e.target.id === "themeModal") closeEditor(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#themeModal").hidden) closeEditor(); });
+function closeEditor() { if (ED && ED.slides.some(x => x.busy)) return toast("Images upload ho rahi hain — thoda rukiye", true); $("#themeModal").hidden = true; }
+// image → chhoti WEBP/JPEG (max 1600px) → Drive
+function shrink(file) {
+  return new Promise((ok, no) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const sc = Math.min(1, 1600 / img.naturalWidth), c = document.createElement("canvas");
+      c.width = Math.round(img.naturalWidth * sc); c.height = Math.round(img.naturalHeight * sc);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      c.toBlob(b => b && b.type === "image/webp" ? ok(b) : c.toBlob(j => j ? ok(j) : no(new Error("convert")), "image/jpeg", .88), "image/webp", .86);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); no(new Error("Not an image")); };
+    img.src = url;
+  });
+}
+const b64 = blob => new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(",")[1]); fr.onerror = no; fr.readAsDataURL(blob); });
+async function addImages(files) {
+  const list = [...files].filter(f => /^image\/(jpeg|png|webp)$/.test(f.type));
+  if (list.length < files.length) toast("Sirf JPG, PNG, WEBP images chalengi", true);
+  for (const f of list) {
+    const slot = { busy: "Uploading…" }; ED.slides.push(slot); drawSlides();
+    try {
+      const blob = await shrink(f);
+      const r = await call("adminImage", { name: f.name.replace(/\.\w+$/, "") + (blob.type === "image/webp" ? ".webp" : ".jpg"), mime: blob.type, data: await b64(blob) });
+      if (!r.ok) throw new Error(r.error);
+      Object.assign(slot, { busy: "", ref: r.ref, url: r.url }); delete slot.busy;
+    } catch (e) { ED.slides.splice(ED.slides.indexOf(slot), 1); toast(`"${f.name}" upload nahi hua: ${e.message}`, true); }
+    drawSlides();
+  }
+}
+$("#teFiles").onchange = e => { addImages(e.target.files); e.target.value = ""; };
+const drop = $("#teDrop");
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("on"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("on"); }));
+drop.addEventListener("drop", e => addImages(e.dataTransfer.files));
+$("#teSave").onclick = async () => {
+  if (ED.slides.some(x => x.busy)) return $("#teErr").textContent = "Images upload ho rahi hain — thoda rukiye";
+  ED.name = $("#teName").value.trim(); ED.order = +$("#teOrder").value || ""; ED.show = $("#teShow").checked;
+  if (ED.name.length < 2) return $("#teErr").textContent = "Theme ka naam likhein";
+  if (!ED.slides.length) return $("#teErr").textContent = "Kam se kam ek slide image add karein";
+  $("#teSave").disabled = true; $("#teErr").textContent = "";
+  const r = await call("adminThemeSave", { id: ED.id, name: ED.name, tone: ED.tone, type: ED.type, lang: ED.lang, order: ED.order, show: ED.show, slides: ED.slides.map(x => x.ref), classes: ED.classes, subjects: ED.subjects });
+  $("#teSave").disabled = false;
+  if (!r.ok) return $("#teErr").textContent = r.error;
+  const i = TH.findIndex(x => x.id === r.theme.id);
+  if (i >= 0) TH[i] = r.theme; else TH.push(r.theme);
+  TH.sort((a, b) => (a.order - b.order) || (b.row - a.row));
+  $("#themeModal").hidden = true; drawThemes(); toast("Theme saved — website par dikh rahi hai");
+};
+
+/* ---------- Prices ---------- */
+let PR = [], PS = {};
+async function prices() {
+  loading();
+  const r = await call("adminPrices"); if (!r.ok) return fail(r.error);
+  PR = r.prices; PS = r.settings;
+  V(head("Prices", `Ye prices website ke Smart Board aur "Pricing" popup — dono jagah dikhte hain.`, `<button class="btn pri" id="savePrices">Save Prices</button>`) + `
+  <div class="dgrid" style="grid-template-columns:1.6fr 1fr">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="display:flex;flex-direction:column;gap:12px">
+        <h3>Offer &amp; heading</h3>
+        <div class="grid2">
+          <label class="f">Heading<input type="text" id="psTitle" maxlength="60"></label>
+          <label class="f">Offer (bada) <span>khaali = offer nahi dikhega</span><input type="text" id="psBig" maxlength="30" placeholder="15% OFF"></label>
+          <label class="f">Offer (chhota)<input type="text" id="psSmall" maxlength="60"></label>
+          <label class="f">Bulk order from <span>slides</span><input type="text" id="psBulk" maxlength="10" placeholder="200+"></label>
+        </div>
+      </div>
+      <div class="card ptable">
+        <h3>Price list</h3>
+        <div class="prow phead"><span>Icon</span><span>Name</span><span>Note</span><span>Price</span><span>Unit</span><span>Color</span><span>Show</span><span></span></div>
+        <div id="prows" class="ptable"></div>
+        <div><button class="btn sm" id="addPrice">${ic("i-plus")} Add price</button></div>
+      </div>
+    </div>
+    <div class="card" style="align-self:start"><div class="ch"><h3>${ic("i-eye", "color:var(--accent)")} Live preview</h3></div><div id="pPrev"></div><p class="note" style="margin-top:12px">Save ke baad website par turant dikhega.</p></div>
+  </div>`);
+  $("#psTitle").value = PS.pricingTitle || ""; $("#psBig").value = PS.offerBig || ""; $("#psSmall").value = PS.offerSmall || ""; $("#psBulk").value = PS.bulkMin || "";
+  drawPrices();
+  $("#addPrice").onclick = () => { readPrices(); PR.push({ icon: "📄", name: "", note: "", price: "", unit: "/slide", color: "#a855f7", show: true }); drawPrices(); };
+  $("#savePrices").onclick = async e => {
+    readPrices(); e.target.disabled = true;
+    const r = await call("adminPricesSave", { prices: PR, settings: { pricingTitle: $("#psTitle").value, offerBig: $("#psBig").value, offerSmall: $("#psSmall").value, bulkMin: $("#psBulk").value } });
+    e.target.disabled = false; r.ok ? toast("Prices saved ✓") : toast(r.error, true);
+  };
+}
+$("#view").addEventListener("input", () => { if (tab === "prices" && $("#prows")) { readPrices(); drawPreview(); } });
+function drawPrices() {
+  $("#prows").innerHTML = PR.map((p, i) => `<div class="prow" data-i="${i}">
+    <input type="text" data-k="icon" value="${esc(p.icon)}" maxlength="8" aria-label="Icon">
+    <input type="text" data-k="name" value="${esc(p.name)}" maxlength="60" placeholder="Animated Slides" aria-label="Name">
+    <input type="text" data-k="note" value="${esc(p.note)}" maxlength="60" placeholder="(optional)" aria-label="Note">
+    <input type="text" data-k="price" value="${esc(p.price)}" maxlength="30" placeholder="₹10" aria-label="Price">
+    <input type="text" data-k="unit" value="${esc(p.unit)}" maxlength="20" placeholder="/slide" aria-label="Unit">
+    <input type="color" data-k="color" value="${/^#[0-9a-f]{6}$/i.test(p.color) ? p.color : "#a855f7"}" aria-label="Color">
+    <label class="check"><input type="checkbox" data-k="show" ${p.show ? "checked" : ""} aria-label="Show"></label>
+    <button class="btn sm danger" data-del="${i}" aria-label="Remove">✕</button></div>`).join("");
+  $$("[data-del]").forEach(b => b.onclick = () => { readPrices(); PR.splice(+b.dataset.del, 1); drawPrices(); });
+  $$("#prows input[type=checkbox]").forEach(x => x.onchange = () => { readPrices(); drawPreview(); });
+  drawPreview();
+}
+function readPrices() {
+  $$("#prows .prow").forEach(r => { const p = PR[+r.dataset.i]; r.querySelectorAll("[data-k]").forEach(x => p[x.dataset.k] = x.type === "checkbox" ? x.checked : x.value.trim()); });
+}
+function drawPreview() {
+  const el = $("#pPrev"); if (!el) return;
+  const big = $("#psBig").value.trim();
+  el.innerHTML = `<div class="row" style="margin-bottom:10px"><b style="font-family:var(--display);font-size:1.05rem">${esc($("#psTitle").value || "PPT Design & Pricing")}</b>${big ? `<span class="pill new">${esc(big)}</span>` : ""}</div>
+    <ul class="preview">${PR.filter(p => p.show && p.name).map(p => `<li style="--c:${/^#[0-9a-f]{6}$/i.test(p.color) ? p.color : "#a855f7"}"><span>${esc(p.icon)}</span><b>${esc(p.name)} ${p.note ? `<i>${esc(p.note)}</i>` : ""}</b><em>${esc(p.price)}<small style="color:var(--dim);font-weight:500">${esc(p.unit)}</small></em></li>`).join("") || `<p class="note">Koi price "Show" par nahi hai.</p>`}</ul>
+    ${$("#psBulk").value ? `<p class="note" style="margin-top:10px">🎯 ${esc($("#psBulk").value)} slides? Bulk pricing negotiable!</p>` : ""}`;
+}
+
+/* ---------- Reviews ---------- */
+let RV = [], RF = "";
+async function reviews() {
+  loading();
+  const r = await call("adminReviews"); if (!r.ok) return fail(r.error);
+  RV = r.reviews;
+  V(head("Reviews", `Customer ka review likhte hi website par turant dikhta hai — sabse zyada rating wale sabse upar. Koi review galat ya spam ho toh "Hide" ya "Delete" karein.`) + `<div class="chips" id="rchips"></div><div class="list" id="rlist"></div>`);
+  drawReviews();
+}
+function drawReviews() {
+  const n = { "": RV.length, wait: RV.filter(x => !x.show).length, live: RV.filter(x => x.show).length };
+  const avg = RV.length ? (RV.reduce((a, v) => a + (+v.stars || 0), 0) / RV.length).toFixed(1) : "–";
+  $("#rchips").innerHTML = [["", "All"], ["live", "On website"], ["wait", "Hidden"]].map(([v, l]) => `<button class="chip ${v === RF ? "on" : ""}" data-rf="${v}">${l}<em>${n[v]}</em></button>`).join("") + `<span class="pill" style="margin-left:auto;align-self:center">⭐ Average ${avg}</span>`;
+  $$("#rchips [data-rf]").forEach(b => b.onclick = () => { RF = b.dataset.rf; drawReviews(); });
+  const vis = RV.map((v, i) => [v, i]).filter(([v]) => !RF || (RF === "live" ? v.show : !v.show));
+  $("#rlist").innerHTML = vis.length ? vis.map(([v, i]) => `<div class="rv">
+    <div class="row"><span class="av">${esc(initials(v.name))}</span><div><b>${esc(v.name)}</b>${v.role ? ` <span class="note">· ${esc(v.role)}</span>` : ""}<div class="stars">${"★".repeat(v.stars)}<span style="color:var(--line2)">${"★".repeat(Math.max(0, 5 - v.stars))}</span></div></div><span class="sp"></span>
+      <span class="pill ${v.show ? "ok" : "off"}">${v.show ? "● On website" : "Hidden"}</span></div>
+    <p>${esc(v.text)}</p>${v.deck ? `<div class="note">PPT: ${esc(v.deck)}</div>` : ""}
+    <div class="row"><button class="btn sm ${v.show ? "" : "pri"}" data-s="${i}">${v.show ? "🙈 Hide" : "✅ Show on website"}</button><button class="btn sm danger" data-r="${i}">🗑 Delete</button><span class="sp"></span><span class="note">${fmtTime(v.time)}</span></div>
+    <div data-rc="${i}"></div></div>`).join("") : `<div class="empty"><b>⭐</b>${RV.length ? "Is filter mein koi review nahi." : "Abhi tak koi review nahi."}</div>`;
+  $$("[data-s]").forEach(b => b.onclick = async () => {
+    const v = RV[+b.dataset.s]; b.disabled = true;
+    const r = await call("adminReviewSet", { row: v.row, name: v.name, show: !v.show });
+    if (!r.ok) { b.disabled = false; return toast(r.error, true); }
+    v.show = !v.show; drawReviews(); toast(v.show ? "Review website par dikh raha hai" : "Review chhupa diya");
+  });
+  $$("[data-r]").forEach(b => b.onclick = () => {
+    const i = +b.dataset.r, box = document.querySelector(`[data-rc="${i}"]`);
+    box.innerHTML = `<div class="confirm">Delete this review? <button class="btn sm danger" data-yes>Yes, delete</button><button class="btn sm" data-no>No</button></div>`;
+    box.querySelector("[data-no]").onclick = () => box.innerHTML = "";
+    box.querySelector("[data-yes]").onclick = async e => {
+      e.target.disabled = true;
+      const r = await call("adminReviewSet", { row: RV[i].row, name: RV[i].name, remove: true });
+      if (!r.ok) return toast(r.error, true);
+      reviews(); toast("Review deleted");
+    };
+  });
+}
+
+/* ---------- Messages / Tickets ---------- */
+let MS = [], MQ = "";
+async function messages() {
+  loading();
+  const r = await call("adminMessages"); if (!r.ok) return fail(r.error);
+  MS = r.messages;
+  V(head("Messages / Tickets", "Website ke Contact form se aaye messages. Har message ka apna Ticket ID hota hai — customer ko 1 ghante ke andar reply karein.") + `
+  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="mq" placeholder="Search ticket ID, name, email, message…" aria-label="Search messages"></label></div>
+  <div class="list" id="mlist"></div>`);
+  $("#mq").value = MQ; $("#mq").oninput = () => { MQ = $("#mq").value; drawMessages(); };
+  drawMessages();
+}
+function drawMessages() {
+  const q = MQ.toLowerCase();
+  const vis = MS.filter(m => !q || [m.name, m.email, m.phone, m.subject, m.message, m.ticket].join(" ").toLowerCase().includes(q));
+  $("#mlist").innerHTML = vis.length ? vis.map(m => {
+    const tk = m.ticket || ticketOf(m.subject), sub = stripTicket(m.subject), wn = waNum(m.phone);
+    const hi = `Hi ${String(m.name || "").split(" ")[0]}, this is Lakshay Agency${tk ? ` regarding your Ticket ${tk}` : ""}. `;
+    return `<div class="rv">
+      <div class="row"><span class="av">${esc(initials(m.name))}</span><div><b>${esc(m.name)}</b><div class="note">${fmtTime(m.time)} · ${ago(m.time)}</div></div><span class="sp"></span>
+        ${tk ? `<button class="pill tk" data-copy="${esc(tk)}" title="Copy ticket ID">🎫 ${esc(tk)}</button>` : ""}${sub ? `<span class="pill">${esc(sub)}</span>` : ""}</div>
+      <p>${esc(m.message)}</p>
+      <div class="row"><span class="note">✉️ ${esc(m.email)}${m.phone ? " · 📞 " + esc(m.phone) : ""}</span><span class="sp"></span>
+        ${m.email ? `<a class="btn sm" href="mailto:${esc(m.email)}?subject=${encodeURIComponent("Re: " + (tk ? tk + " — " : "") + (sub || "Your message"))}&body=${encodeURIComponent(hi)}">${ic("i-mail")} Reply by email</a>` : ""}
+        ${wn.length >= 11 ? `<a class="btn sm wa" href="https://wa.me/${wn}?text=${encodeURIComponent(hi)}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}</div>
+    </div>`;
+  }).join("") : `<div class="empty"><b>💬</b>${MS.length ? "Koi message nahi mila." : "Abhi tak koi message nahi."}</div>`;
+}
+
+/* ---------- Website Controls ---------- */
+const CX_DEFAULT = ["uploads/themes/samples/dark-chalk-physics-2.webp", "uploads/themes/samples/kids-grammar-bright-1.webp", "uploads/themes/samples/hindi-varn-vichar.webp", "uploads/themes/samples/hindi-swar.webp"];
+const UI_ITEMS = [
+  ["Header (upar ki line)", [["nav_home", "Home button"], ["nav_shop", "Shop PPTs button"], ["nav_custom", "Custom PPT button"], ["nav_pricing", "Pricing button"], ["nav_more", "More Offerings menu"], ["nav_search", "Search box"], ["nav_theme", "Dark / Light / System switch"], ["nav_cart", "Cart (🛒) button"]]],
+  ["Hero (sabse upar ka hissa)", [["hero_explore", "Explore Themes button"], ["hero_order", "PPT Order Now button"]]],
+  ["Custom PPT section", [["cx_order", "PPT Order Now button"], ["cx_wa", "Ask on WhatsApp button"]]],
+  ["Har page par", [["wa_float", "WhatsApp ka gol button (neeche right)"]]],
+  ["Footer", [["foot_admin", "🔐 Admin Panel link"], ["foot_more", "More Offerings column"], ["soc_linkedin", "LinkedIn icon"], ["soc_instagram", "Instagram icon"], ["soc_youtube", "YouTube icon"], ["soc_x", "X (Twitter) icon"]]]
+];
+const SOCIALS = [["linkedin", "LinkedIn"], ["instagram", "Instagram"], ["youtube", "YouTube"], ["x", "X (Twitter)"]];
+const refUrl = r => { r = String(r || "").trim(); if (DEMO_IMG[r]) return DEMO_IMG[r]; return r.indexOf("drive:") === 0 ? "https://lh3.googleusercontent.com/d/" + r.slice(6) + "=w1600" : r; };
+let WS = {}, WSI = {};
+async function site() {
+  loading();
+  const r = await call("adminPrices"); if (!r.ok) return fail(r.error);
+  WS = Object.assign({}, r.settings); WSI = {};
+  V(head("Website Controls", "Website ke buttons ko dikhayein / chhupayein, chalu / band karein, Custom PPT section ki photos aur social links badlein. Save karte hi website par dikhega.") + `
+  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>${ic("i-image", "color:var(--cyan)")} Custom PPT section ki photos</h3><span class="note">"Your Topic. Our Design." ke saath ghoomti 4 slides</span></div>
+    <div class="wc-imgs" id="wcImgs"></div>
+    <input type="file" id="wcFile" accept="image/jpeg,image/png,image/webp" hidden>
+    <p class="note" style="margin-top:10px">16:9 (PPT jaisi) photo sabse achhi lagti hai. Photo apne aap chhoti (fast) ho jaati hai.</p></div>
+  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>${ic("i-sliders", "color:var(--accent)")} Buttons &amp; options</h3><span class="note"><b>Dikhao</b> = website par dikhe · <b>Click chalu</b> = band karne par button dikhega par dabega nahi</span></div>
+    <div class="wc-list" id="wcList"></div></div>
+  <div class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--ok)")} Social media links</h3><span class="note">Footer ke icons in links par khulenge · khaali = "Jald aa raha hai"</span></div>
+    <div class="grid2" id="wcSoc"></div></div>
+  <div class="savebar"><span class="note" id="wcNote">Badlav karke Save dabayein.</span><span class="sp"></span><button class="btn" id="wcReset">Undo changes</button><button class="btn pri" id="wcSave">Save &amp; publish</button></div>`);
+  drawWcImgs(); drawWcList();
+  $("#wcSoc").innerHTML = SOCIALS.map(([k, l]) => `<label class="f">${l}<input type="text" inputmode="url" data-soc="${k}" placeholder="https://…" value="${esc(WS["social_" + k] || "")}"></label>`).join("");
+  $$("#wcSoc [data-soc]").forEach(i => i.oninput = () => { WS["social_" + i.dataset.soc] = i.value.trim(); dirty(); });
+  $("#wcReset").onclick = () => site();
+  $("#wcSave").onclick = saveSite;
+}
+const dirty = () => { $("#wcNote").innerHTML = "<b style='color:var(--warn)'>● Unsaved changes</b> — Save dabayein"; };
+function drawWcImgs() {
+  $("#wcImgs").innerHTML = [0, 1, 2, 3].map(i => { const k = "customImg" + (i + 1), cur = WS[k] || CX_DEFAULT[i];
+    return `<div class="wc-img"><div class="pic"><img src="${esc(refUrl(cur))}" alt="Slide ${i + 1}"><span class="no">${i + 1}</span>${WSI[i] ? `<span class="busy">${esc(WSI[i])}</span>` : ""}</div>
+      <div class="row"><button class="btn sm" data-up="${i}">${ic("i-upload")} Change photo</button>${WS[k] ? `<button class="btn sm" data-def="${i}" title="Pehli wali photo wapas">↺ Default</button>` : `<span class="note">Default</span>`}</div></div>`; }).join("");
+  let slot = 0;
+  $$("#wcImgs [data-up]").forEach(b => b.onclick = () => { slot = +b.dataset.up; $("#wcFile").click(); });
+  $$("#wcImgs [data-def]").forEach(b => b.onclick = () => { WS["customImg" + (+b.dataset.def + 1)] = ""; drawWcImgs(); dirty(); });
+  $("#wcFile").onchange = async e => {
+    const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(f.type)) return toast("Sirf JPG, PNG, WEBP photo", true);
+    const i = slot; WSI[i] = "Uploading…"; drawWcImgs();
+    try {
+      const blob = await shrink(f);
+      const r = await call("adminImage", { name: "custom-" + (i + 1) + (blob.type === "image/webp" ? ".webp" : ".jpg"), mime: blob.type, data: await b64(blob) });
+      if (!r.ok) throw new Error(r.error);
+      WS["customImg" + (i + 1)] = r.ref;
+      delete WSI[i]; drawWcImgs(); dirty(); toast("Photo upload ho gayi — Save dabayein");
+    } catch (err) { delete WSI[i]; drawWcImgs(); toast("Photo upload nahi hui: " + err.message, true); }
+  };
+}
+function drawWcList() {
+  $("#wcList").innerHTML = UI_ITEMS.map(([g, items]) => `<div class="wc-grp">${esc(g)}</div>` + items.map(([id, label]) => {
+    const v = WS["ui_" + id] || "show";
+    return `<div class="wc-row ${v === "hide" ? "is-hide" : ""}" data-id="${id}"><div><b>${esc(label)}</b><small>${v === "hide" ? "Website par chhupa hua" : v === "off" ? "Dikh raha hai, par click band" : "Dikh raha hai aur chalu"}</small></div>
+      <label class="sw"><input type="checkbox" data-k="vis" ${v !== "hide" ? "checked" : ""}><i></i>Dikhao</label>
+      <label class="sw"><input type="checkbox" data-k="on" ${v === "show" ? "checked" : ""} ${v === "hide" ? "disabled" : ""}><i></i>Click chalu</label></div>`;
+  }).join("")).join("");
+  $$("#wcList .wc-row").forEach(row => {
+    const id = row.dataset.id, vis = row.querySelector("[data-k=vis]"), on = row.querySelector("[data-k=on]");
+    const upd = () => { WS["ui_" + id] = !vis.checked ? "hide" : on.checked ? "show" : "off"; dirty(); drawWcList(); };
+    vis.onchange = () => { if (vis.checked && !on.checked && WS["ui_" + id] === "hide") on.checked = true; upd(); };
+    on.onchange = upd;
+  });
+}
+async function saveSite() {
+  if (Object.keys(WSI).length) return toast("Photo upload ho rahi hai — thoda rukiye", true);
+  const bad = SOCIALS.find(([k]) => WS["social_" + k] && !/^https:\/\/\S+$/.test(WS["social_" + k]));
+  if (bad) return toast(bad[1] + " ka link https:// se shuru hona chahiye", true);
+  const settings = {};
+  UI_ITEMS.forEach(([, items]) => items.forEach(([id]) => settings["ui_" + id] = WS["ui_" + id] || "show"));
+  [1, 2, 3, 4].forEach(n => settings["customImg" + n] = WS["customImg" + n] || "");
+  SOCIALS.forEach(([k]) => settings["social_" + k] = WS["social_" + k] || "");
+  const b = $("#wcSave"); b.disabled = true;
+  const r = await call("adminUiSave", { settings });
+  b.disabled = false;
+  if (!r.ok) return toast(r.error, true);
+  $("#wcNote").innerHTML = "<b style='color:var(--ok)'>✓ Saved</b> — website par 1 minute ke andar dikhega (page refresh karein)";
+  toast("Website controls saved ✓");
+}
+
+/* ---------- Settings ---------- */
+async function settings() {
+  loading();
+  const r = await call("adminPrices"); if (!r.ok) return fail(r.error);
+  if (!SUM.user) { const s2 = await call("adminSummary"); if (s2.ok) { SUM = s2; setWho(); } }
+  const s = r.settings;
+  V(head("Settings", "Website par dikhne wali contact details, Admin login aur panel ka look.") + `
+  <div class="sgrid">
+    <form class="card" id="setForm">
+      <h3>📞 Contact details</h3>
+      <label class="f">WhatsApp number <span>91 ke saath — e.g. 919711069435</span><input type="tel" id="stWa" maxlength="15" required></label>
+      <label class="f">Phone (website par jaisa dikhe)<input type="text" id="stPh" maxlength="30"></label>
+      <label class="f">Email<input type="email" id="stEm" maxlength="120" required></label>
+      <div class="row"><button class="btn pri" type="submit">Save Settings</button></div>
+    </form>
+    <form class="card" id="pwForm">
+      <h3>🔐 Change Admin ID / password</h3>
+      <label class="f">Admin ID<input type="text" id="pwUser" autocomplete="username" autocapitalize="off" spellcheck="false" minlength="4" maxlength="40" required></label>
+      <label class="f">Current password<input type="password" id="pwOld" autocomplete="current-password" required></label>
+      <label class="f">New password <span>kam se kam 8 characters</span><input type="password" id="pwNew" autocomplete="new-password" minlength="8" required></label>
+      <label class="f">Confirm new password<input type="password" id="pwNew2" autocomplete="new-password" minlength="8" required></label>
+      <div class="row"><button class="btn pri" type="submit">Change Password</button></div>
+      <p class="note">Password bhool gaye? Apps Script ("Lakshay Orders") mein function <b>resetAdminPassword</b> chuno → Run. Login wapas pehle wale (default) Admin ID + password par aa jayega.</p>
+    </form>
+    <div class="card">
+      <h3>🎨 Admin panel theme</h3>
+      <div class="themepick"><button type="button" data-th="dark"><span class="sw d"></span>🌙 Dark</button><button type="button" data-th="light"><span class="sw l"></span>☀️ Light</button></div>
+      <p class="note">Ye sirf admin panel ka look badalta hai. Upar right wale button se bhi badal sakte hain.</p>
+    </div>
+  </div>`);
+  $$(".themepick button").forEach(b => b.onclick = () => setTheme(b.dataset.th));
+  setTheme(document.documentElement.getAttribute("data-theme"));
+  $("#pwUser").value = SUM.user || "";
+  $("#stWa").value = s.whatsapp || ""; $("#stPh").value = s.phoneDisplay || ""; $("#stEm").value = s.email || "";
+  $("#setForm").onsubmit = async e => {
+    e.preventDefault(); const b = e.target.querySelector("button"); b.disabled = true;
+    const r = await call("adminSettingsSave", { settings: { whatsapp: $("#stWa").value, phoneDisplay: $("#stPh").value, email: $("#stEm").value } });
+    b.disabled = false; if (!r.ok) return toast(r.error, true);
+    $("#stWa").value = r.settings.whatsapp; toast("Settings saved ✓");
+  };
+  $("#pwForm").onsubmit = async e => {
+    e.preventDefault();
+    if ($("#pwNew").value !== $("#pwNew2").value) return toast("New passwords match nahi kar rahe", true);
+    const b = e.target.querySelector("button"); b.disabled = true;
+    const r = await call("adminPassword", { current: $("#pwOld").value, password: $("#pwNew").value, user: $("#pwUser").value.trim() });
+    b.disabled = false; if (!r.ok) return toast(r.error, true);
+    setToken(r.token); SUM.user = r.user; setWho(); e.target.reset(); $("#pwUser").value = r.user || ""; toast("Admin ID / password changed ✓");
+  };
+}
+
+/* start */
+if (TOKEN) { $("#loginView").hidden = true; startApp(); } else showLogin();
+</script>
+</body>
+</html>
