@@ -759,6 +759,7 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   /* homepage se "Buy / Checkout": seedha payment kholo */
   const pay = (qs.get("pay") || "").split(",").map(Number).filter(id => PRODUCTS.some(p => p.id === id));
   if (pay.length) { pay.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart(); history.replaceState(null, "", location.pathname); openPay(pay); }
+  else if (qs.has("cart")) { history.replaceState(null, "", location.pathname); openCart(true); }   /* homepage ka cart button */
 })();
 </script>
 </body>

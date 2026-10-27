@@ -1714,7 +1714,8 @@ function toggleCart(id){
 }
 function renderCart(){
   const items = cart.map(id => PRODUCTS.find(p=>p.id===id)).filter(Boolean);
-  const cc = $("#cartCount"); cc.textContent = items.length; cc.dataset.n = items.length;
+  const n = items.length || cart.length;   /* Shop PPTs page par add ki gayi PPT bhi gino */
+  const cc = $("#cartCount"); cc.textContent = n; cc.dataset.n = n;
   $("#cartBody").innerHTML = items.length ? items.map(p => `
     <div class="ci"><span class="mini" style="background:${thumbBg(p)}"></span>
       <div><b>${esc(p.title)}</b><small>${inr(p.price)}</small> <s style="color:var(--dim);font-size:.75rem">${inr(p.mrp)}</s></div>
@@ -1724,7 +1725,8 @@ function renderCart(){
   $("#checkout").disabled = !items.length; $("#checkout").style.opacity = items.length ? 1 : .5;
 }
 function openCart(o){ $("#drawer").classList.toggle("on",o); $("#overlay").classList.toggle("on",o); }
-$("#cartBtn").onclick = () => openCart(true);
+/* Cart mein aisi PPT ho jo is page ki list mein nahi (Shop PPTs se add ki), to Shop PPTs page ka cart kholo */
+$("#cartBtn").onclick = () => cart.some(id => !PRODUCTS.some(p => p.id === id)) ? (location.href = "ready-ppts.html?cart=1") : openCart(true);
 $("#closeCart").onclick = () => openCart(false);
 $("#overlay").onclick = () => { openCart(false); closeAllPopups(); };
 $("#checkout").onclick = () => {
