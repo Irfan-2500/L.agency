@@ -428,6 +428,7 @@ label.f span{font-weight:500;color:var(--dim)}
         <span class="lbl">Business</span>
         <button data-t="orders"><svg class="i"><use href="#i-cart"/></svg>Orders<span class="n" id="nOrders" hidden></span></button>
         <button data-t="sales"><svg class="i"><use href="#i-pie"/></svg>Sales (Online)</button>
+        <button data-t="customers"><svg class="i"><use href="#i-phone"/></svg>Customers (Login)</button>
         <button data-t="messages"><svg class="i"><use href="#i-msg"/></svg>Messages / Tickets</button>
         <button data-t="reviews"><svg class="i"><use href="#i-star"/></svg>Reviews<span class="n" id="nReviews" hidden></span></button>
         <span class="lbl">Website</span>
@@ -530,7 +531,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", stats: "Analytics", sales: "Sales", ppts: "Ready PPTs", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", sales: "Sales", customers: "Customers", ppts: "Ready PPTs", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -597,6 +598,8 @@ const DEMO = (() => {
     messages: [{name:"Sanjay Kumar",email:"sanjay@example.com",phone:"9876543210",subject:"[TKT-1022-4821] Custom PPT Request",message:"Mujhe 100 slides chahiye Hindi mein, kal tak mil sakti hain?",time:iso(1)},
       {name:"Ritu Sharma",email:"ritu@example.com",phone:"",subject:"[TKT-1021-3307] Invoice Request",message:"Pichhle order ka invoice bhej dijiye.",time:iso(28)}],
     pay: { on: false },
+    customers: [{key:"9876500022",name:"Neha Singh",email:"neha@example.com",mobile:"9876500022",orders:2,spent:397,ppts:["Class 10 Science — Light","Business Pitch Deck"],first:iso(300),last:iso(30),logins:4,lastLogin:iso(3),device:"Mobile",resetAt:"",blocked:false},
+      {key:"9876500011",name:"Rahul Verma",email:"rahul@example.com",mobile:"9876500011",orders:1,spent:99,ppts:["Class 10 Science — Light"],first:iso(2),last:iso(2),logins:0,lastLogin:"",device:"",resetAt:"",blocked:false}],
     sales: [{time:iso(2),name:"Rahul Verma",email:"rahul@example.com",mobile:"9876500011",items:"Class 10 Science — Light",amount:99,payment:"pay_DemoA1",order:"order_DemoA1"},
       {time:iso(30),name:"Neha Singh",email:"neha@example.com",mobile:"9876500022",items:"Class 10 Science — Light, Business Pitch Deck",amount:298,payment:"pay_DemoB2",order:"order_DemoB2"}],
     ppts: [{id:102,title:"Class 10 Science — Light",desc:"Reflection & refraction, 30 slides",price:99,mrp:199,cat:"edu",level:["Class 10"],subject:"Science",board:["CBSE"],lang:"English",theme:"Dark",slides:30,anim:true,badge:"best",refs:[],previews:[],file:"x",fileName:"light.pptx",show:true,sold:14,added:iso(200)},
@@ -639,6 +642,9 @@ async function demoCall(a, d) {
         devices: [["Mobile", 900], ["Computer", 250], ["Tablet", 30]], browsers: [["Chrome", 820], ["Safari", 160], ["Samsung Internet", 110], ["Edge", 60]], sheetUrl: "#" });
     }
     case "adminSales": return ok({ sales: D.sales.slice() });
+    case "adminCustomers": return ok({ customers: D.customers.map(c => Object.assign({}, c)) });
+    case "adminCustomerSet": { const c = D.customers.find(x => x.key === d.key); if (c && d.blocked != null) c.blocked = d.blocked; return ok(); }
+    case "adminSaleResend": return ok({ to: "r***@example.com" });
     case "adminPpts": return ok({ ppts: D.ppts.map(p => JSON.parse(JSON.stringify(p))), payments: D.pay.on, folderUrl: "#" });
     case "adminPptStart": return ok({ session: "demo" });
     case "chunk": return d.start + 8388608 >= d.total ? ok({ done: true, id: "demo-file-" + Date.now() }) : ok({ next: d.start + 8388608 });
@@ -705,7 +711,7 @@ function go(t) {
   $("#pageTitle").textContent = TITLES[t] || "";
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   window.scrollTo(0, 0);
-  ({ dash, stats, sales, ppts, orders, themes, prices, reviews, messages, site, settings })[t]();
+  ({ dash, stats, sales, customers, ppts, orders, themes, prices, reviews, messages, site, settings })[t]();
 }
 async function startApp() {
   $("#app").hidden = false;
@@ -1356,13 +1362,64 @@ async function sales() {
   };
   drawSales();
 }
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-rs]"); if (!b) return;
+  b.disabled = true; const r = await call("adminSaleResend", { payment: b.dataset.rs }); b.disabled = false;
+  toast(r.ok ? `Download link ${r.to} par bhej diya ✓` : r.error, !r.ok);
+});
 function drawSales() {
   const q = SQ.toLowerCase().trim();
   const list = SALES.filter(x => !q || [x.name, x.email, x.mobile, x.items, x.payment].join(" ").toLowerCase().includes(q));
   $("#slist").innerHTML = list.length ? list.map(x => `<article class="order s-Paid"><div><h3>${esc(x.name)} · <span style="color:var(--ok)">${rs(x.amount)}</span></h3><div class="meta">${fmtTime(x.time)} · ${esc(x.payment)}</div></div>
-    <div class="side2"><div class="row">${x.mobile ? `<a class="btn sm wa" href="https://wa.me/91${esc(x.mobile)}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}${x.email ? `<a class="btn sm" href="mailto:${esc(x.email)}">${ic("i-mail")} Email</a>` : ""}</div></div>
+    <div class="side2"><div class="row"><button class="btn sm" data-rs="${esc(x.payment)}" title="Download link customer ko dobara email karein">${ic("i-mail")} Link dobara bhejein</button>${x.mobile ? `<a class="btn sm wa" href="https://wa.me/91${esc(x.mobile)}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}${x.email ? `<a class="btn sm" href="mailto:${esc(x.email)}">${ic("i-mail")} Email</a>` : ""}</div></div>
     <div class="det">📦 ${esc(x.items)}<br>✉️ ${esc(x.email)} · 📞 ${esc(x.mobile)}</div></article>`).join("")
     : `<div class="empty"><b>🧾</b>${SALES.length ? "Is search mein kuch nahi mila." : "Abhi tak koi sale nahi. Razorpay keys Settings mein daalein aur Ready PPTs add karein."}</div>`;
+}
+
+
+/* ---------- Customers (My PPTs login) ---------- */
+let CUS = [], CQ = "";
+async function customers() {
+  loading();
+  const r = await call("adminCustomers");
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Customers", "") + NEW_SCRIPT) : fail(r.error);
+  CUS = r.customers;
+  const d30 = Date.now() - 30 * 864e5, active = CUS.filter(c => c.lastLogin && new Date(c.lastLogin) >= d30).length;
+  V(head("Customers", "Jinhone website se PPT khareedi. Ye apne mobile / email + OTP se \"My PPTs\" mein login karke dobara download kar sakte hain.", `<button class="btn sm" id="cCsv">${ic("i-down")} Export CSV</button>`) + `
+  <div class="stats">
+    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic("i-phone")}</span><b>${nf(CUS.length)}</b><small>Total customers</small></div>
+    <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-eye")}</span><b>${nf(CUS.filter(c => c.logins).length)}</b><small>Kabhi login kiya · ${active} last 30 din</small></div>
+    <div class="stat" style="--c:var(--cyan)"><span class="ic">${ic("i-cart")}</span><b>${nf(CUS.filter(c => c.orders > 1).length)}</b><small>Dobara khareedne wale</small></div>
+  </div>
+  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="cq" placeholder="Search name, mobile, email, PPT…" aria-label="Search customers"></label></div>
+  <div class="olist" id="clist"></div>
+  <p class="note" style="margin-top:8px">🔄 <b>Reset login</b> = customer ke saare phone / computer se logout. Wo OTP se dobara login kar sakta hai. 🚫 <b>Block</b> = login band.</p>`);
+  $("#cq").value = CQ; $("#cq").oninput = () => { CQ = $("#cq").value; drawCus(); };
+  $("#cCsv").onclick = () => {
+    const rows = [["Name", "Mobile", "Email", "Orders", "Spent", "PPTs", "Logins", "Last login", "First buy"], ...CUS.map(c => [c.name, c.mobile, c.email, c.orders, c.spent, c.ppts.join(" | "), c.logins, c.lastLogin ? fmtTime(c.lastLogin) : "", fmtTime(c.first)])];
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" }));
+    a.download = "lakshay-customers.csv"; a.click();
+  };
+  drawCus();
+}
+function drawCus() {
+  const q = CQ.toLowerCase().trim();
+  const list = CUS.map((c, i) => [c, i]).filter(([c]) => !q || [c.name, c.mobile, c.email, ...c.ppts].join(" ").toLowerCase().includes(q));
+  $("#clist").innerHTML = list.length ? list.map(([c, i]) => `<article class="order ${c.blocked ? "s-Cancelled" : c.logins ? "s-Paid" : ""}"><div><h3>${esc(c.name || "—")} · <span style="color:var(--ok)">${rs(c.spent)}</span> ${c.blocked ? `<span class="pill" style="color:var(--bad)">Blocked</span>` : ""}</h3>
+      <div class="meta">${c.logins ? `🔐 ${c.logins} baar login · last ${ago(c.lastLogin)}${c.device ? " · " + esc(c.device) : ""}` : "Abhi tak login nahi kiya"} · ${c.orders} order</div></div>
+    <div class="side2"><div class="row">${c.mobile ? `<a class="btn sm wa" href="https://wa.me/91${esc(c.mobile)}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}
+      <button class="btn sm" data-cr="${i}">🔄 Reset login</button><button class="btn sm ${c.blocked ? "" : "danger"}" data-cb="${i}">${c.blocked ? "✅ Unblock" : "🚫 Block"}</button></div></div>
+    <div class="det">📞 ${esc(c.mobile || "—")} · ✉️ ${esc(c.email || "—")}<br>📦 ${c.ppts.map(esc).join(", ")}<br><small>Pehli khareed: ${fmtTime(c.first)}</small></div></article>`).join("")
+    : `<div class="empty"><b>👥</b>${CUS.length ? "Is search mein koi customer nahi." : "Abhi koi customer nahi. Jab koi Ready PPT online khareedega, yahan dikhega."}</div>`;
+  $$("[data-cr]").forEach(b => b.onclick = async () => {
+    b.disabled = true; const c = CUS[+b.dataset.cr], r = await call("adminCustomerSet", { key: c.key, reset: true }); b.disabled = false;
+    toast(r.ok ? `${c.name || "Customer"} ka login reset ho gaya ✓` : r.error, !r.ok);
+  });
+  $$("[data-cb]").forEach(b => b.onclick = async () => {
+    b.disabled = true; const c = CUS[+b.dataset.cb], r = await call("adminCustomerSet", { key: c.key, blocked: !c.blocked, reset: !c.blocked });
+    if (!r.ok) { b.disabled = false; return toast(r.error, true); }
+    c.blocked = !c.blocked; drawCus(); toast(c.blocked ? "Customer block ho gaya" : "Customer unblock ho gaya");
+  });
 }
 
 /* ---------- Ready PPTs (PPT / PDF upload) ---------- */
