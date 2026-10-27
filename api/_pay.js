@@ -5,8 +5,8 @@
 const crypto = require("crypto");
 const CATALOG = require("../catalog.js");
 
-const KEY_ID = process.env.RAZORPAY_KEY_ID || "";
-const SECRET = process.env.RAZORPAY_KEY_SECRET || "";
+const KEY_ID = (process.env.RAZORPAY_KEY_ID || "").trim();   // paste karte waqt aaye space hata do
+const SECRET = (process.env.RAZORPAY_KEY_SECRET || "").trim();
 const LINK_DAYS = 7;   // download link kitne din chalega
 
 const enabled = () => !!(KEY_ID && SECRET);
