@@ -13,7 +13,7 @@ var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("dat
 <meta name="description" content="Lakshay Agency: Premium, fully editable educational, business, marketing and animated PowerPoint presentations. Instant download + custom PPT service." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Hind:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Hind:wght@600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* =========================================================
    1. THEME / VARIABLES  (yahan se colors badal sakte ho)
@@ -302,7 +302,7 @@ form.box>p{color:var(--muted);font-size:.82rem;margin:4px 0 20px}
 .field textarea{min-height:100px;resize:vertical}
 .form-actions{display:grid;grid-template-columns:1.6fr 1fr;gap:10px}
 footer{border-top:1px solid var(--line);padding:64px 0 28px;background:var(--bg2)}
-.f-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px}
+.f-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.1fr 1fr;gap:28px}
 .f-grid>div>p{color:var(--muted);font-size:.86rem;margin:16px 0 18px;max-width:320px}
 .f-grid h5{font-size:.74rem;letter-spacing:.12em;margin-bottom:16px}
 .f-grid ul{list-style:none;display:flex;flex-direction:column;gap:9px}
@@ -311,6 +311,13 @@ footer{border-top:1px solid var(--line);padding:64px 0 28px;background:var(--bg2
 .socials{display:flex;gap:8px;margin-top:12px}
 .socials a{width:32px;height:32px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:.7rem;font-weight:700;color:var(--muted)}
 .socials a:hover{background:var(--violet);color:#fff}
+.socials a{width:36px;height:36px;transition:.2s}
+.socials a svg{width:16px;height:16px;fill:currentColor}
+.socials a:hover{background:var(--sc,var(--violet));transform:translateY(-2px);box-shadow:0 6px 16px -6px var(--sc,var(--violet))}
+/* Admin Panel → Website Controls */
+.ui-hide{display:none!important}
+.ui-off{opacity:.45!important;filter:grayscale(.7);cursor:not-allowed!important;animation:none!important}
+.ui-off *{cursor:not-allowed!important}
 .f-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:48px;padding-top:22px;border-top:1px solid var(--line);font-size:.8rem;color:var(--dim)}
 
 /* =========================================================
@@ -645,6 +652,11 @@ main,section,footer{position:relative;z-index:1}
 .th-card:hover .zoom{opacity:1}
 .th-meta{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}
 .th-meta b{font-size:.92rem}
+.th-name{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.th-views{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;margin-top:1px;padding:2px 8px;border-radius:99px;font-size:.72rem;font-weight:700;color:var(--muted);background:var(--card2);border:1px solid var(--line);white-space:nowrap}
+.th-views em{font-style:normal;font-variant-numeric:tabular-nums}
+.th-views.bump{animation:vBump .5s ease}
+@keyframes vBump{40%{transform:scale(1.18);color:#c084fc}}
 .th-tags{display:flex;flex-wrap:wrap;gap:5px}
 .th-tags span{font-size:.66rem;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--card2);color:var(--muted);border:1px solid var(--line)}
 .th-tags span.dark{color:#c4b5fd}.th-tags span.white{color:#fde68a}
@@ -828,6 +840,21 @@ html.light .opt input:checked+span{background:rgba(139,44,255,.10)}
 html.light .btn-wa{color:#15803d;background:rgba(34,197,94,.10);border-color:rgba(21,128,61,.35)}
 html.light .wa-tip a{color:#15803d}
 html.light .stars-pick .opt span{color:#d97706}
+/* Review popup: rating ka chuna hua option bhara hua (gold) */
+.stars-pick .opt span{font-size:1rem;transition:.2s}
+.stars-pick .opt span:hover{border-color:#f59e0b;background:rgba(245,158,11,.10);color:#fbbf24!important}
+.stars-pick .opt input:checked+span,html.light .stars-pick .opt input:checked+span{color:#fff!important;border-color:transparent;background:linear-gradient(135deg,#f59e0b,#f97316)!important;box-shadow:0 6px 18px -6px rgba(249,115,22,.75);text-shadow:0 1px 2px rgba(0,0,0,.25)}
+html.light .stars-pick .opt span:hover{color:#d97706!important}
+/* Review popup: light theme mein saare khaane safed */
+html.light #rvForm input[type=text],html.light #rvForm textarea,html.light #rvForm .rv-select{background:#fff;border-color:rgba(40,30,90,.18)}
+/* Custom PPT form: review form jaisa — chuna hua option bhara hua, light theme mein safed khaane */
+#cfForm .opt span{transition:.2s}
+#cfForm .opt input:checked+span,html.light #cfForm .opt input:checked+span{color:#fff!important;border-color:transparent;background:linear-gradient(135deg,#8b2cff,#c026d3)!important;box-shadow:0 6px 18px -6px rgba(168,85,247,.8)}
+#cfForm .opt input:checked+span::before{border-color:#fff;background:radial-gradient(circle,#fff 38%,transparent 44%);box-shadow:none}
+html.light #cfForm .opt span:hover{border-color:#a855f7;background:rgba(139,44,255,.06)}
+html.light #cfForm input[type=text],html.light #cfForm input[type=tel],html.light #cfForm textarea,html.light #cfForm .drop{background:#fff;border-color:rgba(40,30,90,.18)}
+html.light #cfForm .opt span{background:#fff}
+html.light #cfForm .drop{border-style:dashed;border-color:rgba(124,58,237,.45)}
 html.light .cf-head h3 svg,html.light .drop svg{color:#7c3aed}
 html.light .modal .m-box{box-shadow:0 30px 80px -20px rgba(40,30,90,.45)}
 html.light .overlay{background:rgba(20,16,50,.45)}
@@ -969,6 +996,263 @@ header::after{right:auto!important;width:calc(var(--sp,0) * 100%);background-siz
 header::before{content:"";position:absolute;left:calc(var(--sp,0) * 100% - 6px);bottom:-3px;width:6px;height:6px;border-radius:50%;background:#fff;
   box-shadow:0 0 8px 2px #d500f9,0 0 16px 4px #00e5ff;opacity:calc(var(--sp,0) * 40);transition:left .12s linear;pointer-events:none;z-index:2}
 html.light header::before{background:#fff}
+
+/* 27. Popup: file na jaye tab bhi order */
+.cf-lost{color:#fbbf24!important;font-weight:600;font-size:.88rem!important}
+html.light .cf-lost{color:#b45309!important}
+.cf-wa{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:12px;font-size:.82rem;color:var(--muted)}
+.cf-wa[hidden]{display:none}
+
+[hidden]{display:none!important}   /* chhupi cheez hamesha chhupi rahe */
+
+/* =========================================================
+   29. CONTACT — TICKET CONFIRMATION
+   ========================================================= */
+.ticket{position:relative;padding:30px 28px;border-radius:20px;background:var(--card);overflow:hidden;text-align:center;box-shadow:0 30px 70px -30px rgba(34,197,94,.45)}
+.ticket::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:var(--rgb-conic);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 6s linear infinite;pointer-events:none}
+.ticket .tk-tick{width:68px;height:68px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;color:var(--green);background:rgba(34,197,94,.12);border:2px solid var(--green);box-shadow:0 0 30px rgba(34,197,94,.5);animation:tkpop .6s ease-out both}
+.ticket .tk-tick svg{width:32px;height:32px}
+@keyframes tkpop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.08)}100%{transform:none;opacity:1}}
+.ticket h3{font-size:1.45rem}
+.ticket .tk-sub{color:var(--muted);font-size:.9rem;margin-top:4px}
+.tk-id{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px auto 0;padding:14px 16px;max-width:420px;border-radius:14px;
+  background:var(--bg2);border:1.5px dashed rgba(192,132,252,.55)}
+.tk-id small{display:block;font-size:.66rem;font-weight:800;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.tk-id b{font-family:'Space Grotesk';font-size:1.5rem;letter-spacing:.06em;background:var(--rgb);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+.tk-eta{display:flex;align-items:center;gap:12px;text-align:left;margin:16px auto 0;max-width:420px;padding:12px 14px;border-radius:12px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.4)}
+.tk-eta svg{color:var(--amber);width:24px;height:24px}
+.tk-eta b{display:block;font-size:.92rem}
+.tk-eta span{font-size:.82rem;color:var(--muted);font-family:'Hind','Plus Jakarta Sans',sans-serif}
+.tk-sum{margin:16px auto 0;max-width:420px;text-align:left;border-radius:12px;border:1px solid var(--line);overflow:hidden}
+.tk-sum div{display:flex;justify-content:space-between;gap:14px;padding:9px 14px;border-top:1px solid var(--line);font-size:.84rem}
+.tk-sum div:first-child{border-top:0}
+.tk-sum span{color:var(--dim)}
+.tk-sum b{text-align:right;overflow-wrap:anywhere;font-weight:600}
+.tk-note{font-size:.76rem;color:var(--dim);margin-top:14px}
+.tk-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+html.light .tk-eta b{color:#92400e}
+.th-q{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-8px 0 18px;padding:10px 14px;border-radius:12px;background:rgba(139,44,255,.10);border:1px solid rgba(192,132,252,.35);font-size:.88rem;color:var(--muted)}
+.th-q b{color:var(--text)}
+.th-q svg{color:#c084fc}
+.th-q button{margin-left:auto;padding:5px 11px;border-radius:8px;font-size:.78rem;font-weight:700;color:var(--pink);background:var(--card2);border:1px solid var(--line2)}
+.cf-fail{margin-top:14px;padding:14px 16px;border-radius:14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.45)}
+.cf-fail b{color:#fbbf24;font-size:.9rem}
+.cf-fail p{color:var(--muted);font-size:.84rem;margin:6px 0 12px}
+.cf-fail p strong{color:var(--text)}
+.cf-fail .row-btns{display:flex;gap:8px;flex-wrap:wrap}
+html.light .cf-fail b{color:#b45309}
+@media(max-width:560px){.ticket{padding:24px 16px}.tk-id b{font-size:1.25rem}}
+
+
+/* =========================================================
+   30. SMART BOARD — PRICING (redesign: tiles, bada daam)
+   ========================================================= */
+.bs-price2{padding:4.6cqw 7cqw 5.4cqw;gap:2cqw;justify-content:space-between;
+  background:radial-gradient(circle at 88% 6%,rgba(255,176,32,.32),transparent 30%),radial-gradient(circle at 6% 96%,rgba(0,229,255,.22),transparent 38%),linear-gradient(140deg,#160a33,#2e1065 45%,#5b21b6)}
+.bs-price2::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:4cqw 4cqw;mask:linear-gradient(#000,transparent 85%)}
+.bp-head{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:2cqw}
+.bp-kick{display:inline-block;font-size:1.45cqw;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#67e8f9;margin-bottom:.6cqw}
+.bs-price2 h3{font-size:4.4cqw;background:linear-gradient(90deg,#fff,#e9d5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bp-off{flex-shrink:0;position:relative;margin:2.2cqw 1cqw 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;width:12cqw;height:12cqw;border-radius:50%;text-align:center;line-height:1;
+  background:radial-gradient(circle at 35% 30%,#ffd166,#ff8a00 45%,#ff004c);box-shadow:0 0 0 .5cqw rgba(255,255,255,.18),0 0 4cqw rgba(255,90,0,.75);transform:rotate(-8deg);animation:offSpin 2.4s ease-in-out infinite}
+.bp-off b{font-family:'Space Grotesk',sans-serif;font-size:3.4cqw;letter-spacing:-.02em}
+.bp-off small{font-size:1.05cqw;font-weight:700;max-width:10cqw;margin-top:.5cqw;opacity:.95}
+@keyframes offSpin{50%{transform:rotate(-2deg) scale(1.07)}}
+.bp-grid{position:relative;flex:1;display:grid;grid-template-columns:repeat(var(--n),1fr);gap:1.4cqw;align-items:stretch;min-height:0}
+.bp-tile{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.35cqw;padding:1.8cqw 1cqw 1.4cqw;border-radius:2cqw;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.04));border:.15cqw solid rgba(255,255,255,.16);box-shadow:0 1.6cqw 3cqw -1.6cqw rgba(0,0,0,.55)}
+.bp-tile::before{content:"";position:absolute;left:0;right:0;top:0;height:.6cqw;background:var(--c);box-shadow:0 0 2.4cqw var(--c)}
+.bp-tile::after{content:"";position:absolute;inset:auto -30% -55% -30%;height:70%;background:radial-gradient(ellipse at center,color-mix(in srgb,var(--c) 35%,transparent),transparent 65%);pointer-events:none}
+.bslide.on .bp-tile{animation:tileUp .6s var(--d) cubic-bezier(.2,.8,.2,1) both}
+@keyframes tileUp{from{opacity:0;transform:translateY(3cqw) scale(.96)}to{opacity:1;transform:none}}
+.bp-ic{display:grid;place-items:center;width:4.4cqw;height:4.4cqw;border-radius:50%;font-size:2.3cqw;line-height:1;background:color-mix(in srgb,var(--c) 22%,transparent);border:.15cqw solid color-mix(in srgb,var(--c) 55%,transparent);margin-bottom:.4cqw}
+.bp-name{font-size:1.75cqw;font-weight:700;line-height:1.15;min-height:4cqw;display:flex;align-items:center}
+.bp-note2{display:none;font-style:normal;font-size:2.3cqw;font-weight:600;color:var(--c)}
+@media(max-width:600px){.bp-note2{display:block}}
+.bp-note{font-style:normal;font-size:1.3cqw;font-weight:600;line-height:1.1;color:var(--c);opacity:.95}
+.bp-price{position:relative;margin-top:auto;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:5.2cqw;line-height:1;letter-spacing:-.03em;white-space:nowrap;color:#fff;text-shadow:0 0 2.4cqw color-mix(in srgb,var(--c) 75%,transparent)}
+.bp-price sup{font-size:.5em;vertical-align:.7em;margin-right:.1em;color:var(--c)}
+.bp-unit{position:relative;font-size:1.3cqw;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.bp-foot{position:relative;display:flex;align-items:center;gap:2cqw;flex-wrap:wrap}
+.bp-cta{display:inline-flex;align-items:center;gap:1cqw;padding:1.1cqw 3cqw;border-radius:99px;font-weight:800;font-size:2cqw;color:#1a0b2e;pointer-events:auto;
+  background:linear-gradient(90deg,#ffd166,#ff8a00);box-shadow:0 1cqw 3cqw -.6cqw rgba(255,138,0,.8);transition:.2s}
+.bp-cta span{transition:.2s}
+.bp-cta:hover{filter:brightness(1.08)}
+.bp-cta:hover span{transform:translateX(.6cqw)}
+.bp-bulk{font-size:1.7cqw;font-weight:600;color:rgba(255,255,255,.85)}
+.bp-bulk b{color:#4ade80}
+@media(max-width:600px){
+  .bs-price2{padding:8cqw 5cqw 9.5cqw;gap:2.4cqw}
+  .bp-kick{font-size:2.3cqw}
+  .bs-price2 h3{font-size:6.2cqw}
+  .bp-off{width:17cqw;height:17cqw;margin:3cqw 0 0}.bp-off b{font-size:4.6cqw}.bp-off small{font-size:1.5cqw;max-width:14cqw}
+  /* phone: har price ek line — naam baayein, bada daam daayein */
+  .bp-grid{grid-template-columns:1fr;grid-auto-rows:1fr;gap:1.6cqw}
+  .bp-tile{flex-direction:row;text-align:left;gap:2.4cqw;padding:0 3cqw 0 2.4cqw;border-radius:2.4cqw}
+  .bp-tile::before{right:auto;bottom:0;width:1cqw;height:auto}
+  .bp-tile::after{display:none}
+  .bp-ic{width:6cqw;height:6cqw;font-size:3.2cqw;margin:0;flex-shrink:0}
+  .bp-name{font-size:3.4cqw;min-height:0;flex-direction:column;align-items:flex-start;flex:1;min-width:0}
+  .bp-tile .bp-note{display:none}
+  .bp-price{margin:0;font-size:5.6cqw}
+  .bp-unit{font-size:2cqw;letter-spacing:.02em;text-transform:none;width:7cqw}
+  .bp-cta{font-size:3.2cqw;padding:1.8cqw 4.4cqw}
+  .bp-bulk{font-size:2.8cqw}
+}
+@media(prefers-reduced-motion:reduce){.bp-off{animation:none}}
+/* Smart Board font: Poppins (saaf, mota — PPT jaisa) */
+.slider .bs,.slider .bs h3,.bp-price,.bp-off b,.bs-bulk h3 .big,.bs-off b{font-family:'Poppins','Plus Jakarta Sans',system-ui,sans-serif}
+.slider .bs h3{font-weight:700;letter-spacing:-.02em}
+.bp-name{font-weight:600}
+.bp-price{font-weight:800;letter-spacing:-.04em}
+.bp-off b{font-weight:800}
+.bp-kick,.bp-unit{font-weight:700}
+.bp-cta{font-weight:700}
+.bs-bulk h3 .big{font-weight:800}
+/* Light theme: board ki screen bhi light */
+html.light .slider{background:#fff}
+html.light .screen-ui{color:rgba(30,20,70,.6);background:linear-gradient(rgba(255,255,255,.7),transparent)}
+html.light .screen-ui span:first-child{color:#16a34a}
+html.light .bslide{color:#1a1433}
+html.light .bs-price2{background:radial-gradient(circle at 88% 6%,rgba(255,176,32,.22),transparent 30%),radial-gradient(circle at 6% 96%,rgba(6,182,212,.14),transparent 38%),linear-gradient(140deg,#ffffff,#f5f0ff 50%,#ece4ff)}
+html.light .bs-price2::before{background:linear-gradient(rgba(60,30,140,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(60,30,140,.05) 1px,transparent 1px);background-size:4cqw 4cqw}
+html.light .bp-kick{color:#0e7490}
+html.light .bs-price2 h3{background:linear-gradient(90deg,#1e1145,#6d28d9);-webkit-background-clip:text;background-clip:text;color:transparent}
+html.light .bp-tile{background:#fff;border-color:rgba(60,30,140,.12);box-shadow:0 1.4cqw 3cqw -1.6cqw rgba(60,30,140,.35)}
+html.light .bp-tile::after{background:radial-gradient(ellipse at center,color-mix(in srgb,var(--c) 16%,transparent),transparent 65%)}
+html.light .bp-name{color:#1a1433}
+html.light .bp-note,html.light .bp-note2,html.light .bp-price sup{color:color-mix(in srgb,var(--c) 70%,#1a1433)}
+html.light .bp-price{color:color-mix(in srgb,var(--c) 62%,#1a1433);text-shadow:none}
+html.light .bp-unit{color:#6b6790}
+html.light .bp-bulk{color:#4a4570}
+html.light .bp-bulk b{color:#16a34a}
+html.light .bs-bulk{background:radial-gradient(circle at 85% 20%,rgba(6,182,212,.16),transparent 35%),radial-gradient(circle at 10% 90%,rgba(236,72,153,.14),transparent 40%),linear-gradient(135deg,#ffffff,#eef2ff 55%,#f3e8ff)}
+html.light .bs-kicker{background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.3);color:#5b21b6}
+html.light .bs-bulk h3{color:#1a1433}
+html.light .bs-neg{color:#1a1433}
+html.light .bs-neg b{color:#16a34a;text-shadow:none}
+html.light .bs-share{background:#fff;border-color:rgba(124,58,237,.35);color:#1a1433}
+html.light .bs-tag b{color:#0e7490}
+html.light .bs-deck i{background:linear-gradient(135deg,#ffffff,#e9e5ff);box-shadow:0 2cqw 4cqw rgba(60,30,140,.25)}
+html.light .slider .s-nav{background:rgba(255,255,255,.85);color:#1a1433;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+html.light .slider .dots button:not(.on){background:rgba(30,20,70,.22)}
+
+/* =========================================================
+   31. THEME FILTERS — ek line, dropdown
+   ========================================================= */
+.th-bar2{position:relative;z-index:6;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:0 auto 26px}
+.tf-dd{position:relative}
+.tf-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;font-size:.86rem;font-weight:600;color:var(--muted);background:var(--card);border:1px solid var(--line2);transition:.18s;white-space:nowrap}
+.tf-btn i{font-style:normal;font-size:.95rem}
+.tf-btn b{color:var(--text);font-weight:700}
+.tf-btn svg{width:15px;height:15px;color:var(--dim);transition:transform .2s}
+.tf-btn:hover{border-color:#a855f7}
+.tf-btn.set{border-color:transparent;background:linear-gradient(135deg,rgba(139,44,255,.18),rgba(192,38,211,.14));box-shadow:inset 0 0 0 1.5px #a855f7}
+.tf-btn.set b{color:#c084fc}
+.tf-dd.open .tf-btn{border-color:#a855f7;box-shadow:0 0 0 3px rgba(139,44,255,.18)}
+.tf-dd.open .tf-btn svg{transform:rotate(180deg)}
+.th-pills{position:absolute;top:calc(100% + 8px);left:0;min-width:100%;max-height:min(340px,60vh);overflow-y:auto;overscroll-behavior:contain;display:none;flex-direction:column;gap:2px;padding:6px;border-radius:14px;background:var(--card);border:1px solid var(--line2);box-shadow:0 20px 44px -12px rgba(0,0,0,.45);z-index:20}
+.tf-dd.open .th-pills{display:flex;animation:ddIn .16s ease-out}
+@keyframes ddIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.th-pills button{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:9px 10px 9px 12px;border-radius:9px;font-size:.86rem;font-weight:600;color:var(--muted);text-align:left;white-space:nowrap;transition:.12s}
+.th-pills button small{min-width:24px;padding:2px 7px;border-radius:99px;font-size:.7rem;font-weight:700;text-align:center;background:var(--card2);color:var(--dim)}
+.th-pills button:hover{background:var(--card2);color:var(--text)}
+.th-pills button.on{color:#fff;background:linear-gradient(135deg,#8b2cff,#c026d3)}
+.th-pills button.on small{background:rgba(255,255,255,.24);color:#fff}
+.th-pills button.zero:not(.on){opacity:.45}
+.tf-count{font-size:.82rem;color:var(--dim);padding:0 4px}
+.tf-count b{color:var(--text)}
+#thReset{padding:9px 12px;border-radius:12px;font-size:.8rem;font-weight:700;color:var(--pink);background:transparent;border:1px dashed color-mix(in srgb,var(--pink) 50%,transparent)}
+#thReset:hover{background:color-mix(in srgb,var(--pink) 10%,transparent)}
+html.light .tf-btn{background:#fff}
+html.light .tf-btn.set b{color:#7c3aed}
+html.light .th-pills{background:#fff;box-shadow:0 20px 44px -16px rgba(60,30,140,.35)}
+@media(max-width:640px){
+  .th-bar2{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+  .th-bar2 .tf-dd{grid-column:span 2}
+  .th-bar2 .tf-dd:nth-child(1),.th-bar2 .tf-dd:nth-child(2){grid-column:span 3}
+  .tf-btn{width:100%;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 10px;font-size:.72rem;position:relative}
+  .tf-btn i{display:none}
+  .tf-btn b{font-size:.8rem;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .tf-btn svg{position:absolute;right:8px;top:10px}
+  .tf-dd:nth-child(2) .th-pills,.tf-dd:nth-child(5) .th-pills{left:auto;right:0}
+  .tf-count{grid-column:1/-1;text-align:center}
+  #thReset{grid-column:1/-1;justify-self:center;padding:6px 12px}
+}
+
+
+/* =========================================================
+   32. HEADER — MORE OFFERINGS dropdown
+   ========================================================= */
+.nav-more{position:relative}
+.more-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border-radius:10px;font-size:.88rem;font-weight:600;color:#fff;white-space:nowrap;
+  background:linear-gradient(135deg,#10b981,#0ea5e9);box-shadow:0 6px 20px -4px rgba(16,185,129,.55);transition:.2s}
+.more-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.more-btn .chev{transition:transform .2s}
+.mo-s{display:none}
+.nav-links a{white-space:nowrap}
+@media(max-width:1360px) and (min-width:861px){.mo-l{display:none}.mo-s{display:inline}}
+@media(max-width:1100px) and (min-width:861px){.nav-links a,.more-btn{padding:8px 9px!important;font-size:.82rem}.nav .search{max-width:44px}.nav .search input{padding-right:0;color:transparent}.nav .search input::placeholder{color:transparent}}
+.nav-more.open .more-btn .chev{transform:rotate(180deg)}
+.more-menu{position:absolute;top:calc(100% + 10px);right:0;width:330px;display:none;flex-direction:column;gap:2px;padding:8px;border-radius:16px;background:var(--card);border:1px solid var(--line2);box-shadow:0 24px 50px -14px rgba(0,0,0,.55);z-index:60}
+.nav-more.open .more-menu{display:flex;animation:ddIn .16s ease-out}
+.more-menu a{display:flex!important;align-items:center;gap:12px;padding:9px 10px!important;border-radius:11px!important;color:var(--text)!important;background:none!important;font-weight:600}
+.more-menu a:hover{background:var(--card2)!important}
+.more-menu a b{display:block;font-size:.88rem}
+.more-menu a small{display:block;font-size:.74rem;color:var(--muted);font-weight:500}
+.mo-ic{flex-shrink:0;display:grid;place-items:center;width:36px;height:36px;border-radius:10px;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent)}
+.mo-ic svg{width:18px;height:18px}
+.more-menu .mo-all{justify-content:center;margin-top:4px;border-top:1px solid var(--line);border-radius:0 0 10px 10px!important;color:var(--cyan)!important;font-size:.84rem}
+html.light .more-menu{background:#fff;box-shadow:0 24px 50px -18px rgba(60,30,140,.35)}
+@media(max-width:860px){
+  .nav-more{width:100%}
+  .more-btn{width:100%;justify-content:flex-start}
+  .more-btn .chev{margin-left:auto}
+  .more-menu{position:static;width:auto;margin-top:6px;box-shadow:none}
+}
+@media(max-width:1024px){.f-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.f-grid{grid-template-columns:1fr}}
+/* =========================================================
+   28. PAYMENT & BILLING
+   ========================================================= */
+.pay-grid{display:grid;grid-template-columns:1fr 1.05fr 1fr;gap:18px;align-items:stretch}
+.pcard{position:relative;display:flex;flex-direction:column;gap:12px;padding:24px;border-radius:var(--radius);background:var(--card);border:1px solid var(--line);transition:.3s}
+.pcard:hover{border-color:var(--line2);transform:translateY(-3px)}
+.pcard .pn{display:inline-flex;align-items:center;gap:10px;font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--pc)}
+.pcard .pn i{font-style:normal;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:.78rem;color:#fff;background:var(--pc);box-shadow:0 0 14px color-mix(in srgb,var(--pc) 60%,transparent)}
+.pcard h3{font-size:1.15rem}
+.pcard>p{color:var(--muted);font-size:.86rem}
+.upi-box{display:flex;align-items:center;gap:10px;padding:12px 12px 12px 16px;border-radius:12px;background:var(--bg2);border:1px dashed color-mix(in srgb,var(--pc) 55%,transparent)}
+.upi-box b{flex:1;min-width:0;font-family:'Space Grotesk';font-size:1.08rem;letter-spacing:.01em;overflow-wrap:anywhere}
+.copy-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:9px;font-size:.78rem;font-weight:700;background:var(--card2);border:1px solid var(--line2);transition:.2s;white-space:nowrap}
+.copy-btn:hover{border-color:var(--violet)}
+.copy-btn.done{color:var(--green);border-color:rgba(34,197,94,.5)}
+.upi-apps{display:flex;gap:6px;flex-wrap:wrap}
+.upi-apps span{font-size:.7rem;font-weight:700;padding:4px 9px;border-radius:7px;background:var(--card2);border:1px solid var(--line);color:var(--muted)}
+.pay-app{margin-top:auto}
+.qr-wrap{align-self:center;padding:12px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px var(--line2),0 18px 40px -18px rgba(213,0,249,.55)}
+.qr-wrap img{width:min(220px,62vw);aspect-ratio:1;image-rendering:pixelated}
+.qr-name{text-align:center;font-size:.8rem;color:var(--muted)}
+.qr-name b{color:var(--text)}
+.bank-list{display:flex;flex-direction:column;border-radius:12px;background:var(--bg2);border:1px solid var(--line);overflow:hidden}
+.bank-list div{display:flex;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid var(--line);font-size:.84rem}
+.bank-list div:first-child{border-top:0}
+.bank-list span{color:var(--dim);width:104px;flex-shrink:0;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.bank-list b{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:700}
+.bank-list button{color:var(--dim);padding:4px;border-radius:6px}
+.bank-list button:hover{color:var(--text);background:var(--card2)}
+.bank-list button.done{color:var(--green)}
+.pay-confirm{margin-top:18px;display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:18px 22px;border-radius:var(--radius);
+  background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(6,182,212,.08));border:1px solid rgba(34,197,94,.35)}
+.pay-confirm .ic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:rgba(34,197,94,.15);color:var(--green)}
+.pay-confirm h3{font-size:1.02rem;margin-bottom:3px}
+.pay-confirm p{color:var(--muted);font-size:.86rem}
+.pay-confirm p b{color:var(--text)}
+@media(max-width:1024px){.pay-grid{grid-template-columns:1fr 1fr}.pay-grid .pcard.qr{grid-row:span 2}}
+@media(max-width:700px){.pay-grid{grid-template-columns:1fr}.pay-grid .pcard.qr{grid-row:auto}.pay-confirm{grid-template-columns:auto 1fr}.pay-confirm .btn{grid-column:1/-1}}
+html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110,40,220,.45)}
+
 </style>
 </head>
 <body>
@@ -986,6 +1270,7 @@ html.light header::before{background:#fff}
   <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
   <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
   <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 21l2.2-5.4A8.5 8.5 0 1 1 21 11.5z"/></symbol>
   <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
@@ -1001,6 +1286,12 @@ html.light header::before{background:#fff}
   <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
   <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
   <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20z"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-ppt" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4M7 8h6M7 12h10"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4M3 16h4M17 8h4M17 16h4"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
   <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
@@ -1019,24 +1310,28 @@ html.light header::before{background:#fff}
       <span class="logo-icon"><svg class="i" style="color:#a78bfa"><use href="#i-layers"/></svg></span>
       <span><b>LAKSHAY <span class="grad-text">AGENCY</span></b><small>PREMIUM PPT STORE</small></span>
     </a>
-    <label class="search">
+    <label class="search" data-ui="nav_search">
       <svg class="i"><use href="#i-search"/></svg>
       <input id="topSearch" type="search" placeholder="Search presentations, topics, categories…" aria-label="Search presentations">
     </label>
     <button class="menu-btn" id="menuBtn" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
     <nav class="nav-links" id="navLinks">
-      <a href="#home" class="active">Home</a>
-      <a href="#shop" class="nav-shop"><svg class="i" style="width:16px"><use href="#i-bag"/></svg>Shop PPTs</a>
-      <a href="#custom" class="nav-custom js-custom"><svg class="i" style="width:16px"><use href="#i-sparkle"/></svg>Custom PPT</a>
-      <a href="#pricing" class="nav-price js-pricing"><span class="rs">₹</span>Pricing</a>
-      <a href="account.html" title="Khareedi PPTs dobara download karein">My PPTs</a>
-      <div class="theme-sw" role="radiogroup" aria-label="Website theme">
+      <a href="#home" class="active" data-ui="nav_home">Home</a>
+      <a href="ready-ppts.html" class="nav-shop" data-ui="nav_shop"><svg class="i" style="width:16px"><use href="#i-bag"/></svg>Shop PPTs</a>
+      <a href="#custom" class="nav-custom js-custom" data-ui="nav_custom"><svg class="i" style="width:16px"><use href="#i-sparkle"/></svg>Custom PPT</a>
+      <a href="#pricing" class="nav-price js-pricing" data-ui="nav_pricing"><span class="rs">₹</span>Pricing</a>
+      <a href="account.html" data-ui="nav_my" title="Khareedi PPTs dobara download karein">My PPTs</a>
+      <div class="nav-more" data-ui="nav_more">
+        <button type="button" class="more-btn" id="moreBtn" aria-haspopup="true" aria-expanded="false"><svg class="i" style="width:16px"><use href="#i-grid"/></svg><span class="mo-l">More Offerings</span><span class="mo-s">More</span><svg class="i chev" style="width:14px"><use href="#i-down"/></svg></button>
+        <div class="more-menu" id="moreMenu" role="menu"><a href="service.html?s=ready-to-use-presentations" role="menuitem" style="--c:#a855f7"><span class="mo-ic"><svg class="i"><use href="#i-ppt"/></svg></span><span><b>Ready-to-Use Presentations</b><small>Editable PPTs, ready to teach</small></span></a><a href="service.html?s=lecture-recording" role="menuitem" style="--c:#ef4444"><span class="mo-ic"><svg class="i"><use href="#i-mic"/></svg></span><span><b>Lecture Recording</b><small>Clear audio + slide recording</small></span></a><a href="service.html?s=thumbnail-design" role="menuitem" style="--c:#f59e0b"><span class="mo-ic"><svg class="i"><use href="#i-image"/></svg></span><span><b>Thumbnail Design</b><small>YouTube & class thumbnails</small></span></a><a href="service.html?s=study-material-creation" role="menuitem" style="--c:#22c55e"><span class="mo-ic"><svg class="i"><use href="#i-book"/></svg></span><span><b>Study Material Creation</b><small>Notes, worksheets, test papers</small></span></a><a href="service.html?s=video-editing" role="menuitem" style="--c:#06b6d4"><span class="mo-ic"><svg class="i"><use href="#i-film"/></svg></span><span><b>Video Editing</b><small>Lectures, Shorts & Reels</small></span></a><a href="service.html?s=social-media-management" role="menuitem" style="--c:#ec4899"><span class="mo-ic"><svg class="i"><use href="#i-share"/></svg></span><span><b>Social Media Management</b><small>YouTube, Instagram & Facebook</small></span></a><a href="service.html" class="mo-all" role="menuitem">View all offerings →</a></div>
+      </div>
+      <div class="theme-sw" role="radiogroup" aria-label="Website theme" data-ui="nav_theme">
         <button type="button" role="radio" data-mode="dark" title="Dark theme"><svg class="i"><use href="#i-moon"/></svg><span>Dark</span></button>
         <button type="button" role="radio" data-mode="light" title="Light theme"><svg class="i"><use href="#i-sun"/></svg><span>Light</span></button>
         <button type="button" role="radio" data-mode="system" title="System default"><svg class="i"><use href="#i-monitor"/></svg><span>System</span></button>
       </div>
     </nav>
-    <button class="cart-btn" id="cartBtn" aria-label="Open cart">
+    <button class="cart-btn" id="cartBtn" aria-label="Open cart" data-ui="nav_cart">
       <svg class="i"><use href="#i-bag"/></svg><span class="cart-count" id="cartCount" data-n="0">0</span>
     </button>
   </div>
@@ -1056,9 +1351,9 @@ html.light header::before{background:#fff}
         </div>
       </div>
       <div class="hero-cta">
-        <a href="#themes" class="btn btn-primary">Explore Themes <svg class="i"><use href="#i-arrow"/></svg></a>
-        <a href="order.html" class="btn btn-ghost"><svg class="i" style="color:#c084fc"><use href="#i-sparkle"/></svg> PPT Order Now</a>
-        <a href="ready-ppts.html" class="btn btn-ready" id="readyPptBtn"><span class="ready-dot" aria-hidden="true"></span><svg class="i"><use href="#i-cloud"/></svg> Ready to Use PPT</a>
+        <a href="#themes" class="btn btn-primary" data-ui="hero_explore">Explore Themes <svg class="i"><use href="#i-arrow"/></svg></a>
+        <a href="order.html" class="btn btn-ghost" data-ui="hero_order"><svg class="i" style="color:#c084fc"><use href="#i-sparkle"/></svg> PPT Order Now</a>
+        <a href="ready-ppts.html" class="btn btn-ready" id="readyPptBtn" data-ui="hero_ready"><span class="ready-dot" aria-hidden="true"></span><svg class="i"><use href="#i-cloud"/></svg> Ready to Use PPT</a>
       </div>
     </div>
 
@@ -1090,11 +1385,16 @@ html.light header::before{background:#fff}
 <section class="section" id="themes" style="padding-top:10px">
   <div class="container">
     <div class="section-head reveal"><span class="eyebrow">Our Designs</span><h2>Choose Your PPT Theme</h2><p>Pick a design you like. We'll make your PPT in it.</p></div>
-    <div class="toolbar th-bar reveal">
-      <div class="th-group"><span class="th-label">Theme</span><div class="th-chips" data-g="tone"></div></div>
-      <div class="th-group"><span class="th-label">Type</span><div class="th-chips" data-g="type"></div></div>
-      <div class="th-group"><span class="th-label">Lang</span><div class="th-chips" data-g="lang"></div></div>
+    <div class="th-bar2 reveal" role="group" aria-label="Filter themes">
+      <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>🎓</i><span class="tf-k">Class</span><b data-cur="cls">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="cls" role="listbox"></div></div>
+      <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>📖</i><span class="tf-k">Subject</span><b data-cur="subj">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="subj" role="listbox"></div></div>
+      <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>🎨</i><span class="tf-k">Background</span><b data-cur="tone">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="tone" role="listbox"></div></div>
+      <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>📚</i><span class="tf-k">Type</span><b data-cur="type">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="type" role="listbox"></div></div>
+      <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>🌐</i><span class="tf-k">Language</span><b data-cur="lang">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="lang" role="listbox"></div></div>
+      <span class="tf-count" id="thCount"></span>
+      <button type="button" id="thReset" hidden>↺ Reset</button>
     </div>
+    <div class="th-q" id="thQ" hidden role="status"></div>
     <div class="th-grid" id="thGrid"></div>
     <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
   </div>
@@ -1149,8 +1449,8 @@ html.light header::before{background:#fff}
         </ol>
 
         <div class="cx-cta">
-          <a href="order.html" class="btn btn-primary cx-main"><svg class="i"><use href="#i-sparkle"/></svg> PPT Order Now <svg class="i"><use href="#i-arrow"/></svg></a>
-          <a class="btn btn-wa wa-link" data-msg="Hi Lakshay Agency! I want a custom PPT made."><svg class="i"><use href="#i-msg"/></svg> Ask on WhatsApp</a>
+          <a href="order.html" class="btn btn-primary cx-main" data-ui="cx_order"><svg class="i"><use href="#i-sparkle"/></svg> PPT Order Now <svg class="i"><use href="#i-arrow"/></svg></a>
+          <a class="btn btn-wa wa-link" data-msg="Hi Lakshay Agency! I want a custom PPT made." data-ui="cx_wa"><svg class="i"><use href="#i-msg"/></svg> Ask on WhatsApp</a>
         </div>
         <div class="cx-chips"><span>✓ Hindi / English</span><span>✓ Class 1–12 &amp; Exams</span><span>✓ 100% Editable</span></div>
       </div>
@@ -1175,6 +1475,45 @@ html.light header::before{background:#fff}
   <div class="container">
     <div class="section-head reveal"><span class="eyebrow">The Lakshay Advantage</span><h2>Why Choose Lakshay Agency?</h2><p>Fast, affordable and fully editable PPTs, made the way you need.</p></div>
     <div class="feats" id="feats"></div>
+  </div>
+</section>
+
+<!-- ================= PAYMENT & BILLING ================= -->
+<section class="section" id="payment">
+  <div class="container">
+    <div class="section-head reveal"><span class="eyebrow">Payment &amp; Billing</span><h2>Simple &amp; Secure Payments</h2>
+      <p>Welcome to our Payment &amp; Billing section. Choose any of the payment methods below.</p></div>
+    <div class="pay-grid reveal">
+      <div class="pcard" style="--pc:#a855f7">
+        <span class="pn"><i>1</i> UPI Payment</span>
+        <h3>Pay with any UPI app</h3>
+        <p>Copy our UPI ID and pay from GPay, PhonePe, Paytm, BHIM or your bank app.</p>
+        <div class="upi-box"><b id="upiId">7290933116@axl</b><button type="button" class="copy-btn" data-copy="7290933116@axl"><svg class="i" style="width:15px;height:15px"><use href="#i-copy"/></svg> Copy</button></div>
+        <div class="upi-apps"><span>GPay</span><span>PhonePe</span><span>Paytm</span><span>BHIM</span><span>Any UPI</span></div>
+        <a class="btn btn-ghost pay-app" href="upi://pay?pa=7290933116@axl&amp;pn=MOHAMMAD%20IRFAN&amp;cu=INR"><svg class="i" style="color:#c084fc"><use href="#i-zap"/></svg> Open UPI App</a>
+      </div>
+      <div class="pcard qr" style="--pc:#06b6d4">
+        <span class="pn"><i>2</i> Scan &amp; Pay</span>
+        <h3>Scan our official UPI QR code</h3>
+        <div class="qr-wrap"><img src="uploads/payment/upi-qr.png" alt="Lakshay Agency official UPI QR code" width="220" height="220" loading="lazy"></div>
+        <p class="qr-name">Payee name: <b>MOHAMMAD IRFAN</b><br>Check this name before you pay.</p>
+      </div>
+      <div class="pcard" style="--pc:#f59e0b">
+        <span class="pn"><i>3</i> Bank Transfer</span>
+        <div class="bank-list">
+          <div><span>Account Holder</span><b>Mohammad Irfan</b></div>
+          <div><span>Bank Name</span><b>Bank of Baroda</b></div>
+          <div><span>Account No.</span><b>52990100007940</b><button type="button" data-copy="52990100007940" aria-label="Copy account number"><svg class="i" style="width:15px;height:15px"><use href="#i-copy"/></svg></button></div>
+          <div><span>IFSC Code</span><b>BARB0BHANGE</b><button type="button" data-copy="BARB0BHANGE" aria-label="Copy IFSC code"><svg class="i" style="width:15px;height:15px"><use href="#i-copy"/></svg></button></div>
+          <div><span>Branch</span><b>Bhangel, Noida</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="pay-confirm reveal">
+      <span class="ic"><svg class="i" style="width:22px;height:22px"><use href="#i-check"/></svg></span>
+      <div><h3>Payment Confirmation</h3><p>After completing your payment, please save your <b>Transaction ID or UTR number</b> for future reference, and share the screenshot with us on WhatsApp.</p></div>
+      <a class="btn btn-wa wa-link" data-msg="Hi Lakshay Agency! I have made the payment. My Transaction ID / UTR is: "><svg class="i"><use href="#i-msg"/></svg> Share Payment Proof</a>
+    </div>
   </div>
 </section>
 
@@ -1234,7 +1573,27 @@ html.light header::before{background:#fff}
         <button type="submit" class="btn btn-primary"><svg class="i"><use href="#i-send"/></svg> SEND MESSAGE</button>
         <button type="button" class="btn btn-wa" id="formWa"><svg class="i"><use href="#i-msg"/></svg> Send on WhatsApp</button>
       </div>
+      <div class="cf-fail" id="cfFail" hidden role="alert">
+        <b>⚠ Message abhi online nahi ja paya.</b>
+        <p>Internet ya server ki problem ho sakti hai. Neeche kisi bhi button se apni request bhej dijiye. Aapka Ticket ID <strong id="cfFailTk"></strong> message mein apne aap likha hoga.</p>
+        <div class="row-btns"><a class="btn btn-wa btn-sm" id="cfFailWa" href="#" target="_blank" rel="noopener"><svg class="i"><use href="#i-msg"/></svg> Send on WhatsApp</a><a class="btn btn-ghost btn-sm" id="cfFailMail" href="#" target="_blank" rel="noopener"><svg class="i"><use href="#i-mail"/></svg> Send by Email</a><button type="button" class="btn btn-ghost btn-sm" id="cfRetry">Try again</button></div>
+      </div>
     </form>
+
+    <div class="ticket" id="ticketDone" hidden role="status" aria-live="polite">
+      <div class="tk-tick"><svg class="i"><use href="#i-check"/></svg></div>
+      <h3>Ticket Generated Successfully!</h3>
+      <p class="tk-sub">Thank you<span id="tkName"></span>, we have received your request.</p>
+      <div class="tk-id"><div><small>Your Ticket ID</small><b id="tkId"></b></div>
+        <button type="button" class="copy-btn" id="tkCopy"><svg class="i" style="width:15px;height:15px"><use href="#i-copy"/></svg> Copy</button></div>
+      <div class="tk-eta"><svg class="i"><use href="#i-clock"/></svg><div><b>Our team will contact you within 1 hour.</b><span>हमारी टीम 1 घंटे के अंदर आपसे संपर्क करेगी।</span></div></div>
+      <div class="tk-sum" id="tkSum"></div>
+      <p class="tk-note">Please keep this Ticket ID for future reference. Mention it whenever you talk to us.</p>
+      <div class="tk-acts">
+        <a class="btn btn-wa" id="tkWa" href="#" target="_blank" rel="noopener"><svg class="i"><use href="#i-msg"/></svg> Chat on WhatsApp</a>
+        <button type="button" class="btn btn-ghost" id="tkNew"><svg class="i" style="color:#c084fc"><use href="#i-send"/></svg> Send Another Message</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1248,12 +1607,18 @@ html.light header::before{background:#fff}
         <a class="btn btn-wa btn-sm wa-link" data-msg="Hi Lakshay Agency!"><svg class="i"><use href="#i-msg"/></svg> WhatsApp Support</a>
       </div>
       <div><h5>NAVIGATION</h5><ul>
-        <li><a href="#home">Home</a></li><li><a href="#shop">All Presentations</a></li><li><a href="#custom" class="js-custom">Custom PPT Services</a></li><li><a href="#why">Why Lakshay Agency</a></li><li><a href="#contact">Contact Us</a></li><li><a href="#faq">FAQs</a></li></ul></div>
+        <li><a href="#home">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="ready-ppts.html">All Presentations</a></li><li data-ui="foot_admin"><a href="admin.html">🔐 Admin Panel</a></li><li><a href="#custom" class="js-custom">Custom PPT Services</a></li><li><a href="#why">Why Lakshay Agency</a></li><li><a href="#payment">Payment &amp; Billing</a></li><li><a href="#contact">Contact Us</a></li><li><a href="#faq">FAQs</a></li></ul></div>
       <div><h5>CATEGORIES</h5><ul id="footCats"></ul></div>
+      <div data-ui="foot_more"><h5>MORE OFFERINGS</h5><ul><li><a href="service.html?s=ready-to-use-presentations">Ready-to-Use Presentations</a></li><li><a href="service.html?s=lecture-recording">Lecture Recording</a></li><li><a href="service.html?s=thumbnail-design">Thumbnail Design</a></li><li><a href="service.html?s=study-material-creation">Study Material Creation</a></li><li><a href="service.html?s=video-editing">Video Editing</a></li><li><a href="service.html?s=social-media-management">Social Media Management</a></li></ul></div>
       <div><h5>TRUST & LEGAL</h5><ul>
         <li><a href="#faq">Privacy Policy</a></li><li><a href="#faq">Terms & Conditions</a></li><li><a href="#faq">Refund & Replacement</a></li></ul>
         <h5 style="margin-top:22px">FOLLOW US</h5>
-        <div class="socials"><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="Instagram">ig</a><a href="#" aria-label="YouTube">yt</a><a href="#" aria-label="X">𝕏</a></div>
+        <div class="socials">
+          <a href="#" data-ui="soc_linkedin" data-soc="linkedin" aria-label="LinkedIn" title="LinkedIn" style="--sc:#0a66c2"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+          <a href="#" data-ui="soc_instagram" data-soc="instagram" aria-label="Instagram" title="Instagram" style="--sc:#e1306c"><svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.64.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.64-.07-4.85s.01-3.58.07-4.85C2.38 3.86 3.9 2.31 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg></a>
+          <a href="#" data-ui="soc_youtube" data-soc="youtube" aria-label="YouTube" title="YouTube" style="--sc:#ff0000"><svg viewBox="0 0 24 24"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          <a href="#" data-ui="soc_x" data-soc="x" aria-label="X (Twitter)" title="X" style="--sc:#111"><svg viewBox="0 0 24 24"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.4l-5.8-7.58-6.63 7.58H.48l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93zm-1.29 19.5h2.04L6.48 3.24H4.3l13.31 17.41z"/></svg></a>
+        </div>
       </div>
     </div>
     <div class="f-bottom"><span>© <span id="year"></span> Lakshay Agency. All Rights Reserved. <span class="grad-text">Present Better. Impress More.</span></span><span>Works with PowerPoint · Google Slides · Keynote</span></div>
@@ -1295,7 +1660,7 @@ html.light header::before{background:#fff}
           <input type="text" id="cfName" placeholder="Enter your name" autocomplete="name"><div class="cf-err">Please enter your name</div></div>
 
         <div class="cf-q" id="q-phone"><label for="cfPhone">2. WhatsApp Number <b>*</b></label>
-          <input type="tel" id="cfPhone" placeholder="Enter mobile number" inputmode="tel" maxlength="16" autocomplete="tel"><div class="cf-err">Please enter a valid 10-digit mobile number</div></div>
+          <input type="tel" id="cfPhone" placeholder="Enter mobile number" inputmode="tel" maxlength="18" autocomplete="tel"><div class="cf-err">Please enter a valid 10-digit mobile number</div></div>
 
         <div class="cf-q" id="q-topic"><label for="cfTopic">3. Subject / Topic <b>*</b></label>
           <input type="text" id="cfTopic" placeholder="e.g. Biology, History, Physics"><div class="cf-err">Please enter the subject or topic</div></div>
@@ -1306,6 +1671,7 @@ html.light header::before{background:#fff}
             <label class="opt"><input type="radio" name="slides" value="20–50 Slides" checked><span>20–50 Slides</span></label>
             <label class="opt"><input type="radio" name="slides" value="50–100 Slides"><span>50–100 Slides</span></label>
             <label class="opt"><input type="radio" name="slides" value="100+ Slides"><span>100+ Slides</span></label>
+            <label class="opt"><input type="radio" name="slides" value="Not Confirm"><span>Not Confirm</span></label>
           </div></div>
 
         <div class="cf-q"><span class="lbl">5. Content Language</span>
@@ -1321,17 +1687,18 @@ html.light header::before{background:#fff}
         <div class="cf-q"><span class="lbl">7. Upload Files <span style="color:var(--dim);font-weight:500">(Optional)</span></span>
           <label class="drop" id="drop">
             <input type="file" id="cfFiles" multiple hidden
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png,.webp,.gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,image/*">
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.webp,.gif,.heic,.zip,.rar,.7z">
             <svg class="i"><use href="#i-upload"/></svg>
             <b>Click to upload or drag & drop files here</b>
             <small>Max 5 files · up to 10 MB each · Video & audio not allowed</small>
-            <div class="ftypes"><span>📄 PDF</span><span>📝 WORD</span><span>📊 EXCEL</span><span>🖼️ IMAGES</span></div>
+            <div class="ftypes"><span>📄 PDF</span><span>📝 WORD</span><span>📊 EXCEL</span><span>🖼️ IMAGES</span><span>🗜️ ZIP</span></div>
           </label>
           <div class="file-err" id="fileErr"></div>
           <div class="file-list" id="fileList"></div>
         </div>
 
         <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="cf-wa" id="cfWa" hidden><span>Or send your request directly:</span><a class="btn btn-wa" target="_blank" rel="noopener" href="#"><svg class="i"><use href="#i-msg"/></svg> Send on WhatsApp</a></div>
         <button type="submit" class="btn btn-primary cf-submit" id="cfSubmit"><svg class="i"><use href="#i-send"/></svg> Submit Request</button>
         <p class="cf-note">🔒 Your details are only used to contact you about your PPT.</p>
       </form>
@@ -1352,7 +1719,7 @@ html.light header::before{background:#fff}
           <div class="pay-items" id="payItems"></div>
           <div class="cf-q" id="p-name"><label for="payName">Full Name <b>*</b></label><input type="text" id="payName" autocomplete="name" placeholder="Enter your name"><div class="cf-err">Please enter your name</div></div>
           <div class="cf-q" id="p-email"><label for="payEmail">Email <b>*</b> <span style="color:var(--dim);font-weight:500">(download link yahan aayega)</span></label><input type="text" id="payEmail" inputmode="email" autocomplete="email" placeholder="you@example.com"><div class="cf-err">Please enter a valid email</div></div>
-          <div class="cf-q" id="p-phone"><label for="payPhone">WhatsApp Number <b>*</b></label><input type="tel" id="payPhone" maxlength="16" autocomplete="tel" placeholder="Enter mobile number"><div class="cf-err">Please enter a valid 10-digit mobile number</div></div>
+          <div class="cf-q" id="p-phone"><label for="payPhone">WhatsApp Number <b>*</b></label><input type="tel" id="payPhone" maxlength="18" autocomplete="tel" placeholder="Enter mobile number"><div class="cf-err">Please enter a valid 10-digit mobile number</div></div>
           <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
           <button type="submit" class="btn btn-primary cf-submit" id="paySubmit"></button>
           <p class="cf-note">🔒 Secure payment by Razorpay · UPI, Cards, Net Banking, Wallets</p>
@@ -1369,7 +1736,7 @@ html.light header::before{background:#fff}
     <button class="close-x m-close" onclick="closeReview()" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
     <div class="cf-scroll">
       <div id="rvMain">
-        <div class="cf-head"><h3 id="rvTitle"><svg class="i"><use href="#i-star"/></svg>Write a Review</h3><p>Aapka experience doosron ki madad karega. Review check hone ke baad website par dikhega.</p></div>
+        <div class="cf-head"><h3 id="rvTitle"><svg class="i"><use href="#i-star"/></svg>Write a Review</h3><p>Aapka experience doosron ki madad karega. Submit karte hi aapka review website par dikhega.</p></div>
         <form id="rvForm" novalidate>
           <div class="cf-q"><span class="lbl">Your Rating</span>
             <div class="opts stars-pick"><label class="opt"><input type="radio" name="stars" value="5" checked><span>★★★★★</span></label><label class="opt"><input type="radio" name="stars" value="4"><span>★★★★</span></label><label class="opt"><input type="radio" name="stars" value="3"><span>★★★</span></label><label class="opt"><input type="radio" name="stars" value="2"><span>★★</span></label><label class="opt"><input type="radio" name="stars" value="1"><span>★</span></label></div></div>
@@ -1394,17 +1761,11 @@ html.light header::before{background:#fff}
       <div class="pr-in">
         <div class="pr-head">
           <h3 id="prTitle">PPT Design &amp; Pricing</h3>
-          <span class="pr-off"><b>15% OFF</b><small>on final payment · Limited time</small></span>
+          <span class="pr-off" id="prOff"><b>15% OFF</b><small>on final payment · Limited time</small></span>
         </div>
-        <ul class="pr-list">
-          <li style="--c:#f472b6"><span>🎬</span><b>Animated Slides</b><em>₹10<small>/slide</small></em></li>
-          <li style="--c:#eab308"><span>❓</span><b>Question Slides</b><em>₹2–₹3<small>/slide</small></em></li>
-          <li style="--c:#38bdf8"><span>📚</span><b>Theory Slides</b><em>₹3–₹5<small>/slide</small></em></li>
-          <li style="--c:#34d399"><span>📝</span><b>Theory + Questions <i>Without Animation</i></b><em>₹5<small>/slide</small></em></li>
-          <li style="--c:#c084fc"><span>🎞️</span><b>Theory + Questions <i>With Animation</i></b><em>₹10<small>/slide</small></em></li>
-        </ul>
+        <ul class="pr-list" id="prList"></ul>
         <div class="pr-bulk">
-          <div><b>🎯 200+ Slides?</b> Bulk pricing <span>negotiable!</span></div>
+          <div><b>🎯 <span id="prBulk">200+</span> Slides?</b> Bulk pricing <span>negotiable!</span></div>
           <small>📩 Share your content &amp; design references to get started.</small>
         </div>
         <p class="pr-tag">✨ You provide the content. <b>We create the presentation.</b></p>
@@ -1435,11 +1796,12 @@ html.light header::before{background:#fff}
 
 <div class="toast" id="toast"></div>
 
-<div class="wa-float">
+<div class="wa-float" data-ui="wa_float">
   <div class="wa-tip" id="waTip"><span class="pill" style="padding:0;border:0;background:none"><span class="dot"></span></span>Need PPT help? <a class="wa-link" data-msg="Hi! I need help choosing a PPT.">Chat on WhatsApp</a><button onclick="this.parentNode.remove()" aria-label="Close tip" style="color:var(--dim)">✕</button></div>
   <a class="wa-btn wa-link" data-msg="Hi Lakshay Agency!" aria-label="WhatsApp"><svg class="i"><use href="#i-msg"/></svg></a>
 </div>
 
+<script src="config.js"></script>
 <script>
 /* =========================================================
    ⚙️ SETTINGS — sirf yahan apni details daalo
@@ -1521,7 +1883,41 @@ let cart = [];
 try { cart = JSON.parse(localStorage.getItem("la_cart")) || []; } catch(e) {}
 
 /* contact info */
+/* ---------- MORE OFFERINGS dropdown ---------- */
+(function(){
+  const box = document.querySelector(".nav-more"), btn = document.getElementById("moreBtn"); if (!box) return;
+  const set = o => { box.classList.toggle("open", o); btn.setAttribute("aria-expanded", String(o)); };
+  btn.addEventListener("click", e => { e.stopPropagation(); set(!box.classList.contains("open")); });
+  document.addEventListener("click", e => { if (!e.target.closest(".nav-more")) set(false); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") set(false); });
+  let hovered = 0;
+  btn.addEventListener("click", e => { if (Date.now() - hovered < 600) { e.stopImmediatePropagation(); set(true); } }, true);
+  if (matchMedia("(hover: hover)").matches) { box.addEventListener("mouseenter", () => { if (innerWidth > 860) { hovered = Date.now(); set(true); } }); box.addEventListener("mouseleave", () => { if (innerWidth > 860) set(false); }); }
+})();
+
+/* ---------- WEBSITE CONTROLS (Admin Panel → Website) ---------- */
+let UI_ST = {};
+const refUrl = r => { r = String(r || "").trim(); return r.indexOf("drive:") === 0 ? "https://lh3.googleusercontent.com/d/" + r.slice(6) + "=w1600" : r; };
+function applyUi(){
+  const st = UI_ST || {};
+  document.querySelectorAll("[data-ui]").forEach(el => {
+    const v = st["ui_" + el.dataset.ui] || "show";
+    el.classList.toggle("ui-hide", v === "hide");
+    el.classList.toggle("ui-off", v === "off");
+    if (v === "off") el.setAttribute("aria-disabled", "true"); else el.removeAttribute("aria-disabled");
+    el.querySelectorAll("input,button").forEach(x => x.disabled = v === "off");
+    if (el.matches("button")) el.disabled = v === "off";
+  });
+  // Custom PPT section ki photos
+  document.querySelectorAll("#cxStack img").forEach((im, i) => { const r = st["customImg" + (i + 1)]; if (r) im.src = refUrl(r); });
+  // Social links
+  document.querySelectorAll("[data-soc]").forEach(a => { const u = st["social_" + a.dataset.soc]; if (u && /^https:\/\//.test(u)) { a.href = u; a.target = "_blank"; a.rel = "noopener"; } });
+}
+// band (disable) kiya gaya option click na ho
+document.addEventListener("click", e => { const el = e.target.closest(".ui-off"); if (el) { e.preventDefault(); e.stopImmediatePropagation(); toast("Ye option abhi uplabdh nahi hai"); } }, true);
+document.addEventListener("click", e => { const a = e.target.closest("[data-soc]"); if (a && a.getAttribute("href") === "#") { e.preventDefault(); toast("Jald aa raha hai"); } });
 function applySettings(){
+  applyUi();
   document.querySelectorAll(".js-phone").forEach(e => e.textContent = CONFIG.phoneDisplay);
   document.querySelectorAll(".js-email").forEach(e => e.textContent = CONFIG.email);
   document.querySelectorAll(".js-mail").forEach(e => e.href = "mailto:" + CONFIG.email);
@@ -1543,27 +1939,52 @@ const lightCls = p => p.thumb ? " has-img" : (p.theme==="Light" ? " light" : "")
 const slider = $("#slider"), dots = $("#dots");
 let cur = 0, timer;
 /* Smart Board par: Pricing + Bulk offer — har 5 sec mein wipe ke saath badalta hai */
-const BOARD_SLIDES = [
-  `<div class="bs bs-price">
-     <div class="bs-head"><h3>PPT Design &amp; Pricing</h3><span class="bs-off"><b>15% OFF</b><small>on final payment · Limited time</small></span></div>
-     <ul class="bs-list">
-       <li style="--c:#f472b6"><span>🎬</span><b>Animated Slides</b><em>₹10<small>/slide</small></em></li>
-       <li style="--c:#facc15"><span>❓</span><b>Question Slides</b><em>₹2–₹3<small>/slide</small></em></li>
-       <li style="--c:#38bdf8"><span>📚</span><b>Theory Slides</b><em>₹3–₹5<small>/slide</small></em></li>
-       <li style="--c:#34d399"><span>📝</span><b>Theory + Questions <i>(Without Animation)</i></b><em>₹5<small>/slide</small></em></li>
-       <li style="--c:#c084fc"><span>🎞️</span><b>Theory + Questions <i>(With Animation)</i></b><em>₹10<small>/slide</small></em></li>
-     </ul>
-     <a class="bs-cta" href="order.html">🤝 Interested in Working Together? <u>Order Now →</u></a>
+/* Pricing — admin panel (Prices) se badalti hai; neeche wala default sirf backup hai */
+let PRICING = {
+  title: "PPT Design & Pricing", offerBig: "15% OFF", offerSmall: "on final payment · Limited time", bulkMin: "200+",
+  items: [
+    { icon:"🎬", name:"Animated Slides", note:"", price:"₹10", unit:"/slide", color:"#f472b6" },
+    { icon:"❓", name:"Question Slides", note:"", price:"₹2–₹3", unit:"/slide", color:"#facc15" },
+    { icon:"📚", name:"Theory Slides", note:"", price:"₹3–₹5", unit:"/slide", color:"#38bdf8" },
+    { icon:"📝", name:"Theory + Questions", note:"Without Animation", price:"₹5", unit:"/slide", color:"#34d399" },
+    { icon:"🎞️", name:"Theory + Questions", note:"With Animation", price:"₹10", unit:"/slide", color:"#c084fc" }
+  ]
+};
+const safeColor = c => /^#[0-9a-f]{3,8}$/i.test(String(c)) ? c : "#c084fc";
+const priceLis = (paren) => PRICING.items.map(p => `<li style="--c:${safeColor(p.color)}"><span>${esc(p.icon||"•")}</span><b>${esc(p.name)}${p.note ? ` <i>${paren ? "(" + esc(p.note) + ")" : esc(p.note)}</i>` : ""}</b><em>${esc(p.price)}<small>${esc(p.unit||"")}</small></em></li>`).join("");
+/* Smart Board: har price ek alag tile — bada daam, rang ke saath */
+const splitPrice = v => { const m = String(v || "").match(/^(\D*)(.*)$/); return [m[1] || "", m[2] || ""]; };
+const priceTiles = () => PRICING.items.map((p, i) => { const [cur, amt] = splitPrice(p.price); return `<div class="bp-tile" style="--c:${safeColor(p.color)};--d:${i * .08}s">
+  <span class="bp-ic">${esc(p.icon || "•")}</span>
+  <b class="bp-name">${esc(p.name)}${p.note ? `<em class="bp-note2">${esc(p.note)}</em>` : ""}</b>${p.note ? `<i class="bp-note">${esc(p.note)}</i>` : `<i class="bp-note">&nbsp;</i>`}
+  <div class="bp-price"><sup>${esc(cur)}</sup>${esc(amt)}</div><small class="bp-unit">${esc(p.unit || "")}</small></div>`; }).join("");
+let BOARD_SLIDES = [];
+function buildBoardSlides(){
+  BOARD_SLIDES = [
+  `<div class="bs bs-price2">
+     <div class="bp-head">
+       <div><span class="bp-kick">💰 Per-slide pricing</span><h3>${esc(PRICING.title)}</h3></div>
+       ${PRICING.offerBig ? `<div class="bp-off"><b>${esc(PRICING.offerBig)}</b><small>${esc(PRICING.offerSmall)}</small></div>` : ""}
+     </div>
+     <div class="bp-grid" style="--n:${Math.min(5, PRICING.items.length) || 1};--nm:${Math.min(3, PRICING.items.length) || 1}">${priceTiles()}</div>
+     <div class="bp-foot"><a class="bp-cta" href="order.html">Order Now <span>→</span></a><span class="bp-bulk">🎯 <b>${esc(PRICING.bulkMin)} slides?</b> Bulk pricing negotiable</span></div>
    </div>`,
   `<div class="bs bs-bulk">
      <span class="bs-kicker">🎯 Bulk Orders</span>
-     <h3><span class="big">200+</span> Slides?</h3>
+     <h3><span class="big">${esc(PRICING.bulkMin)}</span> Slides?</h3>
      <p class="bs-neg">Bulk Pricing <b>Negotiable!</b></p>
      <div class="bs-share">📩 Share your content &amp; design references to get started!</div>
      <p class="bs-tag">✨ You provide the content. <b>We create the presentation.</b></p>
      <div class="bs-deck" aria-hidden="true"><i></i><i></i><i></i></div>
-   </div>`
-];
+   </div>`];
+  // Pricing popup bhi same data se
+  $("#prTitle").textContent = PRICING.title;
+  $("#prOff").hidden = !PRICING.offerBig;
+  $("#prOff").innerHTML = `<b>${esc(PRICING.offerBig)}</b><small>${esc(PRICING.offerSmall)}</small>`;
+  $("#prList").innerHTML = priceLis(false);
+  $("#prBulk").textContent = PRICING.bulkMin;
+}
+buildBoardSlides();
 function buildHero(){
   slider.querySelectorAll(".slide").forEach(x => x.remove()); dots.innerHTML = ""; cur = 0;
   BOARD_SLIDES.forEach((html,i) => {
@@ -1700,10 +2121,22 @@ function renderGrid(){
   $("#loadMore").innerHTML = `Load More Presentations <span style="color:var(--dim);font-size:.8rem">(${rem} remaining)</span>`;
 }
 $("#loadMore").onclick = () => { state.shown += CONFIG.perPage; renderGrid(); };
-function onSearch(v){ state.q=v; state.shown=CONFIG.perPage; if($("#gridSearch").value!==v)$("#gridSearch").value=v; if($("#topSearch").value!==v)$("#topSearch").value=v; renderGrid(); }
+function onSearch(v){
+  state.q=v; state.shown=CONFIG.perPage; if($("#gridSearch").value!==v)$("#gridSearch").value=v; if($("#topSearch").value!==v)$("#topSearch").value=v; renderGrid();
+  // Themes bhi isi search se filter hote hain (website par abhi themes hi dikhte hain)
+  thState.q = v; thState.shown = 12; renderThemes();
+}
+// Search ke result wale section tak le jao: PPT mile toh Shop, warna Themes
+function goToResults(){
+  const sec = PRODUCTS.length && !$("#shop").hidden && filtered().length ? $("#shop") : $("#themes");
+  if (sec.hidden) return;
+  const el = sec.id === "themes" ? sec.querySelector(".th-bar2") : sec;
+  scrollTo({ top: el.getBoundingClientRect().top + scrollY - 96, behavior:"smooth" });
+}
+let srchT;
 $("#gridSearch").oninput = e => onSearch(e.target.value);
-$("#topSearch").oninput = e => onSearch(e.target.value);
-$("#topSearch").onkeydown = e => { if(e.key==="Enter") $("#shop").scrollIntoView(); };
+$("#topSearch").oninput = e => { onSearch(e.target.value); clearTimeout(srchT); if (e.target.value.trim().length >= 2) srchT = setTimeout(goToResults, 700); };
+$("#topSearch").onkeydown = e => { if(e.key==="Enter"){ e.preventDefault(); clearTimeout(srchT); goToResults(); } };
 
 /* ---------- CART ---------- */
 function saveCart(){ try{ localStorage.setItem("la_cart", JSON.stringify(cart)); }catch(e){} renderCart(); renderGrid(); }
@@ -1736,7 +2169,7 @@ $("#checkout").onclick = () => {
 };
 function buyNow(id){ closeModal(); openPay([id]); }
 /* Payment (PhonePe / GPay / Paytm) ready-ppts.html par hota hai: wahi cart (la_cart) wahan khul jata hai */
-const payOn = () => API && (SETTINGS.payments || (SETTINGS.upi && (SETTINGS.upi.id || SETTINGS.upi.qr)));
+const payOn = () => /\.(vercel\.app|github\.io)$/.test(location.hostname) || (API && (SETTINGS.payments || (SETTINGS.upi && (SETTINGS.upi.id || SETTINGS.upi.qr))));
 const _openPay = openPay;
 openPay = ids => payOn() ? (location.href = "ready-ppts.html?pay=" + ids.join(",")) : _openPay(ids);
 
@@ -1768,7 +2201,9 @@ document.addEventListener("keydown", e => { if (e.key==="Escape") { closeAllPopu
 
 /* ---------- FEATURES / STEPS / REVIEWS / FAQ ---------- */
 $("#feats").innerHTML = FEATS.map(([ic,c,t,d]) => `<div class="feat reveal" style="--fc:${c}"><div class="ficon">${icon(ic)}</div><h3>${t}</h3><p>${d}</p></div>`).join("");
-function renderReviews(){ $("#reviewList").innerHTML = REVIEWS.length ? REVIEWS.map(r => `
+/* Highest rating sabse upar; same rating par naya review pehle (server newest-first bhejta hai) */
+const sortReviews = () => { REVIEWS = REVIEWS.map((r, i) => [r, i]).sort((a, b) => ((+b[0].stars || 5) - (+a[0].stars || 5)) || (a[1] - b[1])).map(x => x[0]); };
+function renderReviews(){ sortReviews(); $("#reviewList").innerHTML = REVIEWS.length ? REVIEWS.map(r => `
   <div class="review"><div class="stars">${"★".repeat(r.stars||5)}</div>
     <blockquote>"${esc(r.text)}"</blockquote>
     <div class="reviewer"><span class="avatar">${esc(r.name[0])}</span><div><b>${esc(r.name)}</b><small>${esc(r.role||"")}</small>
@@ -1792,22 +2227,60 @@ function formData(){
   if (!d.name || !d.msg || !/^\S+@\S+\.\S+$/.test(d.email)) { toast("⚠ Please fill name, a valid email and message"); return null; }
   return d;
 }
+const makeTicket = () => { const d = new Date(); return "TKT-" + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0") + "-" + String(Math.floor(1000 + Math.random() * 9000)); };
+function showTicket(d, tk){
+  $("#tkId").textContent = tk;
+  const first = d.name.split(/\s+/)[0]; $("#tkName").textContent = first ? ", " + first : "";
+  $("#tkSum").innerHTML = [["Subject", d.subject], ["Email", d.email], ["Phone / WhatsApp", d.phone]].filter(r => r[1]).map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("");
+  $("#tkWa").href = waURL(`Hi Lakshay Agency! My Ticket ID is ${tk}.\nSubject: ${d.subject}\nName: ${d.name}`);
+  $("#tkCopy").dataset.copy = tk;
+  $("#contactForm").hidden = true; $("#ticketDone").hidden = false;
+  $("#ticketDone").scrollIntoView({ behavior:"smooth", block:"center" });
+}
+$("#contactForm").addEventListener("input", () => { $("#cfFail").hidden = true; });
+$("#tkNew").onclick = () => { $("#ticketDone").hidden = true; $("#contactForm").reset(); $("#contactForm").hidden = false; $("#fName").focus(); };
 $("#contactForm").onsubmit = async e => {
   e.preventDefault(); const d = formData(); if (!d) return;
-  if (API) {
-    const btn = e.submitter || $("#contactForm button[type=submit]"); btn.disabled = true;
-    const r = await postForm("api/contact.php", { name:d.name, email:d.email, phone:d.phone, subject:d.subject, message:d.msg, website:$("#contactForm .hp").value });
-    btn.disabled = false;
-    if (r.ok) { $("#contactForm").reset(); toast("✓ Message sent! We'll reply soon."); return; }
-    if (r.error && !r.network) { toast("⚠ " + r.error); return; }
+  const tk = makeTicket(), subj = `[${tk}] ${d.subject}`, hp = $("#contactForm .hp").value;
+  const btn = e.submitter || $("#contactForm button[type=submit]"), label = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = "Sending…";
+  const done = ok => { btn.disabled = false; btn.innerHTML = label; if (ok) showTicket(d, tk); return ok; };
+  if (GOOGLE && GS_URL) {
+    const r = await gsCall({ action:"message", ticket:tk, name:d.name, email:d.email, phone:d.phone, subject:subj, message:d.msg, website:hp });
+    if (r.j && r.j.ok) return done(true);
+    if (r.j && r.j.error) { done(false); toast("⚠ " + r.j.error); return; }
+  } else if (API) {
+    const r = await postForm("api/contact.php", { name:d.name, email:d.email, phone:d.phone, subject:subj, message:d.msg, website:hp });
+    if (r.ok) return done(true);
+    if (r.error && !r.network) { done(false); toast("⚠ " + r.error); return; }
   }
-  location.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(d.subject+" — "+d.name)}&body=${encodeURIComponent(`${d.msg}\n\nName: ${d.name}\nEmail: ${d.email}\nPhone: ${d.phone}`)}`;
-  toast("✓ Opening your email app…");
+  // Sheet na chale toh seedha Gmail par (FormSubmit)
+  if (!hp && await emailOrder({ _subject:`🎫 ${tk} — ${d.subject} — ${d.name}`, _template:"table", "Ticket ID":tk, Name:d.name, Email:d.email, "Phone / WhatsApp":d.phone || "—", Subject:d.subject, Message:d.msg, _replyto:d.email })) return done(true);
+  done(false);
+  // Online na jaye toh page kahin nahi jata — customer ko WhatsApp / Email ke button dikhte hain
+  const body = `${d.msg}\n\nTicket: ${tk}\nName: ${d.name}\nEmail: ${d.email}${d.phone ? "\nPhone: " + d.phone : ""}`;
+  $("#cfFailTk").textContent = tk;
+  $("#cfFailWa").href = waURL(`*${subj}*\n${body}`);
+  $("#cfFailMail").href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subj + " — " + d.name)}&body=${encodeURIComponent(body)}`;
+  $("#cfFail").hidden = false;
+  toast("⚠ Message nahi gaya — WhatsApp ya Email se bhejein");
 };
+$("#cfRetry").onclick = () => { $("#cfFail").hidden = true; $("#contactForm").requestSubmit(); };
 $("#formWa").onclick = () => {
   const d = formData(); if (!d) return;
   window.open(waURL(`*${d.subject}*\n${d.msg}\n\nName: ${d.name}\nEmail: ${d.email}${d.phone?"\nPhone: "+d.phone:""}`), "_blank");
 };
+
+/* ---------- PAYMENT: copy buttons ---------- */
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-copy]"); if (!b) return;
+  const v = b.dataset.copy; let ok = false;
+  try { await navigator.clipboard.writeText(v); ok = true; } catch (err) {
+    try { const t = document.createElement("textarea"); t.value = v; t.style.position = "fixed"; t.style.opacity = "0"; document.body.appendChild(t); t.select(); ok = document.execCommand("copy"); t.remove(); } catch (e2) {}
+  }
+  toast(ok ? "✓ Copied: " + v : "Please copy: " + v);
+  if (ok) { b.classList.add("done"); setTimeout(() => b.classList.remove("done"), 1600); }
+});
 
 /* ---------- MISC ---------- */
 let tt; function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("on"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("on"),2200); }
@@ -1819,8 +2292,96 @@ document.querySelectorAll(".reveal").forEach(el => io.observe(el));
 
 
 /* ---------- CUSTOM PPT FORM ---------- */
-const FILE_RULES = { ext:["pdf","doc","docx","xls","xlsx","csv","jpg","jpeg","png","webp","gif"], maxMB:10, maxFiles:5 };
-let cfFiles = [];
+const FILE_RULES = { ext:["pdf","doc","docx","xls","xlsx","csv","ppt","pptx","txt","jpg","jpeg","png","webp","gif","heic","zip","rar","7z"], maxMB:10, maxFiles:5 };
+
+/* Popup ki files bhi order page jaisi safe tarike se jaati hain: base64 tukde (server ka security filter
+   inhe galti se block nahi karta), roka gaya toh doosre tarike. Lautata hai upload token ya null. */
+let UPL = null;
+const sleepMs = ms => new Promise(r => setTimeout(r, ms));
+const blobB64 = blob => new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(",")[1] || ""); fr.onerror = () => no(fr.error); fr.readAsDataURL(blob); });
+const newId = () => [...crypto.getRandomValues(new Uint8Array(16))].map(b => b.toString(16).padStart(2, "0")).join("");
+async function sendChunk(url, body, headers) {
+  try { const r = await fetch(url, { method:"POST", body, headers:Object.assign({ Accept:"application/json" }, headers || {}) }); let j = null; try { j = await r.json(); } catch(e) {} return { s:r.status, j }; }
+  catch(e) { return { s:0, j:null }; }
+}
+/* ---------- GOOGLE SHEET MODE (Vercel jaisi hosting jahan PHP nahi chalta) ----------
+   config.js mein backend:"google" + orderUrl (Google Apps Script link) ho toh orders Google Sheet mein,
+   files Google Drive mein jaati hain. orderUrl khaali ho toh order WhatsApp button se aata hai. */
+const LA = window.LA_CONFIG || { backend:"php" };
+const GOOGLE = LA.backend === "google", GS_URL = String(LA.orderUrl || "").trim();
+async function gsCall(payload){
+  try {
+    const r = await fetch(GS_URL, { method:"POST", body:JSON.stringify(payload), headers:{ "Content-Type":"text/plain;charset=utf-8" } });
+    let j = null; try { j = await r.json(); } catch(e) {}
+    return { s:r.status, j };
+  } catch(e) { return { s:0, j:null }; }
+}
+/* Order seedha Gmail par (FormSubmit) — Google Sheet setup na ho tab bhi. Pehli baar "Activate Form" email aata hai. */
+const makeRef = () => { const d = new Date(); return "LA-" + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0") + "-" + String(Math.floor(1000 + Math.random() * 9000)); };
+async function emailOrder(fields){
+  if (LA.previewDemo) return true;                  // sirf preview ke liye — asli site par kabhi on nahi
+  if (LA.emailOrders === false || !(LA.formEmailUrl || LA.email)) return false;
+  const url = LA.formEmailUrl || ("https://formsubmit.co/ajax/" + encodeURIComponent(LA.email));
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 25000);
+  try {
+    const r = await fetch(url, { method:"POST", signal:ctl.signal, headers:{ "Content-Type":"application/json", Accept:"application/json" }, body:JSON.stringify(fields) });
+    const j = await r.json().catch(() => null);
+    return !!(j && String(j.success) === "true");
+  } catch(e) { return false; } finally { clearTimeout(t); }
+}
+function goThanks(o){
+  o.at = Date.now(); o.wa = CONFIG.whatsapp;
+  try { sessionStorage.setItem("la_last_order", JSON.stringify(o)); } catch(e) {}
+  location.href = "thank-you.html#ref=" + encodeURIComponent(o.ref) + "&n=" + encodeURIComponent(String(o.name).split(" ")[0]);
+}
+/** File ko Google Drive par tukdon mein bhejo (1 GB tak). Lautata hai Drive link ya null. */
+async function gsUpload(file, who, onPct){
+  let st = null;
+  for (let t = 0; t < 3; t++) { st = await gsCall({ action:"start", name:file.name, size:file.size, mime:file.type, who }); if (st.j) break; await sleepMs(1500 * (t + 1)); }
+  if (!st.j || !st.j.ok) return null;
+  let pos = 0, size = 8 << 20, tries = 0;
+  while (pos < file.size) {
+    const part = file.slice(pos, Math.min(file.size, pos + size));
+    const r = await gsCall({ action:"chunk", session:st.j.session, start:pos, total:file.size, data:await blobB64(part) });
+    if (r.j && r.j.ok) {
+      if (r.j.done) { onPct && onPct(1); return r.j.url; }
+      pos = typeof r.j.next === "number" ? r.j.next : pos + part.size; tries = 0; onPct && onPct(pos / file.size); continue;
+    }
+    if (r.j && r.j.stop) return null;
+    if (!r.j && size > (1 << 20)) size /= 2;              // bada tukda nahi gaya — chhota karke dobara
+    if (tries++ < 3) { await sleepMs(2000 * tries); continue; }
+    return null;
+  }
+  return null;
+}
+
+async function uploadFile(file, onPct){
+  if (!UPL) { try { UPL = await (await fetch("api/upload.php", { headers:{ Accept:"application/json" } })).json(); } catch(e) { UPL = {}; } }
+  const plans = [["b64", UPL.chunk64 || 1 << 20], ["form", UPL.chunk || 1536 << 10], ["b64", 384 << 10], ["raw", 120 << 10]];
+  for (const [mode, size] of plans) {
+    const id = newId(), total = Math.max(1, Math.ceil(file.size / size));
+    let i = 0, tries = 0, fail = false;
+    while (i < total) {
+      const part = file.slice(i * size, Math.min(file.size, (i + 1) * size)), meta = { upload_id:id, index:i, total, name:file.name, size:file.size };
+      let res;
+      if (mode === "raw") res = await sendChunk("api/upload.php?" + new URLSearchParams(meta), part, { "Content-Type":"application/octet-stream" });
+      else {
+        const fd = new FormData(); Object.entries(meta).forEach(([k, v]) => fd.append(k, v));
+        if (mode === "b64") { fd.append("enc", "b64"); fd.append("chunk", new Blob([await blobB64(part)], { type:"text/plain" }), "chunk.txt"); }
+        else fd.append("chunk", part, "chunk.bin");
+        res = await sendChunk("api/upload.php", fd);
+      }
+      if (res.j && res.j.ok) { i++; tries = 0; onPct && onPct(i / total); continue; }
+      if (res.s === 409 && res.j && typeof res.j.next === "number") { i = res.j.next; continue; }
+      if (res.j && [415, 422, 429].includes(res.s)) return null;                     // file hi galat — chhod do
+      if ((!res.s || res.s >= 500) && tries < 2) { tries++; await sleepMs(1500 * tries); continue; }
+      fail = true; break;
+    }
+    if (!fail) return id;
+  }
+  return null;
+}
+let cfFiles = [], cfLost = [], cfOrderId = 0;
 function openForm(){
   closeModal(); openCart(false); $("#navLinks").classList.remove("open");
   $("#cfMain").hidden = false; $("#cfDone").hidden = true;
@@ -1837,7 +2398,7 @@ function addFiles(list){
   const errs = [];
   [...list].forEach(f => {
     const ext = (f.name.split(".").pop()||"").toLowerCase();
-    if (/^(video|audio)\//.test(f.type) || !FILE_RULES.ext.includes(ext)) errs.push(`"${f.name}" — only PDF, Word, Excel & image files allowed`);
+    if (/^(video|audio)\//.test(f.type) || !FILE_RULES.ext.includes(ext)) errs.push(`"${f.name}" — only PDF, Word, Excel, PowerPoint, image & ZIP files allowed`);
     else if (f.size > FILE_RULES.maxMB*1048576) errs.push(`"${f.name}" — file is larger than ${FILE_RULES.maxMB} MB`);
     else if (cfFiles.length >= FILE_RULES.maxFiles) errs.push(`Maximum ${FILE_RULES.maxFiles} files allowed`);
     else if (!cfFiles.some(x => x.name===f.name && x.size===f.size)) cfFiles.push(f);
@@ -1872,12 +2433,61 @@ $("#cfForm").onsubmit = async e => {
   bad.forEach(([id,b]) => $("#"+id).classList.toggle("bad", b));
   const first = bad.find(x => x[1]); if (first) { $("#"+first[0]+" input").focus(); return; }
 
-  const btn = $("#cfSubmit"); btn.disabled = true; btn.innerHTML = "Sending…";
-  let sentOnline = false;
-  if (API) {
-    const r = await postForm("api/request.php", { name:d.name, phone:d.phone, topic:d.topic, slides:d.slides, language:d.lang, requirements:d.req, website:$("#cfForm .hp").value }, cfFiles.map(f => ["files[]", f]));
-    if (r.ok) sentOnline = true;
-    else { btn.disabled = false; btn.innerHTML = `${icon("i-send")} Submit Request`; $("#fileErr").textContent = r.error; toast("⚠ " + r.error); return; }
+  const btn = $("#cfSubmit"); btn.disabled = true; btn.innerHTML = "Sending…"; $("#cfWa").hidden = true;
+  let sentOnline = false; cfLost = [];
+  const cfRef = makeRef(), cfHp = $("#cfForm .hp").value;
+  const cfWaMsg = `*Custom PPT Request*\nName: ${d.name}\nWhatsApp: +91 ${d.phone}\nTopic: ${d.topic}\nSlides: ${d.slides}\nLanguage: ${d.lang}\n${d.req || ""}` + (cfFiles.length ? `\n\nFiles: ${cfFiles.map(f => f.name).join(", ")} (bhej raha/rahi hoon)` : "");
+  if (GOOGLE) {
+    // 1) Google Sheet (agar link laga hai)  2) nahi toh seedha Gmail par  3) dono fail → WhatsApp button
+    const files = [];
+    if (GS_URL) for (let k = 0; k < cfFiles.length; k++) {
+      const f = cfFiles[k];
+      const url = await gsUpload(f, d.name, p => { btn.textContent = `Uploading file ${k + 1}/${cfFiles.length}… ${Math.round(p * 100)}%`; });
+      if (url) files.push({ name:f.name, url }); else cfLost.push(f.name);
+    } else cfLost = cfFiles.map(f => f.name);
+    btn.textContent = "Sending…";
+    if (GS_URL) {
+      const order = { action:"order", source:"Custom PPT popup", name:d.name, phone:d.phone, topic:d.topic, slides:d.slides, language:d.lang, details:d.req, files, failed:cfLost, website:cfHp };
+      let r = await gsCall(order);
+      if (!r.j) { await sleepMs(1500); r = await gsCall(order); }
+      if (r.j && r.j.ok) { sentOnline = true; cfOrderId = "#" + r.j.id; }
+    }
+    if (!sentOnline && !cfHp) {
+      sentOnline = await emailOrder({
+        _subject:`🆕 Custom PPT ${cfRef} — ${d.name} (${d.topic})`, _template:"table", _captcha:"false",
+        "Order ID":cfRef, "Name":d.name, "Mobile":"+91 " + d.phone, "WhatsApp":"https://wa.me/91" + d.phone,
+        "Subject / Topic":d.topic, "Slides":d.slides, "Language":d.lang, "Details":d.req || "—",
+        "Files":cfFiles.length ? cfFiles.map(f => { const u = files.find(x => x.name === f.name); return f.name + (u ? " → " + u.url : " (customer WhatsApp par bhejega)"); }).join("\n") : "—",
+        "From":"Custom PPT popup", "Time":new Date().toLocaleString("en-IN", { timeZone:"Asia/Kolkata" })
+      });
+      if (sentOnline) cfOrderId = cfRef;
+    }
+    if (!sentOnline) {
+      btn.disabled = false; btn.innerHTML = `${icon("i-send")} Submit Request`;
+      $("#fileErr").textContent = "Couldn't reach our server right now. Tap the green button below to send your request on WhatsApp.";
+      $("#cfWa").hidden = false; $("#cfWa a").href = waURL(cfWaMsg);
+      return;
+    }
+  } else if (API) {
+    // 1) files pehle safe tukdon mein  2) phir order — file na jaye tab bhi order jaata hai
+    const tokens = [];
+    for (let k = 0; k < cfFiles.length; k++) {
+      const f = cfFiles[k];
+      const tok = await uploadFile(f, p => { btn.textContent = `Uploading file ${k + 1}/${cfFiles.length}… ${Math.round(p * 100)}%`; });
+      if (tok) tokens.push(tok); else cfLost.push(f.name);
+    }
+    btn.textContent = "Sending…";
+    const fields = { name:d.name, phone:d.phone, topic:d.topic, slides:d.slides, language:d.lang, website:$("#cfForm .hp").value, uploads: JSON.stringify(tokens),
+      requirements: d.req + (cfLost.length ? (d.req ? "\n\n" : "") + `[Files not uploaded on website: ${cfLost.join(", ")}]` : "") };
+    let r = await postForm("api/request.php", fields);
+    if (!r.ok && (r.server || r.network)) { await sleepMs(1500); r = await postForm("api/request.php", fields); }   // ek baar dobara
+    if (r.ok) { sentOnline = true; cfOrderId = "#" + r.id; if (r.missing && !cfLost.length) cfLost = cfFiles.map(f => f.name); }
+    else {
+      btn.disabled = false; btn.innerHTML = `${icon("i-send")} Submit Request`; $("#fileErr").textContent = r.error; toast("⚠ " + r.error);
+      $("#cfWa").hidden = false;
+      $("#cfWa a").href = waURL(`*Custom PPT Request*\nName: ${d.name}\nWhatsApp: +91 ${d.phone}\nTopic: ${d.topic}\nSlides: ${d.slides}\nLanguage: ${d.lang}\n${d.req || ""}` + (cfFiles.length ? `\n\nFiles: ${cfFiles.map(f => f.name).join(", ")} (bhej raha/rahi hoon)` : ""));
+      return;
+    }
   } else if (CONFIG.formEndpoint) {
     try {
       const fd = new FormData();
@@ -1896,11 +2506,22 @@ $("#cfForm").onsubmit = async e => {
     toast("⚠ Could not send request. Please try again.");
     return;
   }
+  // ✅ Thank-you page par bhejo
+  {
+    const okFiles = cfFiles.length - cfLost.length;
+    const o = { ref: String(cfOrderId || cfRef), name: d.name, type: d.topic, slides: d.slides + " · " + d.lang, files: okFiles, pending: cfLost.slice() };
+    cfLost = []; $("#cfForm").reset(); cfFiles = []; renderFiles();
+    btn.disabled = false; btn.innerHTML = `${icon("i-send")} Submit Request`;
+    goThanks(o); return;
+  }
   $("#cfMain").hidden = true; $("#cfDone").hidden = false;
   $("#cfDone").innerHTML = `<div class="tick">${icon("i-check")}</div>
     <h3>Request Submitted! 🎉</h3>
-    <p>${`Thank you, ${esc(d.name)}! We've received your request${cfFiles.length?` and ${cfFiles.length} file(s)`:""}. Our team will contact you on WhatsApp shortly.`}</p>
+    <p>${`Thank you, ${esc(d.name)}! We've received your request${cfFiles.length && !cfLost.length ? ` and ${cfFiles.length} file(s)` : ""}. Our team will contact you on WhatsApp shortly.`}</p>
+    ${cfLost.length ? `<p class="cf-lost">⚠ Your file${cfLost.length > 1 ? "s" : ""} could not be uploaded: ${esc(cfLost.join(", "))}.<br>Please send ${cfLost.length > 1 ? "them" : "it"} on WhatsApp.</p>
+      <a class="btn btn-wa" target="_blank" rel="noopener" href="${esc(waURL(`Hi! My request #${cfOrderId} (${d.name}). Sending my file(s) here: ${cfLost.join(", ")}`))}">${icon("i-msg")} Send Files on WhatsApp</a> ` : ""}
     <button class="btn btn-primary" onclick="closeForm()">Done</button>`;
+  cfLost = [];
   $("#cfForm").reset(); cfFiles = []; renderFiles(); $("#fileErr").textContent = "";
   btn.disabled = false; btn.innerHTML = `${icon("i-send")} Submit Request`;
 };
@@ -1923,9 +2544,11 @@ async function postForm(url, fields, files = []){
   files.forEach(([k,f]) => fd.append(k, f, f.name));
   try {
     const r = await fetch(url, { method:"POST", body:fd, headers:{ Accept:"application/json" } });
-    const j = await r.json().catch(() => ({}));
-    return r.ok && j.ok ? j : { ok:false, error: j.error || "Something went wrong. Please try again." };
-  } catch(err) { return { ok:false, network:true, error:"Network error. Please check your internet." }; }
+    const j = await r.json().catch(() => null);
+    if (r.ok && j && j.ok) return j;
+    const code = r.status;
+    return { ok:false, status:code, server:!j, error: (j && j.error) || (code === 403 || code === 406 ? `Blocked by server security (code ${code}). Please try again.` : `Server problem (code ${code}). Please try again.`) };
+  } catch(err) { return { ok:false, status:0, network:true, error:"Network error. Please check your internet." }; }
 }
 function closeAllPopups(){ closeModal(); closeForm(); closePay(); closeReview(); hidePopup("themeModal"); hidePopup("priceModal"); }
 document.addEventListener("click", e => { if (e.target.closest(".js-pricing")) { e.preventDefault(); $("#navLinks").classList.remove("open"); showPopup("priceModal"); } });
@@ -2006,16 +2629,29 @@ $("#rvForm").onsubmit = async e => {
   bad.forEach(([id,b]) => $("#"+id).classList.toggle("bad", b));
   const first = bad.find(x => x[1]); if (first) { $("#"+first[0]+" input, #"+first[0]+" textarea").focus(); return; }
   let online = false;
-  if (API) {
-    const btn = $("#rvSubmit"); btn.disabled = true;
+  const btn = $("#rvSubmit");
+  if (GOOGLE && GS_URL) {
+    btn.disabled = true;
+    const r = await gsCall({ action:"review", ...d, website:$("#rvForm .hp").value });
+    btn.disabled = false;
+    if (r.j && r.j.ok) online = true; else if (r.j && r.j.error) { toast("⚠ " + r.j.error); return; }
+  } else if (API) {
+    btn.disabled = true;
     const r = await postForm("api/review.php", { ...d, website:$("#rvForm .hp").value });
     btn.disabled = false;
     if (r.ok) online = true; else if (!r.network) { toast("⚠ " + r.error); return; }
   }
-  if (!online) window.open(waURL(`⭐ ${"★".repeat(d.stars)} Review\n\n"${d.text}"\n\n— ${d.name}${d.role?", "+d.role:""}${d.deck?"\nDeck: "+d.deck:""}`), "_blank");
+  if (online) {
+    // Review turant website par — likhne wale ko bhi abhi dikhe
+    REVIEWS.unshift({ name:d.name, role:d.role, deck:d.deck, stars:+d.stars || 5, text:d.text });
+    renderReviews();
+    try { sessionStorage.setItem("la_my_review", JSON.stringify({ name:d.name, role:d.role, deck:d.deck, stars:+d.stars || 5, text:d.text, at:Date.now() })); } catch(err) {}
+  }
+  const waMsg = waURL(`⭐ ${"★".repeat(d.stars)} Review\n\n"${d.text}"\n\n— ${d.name}${d.role?", "+d.role:""}${d.deck?"\nDeck: "+d.deck:""}`);
   $("#rvForm").reset(); $("#rvMain").hidden = true; $("#rvDone").hidden = false;
   $("#rvDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>Thank you, ${esc(d.name)}! 💜</h3>
-    <p>${online ? "Your review has been received. It will appear on the website after a quick check." : "WhatsApp has opened with your review — just press Send."}</p>
+    <p>${online ? "Your review is now live on our website. Thank you for your feedback!" : "Tap below to send your review on WhatsApp."}</p>
+    ${online ? "" : `<a class="btn btn-wa" target="_blank" rel="noopener" href="${esc(waMsg)}">${icon("i-msg")} Send Review on WhatsApp</a> `}
     <button class="btn btn-primary" onclick="closeReview()">Done</button>`;
 };
 
@@ -2025,10 +2661,25 @@ $("#rvForm").onsubmit = async e => {
 let THEMES = [];
 const TH_FILTERS = {
   tone: [["Dark","🌙 Dark"],["White","☀️ White"]],
-  type: [["Questions","Questions"],["Theory","Theory"],["Theory + Questions","Theory + Q"],["Screenshot","Screenshot"]],
-  lang: [["Hindi","हिंदी"],["English","English"],["Both","हिंदी + Eng"]]
+  type: [["Questions","Questions"],["Theory","Theory"],["Theory + Questions","Theory + Questions"],["Screenshot","Screenshot"]],
+  lang: [["Hindi","हिंदी"],["English","English"],["Both","हिंदी + English"]],
+  cls: [...Array.from({ length:12 }, (_, i) => ["Class " + (i + 1), "Class " + (i + 1)]), ["Competitive Exams","Competitive Exams"], ["College / UG","College / UG"]],
+  subj: ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Corporate / Training"].map(x => [x, x])
 };
-const thState = { tone:"", type:"", lang:"", shown:12 };
+/* Class / Subject: Admin Panel mein theme par lagaye tags. Tag na ho toh:
+   Class → har class ke liye (design sab par chalta hai); Subject → naam se andaza (Physics, Maths, Hindi…), warna sab subjects */
+const SUBJ_WORDS = [["Physics",/physics|force|motion/i],["Chemistry",/chemistry|periodic|atom/i],["Biology",/biology|cell|plant|botany|zoology/i],["Maths",/math|formula|trigonometry|algebra|geometry/i],
+  ["Hindi",/hindi|हिंदी|हिन्दी|vyakaran|varn|swar|sandhi/i],["English",/english|grammar|tenses/i],["History",/history|1857/i],["Geography",/geography|river|map/i],
+  ["Reasoning / MAT",/\bmat\b|reasoning|navodaya/i],["GK & Current Affairs",/\bgk\b|current affairs|general knowledge/i],["Computer Science",/computer|coding/i],
+  ["Economics",/economics/i],["Corporate / Training",/corporate|training|business/i],["Science",/science/i],["EVS",/\bevs\b/i],["Sanskrit",/sanskrit|संस्कृत/i]];
+const thSubjects = t => { if (Array.isArray(t.subjects) && t.subjects.length) return t.subjects;
+  const out = SUBJ_WORDS.filter(([, re]) => re.test(t.name)).map(x => x[0]);
+  if (out.some(x => ["Physics","Chemistry","Biology"].includes(x)) && !out.includes("Science")) out.push("Science");
+  if (out.includes("English") && out.includes("Hindi")) out.splice(out.indexOf("English"), 1);
+  return out; };
+const thClasses = t => Array.isArray(t.classes) ? t.classes : [];
+const thHas = (list, v) => !list.length || list.includes(v);
+const thState = { tone:"", type:"", lang:"", cls:"", subj:"", q:"", shown:12 };
 // Aapke apne PPT samples (bina server ke preview ke liye). Live website par ye admin panel se aate hain.
 const SAMPLE_THEMES = [
   ["black-bilingual-questions","Black Bilingual Questions","Dark","Questions","Both",1],
@@ -2055,16 +2706,21 @@ const SAMPLE_THEMES = [
   return { id:"s"+(i+1), name, tone, type, lang, img:slides[0], slides };
 });
 const thLangs = t => [t.lang];
-const thMatch = (t, skip) => (skip==="tone" || !thState.tone || t.tone===thState.tone) && (skip==="type" || !thState.type || t.type===thState.type) && (skip==="lang" || !thState.lang || thLangs(t).includes(thState.lang));
+/* Search: naam, type, background, language — har shabd milna chahiye (jaise "hindi questions") */
+const thText = t => [t.name, t.type, t.tone, t.tone === "White" ? "light white" : "dark black", langLabel(t.lang), "theme ppt"].join(" ").toLowerCase();
+const thQ = t => { const q = String(thState.q || "").toLowerCase().trim(); return !q || q.split(/\s+/).every(w => thText(t).includes(w)); };
+const thMatch = (t, skip) => thQ(t) && (skip==="cls" || !thState.cls || thHas(thClasses(t), thState.cls)) && (skip==="subj" || !thState.subj || thHas(thSubjects(t), thState.subj)) && (skip==="tone" || !thState.tone || t.tone===thState.tone) && (skip==="type" || !thState.type || t.type===thState.type) && (skip==="lang" || !thState.lang || thLangs(t).includes(thState.lang));
 const thPic = (t, k = 0) => `<img src="${esc((t.slides && t.slides[k]) || t.img)}" alt="${esc(t.name)} — ${esc(t.type)} slide ${k+1}" loading="lazy">`;
 const langLabel = l => l === "Both" ? "Hindi + English" : l;
 function renderThemeChips(){
-  document.querySelectorAll(".th-chips").forEach(box => {
+  document.querySelectorAll(".th-pills").forEach(box => {
     const g = box.dataset.g, base = THEMES.filter(t => thMatch(t, g));
-    const n = v => base.filter(t => g==="lang" ? thLangs(t).includes(v) : t[g]===v).length;
-    box.innerHTML = `<button class="${!thState[g]?"on":""}" data-v="">All <small>${base.length}</small></button>` +
-      TH_FILTERS[g].map(([v,l]) => `<button class="${thState[g]===v?"on":""}" data-v="${v}">${l} <small>${n(v)}</small></button>`).join("");
-    box.querySelectorAll("button").forEach(b => b.onclick = () => { thState[g] = b.dataset.v; thState.shown = 12; renderThemes(); });
+    const n = v => base.filter(t => g==="lang" ? thLangs(t).includes(v) : g==="cls" ? thHas(thClasses(t), v) : g==="subj" ? thHas(thSubjects(t), v) : t[g]===v).length;
+    box.innerHTML = `<button type="button" class="${!thState[g]?"on":""}" data-v="" aria-pressed="${!thState[g]}">All <small>${base.length}</small></button>` +
+      TH_FILTERS[g].map(([v,l]) => { const c = n(v); return `<button type="button" class="${thState[g]===v?"on":""}${c?"":" zero"}" data-v="${v}" aria-pressed="${thState[g]===v}">${l} <small>${c}</small></button>`; }).join("");
+    box.querySelectorAll("button").forEach(b => b.onclick = () => { thState[g] = b.dataset.v; thState.shown = 12; closeTf(); renderThemes(); });
+    const cur = document.querySelector(`[data-cur="${g}"]`), sel = TH_FILTERS[g].find(x => x[0] === thState[g]);
+    cur.textContent = sel ? sel[1] : "All"; cur.closest(".tf-btn").classList.toggle("set", !!sel);
   });
 }
 let thList = [];
@@ -2099,19 +2755,35 @@ if (!reduceMotion) setInterval(() => {
 function renderThemes(){
   renderThemeChips();
   thList = THEMES.filter(t => thMatch(t));
-  const show = thList.slice(0, thState.shown);
+  // Sabse zyada views wali theme sabse upar (barabar views par admin wala order)
+  thList = thList.map((t, i) => [t, i]).sort((a, b) => ((+b[0].views || 0) - (+a[0].views || 0)) || (a[1] - b[1])).map(x => x[0]);
+  // Class/Subject chuna ho toh usi ke liye bani themes pehle, phir sab-subject wali
+  if (thState.subj || thState.cls) { const sc = t => (thState.subj && thSubjects(t).includes(thState.subj) ? 2 : 0) + (thState.cls && thClasses(t).includes(thState.cls) ? 1 : 0);
+    thList = thList.map((t, i) => [t, i]).sort((a, b) => (sc(b[0]) - sc(a[0])) || (a[1] - b[1])).map(x => x[0]); }
+  const active = !!(thState.tone || thState.type || thState.lang || thState.cls || thState.subj);
+  $("#thCount").innerHTML = `<b>${thList.length}</b> of ${THEMES.length} themes`;
+  $("#thReset").hidden = !active;
+  const show = thList.slice(0, thState.shown), q = String(thState.q || "").trim();
+  $("#thQ").hidden = !q;
+  if (q) $("#thQ").innerHTML = `${icon("i-search","width:16px;height:16px")}<span><b>${thList.length}</b> theme${thList.length === 1 ? "" : "s"} for "<b>${esc(q)}</b>"</span><button type="button" onclick="onSearch('')">✕ Clear search</button>`;
   $("#thGrid").innerHTML = show.length ? show.map((t,i) => `
     <div class="th-card" role="button" tabindex="0" onclick="openTheme(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTheme(${i})}" aria-label="View ${esc(t.name)}">
       <div class="th-pic">${cardSlides(t)}<span class="zoom">🔍 View Theme</span></div>
-      <div class="th-meta"><b>${esc(t.name)}</b><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span></div></div>
+      <div class="th-meta"><div class="th-name"><b>${esc(t.name)}</b><span class="th-views" data-vid="${esc(t.id)}" title="${(+t.views || 0).toLocaleString("en-IN")} views">${icon("i-eye","width:14px;height:14px")}<em>${fmtViews(t.views)}</em></span></div><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span></div></div>
       ${t.slides && t.slides.length > 1 ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${t.slides.length} slides</span>` : ""}
     </div>`).join("")
-    : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>No theme matches these filters. Try another combination.</p></div>`;
+    : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>${String(thState.q||"").trim() ? `No theme found for "${esc(thState.q.trim())}". Try another word — or <a href="#custom" class="js-custom" style="color:var(--cyan)">request a custom PPT</a>.` : "No theme matches these filters. Try another combination."}</p></div>`;
   const rem = thList.length - show.length;
   $("#thMore").parentNode.style.display = rem > 0 ? "" : "none";
   $("#thMore").innerHTML = `Show More Themes <span style="color:var(--dim);font-size:.8rem">(${rem} more)</span>`;
 }
 $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
+/* Filter dropdowns */
+function closeTf(){ document.querySelectorAll(".tf-dd.open").forEach(d => { d.classList.remove("open"); d.querySelector(".tf-btn").setAttribute("aria-expanded","false"); }); }
+document.querySelectorAll(".tf-btn").forEach(b => b.onclick = e => { e.stopPropagation(); const d = b.parentNode, was = d.classList.contains("open"); closeTf(); if (!was) { d.classList.add("open"); b.setAttribute("aria-expanded","true"); } });
+document.addEventListener("click", e => { if (!e.target.closest(".tf-dd")) closeTf(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeTf(); });
+$("#thReset").onclick = () => { thState.tone = thState.type = thState.lang = thState.cls = thState.subj = ""; thState.shown = 12; renderThemes(); };
 let thIdx = 0, thSlide = 0;
 let lbTimer = null;
 function lbAuto(){
@@ -2130,10 +2802,22 @@ function showSlide(k, auto){
   $("#thPos").textContent = n > 1 ? `${thSlide+1} / ${n}` : "";
   const on = document.querySelector("#thStrip button.on"); if (on) on.scrollIntoView({block:"nearest", inline:"nearest"});
 }
+/* View count: har theme ek session mein ek baar ginti hoti hai */
+const fmtViews = n => { n = +n || 0; return n >= 1e5 ? (n / 1e5).toFixed(n >= 1e6 ? 0 : 1).replace(/\.0$/, "") + "L" : n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, "") + "K" : String(n); };
+function countView(t){
+  if (!t || !t.id) return;
+  let seen = []; try { seen = JSON.parse(sessionStorage.getItem("la_seen") || "[]"); } catch(e) {}
+  if (seen.includes(t.id)) return;
+  seen.push(t.id); try { sessionStorage.setItem("la_seen", JSON.stringify(seen)); } catch(e) {}
+  t.views = (+t.views || 0) + 1;
+  document.querySelectorAll(`[data-vid="${CSS.escape(t.id)}"]`).forEach(el => { el.querySelector("em").textContent = fmtViews(t.views); el.title = t.views.toLocaleString("en-IN") + " views"; el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); });
+  if (GOOGLE && GS_URL) gsCall({ action:"view", id:t.id }).then(r => { if (r.j && r.j.ok && r.j.views) { t.views = r.j.views; document.querySelectorAll(`[data-vid="${CSS.escape(t.id)}"] em`).forEach(e => e.textContent = fmtViews(t.views)); } });
+}
 function openTheme(i){
   thIdx = (i + thList.length) % thList.length; const t = thList[thIdx], sl = t.slides || [t.img];
+  countView(t);
   $("#thStrip").innerHTML = sl.length > 1 ? sl.map((u,j) => `<button onclick="showSlide(${j})" aria-label="Slide ${j+1}"><img src="${esc(u)}" alt="" loading="lazy"><span>${j+1}</span></button>`).join("") : "";
-  $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span></div>
+  $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span>${thSubjects(t).slice(0,3).map(x => `<span>📖 ${esc(x)}</span>`).join("")}${thClasses(t).length ? `<span>🎓 ${esc(thClasses(t).length > 2 ? thClasses(t)[0] + " – " + thClasses(t).slice(-1)[0] : thClasses(t).join(", "))}</span>` : ""}</div>
     <a class="btn btn-primary btn-sm" href="order.html?theme=${encodeURIComponent(t.name)}">${icon("i-sparkle","width:15px")} Order in This Theme</a>`;
   showSlide(0); showPopup("themeModal");
 }
@@ -2179,26 +2863,71 @@ $("#thStage").addEventListener("mouseleave", () => { if ($("#themeModal").classL
   addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
   addEventListener("resize", upd); addEventListener("load", upd); upd();
 })();
-/* ---------- START: server se data lo ---------- */
-async function boot(){
-  try {
-    const r = await fetch("api/data.php", { headers:{ Accept:"application/json" }, cache:"no-store" });
-    const j = await r.json();
-    if (j.ok) {
-      API = true; SETTINGS = j.settings || SETTINGS;
-      PRODUCTS = j.products || []; REVIEWS = j.reviews || []; THEMES = j.themes || [];
-      Object.assign(CONFIG, { whatsapp: SETTINGS.whatsapp || CONFIG.whatsapp, phoneDisplay: SETTINGS.phoneDisplay || CONFIG.phoneDisplay, email: SETTINGS.email || CONFIG.email });
-      FILE_RULES.maxFiles = SETTINGS.maxFiles || FILE_RULES.maxFiles; FILE_RULES.maxMB = SETTINGS.maxMB || FILE_RULES.maxMB;
-    }
-  } catch(err) { /* server nahi mila — built-in data se chalega */ }
-  if (!API) THEMES = SAMPLE_THEMES;
+/* ---------- START: data lo (Google Sheet / PHP server) ---------- */
+// Google mode: themes, prices, reviews, contact — sab Admin Panel (Google Sheet) se aate hain.
+function useLive(j){
+  if (!j || !j.ok) return false;
+  const st = j.settings || {};
+  UI_ST = st;
+  if (Array.isArray(j.themes)) THEMES = j.themes;
+  if (Array.isArray(j.reviews)) {
+    REVIEWS = j.reviews;
+    try { const m = JSON.parse(sessionStorage.getItem("la_my_review") || "null");
+      if (m && Date.now() - m.at < 15 * 60000 && !REVIEWS.some(r => r.name === m.name && r.text === m.text)) REVIEWS.unshift(m); } catch(err) {}
+  }
+  if (Array.isArray(j.prices) && j.prices.length) PRICING.items = j.prices;
+  ["title","offerBig","offerSmall","bulkMin"].forEach(k => { const v = k === "title" ? st.pricingTitle : st[k]; if (v !== undefined) PRICING[k] = String(v); });
+  if (st.whatsapp) CONFIG.whatsapp = String(st.whatsapp).replace(/\D/g, "");
+  if (st.phoneDisplay) CONFIG.phoneDisplay = String(st.phoneDisplay);
+  if (st.email) CONFIG.email = String(st.email);
+  return true;
+}
+function renderAll(){
   $("#themes").hidden = !THEMES.length;
   renderThemes();
+  buildBoardSlides();
   applySettings(); buildHero(); renderCats(); renderReviews();
   // PPTs na hon toh Category aur PPT section chhupe rahenge; PPT add hote hi apne aap dikhenge
   const hasPPT = PRODUCTS.length > 0;
   $("#categories").hidden = !hasPPT; $("#shop").hidden = !hasPPT;
   renderChips(); renderGrid(); renderCart();
+}
+async function boot(){
+  if (LA.whatsapp) CONFIG.whatsapp = LA.whatsapp;
+  if (LA.phoneDisplay) CONFIG.phoneDisplay = LA.phoneDisplay;
+  if (LA.email) CONFIG.email = LA.email;
+  if (!GOOGLE) {
+    try {
+      const r = await fetch("api/data.php", { headers:{ Accept:"application/json" }, cache:"no-store" });
+      const j = await r.json();
+      if (j.ok) {
+        API = true; SETTINGS = j.settings || SETTINGS;
+        PRODUCTS = j.products || []; REVIEWS = j.reviews || []; THEMES = j.themes || [];
+        Object.assign(CONFIG, { whatsapp: SETTINGS.whatsapp || CONFIG.whatsapp, phoneDisplay: SETTINGS.phoneDisplay || CONFIG.phoneDisplay, email: SETTINGS.email || CONFIG.email });
+        FILE_RULES.maxFiles = SETTINGS.maxFiles || FILE_RULES.maxFiles; FILE_RULES.maxMB = SETTINGS.maxMB || FILE_RULES.maxMB;
+      }
+    } catch(err) { /* server nahi mila — built-in data se chalega */ }
+    if (!API) THEMES = SAMPLE_THEMES;
+    return renderAll();
+  }
+  // 1) pichli baar ka data turant dikhao (fast), warna built-in samples
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem("la_data") || "null"); } catch(e) {}
+  if (!useLive(cached)) THEMES = SAMPLE_THEMES;
+  renderAll();
+  // 2) Google Sheet se taaza data
+  if (!GS_URL) return;
+  try {
+    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 15000);
+    const r = await fetch(GS_URL + (GS_URL.includes("?") ? "&" : "?") + "action=data", { signal: ctl.signal });
+    const j = await r.json();
+    if (j && j.ok) {
+      const txt = JSON.stringify(j.themes) + JSON.stringify(j.prices) + JSON.stringify(j.reviews) + JSON.stringify(j.settings);
+      const old = cached ? JSON.stringify(cached.themes) + JSON.stringify(cached.prices) + JSON.stringify(cached.reviews) + JSON.stringify(cached.settings) : "";
+      try { localStorage.setItem("la_data", JSON.stringify(j)); } catch(e) {}
+      if (txt !== old) { const keepShown = thState.shown; useLive(j); renderAll(); thState.shown = keepShown; }
+    }
+  } catch(err) { /* net slow — jo dikh raha hai wahi rahega */ }
 }
 boot();
 </script>

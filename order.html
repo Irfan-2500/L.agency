@@ -107,6 +107,7 @@ form{display:flex;flex-direction:column;gap:18px;margin-top:26px}
 .fi .nm b{display:block;font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fi .nm small{font-size:.74rem;color:var(--muted)}
 .fi.done .nm small{color:var(--green)}
+.fi.later .nm small{color:#67e8f9}
 .fi.is-err{border-color:rgba(251,113,133,.5)}
 .fi.is-err .nm small{color:var(--red)}
 .fi button{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;border:0;background:transparent;color:var(--dim);cursor:pointer}
@@ -123,6 +124,17 @@ form{display:flex;flex-direction:column;gap:18px;margin-top:26px}
 .tick svg{width:40px;height:40px}
 .thanks h2{font-family:var(--display);font-size:clamp(1.8rem,6vw,2.4rem);line-height:1.15}
 .thanks h2 span{background:var(--rgb);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite}
+.fbtns{display:flex;align-items:center;gap:4px}
+.fi button.retry{width:auto;padding:0 10px;font-size:.76rem;font-weight:700;color:#67e8f9;border:1px solid rgba(103,232,249,.35)}
+.fi button.retry:hover{color:#fff;background:rgba(6,182,212,.18)}
+.fhint{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:.8rem;color:var(--muted);background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3)}
+.fhint b{color:var(--text)}
+.wabox{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-size:.82rem;color:var(--muted)}
+.wabtn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:12px;font-weight:700;font-size:.9rem;color:#fff;background:#16a34a;box-shadow:0 8px 22px -8px rgba(34,197,94,.7)}
+.wabtn:hover{filter:brightness(1.1)}
+.twarn{margin:14px auto 0;max-width:420px;padding:14px;border-radius:14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.4);display:flex;flex-direction:column;align-items:center;gap:10px}
+.twarn p{font-size:.88rem;font-weight:600;color:#fbbf24}
+html.light .twarn p{color:#b45309}
 .tfiles{color:var(--green);font-weight:700;margin-top:10px}.tfiles:empty{display:none}
 .thanks .big{font-size:1.15rem;font-weight:600;margin-top:12px}
 .thanks .big b{color:var(--amber);text-shadow:0 0 14px rgba(255,138,0,.5)}
@@ -152,6 +164,8 @@ html.light .picked a{color:#0e7490}
 html.light .timer b{color:var(--text)}
 html.light .drop svg{color:#7c3aed}
 
+[hidden]{display:none!important}   /* chhupi cheez hamesha chhupi rahe */
+
 /* Dark / Light / System switch (homepage jaisa) */
 .theme-sw{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:12px;background:var(--card);border:1px solid var(--line2);flex:none}
 .theme-sw button{display:inline-flex;align-items:center;justify-content:center;width:32px;height:30px;border-radius:9px;color:var(--muted);transition:.2s;background:none;border:0;cursor:pointer}
@@ -172,6 +186,7 @@ html.light .drop svg{color:#7c3aed}
   <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
   <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 21l2.2-5.4A8.5 8.5 0 1 1 21 11.5z"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
 </svg>
 
@@ -205,7 +220,7 @@ html.light .drop svg{color:#7c3aed}
 
         <div class="q" id="q-phone">
           <label for="phone">Mobile No. <b>*</b></label>
-          <div class="phone"><span>+91</span><input type="tel" id="phone" name="phone" inputmode="numeric" autocomplete="tel-national" maxlength="14" placeholder="10-digit mobile number"></div>
+          <div class="phone"><span>+91</span><input type="tel" id="phone" name="phone" inputmode="tel" autocomplete="tel-national" maxlength="18" placeholder="10-digit mobile number"></div>
           <div class="err">Please enter a valid 10-digit mobile number</div>
         </div>
 
@@ -235,11 +250,14 @@ html.light .drop svg{color:#7c3aed}
           <input type="file" id="files" multiple hidden accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx,.txt,.zip,.rar,.7z">
           <p class="ferr" id="fileErr" role="alert"></p>
           <div class="flist" id="fileList"></div>
+          <p class="fhint" id="fileHint" hidden>👍 Don't worry — you can still <b>submit your order</b>. Send this file on WhatsApp after submitting.</p>
         </div>
 
         <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button type="submit" class="submit" id="submitBtn"><svg class="i"><use href="#i-send"/></svg> Submit Order</button>
         <p class="form-err" id="formErr" role="alert"></p>
+        <div class="wabox" id="waBox" hidden><span>Or send your order directly:</span>
+          <a class="wabtn" id="waBtn" href="#" target="_blank" rel="noopener"><svg class="i"><use href="#i-wa"/></svg> Send Order on WhatsApp</a></div>
         <p class="note">🔒 Your details are only used to contact you about your PPT.</p>
       </form>
     </section>
@@ -248,6 +266,8 @@ html.light .drop svg{color:#7c3aed}
       <div class="tick"><svg class="i"><use href="#i-check"/></svg></div>
       <h2>Thank You<span id="tName"></span>! 🎉</h2>
       <p class="tfiles" id="tFiles"></p>
+      <div class="twarn" id="tWarn" hidden><p id="tWarnText"></p>
+        <a class="wabtn" id="tWarnBtn" href="#" target="_blank" rel="noopener"><svg class="i"><use href="#i-wa"/></svg> Send Files on WhatsApp</a></div>
       <p class="big">Our team will contact you within <b>10 minutes</b>.</p>
       <p class="hi" lang="hi">हमारी टीम <b>10 मिनट</b> में आपसे संपर्क करेगी।</p>
       <div class="timer" aria-live="off"><svg class="i"><use href="#i-clock"/></svg>Expect our call in <b id="countdown">10:00</b></div>
@@ -256,6 +276,7 @@ html.light .drop svg{color:#7c3aed}
   </main>
 </div>
 
+<script src="config.js"></script>
 <script>
 const $ = s => document.querySelector(s);
 let type = "";
@@ -276,13 +297,39 @@ $("#phone").oninput = e => { e.target.value = e.target.value.replace(/[^\d ]/g, 
 ["name","phone","desc"].forEach(id => $("#"+id).addEventListener("input", e => e.target.closest(".q").classList.remove("bad")));
 
 
-/* ---------- FILE UPLOAD (1 GB tak, tukdon mein) ---------- */
+/* ---------- FILE UPLOAD (1 GB tak, tukdon mein) ----------
+   Har file base64 tukdon mein jaati hai (server ke security filter ise galti se block nahi karte);
+   phir bhi roka gaya toh apne aap doosre tarike aur chhote tukde try hote hain. File na jaye tab bhi ORDER HAMESHA JAATA HAI. */
 const MAXN = 5, EXT = ["jpg","jpeg","png","webp","gif","heic","pdf","doc","docx","xls","xlsx","csv","ppt","pptx","txt","zip","rar","7z"];
-let MAXB = 1024 ** 3, CHUNK = 5 * 1024 * 1024, upFiles = [], busy = false;
-fetch("api/upload.php", { headers: { Accept: "application/json" } }).then(r => r.json()).then(j => { if (j.ok) { MAXB = j.max; CHUNK = j.chunk; } }).catch(() => {});
+let MAXB = 1024 ** 3, CHUNK = 1536 * 1024, CHUNK64 = 1024 * 1024, upFiles = [], busy = false, WA = "919711069435";
+// config.js: backend "google" (Vercel) → orders Google Sheet mein · "php" (Hostinger) → admin panel mein
+const LA = window.LA_CONFIG || { backend: "php" };
+const GOOGLE = LA.backend === "google", GS_URL = String(LA.orderUrl || "").trim();
+if (LA.whatsapp) WA = LA.whatsapp;
+// Admin Panel → Settings mein badla WhatsApp number (home page ne save kiya hua)
+try { const c = JSON.parse(localStorage.getItem("la_data") || "null"); if (c && c.settings && c.settings.whatsapp) WA = String(c.settings.whatsapp).replace(/\D/g, "") || WA; } catch (e) {}
+if (!GOOGLE) {
+  fetch("api/upload.php", { headers: { Accept: "application/json" } }).then(r => r.json()).then(j => { if (j.ok) { MAXB = j.max; CHUNK = j.chunk; CHUNK64 = j.chunk64 || CHUNK64; } }).catch(() => {});
+  fetch("api/data.php", { headers: { Accept: "application/json" } }).then(r => r.json()).then(j => { if (j.ok && j.settings && j.settings.whatsapp) WA = j.settings.whatsapp; }).catch(() => {});
+}
+const waLink = msg => `https://wa.me/${WA}?text=${encodeURIComponent(msg)}`;
 const hsize = b => b >= 1024 ** 3 ? (b / 1024 ** 3).toFixed(2) + " GB" : b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB";
 const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const rid = () => [...crypto.getRandomValues(new Uint8Array(16))].map(b => b.toString(16).padStart(2, "0")).join("");
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+// tukde ko base64 text banao — server ke security filter isse galti se nahi rokte
+const toB64 = blob => new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(",")[1] || ""); fr.onerror = () => no(fr.error); fr.readAsDataURL(blob); });
+// server ka jawab saaf shabdon mein
+const why = s => !s ? "internet connection problem" : (s === 403 || s === 406) ? `blocked by server security (code ${s})`
+  : s === 404 ? "upload service not found on server (code 404)" : s === 413 ? "file too large for server (code 413)"
+  : s >= 500 ? `server error (code ${s})` : s < 300 ? "unexpected reply from server" : `upload error (code ${s})`;
+async function post(url, body, headers) {
+  try {
+    const r = await fetch(url, { method: "POST", body, headers: Object.assign({ Accept: "application/json" }, headers || {}) });
+    let j = null; try { j = await r.json(); } catch (e) {}
+    return { s: r.status, j };
+  } catch (e) { return { s: 0, j: null }; }
+}
 function addFiles(list) {
   const errs = [];
   [...list].forEach(f => {
@@ -291,7 +338,7 @@ function addFiles(list) {
     else if (f.size > MAXB) errs.push(`"${f.name}" is larger than 1 GB`);
     else if (!f.size) errs.push(`"${f.name}" is empty`);
     else if (upFiles.length >= MAXN) errs.push(`Maximum ${MAXN} files allowed`);
-    else if (!upFiles.some(x => x.file.name === f.name && x.file.size === f.size)) upFiles.push({ id: rid(), file: f, p: 0, st: "wait" });
+    else if (!upFiles.some(x => x.file.name === f.name && x.file.size === f.size)) upFiles.push({ key: rid(), id: "", file: f, p: 0, st: "wait" });
   });
   $("#fileErr").textContent = [...new Set(errs)].join(" · ");
   renderFiles(); pump();
@@ -299,40 +346,128 @@ function addFiles(list) {
 function renderFiles() {
   $("#fileList").innerHTML = upFiles.map((x, i) => {
     const pct = Math.round(x.p * 100);
-    const msg = x.st === "done" ? "✓ Uploaded · " + hsize(x.file.size) : x.st === "err" ? "⚠ " + esc(x.err) : x.st === "up" ? `Uploading ${pct}% · ${hsize(x.file.size)}` : "Waiting… · " + hsize(x.file.size);
-    return `<div class="fi ${x.st === "err" ? "is-err" : x.st}" data-id="${x.id}"><svg class="i"><use href="#i-file"/></svg>
+    const msg = x.st === "done" ? "✓ Uploaded · " + hsize(x.file.size)
+      : x.st === "later" ? "📎 Ready — you'll send this file on WhatsApp after submitting"
+      : x.st === "err" ? "⚠ Not uploaded — " + esc(x.err)
+      : x.st === "up" ? `Uploading ${pct}% · ${hsize(x.file.size)}` : "Waiting… · " + hsize(x.file.size);
+    return `<div class="fi ${x.st === "err" ? "is-err" : x.st}" data-key="${x.key}"><svg class="i"><use href="#i-file"/></svg>
       <div class="nm"><b>${esc(x.file.name)}</b><small>${msg}</small></div>
-      <button type="button" onclick="removeFile(${i})" aria-label="Remove file"><svg class="i"><use href="#i-x"/></svg></button>
+      <span class="fbtns">${x.st === "err" ? `<button type="button" class="retry" onclick="retryFile(${i})">↻ Retry</button>` : ""}
+      <button type="button" onclick="removeFile(${i})" aria-label="Remove file"><svg class="i"><use href="#i-x"/></svg></button></span>
       <span class="bar" style="width:${pct}%"></span></div>`;
   }).join("");
+  const bad = upFiles.some(x => x.st === "err");
+  $("#fileHint").hidden = !bad;
   $("#q-files").classList.remove("bad");
 }
+function progress(it) {
+  const row = document.querySelector(`.fi[data-key="${it.key}"]`); if (!row) return;
+  const pct = Math.round(it.p * 100);
+  row.querySelector(".bar").style.width = pct + "%";
+  row.querySelector("small").textContent = `Uploading ${pct}% · ${hsize(it.file.size)}`;
+}
 function removeFile(i) { const x = upFiles[i]; if (x) x.st = "removed"; upFiles.splice(i, 1); $("#fileErr").textContent = ""; renderFiles(); }
+function retryFile(i) { const x = upFiles[i]; if (x) { x.st = "wait"; x.p = 0; x.err = ""; renderFiles(); pump(); } }
 async function pump() {
   if (busy) return; const it = upFiles.find(x => x.st === "wait"); if (!it) return;
   busy = true; await sendFile(it); busy = false; pump();
 }
-async function sendFile(it) {
-  it.st = "up"; renderFiles();
-  const f = it.file, total = Math.max(1, Math.ceil(f.size / CHUNK));
+// Ek tarike se poori file bhejo. mode: "b64" | "form" | "raw". Lautata hai {ok} ya {err, stop}
+async function tryUpload(it, mode, size) {
+  const f = it.file, id = rid(), total = Math.max(1, Math.ceil(f.size / size));
   let i = 0, tries = 0;
   while (i < total) {
-    if (it.st === "removed") return;
-    const fd = new FormData();
-    fd.append("upload_id", it.id); fd.append("index", i); fd.append("total", total); fd.append("name", f.name); fd.append("size", f.size);
-    fd.append("chunk", f.slice(i * CHUNK, Math.min(f.size, (i + 1) * CHUNK)), "chunk");
-    let r = null, j = {};
-    try { r = await fetch("api/upload.php", { method: "POST", body: fd, headers: { Accept: "application/json" } }); j = await r.json().catch(() => ({})); } catch (e) { r = null; }
-    if (r && r.status === 409 && typeof j.next === "number") { i = j.next; continue; }
-    if (!r || (!j.ok && r.status >= 500 && tries < 3)) {
-      if (++tries <= 3) { await new Promise(s => setTimeout(s, 1500 * tries)); continue; }
+    if (it.st === "removed") return { ok: false, stop: true };
+    const part = f.slice(i * size, Math.min(f.size, (i + 1) * size));
+    const meta = { upload_id: id, index: i, total, name: f.name, size: f.size };
+    let res;
+    if (mode === "raw") res = await post("api/upload.php?" + new URLSearchParams(meta), part, { "Content-Type": "application/octet-stream" });
+    else {
+      const fd = new FormData(); Object.entries(meta).forEach(([k, v]) => fd.append(k, v));
+      if (mode === "b64") { fd.append("enc", "b64"); fd.append("chunk", new Blob([await toB64(part)], { type: "text/plain" }), "chunk.txt"); }
+      else fd.append("chunk", part, "chunk.bin");
+      res = await post("api/upload.php", fd);
     }
-    if (!r || !j.ok) { if (it.st === "removed") return; it.st = "err"; it.err = (r && j.error) || "Upload failed. Please check your internet and try again."; renderFiles(); return; }
-    tries = 0; i++; it.p = i / total;
-    const row = document.querySelector(`.fi[data-id="${it.id}"]`);
-    if (row) { row.querySelector(".bar").style.width = Math.round(it.p * 100) + "%"; row.querySelector("small").textContent = `Uploading ${Math.round(it.p * 100)}% · ${hsize(f.size)}`; }
+    const { s, j } = res;
+    if (j && j.ok) { tries = 0; i++; it.p = i / total; progress(it); continue; }
+    if (s === 409 && j && typeof j.next === "number") { i = j.next; continue; }
+    if (j && j.error && [415, 422, 429].includes(s)) return { ok: false, stop: true, err: j.error };   // file hi galat hai — dobara bhejna bekaar
+    if ((!s || s >= 500) && tries < 2) { tries++; await sleep(1500 * tries); continue; }               // net/server ki hichki
+    return { ok: false, err: (j && j.error) || why(s) };
   }
-  it.st = "done"; it.p = 1; renderFiles();
+  it.id = id;
+  return { ok: true };
+}
+/* ---- Order seedha aapke Gmail par (FormSubmit) — Google Sheet setup na ho tab bhi order aata hai ----
+   Pehli baar FormSubmit aapko "Activate Form" email bhejta hai — use ek baar click karna hai. */
+const makeRef = () => { const d = new Date(); return "LA-" + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0") + "-" + String(Math.floor(1000 + Math.random() * 9000)); };
+async function emailOrder(fields) {
+  if (LA.previewDemo) return true;                  // sirf preview ke liye — asli site par kabhi on nahi
+  if (LA.emailOrders === false || !(LA.formEmailUrl || LA.email)) return false;
+  const url = LA.formEmailUrl || ("https://formsubmit.co/ajax/" + encodeURIComponent(LA.email));
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 25000);
+  try {
+    const r = await fetch(url, { method: "POST", signal: ctl.signal, headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(fields) });
+    const j = await r.json().catch(() => null);
+    return !!(j && String(j.success) === "true");
+  } catch (e) { return false; } finally { clearTimeout(t); }
+}
+function goThanks(o) {
+  o.at = Date.now(); o.wa = WA;
+  try { sessionStorage.setItem("la_last_order", JSON.stringify(o)); } catch (e) {}
+  location.href = "thank-you.html#ref=" + encodeURIComponent(o.ref) + "&n=" + encodeURIComponent(String(o.name).split(" ")[0]);
+}
+
+/* ---- Google Drive upload (Vercel mode) — 8 MB tukde, base64 mein Apps Script ko ---- */
+async function gsCall(payload) {
+  try {
+    const r = await fetch(GS_URL, { method: "POST", body: JSON.stringify(payload), headers: { "Content-Type": "text/plain;charset=utf-8" } });
+    let j = null; try { j = await r.json(); } catch (e) {}
+    return { s: r.status, j };
+  } catch (e) { return { s: 0, j: null }; }
+}
+async function gsUpload(it) {
+  const f = it.file;
+  let st = null;
+  for (let t = 0; t < 3; t++) { st = await gsCall({ action: "start", name: f.name, size: f.size, mime: f.type, who: $("#name").value.trim() }); if (st.j) break; await sleep(1500 * (t + 1)); }
+  if (!st.j || !st.j.ok) return { ok: false, err: (st.j && st.j.error) || why(st.s) };
+  let pos = 0, size = 8 << 20, tries = 0;
+  while (pos < f.size) {
+    if (it.st === "removed") return { ok: false };
+    const part = f.slice(pos, Math.min(f.size, pos + size));
+    const r = await gsCall({ action: "chunk", session: st.j.session, start: pos, total: f.size, data: await toB64(part) });
+    if (r.j && r.j.ok) {
+      if (r.j.done) { it.url = r.j.url; return { ok: true }; }
+      pos = typeof r.j.next === "number" ? r.j.next : pos + part.size; tries = 0; it.p = pos / f.size; progress(it); continue;
+    }
+    if (r.j && r.j.stop) return { ok: false, err: r.j.error };
+    if (!r.j && size > (1 << 20)) size /= 2;                 // bada tukda nahi gaya — chhota karke dobara
+    if (tries++ < 3) { await sleep(2000 * tries); continue; }
+    return { ok: false, err: (r.j && r.j.error) || why(r.s) };
+  }
+  return { ok: false, err: "upload incomplete" };
+}
+
+async function sendFile(it) {
+  it.st = "up"; it.p = 0; it.err = ""; renderFiles();
+  if (GOOGLE) {
+    if (!GS_URL) { it.st = "later"; renderFiles(); return; }          // order WhatsApp se jayega, file bhi wahin
+    const r = await gsUpload(it);
+    if (it.st === "removed") return;
+    if (r.ok) { it.st = "done"; it.p = 1; } else { it.st = "err"; it.err = r.err || "upload failed"; }
+    renderFiles(); return;
+  }
+  // [tarika, tukde ka size] — pehle base64 (sabse safe), roka gaya toh normal, phir chhote tukde, aakhir mein raw
+  const plans = [["b64", CHUNK64], ["form", CHUNK], ["b64", 384 << 10], ["raw", 120 << 10]];
+  let last = "";
+  for (const [mode, size] of plans) {
+    const r = await tryUpload(it, mode, size);
+    if (it.st === "removed") return;
+    if (r.ok) { it.st = "done"; it.p = 1; renderFiles(); return; }
+    last = last || r.err; it.p = 0; progress(it);   // pehla error hi asli wajah batata hai
+    if (r.stop) break;
+  }
+  it.st = "err"; it.err = last || "upload failed"; renderFiles();
 }
 $("#files").onchange = e => { addFiles(e.target.files); e.target.value = ""; };
 const drop = $("#drop");
@@ -342,6 +477,7 @@ drop.addEventListener("drop", e => addFiles(e.dataTransfer.files));
 addEventListener("beforeunload", e => { if (upFiles.some(x => x.st === "up" || x.st === "wait")) { e.preventDefault(); e.returnValue = ""; } });
 const pending = () => upFiles.some(x => x.st === "up" || x.st === "wait");
 const overall = () => { const t = upFiles.reduce((a, x) => a + x.file.size, 0) || 1; return Math.round(upFiles.reduce((a, x) => a + x.file.size * x.p, 0) / t * 100); };
+
 $("#orderForm").onsubmit = async e => {
   e.preventDefault();
   const name = $("#name").value.trim();
@@ -352,37 +488,78 @@ $("#orderForm").onsubmit = async e => {
   const first = bad.find(x => x[1]);
   if (first) { $("#"+first[0]+" input, #"+first[0]+" textarea").focus(); return; }
 
-  if (upFiles.some(x => x.st === "err")) { $("#q-files").classList.add("bad"); $("#formErr").textContent = "A file did not upload. Remove it (✕) or add it again, then submit."; return; }
   const btn = $("#submitBtn"), label = btn.innerHTML;
-  btn.disabled = true; $("#formErr").textContent = "";
-  if (pending()) {
-    await new Promise(res => { const t = setInterval(() => { btn.textContent = `Uploading files… ${overall()}%`; if (!pending()) { clearInterval(t); res(); } }, 300); });
-    if (upFiles.some(x => x.st === "err")) { btn.disabled = false; btn.innerHTML = label; $("#formErr").textContent = "A file did not upload. Remove it (✕) or add it again, then submit."; return; }
-  }
+  btn.disabled = true; $("#formErr").textContent = ""; $("#waBox").hidden = true;
+  if (pending()) await new Promise(res => { const t = setInterval(() => { btn.textContent = `Uploading files… ${overall()}%`; if (!pending()) { clearInterval(t); res(); } }, 300); });
   btn.textContent = "Sending…";
-  const fd = new FormData();
-  fd.append("source", "order-page");
-  fd.append("name", name); fd.append("phone", phone);
-  fd.append("topic", type || "PPT Order");
-  fd.append("requirements", (theme ? "Theme: " + theme + "\n" : "") + desc);
-  fd.append("website", document.querySelector(".hp").value);
-  fd.append("uploads", JSON.stringify(upFiles.filter(x => x.st === "done").map(x => x.id)));
-  let res = {};
-  try {
-    const r = await fetch("api/request.php", { method: "POST", body: fd, headers: { Accept: "application/json" } });
-    res = await r.json().catch(() => ({}));
-    if (!r.ok) res.ok = false;
-  } catch (err) { res = { ok: false, error: "Could not send your order. Please check your internet and try again." }; }
-  btn.disabled = false; btn.innerHTML = label;
-  if (!res.ok) { $("#formErr").textContent = res.error || "Could not send your order. Please try again in a moment."; return; }
 
-  // Thank you screen
+  const ok = upFiles.filter(x => x.st === "done"), failed = upFiles.filter(x => x.st === "err" || x.st === "later").map(x => x.file.name);
+  const requirements = (theme ? "Theme: " + theme + "\n" : "") + desc + (failed.length ? `\n\n[Files not uploaded on website: ${failed.join(", ")}]` : "");
+  let s = 0, j = null;
+  const ref = makeRef(), hp = document.querySelector(".hp").value;
+  if (GOOGLE) {
+    // 1) Google Sheet (agar link laga hai)  2) nahi toh seedha Gmail par  3) dono fail → WhatsApp button
+    if (GS_URL) {
+      const order = { action: "order", source: "PPT Order page", name, phone, topic: type || "PPT Order", theme, details: desc,
+        files: ok.map(x => ({ name: x.file.name, url: x.url })), failed, website: hp };
+      ({ s, j } = await gsCall(order));
+      if (!j) { await sleep(1500); ({ s, j } = await gsCall(order)); }          // ek baar dobara
+    }
+    if (!(j && j.ok) && !hp) {
+      const sent = await emailOrder({
+        _subject: `🆕 PPT Order ${ref} — ${name}${type ? " (" + type + ")" : ""}`, _template: "table", _captcha: "false",
+        "Order ID": ref, "Name": name, "Mobile": "+91 " + phone, "WhatsApp": "https://wa.me/91" + phone,
+        "PPT Type": type || "—", "Theme": theme || "—", "Details": desc,
+        "Files": upFiles.length ? upFiles.map(x => x.file.name + (x.url ? " → " + x.url : " (customer WhatsApp par bhejega)")).join("\n") : "—",
+        "From": "PPT Order page", "Time": new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+      });
+      if (sent) j = { ok: true, id: ref, emailed: true };
+    }
+  } else if (!GOOGLE) {
+    const fd = new FormData();
+    fd.append("source", "order-page");
+    fd.append("name", name); fd.append("phone", phone);
+    fd.append("topic", type || "PPT Order");
+    fd.append("requirements", requirements);
+    fd.append("website", document.querySelector(".hp").value);
+    fd.append("uploads", JSON.stringify(ok.map(x => x.id)));
+    ({ s, j } = await post("api/request.php", fd));
+    if ((!s || s >= 500) && !(j && j.ok)) { await sleep(1500); ({ s, j } = await post("api/request.php", fd)); }   // ek baar dobara
+  }
+  btn.disabled = false; btn.innerHTML = label;
+
+  if (!(j && j.ok)) {
+    $("#formErr").textContent = GOOGLE ? "Couldn't reach our server right now. Tap the green button below to send your order on WhatsApp."
+      : (j && j.error) || `Could not send your order — ${why(s)}. Please try again.`;
+    const msg = `*PPT Order*\nName: ${name}\nMobile: +91 ${phone}\nType: ${type || "-"}${theme ? "\nTheme: " + theme : ""}\n\n${desc}`
+      + (upFiles.length ? `\n\nFiles: ${upFiles.map(x => x.file.name).join(", ")} (bhej raha/rahi hoon)` : "");
+    $("#waBtn").href = waLink(msg); $("#waBox").hidden = false;
+    return;
+  }
+
+  // ✅ Thank-you page par bhejo
+  {
+    const got = ok.length - (j.missing || 0);
+    const pendingFiles = j.emailed ? upFiles.filter(x => !x.url).map(x => x.file.name) : failed;
+    upFiles = [];
+    goThanks({ ref: j.emailed ? ref : (j.id ? "#" + j.id : ref), name, type: type || "PPT Order", theme, files: j.emailed ? ok.length : Math.max(0, got), pending: pendingFiles });
+    return;
+  }
+  // (purana in-page thank you — ab use nahi hota)
   $("#tName").textContent = ", " + name.split(" ")[0];
-  const nf = upFiles.length; $("#tFiles").textContent = nf ? `✓ ${nf} file${nf > 1 ? "s" : ""} received` : ""; upFiles = [];
+  const got = ok.length - (j.missing || 0);
+  $("#tFiles").textContent = got > 0 ? `✓ ${got} file${got > 1 ? "s" : ""} received` : "";
+  const notSent = failed.length + (j.missing || 0);
+  if (notSent) {
+    $("#tWarn").hidden = false;
+    $("#tWarnText").textContent = `${notSent} file${notSent > 1 ? "s" : ""} could not be uploaded${failed.length ? ": " + failed.join(", ") : ""}. Please send ${notSent > 1 ? "them" : "it"} on WhatsApp.`;
+    $("#tWarnBtn").href = waLink(`Hi! My order #${j.id} (${name}). Sending my file${notSent > 1 ? "s" : ""} here${failed.length ? ": " + failed.join(", ") : ""}.`);
+  }
+  upFiles = [];
   $("#orderView").hidden = true; $("#thanksView").hidden = false;
   window.scrollTo({ top: 0, behavior: "smooth" });
   let left = 600;
-  const tick = () => { const m = Math.floor(left / 60), s = left % 60; $("#countdown").textContent = `${m}:${String(s).padStart(2, "0")}`; if (left-- > 0) setTimeout(tick, 1000); else $("#countdown").textContent = "any moment"; };
+  const tick = () => { const m = Math.floor(left / 60), s2 = left % 60; $("#countdown").textContent = `${m}:${String(s2).padStart(2, "0")}`; if (left-- > 0) setTimeout(tick, 1000); else $("#countdown").textContent = "any moment"; };
   tick();
 };
 </script>
