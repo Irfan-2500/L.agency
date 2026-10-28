@@ -232,6 +232,9 @@ label.f span{font-weight:500;color:var(--dim)}
 .tcard.hid{opacity:.55}
 .tcard .pic{aspect-ratio:16/9;background:var(--bg2);position:relative;max-width:100%}
 .tcard .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.tgrid.notes{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+.tgrid.notes .pic{aspect-ratio:210/297}
+.tgrid.notes .pic img{object-position:top}
 .tcard .pic .cnt{position:absolute;right:8px;top:8px;background:rgba(0,0,0,.65);color:#fff;padding:2px 8px;border-radius:7px;font-size:.72rem;font-weight:700}
 .tcard .body{padding:12px 14px;display:flex;flex-direction:column;gap:9px;flex:1}
 .tcard b{font-size:.94rem}
@@ -410,7 +413,7 @@ label.f span{font-weight:500;color:var(--dim)}
   <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
   <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></symbol>
-  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M8 7h8M8 11h6"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
 </svg>
 
 <!-- LOGIN -->
@@ -448,6 +451,7 @@ label.f span{font-weight:500;color:var(--dim)}
         <button data-t="reviews"><svg class="i"><use href="#i-star"/></svg>Reviews<span class="n" id="nReviews" hidden></span></button>
         <span class="lbl">Website</span>
         <button data-t="ppts"><svg class="i"><use href="#i-upload"/></svg>Ready PPTs (Upload)</button>
+        <button data-t="notes"><svg class="i"><use href="#i-book"/></svg>Notes (A4 PDF)</button>
         <button data-t="themes"><svg class="i"><use href="#i-image"/></svg>Themes</button>
         <button data-t="prices"><svg class="i"><use href="#i-tag"/></svg>Prices</button>
         <button data-t="site"><svg class="i"><use href="#i-sliders"/></svg>Website Controls</button>
@@ -503,32 +507,33 @@ label.f span{font-weight:500;color:var(--dim)}
   <div class="mbox">
     <div class="row"><h2 id="peTitle">Add PPT / PDF</h2><span class="sp"></span><button class="btn sm" data-pclose>✕ Close</button></div>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">1. File (customer ko payment ke baad milegi)</span>
+      <p class="note" id="peA4" hidden>📄 Notes A4 size PDF mein upload karein. PDF chunte hi pehle 4 page apne aap preview ban jayenge aur pages gin liye jayenge.</p>
       <label class="drop" id="peFile" for="peFileIn"></label>
       <input type="file" id="peFileIn" accept=".ppt,.pptx,.pdf,.zip,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/zip" hidden>
     </div>
-    <label class="f">PPT ka naam<input type="text" id="peName" maxlength="120" placeholder="e.g. Class 10 Science — Light Reflection"></label>
-    <label class="f">Description <span>(chhota sa — kya kya hai is PPT mein)</span><textarea id="peDesc" rows="3" maxlength="600"></textarea></label>
+    <label class="f"><span id="peNameL">PPT ka naam</span><input type="text" id="peName" maxlength="120" placeholder="e.g. Class 10 Science — Light Reflection"></label>
+    <label class="f">Description <span id="peDescL">(chhota sa — kya kya hai is PPT mein)</span><textarea id="peDesc" rows="3" maxlength="600"></textarea></label>
     <div class="grid2">
       <label class="f">Daam (₹)<input type="number" id="pePrice" min="1" step="1" placeholder="99"></label>
       <label class="f">Asli daam (₹) <span>katta hua dikhega · optional</span><input type="number" id="peMrp" min="0" step="1" placeholder="199"></label>
-      <label class="f">Slides kitni hain<input type="number" id="peSlides" min="0" step="1" placeholder="25"></label>
+      <label class="f"><span id="peSlidesL">Slides kitni hain</span><input type="number" id="peSlides" min="0" step="1" placeholder="25"></label>
       <label class="f">Subject<select id="peSubj"></select></label>
     </div>
-    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Category</span><div class="seg" id="peCat"></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px" id="peCatW"><span class="phead">Category</span><div class="seg" id="peCat"></div></div>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Class <span style="text-transform:none;letter-spacing:0;font-weight:500">— kai chun sakte hain</span></span><div class="seg" id="peCls"></div></div>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Board</span><div class="seg" id="peBoard"></div></div>
     <div class="grid2">
       <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Language</span><div class="seg" id="peLang"></div></div>
-      <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Theme</span><div class="seg" id="peTheme"></div></div>
+      <div style="display:flex;flex-direction:column;gap:6px" id="peThemeW"><span class="phead">Theme</span><div class="seg" id="peTheme"></div></div>
     </div>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Badge</span><div class="seg" id="peBadge"></div></div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      <span class="phead">2. Preview images (pehli image = card ki photo · optional)</span>
+      <span class="phead" id="peImgsL">2. Preview images (pehli image = card ki photo · optional)</span>
       <div class="slides" id="peImgs"></div>
       <label class="drop" id="peDrop" for="peFiles"><b>+ Add preview images</b><br><small>JPG, PNG, WEBP · slides ke screenshot · 12 tak</small></label>
       <input type="file" id="peFiles" accept="image/jpeg,image/png,image/webp" multiple hidden>
     </div>
-    <label class="check"><input type="checkbox" id="peAnim"> Animated slides hain</label>
+    <label class="check" id="peAnimW"><input type="checkbox" id="peAnim"> Animated slides hain</label>
     <label class="check"><input type="checkbox" id="peShow" checked> Website par dikhao</label>
     <div class="err" id="peErr" role="alert"></div>
     <div class="row"><button class="btn pri" id="peSave">Save PPT</button><button class="btn" data-pclose>Cancel</button></div>
@@ -546,7 +551,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Kamai Report", coupons: "Coupons", sales: "Sales", customers: "Customers", ppts: "Ready PPTs", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Kamai Report", coupons: "Coupons", sales: "Sales", customers: "Customers", ppts: "Ready PPTs", notes: "Notes (A4 PDF)", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -737,7 +742,7 @@ function go(t) {
   $("#pageTitle").textContent = TITLES[t] || "";
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   window.scrollTo(0, 0);
-  ({ dash, stats, report, sales, customers, coupons, ppts, orders, themes, prices, reviews, messages, site, settings })[t]();
+  ({ dash, stats, report, sales, customers, coupons, ppts, notes, orders, themes, prices, reviews, messages, site, settings })[t]();
 }
 async function startApp() {
   $("#app").hidden = false;
@@ -1546,26 +1551,32 @@ function drawCus() {
 }
 
 /* ---------- Ready PPTs (PPT / PDF upload) ---------- */
-let PP = [], PQ = "", PE = null, PPAY = false;
+let PP = [], PQ = "", PE = null, PPAY = false, KIND = "ppt", PFOLDER = "#";
+const isNote = p => p.cat === "notes";
+const KW = () => KIND === "notes" ? { one: "Notes", add: "Add Notes (PDF)", icon: "📝" } : { one: "PPT", add: "Add PPT / PDF", icon: "📊" };
 const BOARDS = ["CBSE", "ICSE", "State Board", "NCERT", "Bihar Board", "UP Board", "Competitive"];
 const PCATS = [["edu", "📚 Educational"], ["biz", "💼 Business"], ["mkt", "📣 Marketing"]];
 const PBADGE = [["", "Koi nahi"], ["best", "🔥 Best Seller"], ["feat", "⭐ Featured"], ["new", "🆕 New"]];
-async function ppts() {
+function notes() { KIND = "notes"; return pptView(); }
+function ppts() { KIND = "ppt"; return pptView(); }
+async function pptView() {
   loading();
   const r = await call("adminPpts");
-  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Ready PPTs", "") + NEW_SCRIPT) : fail(r.error);
-  PP = r.ppts; PPAY = r.payments;
-  const live = PP.filter(p => p.show).length, sold = PP.reduce((s, p) => s + p.sold, 0);
-  V(head("Ready PPTs", `Yahan PPT ya PDF upload karein — website ke "Ready to Use PPTs" page par turant dikhegi. Customer pay karega aur file apne aap download hogi.`,
-      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a><button class="btn pri" id="addPpt">${ic("i-plus")} Add PPT / PDF</button>`) + `
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], "") + NEW_SCRIPT) : fail(r.error);
+  PP = r.ppts; PPAY = r.payments; PFOLDER = r.folderUrl;
+  const mine = PP.filter(p => isNote(p) === (KIND === "notes")), live = mine.filter(p => p.show).length, sold = mine.reduce((s, p) => s + p.sold, 0), w = KW();
+  V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], KIND === "notes"
+      ? `Yahan apne Notes ki A4 PDF upload karein — website ke Ready PPTs page par "📝 Notes" tab mein turant dikhenge. Customer pay karega aur PDF apne aap download hogi.`
+      : `Yahan PPT ya PDF upload karein — website ke "Ready to Use PPTs" page par turant dikhegi. Customer pay karega aur file apne aap download hogi.`,
+      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>` : ""}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
   ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}
   <div class="stats">
-    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic("i-upload")}</span><b>${PP.length}</b><small>Total PPTs · ${live} live</small></div>
+    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic(KIND === "notes" ? "i-book" : "i-upload")}</span><b>${mine.length}</b><small>Total ${KIND === "notes" ? "Notes" : "PPTs"} · ${live} live</small></div>
     <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-cart")}</span><b>${nf(sold)}</b><small>Total biki</small></div>
     <div class="stat" style="--c:${PPAY ? "var(--ok)" : "var(--bad)"}"><span class="ic">₹</span><b>${PPAY ? "ON" : "OFF"}</b><small>Online payment (Razorpay)</small></div>
   </div>
-  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="pq" placeholder="Search PPT name, class, subject…" aria-label="Search PPTs"></label></div>
-  <div class="tgrid" id="pgrid"></div>`);
+  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="pq" placeholder="Search ${w.one} name, class, subject…" aria-label="Search"></label></div>
+  <div class="tgrid${KIND === "notes" ? " notes" : ""}" id="pgrid"></div>`);
   $("#pq").value = PQ; $("#pq").oninput = () => { PQ = $("#pq").value; drawPpts(); };
   $("#addPpt").onclick = () => editPpt(null);
   $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
@@ -1573,20 +1584,21 @@ async function ppts() {
 }
 function drawPpts() {
   const q = PQ.toLowerCase().trim();
-  const vis = PP.map((p, i) => [p, i]).filter(([p]) => !q || [p.title, p.subject, ...p.level, ...p.board].join(" ").toLowerCase().includes(q));
+  const vis = PP.map((p, i) => [p, i]).filter(([p]) => isNote(p) === (KIND === "notes") && (!q || [p.title, p.subject, ...p.level, ...p.board].join(" ").toLowerCase().includes(q)));
+  const mine = PP.filter(p => isNote(p) === (KIND === "notes")).length, w = KW();
   $("#pgrid").innerHTML = vis.length ? vis.map(([p, i]) => `<div class="tcard ${p.show ? "" : "hid"}">
-    <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${/\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
+    <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
     <div class="body"><b>${esc(p.title)}</b>
-      <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}</span></div>
+      <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
       <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button></div>
       <div class="cf" data-pcf="${i}"></div>
-    </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>📊</b>${PP.length ? "Is search mein koi PPT nahi." : `Abhi koi PPT nahi. "+ Add PPT / PDF" dabayein.`}</div>`;
+    </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.`}</div>`;
   $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
   $$("[data-pv]").forEach(b => b.onclick = async () => {
     const p = PP[+b.dataset.pv]; b.disabled = true;
     const r = await call("adminPptSave", Object.assign(pptPayload(p), { show: !p.show }));
     if (!r.ok) { b.disabled = false; return toast(r.error, true); }
-    PP[+b.dataset.pv] = r.ppt; drawPpts(); toast(r.ppt.show ? "PPT website par dikh rahi hai" : "PPT chhupa di");
+    PP[+b.dataset.pv] = r.ppt; drawPpts(); toast(r.ppt.show ? "Website par dikh raha hai" : "Website se chhupa diya");
   });
   $$("[data-pd]").forEach(b => b.onclick = () => {
     const i = +b.dataset.pd, box = document.querySelector(`[data-pcf="${i}"]`);
@@ -1596,7 +1608,7 @@ function drawPpts() {
       e.target.disabled = true;
       const r = await call("adminPptDelete", { id: PP[i].id });
       if (!r.ok) return toast(r.error, true);
-      PP.splice(i, 1); drawPpts(); toast("PPT deleted");
+      PP.splice(i, 1); drawPpts(); toast("Delete ho gaya");
     };
   });
 }
@@ -1604,8 +1616,17 @@ const pptPayload = p => ({ id: p.id, title: p.title, desc: p.desc, price: p.pric
   theme: p.theme, slides: p.slides, anim: p.anim, badge: p.badge, refs: p.refs, file: p.file, fileName: p.fileName, show: p.show });
 function editPpt(p) {
   PE = p ? Object.assign(JSON.parse(JSON.stringify(p)), { imgs: p.refs.map((r, k) => ({ ref: r, url: p.previews[k] })) })
-         : { id: 0, title: "", desc: "", price: "", mrp: "", cat: "edu", level: [], subject: "", board: [], lang: "English", theme: "Dark", slides: "", anim: false, badge: "", imgs: [], file: "", fileName: "", show: true };
-  $("#peTitle").textContent = p ? "Edit PPT" : "Add PPT / PDF";
+         : { id: 0, title: "", desc: "", price: "", mrp: "", cat: KIND === "notes" ? "notes" : "edu", level: [], subject: "", board: [], lang: "English", theme: "Dark", slides: "", anim: false, badge: "", imgs: [], file: "", fileName: "", show: true };
+  const N = isNote(PE);
+  $("#peTitle").textContent = p ? (N ? "Edit Notes" : "Edit PPT") : (N ? "Add Notes (A4 PDF)" : "Add PPT / PDF");
+  $("#peA4").hidden = !N; $("#peCatW").hidden = N; $("#peThemeW").hidden = N; $("#peAnimW").hidden = N;
+  $("#peNameL").textContent = N ? "Notes ka naam" : "PPT ka naam";
+  $("#peName").placeholder = N ? "e.g. Class 10 Science Ch 1 — Chemical Reactions Notes" : "e.g. Class 10 Science — Light Reflection";
+  $("#peDescL").textContent = N ? "(chhota sa — kya kya hai in notes mein)" : "(chhota sa — kya kya hai is PPT mein)";
+  $("#peSlidesL").textContent = N ? "Pages kitne hain" : "Slides kitni hain"; $("#peSlides").placeholder = N ? "14" : "25";
+  $("#peImgsL").textContent = N ? "2. Preview pages (PDF se apne aap bante hain · badal bhi sakte hain)" : "2. Preview images (pehli image = card ki photo · optional)";
+  $("#peFileIn").accept = N ? ".pdf,application/pdf" : ".ppt,.pptx,.pdf,.zip,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/zip";
+  $("#peSave").textContent = N ? "Save Notes" : "Save PPT";
   $("#peName").value = PE.title; $("#peDesc").value = PE.desc; $("#pePrice").value = PE.price; $("#peMrp").value = PE.mrp || ""; $("#peSlides").value = PE.slides || "";
   $("#peShow").checked = PE.show; $("#peAnim").checked = PE.anim; $("#peErr").textContent = "";
   $("#peSubj").innerHTML = `<option value="">— Subject chunein —</option>` + SUBJECTS.map(s => `<option ${s === PE.subject ? "selected" : ""}>${esc(s)}</option>`).join("");
@@ -1618,6 +1639,7 @@ function drawPeFile(prog) {
   const f = PE.file, box = $("#peFile");
   if (prog != null) box.innerHTML = `<div class="up"><b>⏫ Upload ho raha hai… ${prog}%</b><span class="tb"><i style="width:${prog}%"></i></span><small>Window band na karein</small></div>`;
   else box.innerHTML = f ? `<div class="up done"><b>✅ ${esc(PE.fileName || "File")}</b><small>Upload ho gayi. Badalni ho to nayi file chunein.</small></div>`
+    : isNote(PE) ? `<b>+ Notes ki PDF chunein</b><br><small>A4 size PDF · ye file customer ko payment ke baad milegi</small>`
     : `<b>+ PPT / PDF file chunein</b><br><small>PPTX, PPT, PDF ya ZIP · 1 GB tak · ye file customer ko payment ke baad milegi</small>`;
 }
 function drawPeImgs() {
@@ -1641,9 +1663,11 @@ async function addPeImgs(files) {
 }
 // badi file → Google Drive, 8 MB ke tukdon mein
 async function uploadPptFile(file) {
+  if (isNote(PE) && !/\.pdf$/i.test(file.name)) return toast("Notes ke liye sirf PDF file", true);
   if (!/\.(pptx?|pdf|zip)$/i.test(file.name)) return toast("Sirf PPT, PPTX, PDF ya ZIP file", true);
   if (PE.uploading) return;
   PE.uploading = true; drawPeFile(0);
+  if (/\.pdf$/i.test(file.name)) pdfPreview(file, PE);
   try {
     const s = await call("adminPptStart", { name: file.name, size: file.size, mime: file.type || "application/octet-stream" });
     if (!s.ok) throw new Error(s.error);
@@ -1661,6 +1685,40 @@ async function uploadPptFile(file) {
   } catch (e) { toast("File upload nahi hui: " + e.message, true); }
   PE.uploading = false; drawPeFile();
 }
+// PDF se pehle 4 page ki preview photo + pages ki ginti (pdf.js, browser mein hi)
+let pdfLib = null;
+function loadPdfJs() {
+  return pdfLib || (pdfLib = new Promise((ok, no) => {
+    const sc = document.createElement("script"); sc.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    sc.onload = () => { pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"; ok(pdfjsLib); };
+    sc.onerror = () => { pdfLib = null; no(new Error("pdf.js load nahi hua")); }; document.head.appendChild(sc);
+  }));
+}
+async function pdfPreview(file, pe) {
+  try {
+    const lib = await loadPdfJs(), doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise;
+    if (PE !== pe) return;
+    if (!+$("#peSlides").value) $("#peSlides").value = doc.numPages;
+    const v0 = (await doc.getPage(1)).getViewport({ scale: 1 }), r = Math.max(v0.width, v0.height) / Math.min(v0.width, v0.height);
+    if (isNote(pe) && Math.abs(r - 1.414) > .04) toast("⚠️ Ye PDF A4 size ki nahi lagti. Notes A4 (210 × 297 mm) mein ho to print achha aata hai.", true);
+    if (pe.imgs.length) return;                                   // pehle se preview hain to mat badlo
+    for (let n = 1; n <= Math.min(4, doc.numPages) && PE === pe; n++) {
+      const slot = { busy: `Page ${n}…` }; pe.imgs.push(slot); drawPeImgs();
+      try {
+        const page = await doc.getPage(n), vp = page.getViewport({ scale: 1100 / page.getViewport({ scale: 1 }).width }), c = document.createElement("canvas");
+        c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+        const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+        await page.render({ canvasContext: g, viewport: vp }).promise;
+        const blob = await new Promise((ok, no) => c.toBlob(b => b && b.type === "image/webp" ? ok(b) : c.toBlob(j => j ? ok(j) : no(new Error("convert")), "image/jpeg", .85), "image/webp", .82));
+        const base = file.name.replace(/\.\w+$/, "").slice(0, 60) + "-p" + n;
+        const res = await call("adminImage", { name: base + (blob.type === "image/webp" ? ".webp" : ".jpg"), mime: blob.type, data: await b64(blob) });
+        if (!res.ok) throw new Error(res.error);
+        Object.assign(slot, { ref: res.ref, url: res.url }); delete slot.busy;
+      } catch (e) { pe.imgs.splice(pe.imgs.indexOf(slot), 1); toast(`Page ${n} ki preview nahi bani: ${e.message}`, true); }
+      if (PE === pe) drawPeImgs();
+    }
+  } catch (e) { toast("PDF ki preview apne aap nahi bani. Photo khud add kar sakte hain.", true); }
+}
 function closePpt() { if (PE && (PE.uploading || PE.imgs.some(x => x.busy))) return toast("Upload ho raha hai — thoda rukiye", true); $("#pptModal").hidden = true; }
 $$("[data-pclose]").forEach(b => b.onclick = closePpt);
 $("#pptModal").addEventListener("click", e => { if (e.target.id === "pptModal") closePpt(); });
@@ -1677,16 +1735,16 @@ $("#peSave").onclick = async () => {
   if (PE.uploading || PE.imgs.some(x => x.busy)) return $("#peErr").textContent = "Upload ho raha hai — thoda rukiye";
   Object.assign(PE, { title: $("#peName").value.trim(), desc: $("#peDesc").value.trim(), price: +$("#pePrice").value, mrp: +$("#peMrp").value || 0,
     slides: +$("#peSlides").value || 0, subject: $("#peSubj").value, show: $("#peShow").checked, anim: $("#peAnim").checked, refs: PE.imgs.map(x => x.ref) });
-  if (PE.title.length < 3) return $("#peErr").textContent = "PPT ka naam likhein";
+  if (PE.title.length < 3) return $("#peErr").textContent = isNote(PE) ? "Notes ka naam likhein" : "PPT ka naam likhein";
   if (!(PE.price >= 1)) return $("#peErr").textContent = "Daam likhein (kam se kam ₹1)";
-  if (!PE.file) return $("#peErr").textContent = "PPT / PDF file upload karein";
+  if (!PE.file) return $("#peErr").textContent = isNote(PE) ? "Notes ki PDF upload karein" : "PPT / PDF file upload karein";
   $("#peSave").disabled = true; $("#peErr").textContent = "";
   const r = await call("adminPptSave", pptPayload(PE));
   $("#peSave").disabled = false;
   if (!r.ok) return $("#peErr").textContent = r.error;
   const i = PP.findIndex(x => x.id === r.ppt.id);
   if (i >= 0) PP[i] = r.ppt; else PP.unshift(r.ppt);
-  $("#pptModal").hidden = true; drawPpts(); toast(r.ppt.show ? "PPT saved — website par dikh rahi hai" : "PPT saved (hidden)");
+  $("#pptModal").hidden = true; drawPpts(); toast(r.ppt.show ? "Saved — website par dikh raha hai" : "Saved (hidden)");
 };
 
 /* ---------- Settings → Razorpay ---------- */
