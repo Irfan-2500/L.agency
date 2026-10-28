@@ -143,11 +143,11 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .stage.a4 img{object-fit:contain;background:#fff}
 .strip.a4 button{flex:0 0 70px;aspect-ratio:210/297}
 /* Study Notes: A4 sample pages, dheere-dheere lagatar chalte hain */
-.samples{overflow:hidden;width:100%;padding:6px 0 30px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
-.s-track{display:flex;width:max-content;animation:sflow 60s linear infinite}
-.samples:hover .s-track{animation-play-state:paused}
+.samples{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;cursor:grab;touch-action:pan-x pan-y;user-select:none;-webkit-user-select:none;width:100%;padding:6px 0 30px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.samples::-webkit-scrollbar{display:none}
+.samples.drag{cursor:grabbing}
+.s-track{display:flex;width:max-content}
 .s-track img{height:clamp(250px,40vw,460px);aspect-ratio:210/297;margin-right:18px;border-radius:12px;object-fit:cover;object-position:top;background:#fff;border:1px solid var(--line2);box-shadow:0 18px 40px -18px rgba(0,0,0,.55)}
-@keyframes sflow{to{transform:translateX(-50%)}}
 @media(max-width:760px){.grid.notes{grid-template-columns:1fr 1fr;gap:12px}}
 @media(max-width:340px){.grid.notes{grid-template-columns:1fr}}
 
@@ -456,9 +456,30 @@ const SAMPLES = [1,2,3,4,5,6,7,8].map(n => `uploads/notes/sample-${n}.webp`);
 function drawSamples(){
   const own = VIEW().flatMap(p => (p.previews || []).slice(0, 2)).slice(0, 12);
   const list = own.length >= 4 ? own : [...own, ...SAMPLES].slice(0, 10);
-  $("#sTrack").innerHTML = [...list, ...list].map((u,k) => `<img src="${esc(u)}" alt="${k < list.length ? `Sample page ${k+1}` : ""}" loading="lazy" decoding="async">`).join("");
-  $("#sTrack").style.animationDuration = list.length * 7 + "s";
+  $("#sTrack").innerHTML = [...list, ...list].map((u,k) => `<img src="${esc(u)}" alt="${k < list.length ? `Sample page ${k+1}` : ""}" loading="lazy" decoding="async" draggable="false">`).join("");
+  SP.pos = 0; $("#samples").scrollLeft = 0;
 }
+/* Sample pages: apne aap dheere chalte hain; mouse se pakad kar (ya ungli se) aage-peeche khiska sakte hain */
+const SP = { pos:0, drag:false, hold:false, last:0, sx:0, sp:0, mine:false };
+(function(){
+  const box = $("#samples"), slow = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const half = () => $("#sTrack").scrollWidth / 2;
+  const put = () => { const h = half(); if (h > 0) { SP.pos = ((SP.pos % h) + h) % h; } SP.mine = true; box.scrollLeft = SP.pos; };
+  function tick(t){
+    const dt = Math.min(50, t - (SP.last || t)); SP.last = t;
+    if (!box.hidden && !SP.drag && !SP.hold && !slow) { SP.pos += dt * 0.045; put(); }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  box.addEventListener("scroll", () => { if (SP.mine) { SP.mine = false; return; } SP.pos = box.scrollLeft; });   // touch / trackpad
+  box.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse" || e.button) return; SP.drag = true; SP.sx = e.clientX; SP.sp = SP.pos; box.classList.add("drag"); box.setPointerCapture(e.pointerId); });
+  box.addEventListener("pointermove", e => { if (!SP.drag) return; SP.pos = SP.sp - (e.clientX - SP.sx); put(); });
+  const end = () => { SP.drag = false; box.classList.remove("drag"); };
+  box.addEventListener("pointerup", end); box.addEventListener("pointercancel", end);
+  box.addEventListener("touchstart", () => SP.hold = true, { passive:true });
+  box.addEventListener("touchend", () => setTimeout(() => { SP.pos = box.scrollLeft; SP.hold = false; }, 900), { passive:true });
+  box.addEventListener("wheel", () => { SP.hold = true; clearTimeout(SP.wt); SP.wt = setTimeout(() => SP.hold = false, 1200); }, { passive:true });
+})();
 function setKind(n, push){
   NOTES = n; st.cat = "all"; st.f = {}; st.shown = CONFIG.perPage;
   const h = HERO[n ? "notes" : "ppt"];
