@@ -1633,7 +1633,7 @@ function editPpt(p) {
   $("#peName").placeholder = N ? "e.g. Class 10 Science Ch 1 — Chemical Reactions Notes" : "e.g. Class 10 Science — Light Reflection";
   $("#peDescL").textContent = N ? "(chhota sa — kya kya hai in notes mein)" : "(chhota sa — kya kya hai is PPT mein)";
   $("#peSlidesL").textContent = N ? "Pages kitne hain" : "Slides kitni hain"; $("#peSlides").placeholder = N ? "14" : "25";
-  $("#peImgsL").textContent = N ? "2. Preview pages (PDF se apne aap bante hain · badal bhi sakte hain)" : "2. Preview images (pehli image = card ki photo · optional)";
+  $("#peImgsL").textContent = N ? "2. Preview pages (PDF se apne aap bante hain · badal bhi sakte hain)" : "2. Preview images (PPTX chunte hi pehli 5 slides ki photo apne aap banti hai · optional)";
   $("#peFileIn").accept = N ? ".pdf,.zip,application/pdf,application/zip" : ".ppt,.pptx,.pdf,.zip,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/zip";
   $("#peSave").textContent = N ? "Save Notes" : "Save PPT";
   $("#peName").value = PE.title; $("#peDesc").value = PE.desc; $("#pePrice").value = PE.price; $("#peMrp").value = PE.mrp || ""; $("#peSlides").value = PE.slides || "";
@@ -1678,6 +1678,7 @@ async function uploadPptFile(file, pages) {
   if (PE.uploading) return;
   PE.uploading = true; drawPeFile(0);
   if (/\.pdf$/i.test(file.name)) pdfPreview(file, PE, pages);
+  if (/\.pptx$/i.test(file.name)) pptxAuto(file, PE);
   try {
     const s = await call("adminPptStart", { name: file.name, size: file.size, mime: file.type || "application/octet-stream" });
     if (!s.ok) throw new Error(s.error);
@@ -1728,6 +1729,63 @@ async function pdfPreview(file, pe, pages) {
       if (PE === pe) drawPeImgs();
     }
   } catch (e) { toast("PDF ki preview apne aap nahi bani. Photo khud add kar sakte hain.", true); }
+}
+// PPTX se slides ki ginti, naam, description, animation aur pehli 5 slides ki photo (sab browser mein hi)
+const xmlText = x => [...x.matchAll(/<a:t(?:\s[^>]*)?>([^<]*)<\/a:t>/g)].map(m => m[1]).join(" ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/\s+/g, " ").trim();
+const slideTitle = x => {   // title placeholder, warna sabse bade font wala text
+  const sps = x.match(/<p:sp>[\s\S]*?<\/p:sp>/g) || [], ph = sps.find(sp => /<p:ph[^>]*type="(?:title|ctrTitle)"/.test(sp) && xmlText(sp));
+  if (ph) return xmlText(ph).slice(0, 80);
+  const big = sps.map(sp => ({ t: xmlText(sp), sz: Math.max(0, ...[...sp.matchAll(/<a:rPr[^>]*\ssz="(\d+)"/g)].map(m => +m[1])) })).filter(o => o.t).sort((a, b) => b.sz - a.sz)[0];
+  return big ? big.t.slice(0, 80) : ""; };
+async function pptxAuto(file, pe) {
+  try {
+    const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(file);
+    const names = Object.keys(z.files).filter(n => /^ppt\/slides\/slide\d+\.xml$/.test(n)).sort((a, b) => +a.match(/\d+/)[0] - +b.match(/\d+/)[0]);
+    if (PE !== pe || !names.length) return;
+    const xml = await Promise.all(names.map(n => z.file(n).async("string")));
+    const core = z.file("docProps/core.xml") ? await z.file("docProps/core.xml").async("string") : "";
+    const titles = xml.map(slideTitle);
+    const docTitle = xmlText("<a:t>" + ((/<dc:title>([^<]*)<\/dc:title>/.exec(core) || [])[1] || "") + "</a:t>");
+    if (!+$("#peSlides").value) $("#peSlides").value = names.length;
+    const fromFile = file.name.replace(/\.\w+$/, "").replace(/[_-]+/g, " ");
+    if (!$("#peName").value.trim() || $("#peName").value.trim() === fromFile.trim()) $("#peName").value = (docTitle && !/^(PowerPoint Presentation|Presentation\d*)$/i.test(docTitle) ? docTitle : titles[0] || fromFile).slice(0, 120);
+    if (!$("#peDesc").value.trim()) { const list = [...new Set(titles.slice(1).filter(t => t && t.length > 2))];
+      if (list.length) $("#peDesc").value = (`${names.length} slides: ` + list.join(", ")).slice(0, 600); }
+    if (xml.some(x => /<p:timing>[\s\S]*<p:anim|<p:transition[\s>]/.test(x))) $("#peAnim").checked = true;
+    // class, language, subject bhi andaza lagakar (baad mein badal sakte hain)
+    const all = xml.map(xmlText).join(" "), head = $("#peName").value + " " + fromFile + " " + titles.slice(0, 2).join(" "), cls = /(?:\bClass|कक्षा)\s*[-:]?\s*(1[0-2]|[1-9])\b/i.exec(head + " " + all);
+    if (cls && !pe.level.length) { pe.level.push("Class " + cls[1]); ED = pe; mseg($("#peCls"), CLASSES, "level"); }
+    const hi = (all.match(/[\u0900-\u097F]/g) || []).length, en = (all.match(/[A-Za-z]/g) || []).length;
+    if (hi + en > 40) { pe.lang = hi > en * 4 ? "Hindi" : en > hi * 4 ? "English" : "Both"; ED = pe; seg($("#peLang"), LANGS, pe.lang, "lang"); }
+    const subj = SUBJECTS.find(x => new RegExp("\\b" + x.replace(/[^\w ]/g, "").replace(/ /g, "\\s*") + "\\b", "i").test(head));
+    if (subj && !$("#peSubj").value) $("#peSubj").value = subj;
+    if (!pe.imgs.length) await pptxShots(file, pe, Math.min(5, names.length));
+  } catch (e) { console.error(e); toast("PPT se details apne aap nahi nikli. Khud bhar dijiye.", true); }
+}
+async function pptxShots(file, pe, count) {
+  const slots = Array.from({ length: count }, (_, i) => ({ busy: `Slide ${i + 1}…` })); pe.imgs.push(...slots); drawPeImgs();
+  const drop = slot => { const i = pe.imgs.indexOf(slot); if (i > -1) pe.imgs.splice(i, 1); };
+  const host = document.createElement("div"); host.style.cssText = "position:fixed;left:-20000px;top:0;width:1280px;pointer-events:none";
+  try {
+    const lib = await loadLib("https://cdn.jsdelivr.net/npm/pptx-preview@1.0.7/dist/pptx-preview.umd.js", "pptxPreview");
+    const h2c = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js", "html2canvas");
+    document.body.appendChild(host);
+    await lib.init(host, { width: 1280, height: 720, mode: "list" }).preview(await file.arrayBuffer());
+    await new Promise(r => setTimeout(r, 600));
+    const els = [...host.querySelectorAll(".pptx-preview-slide-wrapper")];
+    for (let i = 0; i < count; i++) { const slot = slots[i];
+      if (PE !== pe || !els[i]) { drop(slot); continue; }
+      try {
+        const c = await h2c(els[i], { scale: 1100 / els[i].offsetWidth, backgroundColor: "#ffffff", useCORS: true, logging: false });
+        const blob = await new Promise((ok, no) => c.toBlob(b => b && b.type === "image/webp" ? ok(b) : c.toBlob(j => j ? ok(j) : no(new Error("convert")), "image/jpeg", .85), "image/webp", .82));
+        const res = await call("adminImage", { name: file.name.replace(/\.\w+$/, "").slice(0, 60) + "-s" + (i + 1) + (blob.type === "image/webp" ? ".webp" : ".jpg"), mime: blob.type, data: await b64(blob) });
+        if (!res.ok) throw new Error(res.error);
+        Object.assign(slot, { ref: res.ref, url: res.url }); delete slot.busy;
+      } catch (e) { drop(slot); toast(`Slide ${i + 1} ki photo nahi bani: ${e.message}`, true); }
+      if (PE === pe) drawPeImgs();
+    }
+  } catch (e) { slots.forEach(drop); toast("PPT ki slides se photo apne aap nahi bani. Photo khud add kar sakte hain.", true); }
+  host.remove(); if (PE === pe) drawPeImgs();
 }
 // Poora subject: folder / kai PDF / ZIP → saare chapter kram se jod kar ek PDF (pdf-lib), phir wahi upload
 const loadLib = (src, name) => window[name] ? Promise.resolve(window[name]) : new Promise((ok, no) => {

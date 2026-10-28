@@ -138,6 +138,8 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .kind button.on{color:#fff;background:var(--grad);box-shadow:0 0 14px rgba(139,44,255,.4)}
 .grid.notes{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 .grid.notes .thumb{aspect-ratio:210/297;background-position:top center}
+.thumb .wipe{position:absolute;inset:0;background-size:cover;background-position:center;clip-path:inset(0 100% 0 0);animation:wipe .9s cubic-bezier(.65,0,.35,1) forwards;pointer-events:none}
+@keyframes wipe{to{clip-path:inset(0 0 0 0)}}
 .mini.a4{width:44px;aspect-ratio:210/297;justify-self:center}
 .stage.a4{aspect-ratio:210/297;width:min(100%,calc((100vh - 120px) * 210 / 297));margin:0 auto}
 .stage.a4 img{object-fit:contain;background:#fff}
@@ -554,10 +556,27 @@ const ribbon = b => ({ best:`<span class="ribbon r-best">BEST SELLER</span>`, ne
 const soldTag = p => p.sales > 0
   ? `<span class="sold" title="${p.sales} customers ne ye PPT khareedi">🔥 <b>${p.sales.toLocaleString("en-IN")}</b> Sold</span>`
   : `<span class="sold fresh">✨ New</span>`;
+/* PPT card par pehli 5 slides baari-baari wipe hokar badalti rehti hain */
+const WIPE = { i:{}, at:{} };
+function wipeTick(){
+  const now = Date.now(), el = [...document.querySelectorAll(".thumb[data-wipe]")]
+    .filter(el => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && !el.querySelector(".wipe"); })
+    .sort((a, b) => (WIPE.at[a.dataset.wipe] || 0) - (WIPE.at[b.dataset.wipe] || 0))[0];
+  if (!el || now - (WIPE.at[el.dataset.wipe] || 0) < 3200) return;
+  const p = PRODUCTS.find(x => x.id === +el.dataset.wipe); if (!p) return;
+  const imgs = arr(p.previews).slice(0, 5), n = ((WIPE.i[p.id] || 0) + 1) % imgs.length;
+  WIPE.at[p.id] = now; WIPE.i[p.id] = n;
+  const img = new Image(); img.onload = () => {
+    const w = document.createElement("span"); w.className = "wipe"; w.style.backgroundImage = cssUrl(imgs[n]);
+    w.addEventListener("animationend", () => { el.style.backgroundImage = cssUrl(imgs[n]); w.remove(); });
+    el.prepend(w); };
+  img.src = imgs[n];
+}
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(() => { if (!document.hidden) wipeTick(); }, 900);
 function card(p){
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, inCart = cart.includes(p.id);
   return `<article class="card">
-    <button class="thumb" style="${thumbStyle(p)}" onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
+    <button class="thumb" style="${thumbStyle(p)}"${!isNote(p) && arr(p.previews).length > 1 ? ` data-wipe="${p.id}"` : ""} onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
       ${ribbon(p.badge)}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
       <span class="peek">👁 Preview</span>
       ${isNote(p) ? `<span class="sl-badge">📄 A4 PDF${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
