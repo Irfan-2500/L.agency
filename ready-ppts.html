@@ -429,7 +429,7 @@ const arr = v => Array.isArray(v) ? v : (v ? [v] : []);
 const waURL = m => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(m)}`;
 const cssUrl = u => `url('${String(u).replace(/['"\\\n()]/g,"")}')`;
 const langTxt = l => l === "Both" ? "Hindi + English" : l;
-const langOf = p => p.cat === "notes" ? langTxt(p.lang) + " Medium" : langTxt(p.lang);
+const langOf = p => isNote(p) ? langTxt(p.lang) + " Medium" : langTxt(p.lang);
 const thumbStyle = p => p.thumb ? `background-image:${cssUrl(p.thumb)}` : `background:linear-gradient(135deg,${p.colors[0]},${p.colors[1]})`;
 
 let PRODUCTS = [], API = false, PAY = false, VPAY = false, SPAY = false;   /* VPAY: Vercel par Razorpay (api/pay-*.js) · SPAY: admin panel wali PPTs (Google Script) */
@@ -444,7 +444,10 @@ try { cart = JSON.parse(localStorage.getItem("la_cart")) || []; } catch(e) {}
 const st = { q:"", cat:"all", f:{}, sort:"popular", shown:CONFIG.perPage };
 /* PPTs ya Notes: admin panel mein category "Notes" wali PDF yahan "Notes" tab mein dikhti hai */
 let NOTES = /\/notes/.test(location.pathname) || new URLSearchParams(location.search).get("type") === "notes";
-const isNote = p => p.cat === "notes";
+/* Notes ki pehchaan: category "notes" (naya Google Script) ya class list mein "Study Notes" tag (purana Script bhi chalta rahe) */
+const NOTE_TAG = "Study Notes";
+const isNote = p => p.cat === "notes" || arr(p.level).includes(NOTE_TAG);
+const lv = p => arr(p.level).filter(l => l !== NOTE_TAG);
 const VIEW = () => PRODUCTS.filter(p => isNote(p) === NOTES);
 const W = () => NOTES ? { one:"Notes", many:"Notes", all:"All Study Notes" } : { one:"PPT", many:"PPTs", all:"All PPTs" };
 const HERO = {
@@ -496,7 +499,7 @@ document.querySelector(".kind").onclick = e => { const b = e.target.closest("but
 /* ---------- FILTERS ---------- */
 const PRICE = [[29,"₹29 tak"],[49,"₹49 tak"],[99,"₹99 tak"],[199,"₹199 tak"],[Infinity,"₹199 se zyada"]];
 const FILTERS = [
-  { key:"level",   label:"Class",    nl:"Class / Exam", get:p => arr(p.level), order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
+  { key:"level",   label:"Class",    nl:"Class / Exam", get:p => lv(p), order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
   { key:"subject", label:"Subject",  get:p => arr(p.subject) },
   { key:"lang",    label:"Language", get:p => p.lang === "Both" ? ["Hindi + English","Hindi","English"] : [p.lang], fixed:["Hindi","English","Hindi + English"], ppt:true },
   { key:"board",   label:"Board",    nl:"Board / Exam", get:p => arr(p.board) },
@@ -505,7 +508,7 @@ const FILTERS = [
   { key:"price",   label:"Price",    get:p => PRICE.filter(b => p.price <= b[0]).map(b => b[1]), fixed:PRICE.map(b => b[1]) }
 ];
 const matchQ = p => { const q = st.q.trim().toLowerCase(); if (!q) return true;
-  const hay = [p.title, p.desc, p.subject, langOf(p), ...arr(p.level), ...arr(p.board)].join(" ").toLowerCase();
+  const hay = [p.title, p.desc, p.subject, langOf(p), ...lv(p), ...arr(p.board)].join(" ").toLowerCase();
   return q.split(/\s+/).every(w => hay.includes(w)); };
 const matchF = (p, skip) => FILTERS.every(f => f.key === skip || (NOTES && f.ppt) || !st.f[f.key] || f.get(p).includes(st.f[f.key]));
 const MEDIUM = [["Hindi","Hindi Medium"],["English","English Medium"],["Both","Hindi + English"]];
@@ -563,7 +566,7 @@ function card(p){
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3>
       <p>${esc(p.desc)}</p>
-      <div class="tags">${[langOf(p), ...arr(p.level).filter(l => l !== "Other"), p.subject, p.anim ? "Animated" : ""].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      <div class="tags">${[langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, p.anim ? "Animated" : ""].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
       <div class="acts">
         <button class="btn btn-ghost btn-sm add ${inCart ? "added" : ""}" onclick="toggleCart(${p.id})">${inCart ? "✓ In Cart" : "+ Add to Cart"}</button>
@@ -642,7 +645,7 @@ function openPreview(id){
     <div class="m-info">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
-      <div class="tags">${(isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...arr(p.level).filter(l => l !== "Other"), p.subject, ...arr(p.board)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...arr(p.level).filter(l => l !== "Other"), p.subject, ...arr(p.board), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "ZIP file" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      <div class="tags">${(isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "ZIP file" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       ${imgs.length ? `<p style="font-size:.78rem;color:var(--dim)">${isNote(p) ? `Preview mein ${imgs.length} page dikhaye gaye hain.${p.slides ? ` Poore notes mein ${p.slides} pages hain.` : ""}` : `Preview mein ${imgs.length} slides dikhayi gayi hain.${p.slides ? ` Poori PPT mein ${p.slides} slides hain.` : ""}`}</p>` : ""}
       <div class="m-buy">
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>

@@ -1556,7 +1556,8 @@ function drawCus() {
 
 /* ---------- Ready PPTs (PPT / PDF upload) ---------- */
 let PP = [], PQ = "", PE = null, PPAY = false, KIND = "ppt", PFOLDER = "#";
-const isNote = p => p.cat === "notes";
+const NOTE_TAG = "Study Notes";   // purana Google Script "notes" category nahi rakhta, isliye class list mein ye tag bhi jata hai
+const isNote = p => p.cat === "notes" || (p.level || []).includes(NOTE_TAG);
 const KW = () => KIND === "notes" ? { one: "Notes", add: "Add Notes (PDF)", icon: "📝" } : { one: "PPT", add: "Add PPT / PDF", icon: "📊" };
 const BOARDS = ["CBSE", "ICSE", "State Board", "NCERT", "Bihar Board", "UP Board", "Competitive", "SSC", "Railway", "Banking", "UPSC / State PSC", "CTET / TET", "JEE", "NEET", "Police / Defence", "Navodaya / Sainik"];
 const PCATS = [["edu", "📚 Educational"], ["biz", "💼 Business"], ["mkt", "📣 Marketing"]];
@@ -1595,7 +1596,7 @@ function drawPpts() {
   $("#pgrid").innerHTML = vis.length ? vis.map(([p, i]) => `<div class="tcard ${p.show ? "" : "hid"}">
     <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
     <div class="body"><b>${esc(p.title)}</b>
-      <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
+      <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.filter(x => x !== NOTE_TAG).slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
       <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button></div>
       <div class="cf" data-pcf="${i}"></div>
     </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.`}</div>`;
@@ -1618,11 +1619,13 @@ function drawPpts() {
     };
   });
 }
-const pptPayload = p => ({ id: p.id, title: p.title, desc: p.desc, price: p.price, mrp: p.mrp, cat: p.cat, level: p.level, subject: p.subject, board: p.board, lang: p.lang,
+const pptPayload = p => ({ id: p.id, title: p.title, desc: p.desc, price: p.price, mrp: p.mrp, cat: p.cat,
+  level: isNote(p) ? [...p.level.filter(x => x !== NOTE_TAG), NOTE_TAG] : p.level.filter(x => x !== NOTE_TAG), subject: p.subject, board: p.board, lang: p.lang,
   theme: p.theme, slides: p.slides, anim: p.anim, badge: p.badge, refs: p.refs, file: p.file, fileName: p.fileName, show: p.show });
 function editPpt(p) {
   PE = p ? Object.assign(JSON.parse(JSON.stringify(p)), { imgs: p.refs.map((r, k) => ({ ref: r, url: p.previews[k] })) })
          : { id: 0, title: "", desc: "", price: "", mrp: "", cat: KIND === "notes" ? "notes" : "edu", level: [], subject: "", board: [], lang: "English", theme: "Dark", slides: "", anim: false, badge: "", imgs: [], file: "", fileName: "", show: true };
+  if (isNote(PE)) PE.cat = "notes";
   const N = isNote(PE);
   $("#peTitle").textContent = p ? (N ? "Edit Notes" : "Edit PPT") : (N ? "Add Notes (A4 PDF)" : "Add PPT / PDF");
   $("#peA4").hidden = !N; $("#peBulk").hidden = !N; $("#peCatW").hidden = N; $("#peThemeW").hidden = N; $("#peAnimW").hidden = N;
