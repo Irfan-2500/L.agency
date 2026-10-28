@@ -74,8 +74,9 @@ header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 8
 html.light .kicker{color:#a16207;background:#fef9c3}
 .kicker i{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1s steps(2,start) infinite}
 @keyframes blink{to{visibility:hidden}}
-.hero h1{font-size:clamp(1.4rem,3vw,2.1rem);margin:8px 0 4px;text-wrap:balance}
-.hero p{color:var(--muted);max-width:640px;font-size:.9rem}
+.hero h1{font-size:clamp(1.4rem,3vw,2.1rem);margin:0 0 4px;text-wrap:balance}
+.hero p{color:var(--muted);max-width:640px;font-size:.9rem;min-height:3.1em;transition:opacity .45s ease,transform .45s ease}
+.hero p.out{opacity:0;transform:translateY(4px)}
 .perks{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:.78rem;color:var(--muted);font-weight:600}
 .perks span{display:inline-flex;align-items:center;gap:6px}
 .perks svg{color:var(--green);width:14px;height:14px}
@@ -249,7 +250,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
   .hidden-sm{display:none}
   .ftoggle{display:inline-flex}
   .filters{display:none}
-  .hero p{display:none}
+  .hero p{font-size:.82rem;min-height:4.4em}
   .filters.open{display:grid;grid-template-columns:1fr 1fr}
   .fsel{max-width:none}
   .toolbar{position:static}
@@ -321,9 +322,8 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 </header>
 
 <section class="hero container">
-  <span class="kicker"><i></i><span id="hKick">Ready to Use PPT</span></span>
   <h1 id="hTitle">PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span></h1>
-  <p id="hText">Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.</p>
+  <p id="hText" aria-live="off">Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.</p>
   <div class="perks" id="hPerks">
     <span><svg class="i"><use href="#i-check"/></svg>100% Editable .pptx</span>
     <span><svg class="i"><use href="#i-check"/></svg>Instant Download</span>
@@ -459,9 +459,9 @@ const lv = p => arr(p.level).filter(l => l !== NOTE_TAG);
 const VIEW = () => PRODUCTS.filter(p => isNote(p) === NOTES);
 const W = () => NOTES ? { one:"Notes", many:"Notes", all:"All Study Notes" } : { one:"PPT", many:"PPTs", all:"All PPTs" };
 const HERO = {
-  ppt:{ kick:"Ready to Use PPT", title:`PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span>`, text:"Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.",
+  ppt:{ kick:"Ready to Use PPT", title:`PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span>`, text:["Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.", "क्लास, विषय और भाषा से अपनी PPT चुनिए। पेमेंट होते ही एडिटेबल फाइल आपकी स्क्रीन और ईमेल पर।"],
     perks:["100% Editable .pptx","Instant Download","UPI · Cards · Net Banking","Google Slides & Keynote"], q:"Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" },
-  notes:{ kick:"Study Notes", title:`Har class aur exam ke <span class="grad-text">Study Notes</span>`, text:"School boards aur competitive exams ke chapter-wise notes, Hindi aur English medium mein. A4 size PDF, payment ke turant baad download karein, phone par padhein ya print karein.",
+  notes:{ kick:"Study Notes", title:`Har class aur exam ke <span class="grad-text">Study Notes</span>`, text:["Chapter-wise notes for school boards and competitive exams, in Hindi and English medium. A4 PDF, download right after payment.", "स्कूल बोर्ड और प्रतियोगी परीक्षाओं के अध्याय-वार नोट्स, हिंदी और इंग्लिश मीडियम में। A4 PDF, पेमेंट होते ही डाउनलोड करें।"],
     perks:["A4 size PDF (print ready)","Hindi & English Medium","Instant Download","Definitions, formulas, solved questions"], q:"Search: chapter, subject, class, exam… (e.g. Science, Class 10, SSC)" } };
 const SAMPLES = [1,2,3,4,5,6,7,8].map(n => `uploads/notes/sample-${n}.webp`);
 function drawSamples(){
@@ -491,10 +491,18 @@ const SP = { pos:0, drag:false, hold:false, last:0, sx:0, sp:0, mine:false };
   box.addEventListener("touchend", () => setTimeout(() => { SP.pos = box.scrollLeft; SP.hold = false; }, 900), { passive:true });
   box.addEventListener("wheel", () => { SP.hold = true; clearTimeout(SP.wt); SP.wt = setTimeout(() => SP.hold = false, 1200); }, { passive:true });
 })();
+/* Hero ki chhoti line: English aur Hindi baari-baari, dheere fade hokar */
+let HL = { t:0, i:0, list:[] };
+function heroLines(list){
+  HL.list = list; HL.i = 0; clearInterval(HL.t); const el = $("#hText"); el.textContent = list[0]; el.classList.remove("out");
+  if (list.length < 2 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  HL.t = setInterval(() => { el.classList.add("out");
+    setTimeout(() => { HL.i = (HL.i + 1) % HL.list.length; el.textContent = HL.list[HL.i]; el.classList.remove("out"); }, 450); }, 4000);
+}
 function setKind(n, push){
   NOTES = n; st.cat = "all"; st.f = {}; st.shown = CONFIG.perPage;
   const h = HERO[n ? "notes" : "ppt"];
-  $("#hKick").textContent = h.kick; $("#hTitle").innerHTML = h.title; $("#hText").textContent = h.text; $("#q").placeholder = h.q;
+  $("#hTitle").innerHTML = h.title; heroLines(h.text); $("#q").placeholder = h.q;
   $("#hPerks").innerHTML = h.perks.map(t => `<span>${icon("i-check")}${esc(t)}</span>`).join("");
   document.querySelectorAll(".kind button").forEach(b => { const on = (b.dataset.kind === "notes") === n; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
   document.title = (n ? "Study Notes" : "Ready to Use PPTs") + " — Lakshay Agency";
