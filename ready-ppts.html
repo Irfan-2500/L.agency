@@ -75,8 +75,15 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .kicker i{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1s steps(2,start) infinite}
 @keyframes blink{to{visibility:hidden}}
 .hero h1{font-size:clamp(1.4rem,3vw,2.1rem);margin:0 0 4px;text-wrap:balance}
-.hero p{color:var(--muted);max-width:640px;font-size:.9rem;min-height:3.1em;transition:opacity .45s ease,transform .45s ease}
-.hero p.out{opacity:0;transform:translateY(4px)}
+.ticker{display:flex;align-items:stretch;max-width:760px;margin-top:8px;border-radius:10px;overflow:hidden;background:linear-gradient(90deg,rgba(139,44,255,.16),rgba(6,182,212,.16));border:1px solid rgba(139,44,255,.35);font-size:.88rem;font-weight:600}
+.ticker b{flex:none;display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--grad);color:#fff;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase}
+.ticker b::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.tk-win{flex:1;min-width:0;overflow:hidden;display:flex;align-items:center;-webkit-mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent);mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent)}
+.tk-run{display:flex;flex:none;white-space:nowrap;animation:tk var(--tk,30s) linear infinite}
+.tk-run span{padding:6px 0}.tk-run span::after{content:"✦";margin:0 22px;color:var(--amber)}
+.ticker:hover .tk-run{animation-play-state:paused}
+@keyframes tk{to{transform:translateX(-50%)}}
 .perks{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:.78rem;color:var(--muted);font-weight:600}
 .perks span{display:inline-flex;align-items:center;gap:6px}
 .perks svg{color:var(--green);width:14px;height:14px}
@@ -250,7 +257,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
   .hidden-sm{display:none}
   .ftoggle{display:inline-flex}
   .filters{display:none}
-  .hero p{font-size:.82rem;min-height:4.4em}
+  .ticker{font-size:.8rem}.ticker b{padding:6px 9px}
   .filters.open{display:grid;grid-template-columns:1fr 1fr}
   .fsel{max-width:none}
   .toolbar{position:static}
@@ -267,6 +274,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 }
 @media(max-width:380px){.grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(prefers-reduced-motion:reduce){.tk-run{white-space:normal}.tk-run span:nth-child(n+2),.tk-run span::after{display:none}}
 
 /* Dark / Light / System switch (homepage jaisa) */
 .theme-sw{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:12px;background:var(--card);border:1px solid var(--line2);flex:none}
@@ -323,7 +331,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 
 <section class="hero container">
   <h1 id="hTitle">PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span></h1>
-  <p id="hText" aria-live="off">Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.</p>
+  <div class="ticker" role="marquee" aria-label="Updates"><b>New</b><div class="tk-win"><div class="tk-run" id="hText"><span>Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.</span></div></div></div>
   <div class="perks" id="hPerks">
     <span><svg class="i"><use href="#i-check"/></svg>100% Editable .pptx</span>
     <span><svg class="i"><use href="#i-check"/></svg>Instant Download</span>
@@ -491,13 +499,10 @@ const SP = { pos:0, drag:false, hold:false, last:0, sx:0, sp:0, mine:false };
   box.addEventListener("touchend", () => setTimeout(() => { SP.pos = box.scrollLeft; SP.hold = false; }, 900), { passive:true });
   box.addEventListener("wheel", () => { SP.hold = true; clearTimeout(SP.wt); SP.wt = setTimeout(() => SP.hold = false, 1200); }, { passive:true });
 })();
-/* Hero ki chhoti line: English aur Hindi baari-baari, dheere fade hokar */
-let HL = { t:0, i:0, list:[] };
+/* Hero ki patti: English + Hindi lines news channel ki tarah chalti rehti hain */
 function heroLines(list){
-  HL.list = list; HL.i = 0; clearInterval(HL.t); const el = $("#hText"); el.textContent = list[0]; el.classList.remove("out");
-  if (list.length < 2 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  HL.t = setInterval(() => { el.classList.add("out");
-    setTimeout(() => { HL.i = (HL.i + 1) % HL.list.length; el.textContent = HL.list[HL.i]; el.classList.remove("out"); }, 450); }, 4000);
+  const el = $("#hText"), one = list.map(t => `<span>${esc(t)}</span>`).join("");
+  el.innerHTML = one + one; el.style.setProperty("--tk", Math.max(18, list.join("").length / 7) + "s");
 }
 function setKind(n, push){
   NOTES = n; st.cat = "all"; st.f = {}; st.shown = CONFIG.perPage;
