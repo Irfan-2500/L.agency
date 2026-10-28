@@ -176,6 +176,7 @@ input:focus-visible{outline:none}
 </main>
 <div class="toast" id="toast" role="status"></div>
 
+<script src="config.js"></script>
 <script>
 /* demo:true sirf preview ke liye: koi bhi number, OTP 123456 */
 const CONFIG = { demo:/\.(vercel\.app|github\.io)$/.test(location.hostname) };   /* PHP ke bina (Vercel) demo login */
@@ -187,7 +188,24 @@ const msg = m => { $("#msg").textContent = m || ""; };
 let phone = "", timer = 0, API = true, OTP = false;
 const NEW = new URLSearchParams(location.search).get("new");   // payment ke turant baad aaye
 
+/* Google Script (admin panel wali PPTs): login OTP email par, token isi browser mein */
+const SCRIPT = String((window.LA_CONFIG || {}).orderUrl || "").trim();
+let SAPI = false;
+const tok = v => { try { if (v === undefined) return localStorage.getItem("la_acct") || ""; v ? localStorage.setItem("la_acct", v) : localStorage.removeItem("la_acct"); } catch(e) { return ""; } };
+async function sapi(fields){
+  const a = !fields ? "acctMe" : { send:"acctSend", login:"acctSend", verify:"acctVerify" }[fields.action];
+  if (fields && fields.action === "logout") { tok(""); return { ok:true }; }
+  const body = !fields ? { token:tok() } : { id:fields.id, otp:fields.otp, website:fields.website, device:/Mobi|Android|iPhone/i.test(navigator.userAgent) ? "Mobile" : "Computer" };
+  try {
+    const r = await fetch(SCRIPT, { method:"POST", body:JSON.stringify({ action:a, ...body }), headers:{ "Content-Type":"text/plain;charset=utf-8" } });
+    const j = await r.json();
+    if (j.token) tok(j.token);
+    if (!fields && j.ok && !j.loggedIn) tok("");
+    return j.ok ? j : { ok:false, error:j.error || "Kuch gadbad ho gayi." };
+  } catch(e) { return { ok:false, error:"इंटरनेट चेक करके दोबारा try करें। / Check internet and retry.", offline:true }; }
+}
 async function api(fields){
+  if (SAPI) return sapi(fields);
   if (!API) return demoApi(fields);
   try {
     const r = await (fields ? fetch("api/account.php", { method:"POST", body:Object.entries(fields).reduce((f,[k,v]) => (f.append(k,v), f), new FormData()), headers:{ Accept:"application/json" } })
@@ -257,6 +275,7 @@ document.addEventListener("click", e => { if (e.target.closest('a[href="#demo"]'
 
 (async function boot(){
   let me = await api();
+  if (!me.ok && SCRIPT && !window.claude) { SAPI = true; const s = await api(); if (s.ok) me = s; else SAPI = false; }   /* Vercel: asli login Google Script se */
   if (!me.ok && CONFIG.demo) { API = false; me = await api(); }
   if (NEW === "demo" && !API) { demoIn = true; me = await api(); }
   show(me.ok ? me : { loggedIn:false });
@@ -283,5 +302,6 @@ document.addEventListener("click", e => {
   e.stopPropagation(); e.preventDefault(); sw.classList.add("open");
 }, true);
 </script>
+<script src="js/track.js" defer></script>
 </body>
 </html>

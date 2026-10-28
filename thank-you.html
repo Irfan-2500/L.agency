@@ -230,6 +230,7 @@ html.light .pend p{color:#b45309}
 
       <div class="actions">
         <a href="./" class="btn"><svg class="i"><use href="#i-left"/></svg>Back to Home</a>
+        <a href="track.html" class="btn" id="trackBtn"><svg class="i"><use href="#i-clock"/></svg>Track Order</a>
         <a href="./#themes" class="btn"><svg class="i"><use href="#i-palette"/></svg>Explore Themes</a>
         <a class="wabtn" id="chatBtn" href="#" target="_blank" rel="noopener"><svg class="i"><use href="#i-wa"/></svg> Chat on WhatsApp</a>
       </div>
@@ -256,6 +257,7 @@ if (rows.length) {
   $("#summary").innerHTML = rows.map(([k, v, c]) => `<div class="${c || ""}"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("");
   $("#summary").hidden = false;
 }
+if (/^#\d+$/.test(o.ref || "")) $("#trackBtn").href = "track.html#id=" + o.ref.slice(1);
 $("#chatBtn").href = wa(`Hi Lakshay Agency! I just placed an order${o.ref ? " " + o.ref : ""}${o.name ? " (" + o.name + ")" : ""}.`);
 
 // 10 minute ki ulti ginti (order ke time se)
@@ -271,5 +273,6 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches && o.ref && !o.seen)
   try { o.seen = 1; sessionStorage.setItem("la_last_order", JSON.stringify(o)); } catch (e) {}
 }
 </script>
+<script src="js/track.js" defer></script>
 </body>
 </html>

@@ -306,5 +306,6 @@ render();
 document.addEventListener("click", e => { const a = e.target.closest('a[href^="service.html?s="]'); if (!a || e.ctrlKey || e.metaKey) return; e.preventDefault(); history.pushState(null, "", a.getAttribute("href")); render(); scrollTo({ top: 0, behavior: "smooth" }); });
 addEventListener("popstate", render);
 </script>
+<script src="js/track.js" defer></script>
 </body>
 </html>

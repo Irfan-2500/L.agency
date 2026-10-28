@@ -69,7 +69,7 @@ svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke
 .btn.wa{background:#16a34a;border-color:transparent;color:#fff}
 .btn.wa:hover{filter:brightness(1.08)}
 .btn:disabled{opacity:.55;cursor:wait}
-input[type=text],input[type=password],input[type=email],input[type=tel],input[type=number],input[type=search],select,textarea{
+input[type=text],input[type=password],input[type=email],input[type=tel],input[type=number],input[type=search],input[type=date],select,textarea{
   width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;outline:none;transition:.18s}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 label.f{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:700;color:var(--muted)}
@@ -322,6 +322,38 @@ label.f span{font-weight:500;color:var(--dim)}
 .order.sel{box-shadow:0 0 0 2px var(--accent)}
 .bulkbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:10px 12px;border-radius:12px;background:var(--bad-soft);border:1px solid color-mix(in srgb,var(--bad) 40%,transparent)}
 @media(max-width:560px){.wc-row{grid-template-columns:1fr;gap:8px}}
+/* analytics / ready ppts */
+.toplist{display:flex;flex-direction:column;gap:9px}
+.toplist div{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(40px,1fr) auto auto;gap:10px;align-items:center;font-size:.86rem}
+.toplist .tl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toplist b{font-variant-numeric:tabular-nums}
+.toplist small{color:var(--dim);font-size:.74rem;min-width:32px;text-align:right}
+.tb{display:block;height:8px;border-radius:99px;background:var(--card2);overflow:hidden}
+.tb i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.bars.b30{gap:3px}
+.bars.b30 .b{border-radius:4px 4px 2px 2px}
+.bars.b30 .b span{font-size:.62rem}
+.bars.b30 small{white-space:nowrap}
+.warnbox{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;border-radius:12px;background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);font-size:.88rem}
+.warnbox .btn{margin-left:auto}
+.tcard .nopic{display:grid;place-items:center;height:100%;font-family:var(--display);font-size:1.3rem;color:var(--muted);background:linear-gradient(135deg,var(--accent-soft),var(--card2))}
+.drop .up{display:flex;flex-direction:column;gap:8px;text-align:left}
+.drop .up .tb{height:10px}
+.drop .up.done b{color:var(--ok)}
+@media(max-width:560px){.bars.b30 .b span{display:none}}
+.rtbl{overflow-x:auto}
+.rtbl table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:tabular-nums}
+.rtbl th,.rtbl td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+.rtbl th:first-child,.rtbl td:first-child{text-align:left}
+.rtbl th{color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.rtbl tr.now td{background:var(--accent-soft);font-weight:700}
+.cform{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end}
+.clist{display:flex;flex-direction:column;gap:8px}
+.crow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg2)}
+.crow.off{opacity:.55}
+.crow b{font-family:var(--display);letter-spacing:.06em;font-size:1rem}
+.crow small{display:block;color:var(--dim);font-size:.78rem}
+@media(max-width:560px){.crow{grid-template-columns:1fr}}
 /* ---------- mobile ---------- */
 .scrim{display:none}
 @media(max-width:900px){
@@ -405,11 +437,17 @@ label.f span{font-weight:500;color:var(--dim)}
       <nav class="nav" id="tabs" aria-label="Admin sections">
         <span class="lbl">Overview</span>
         <button data-t="dash"><svg class="i"><use href="#i-home"/></svg>Dashboard</button>
+        <button data-t="stats"><svg class="i"><use href="#i-chart"/></svg>Analytics (Visitors)</button>
+        <button data-t="report"><svg class="i"><use href="#i-pie"/></svg>Kamai Report</button>
         <span class="lbl">Business</span>
         <button data-t="orders"><svg class="i"><use href="#i-cart"/></svg>Orders<span class="n" id="nOrders" hidden></span></button>
+        <button data-t="sales"><svg class="i"><use href="#i-pie"/></svg>Sales (Online)</button>
+        <button data-t="customers"><svg class="i"><use href="#i-phone"/></svg>Customers (Login)</button>
+        <button data-t="coupons"><svg class="i"><use href="#i-tag"/></svg>Coupons</button>
         <button data-t="messages"><svg class="i"><use href="#i-msg"/></svg>Messages / Tickets</button>
         <button data-t="reviews"><svg class="i"><use href="#i-star"/></svg>Reviews<span class="n" id="nReviews" hidden></span></button>
         <span class="lbl">Website</span>
+        <button data-t="ppts"><svg class="i"><use href="#i-upload"/></svg>Ready PPTs (Upload)</button>
         <button data-t="themes"><svg class="i"><use href="#i-image"/></svg>Themes</button>
         <button data-t="prices"><svg class="i"><use href="#i-tag"/></svg>Prices</button>
         <button data-t="site"><svg class="i"><use href="#i-sliders"/></svg>Website Controls</button>
@@ -460,6 +498,43 @@ label.f span{font-weight:500;color:var(--dim)}
   </div>
 </div>
 
+<!-- READY PPT EDITOR -->
+<div class="modal" id="pptModal" hidden role="dialog" aria-modal="true" aria-labelledby="peTitle">
+  <div class="mbox">
+    <div class="row"><h2 id="peTitle">Add PPT / PDF</h2><span class="sp"></span><button class="btn sm" data-pclose>✕ Close</button></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">1. File (customer ko payment ke baad milegi)</span>
+      <label class="drop" id="peFile" for="peFileIn"></label>
+      <input type="file" id="peFileIn" accept=".ppt,.pptx,.pdf,.zip,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/zip" hidden>
+    </div>
+    <label class="f">PPT ka naam<input type="text" id="peName" maxlength="120" placeholder="e.g. Class 10 Science — Light Reflection"></label>
+    <label class="f">Description <span>(chhota sa — kya kya hai is PPT mein)</span><textarea id="peDesc" rows="3" maxlength="600"></textarea></label>
+    <div class="grid2">
+      <label class="f">Daam (₹)<input type="number" id="pePrice" min="1" step="1" placeholder="99"></label>
+      <label class="f">Asli daam (₹) <span>katta hua dikhega · optional</span><input type="number" id="peMrp" min="0" step="1" placeholder="199"></label>
+      <label class="f">Slides kitni hain<input type="number" id="peSlides" min="0" step="1" placeholder="25"></label>
+      <label class="f">Subject<select id="peSubj"></select></label>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Category</span><div class="seg" id="peCat"></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Class <span style="text-transform:none;letter-spacing:0;font-weight:500">— kai chun sakte hain</span></span><div class="seg" id="peCls"></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Board</span><div class="seg" id="peBoard"></div></div>
+    <div class="grid2">
+      <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Language</span><div class="seg" id="peLang"></div></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Theme</span><div class="seg" id="peTheme"></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Badge</span><div class="seg" id="peBadge"></div></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span class="phead">2. Preview images (pehli image = card ki photo · optional)</span>
+      <div class="slides" id="peImgs"></div>
+      <label class="drop" id="peDrop" for="peFiles"><b>+ Add preview images</b><br><small>JPG, PNG, WEBP · slides ke screenshot · 12 tak</small></label>
+      <input type="file" id="peFiles" accept="image/jpeg,image/png,image/webp" multiple hidden>
+    </div>
+    <label class="check"><input type="checkbox" id="peAnim"> Animated slides hain</label>
+    <label class="check"><input type="checkbox" id="peShow" checked> Website par dikhao</label>
+    <div class="err" id="peErr" role="alert"></div>
+    <div class="row"><button class="btn pri" id="peSave">Save PPT</button><button class="btn" data-pclose>Cancel</button></div>
+  </div>
+</div>
+
 <script src="config.js"></script>
 <script>
 const LA = window.LA_CONFIG || {};
@@ -471,7 +546,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Kamai Report", coupons: "Coupons", sales: "Sales", customers: "Customers", ppts: "Ready PPTs", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -536,7 +611,16 @@ const DEMO = (() => {
       {row:3,time:iso(30),name:"Manoj Tiwari",role:"YouTube Educator",deck:"",stars:4,text:"Design achha hai, thode changes bhi turant kar diye.",show:true},
       {row:4,time:iso(80),name:"Spam Test",role:"",deck:"",stars:1,text:"Buy cheap followers here...",show:false}],
     messages: [{name:"Sanjay Kumar",email:"sanjay@example.com",phone:"9876543210",subject:"[TKT-1022-4821] Custom PPT Request",message:"Mujhe 100 slides chahiye Hindi mein, kal tak mil sakti hain?",time:iso(1)},
-      {name:"Ritu Sharma",email:"ritu@example.com",phone:"",subject:"[TKT-1021-3307] Invoice Request",message:"Pichhle order ka invoice bhej dijiye.",time:iso(28)}]
+      {name:"Ritu Sharma",email:"ritu@example.com",phone:"",subject:"[TKT-1021-3307] Invoice Request",message:"Pichhle order ka invoice bhej dijiye.",time:iso(28)}],
+    pay: { on: false },
+    coupons: [{code:"DIWALI20",type:"%",value:20,min:0,max:100,used:6,expiry:new Date(now + 9 * 864e5).toISOString(),active:true,note:"Diwali offer"},
+      {code:"WELCOME10",type:"₹",value:10,min:49,max:0,used:2,expiry:"",active:false,note:""}],
+    customers: [{key:"9876500022",name:"Neha Singh",email:"neha@example.com",mobile:"9876500022",orders:2,spent:397,ppts:["Class 10 Science — Light","Business Pitch Deck"],first:iso(300),last:iso(30),logins:4,lastLogin:iso(3),device:"Mobile",resetAt:"",blocked:false},
+      {key:"9876500011",name:"Rahul Verma",email:"rahul@example.com",mobile:"9876500011",orders:1,spent:99,ppts:["Class 10 Science — Light"],first:iso(2),last:iso(2),logins:0,lastLogin:"",device:"",resetAt:"",blocked:false}],
+    sales: [{time:iso(2),name:"Rahul Verma",email:"rahul@example.com",mobile:"9876500011",items:"Class 10 Science — Light",amount:99,payment:"pay_DemoA1",order:"order_DemoA1"},
+      {time:iso(30),name:"Neha Singh",email:"neha@example.com",mobile:"9876500022",items:"Class 10 Science — Light, Business Pitch Deck",amount:298,payment:"pay_DemoB2",order:"order_DemoB2"}],
+    ppts: [{id:102,title:"Class 10 Science — Light",desc:"Reflection & refraction, 30 slides",price:99,mrp:199,cat:"edu",level:["Class 10"],subject:"Science",board:["CBSE"],lang:"English",theme:"Dark",slides:30,anim:true,badge:"best",refs:[],previews:[],file:"x",fileName:"light.pptx",show:true,sold:14,added:iso(200)},
+      {id:101,title:"Business Pitch Deck",desc:"Startup pitch template",price:199,mrp:0,cat:"biz",level:[],subject:"",board:[],lang:"English",theme:"Light",slides:20,anim:false,badge:"",refs:[],previews:[],file:"y",fileName:"pitch.pdf",show:false,sold:3,added:iso(400)}]
   };
 })();
 async function demoCall(a, d) {
@@ -566,6 +650,39 @@ async function demoCall(a, d) {
     case "adminMessages": return ok({ messages: D.messages });
     case "adminOrderDelete": { const keys = (d.rows || []).map(x => x.row + "|" + x.id); const before = D.orders.length; D.orders = D.orders.filter(o => !keys.includes(o.row + "|" + o.id)); D.orders.forEach((o, i) => o.row = i + 2); return ok({ deleted: before - D.orders.length }); }
     case "adminUiSave": Object.assign(D.settings, d.settings); return ok({ settings: Object.assign({}, D.settings) });
+    case "adminStats": {
+      const day = k => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - k); return d.toISOString(); };
+      const daily = [...Array(30)].map((_, k) => { const v = Math.round(8 + 6 * Math.sin(k / 3) + k / 2); return { day: day(29 - k), visitors: v, visits: v * 2 }; });
+      return ok({ today: 46, todayUnique: 23, week: 290, weekUnique: 141, month: 1180, monthUnique: 512, allTime: 3420, daily,
+        pages: [["/", 520], ["/ready-ppts", 310], ["/order", 160], ["/account", 70], ["/about", 40]], sources: [["Direct", 610], ["WhatsApp", 280], ["Google", 190], ["Instagram", 70], ["YouTube", 30]],
+        states: [["Bihar", 410], ["Uttar Pradesh", 300], ["Delhi", 190], ["Jharkhand", 120], ["Maharashtra", 60]], cities: [["Patna", 280], ["Lucknow", 140], ["New Delhi", 120], ["Ranchi", 90], ["Gaya", 70]],
+        devices: [["Mobile", 900], ["Computer", 250], ["Tablet", 30]], browsers: [["Chrome", 820], ["Safari", 160], ["Samsung Internet", 110], ["Edge", 60]], sheetUrl: "#" });
+    }
+    case "adminSales": return ok({ sales: D.sales.slice() });
+    case "adminReport": {
+      const months = [...Array(12)].map((_, i) => { const d = new Date(); d.setDate(15); d.setMonth(d.getMonth() - 11 + i); const r = i < 6 ? 0 : [99, 248, 397, 520, 690, 815][i - 6];
+        return { month: d.toISOString().slice(0, 7), sales: Math.round(r / 60), revenue: r, orders: 3 + i, done: 2 + Math.floor(i / 2), cancelled: i % 4 ? 0 : 1, visitors: 120 + i * 45, newCustomers: Math.round(r / 90), coupons: i > 8 ? i - 8 : 0, discount: 0 }; });
+      return ok({ months, topPpts: [["Class 10 Science — Light", 14, 1386], ["Business Pitch Deck", 3, 597]], coupons: [["DIWALI20", 6], ["WELCOME10", 2]] });
+    }
+    case "adminCoupons": return ok({ coupons: D.coupons.map(c => Object.assign({}, c)) });
+    case "adminCouponSave": { const exp = d.expiry ? new Date(d.expiry + "T23:59:00+05:30").toISOString() : ""; let c = D.coupons.find(x => x.code === (d.old || d.code));
+      if (!c) { c = { used: 0 }; D.coupons.unshift(c); } Object.assign(c, { code: d.code, type: d.type, value: d.value, min: d.min, max: d.max, expiry: exp, active: d.active, note: d.note }); return ok({ coupon: Object.assign({}, c) }); }
+    case "adminCouponDelete": D.coupons = D.coupons.filter(c => c.code !== d.code); return ok();
+    case "adminCustomers": return ok({ customers: D.customers.map(c => Object.assign({}, c)) });
+    case "adminCustomerSet": { const c = D.customers.find(x => x.key === d.key); if (c && d.blocked != null) c.blocked = d.blocked; return ok(); }
+    case "adminSaleResend": return ok({ to: "r***@example.com" });
+    case "adminPpts": return ok({ ppts: D.ppts.map(p => JSON.parse(JSON.stringify(p))), payments: D.pay.on, folderUrl: "#" });
+    case "adminPptStart": return ok({ session: "demo" });
+    case "chunk": return d.start + 8388608 >= d.total ? ok({ done: true, id: "demo-file-" + Date.now() }) : ok({ next: d.start + 8388608 });
+    case "adminPptSave": {
+      let p = D.ppts.find(x => x.id === d.id);
+      if (!p) { p = { id: Math.max(100, ...D.ppts.map(x => x.id)) + 1, sold: 0, added: new Date().toISOString() }; D.ppts.unshift(p); }
+      Object.assign(p, JSON.parse(JSON.stringify(d)), { previews: (d.refs || []).map(r => DEMO_IMG[r] || r) });
+      return ok({ ppt: JSON.parse(JSON.stringify(p)) });
+    }
+    case "adminPptDelete": D.ppts = D.ppts.filter(p => p.id !== d.id); return ok();
+    case "adminPayStatus": return ok(D.pay.on ? { on: true, keyId: "rzp_live_Demo1234", mode: "live" } : { on: false });
+    case "adminPaySave": if (d.remove) { D.pay.on = false; return ok(); } if (!/^rzp_(live|test)_/.test(String(d.keyId).trim()) || !d.secret) return { ok: false, error: "Key ID rzp_live_ se shuru honi chahiye aur Secret bhi daalein" }; D.pay.on = true; return ok();
     case "adminPassword": if (!d.current) return { ok: false, error: "Current password is wrong" }; D.user = d.user || D.user; return ok({ token: "demo", user: D.user });
   }
   return { ok: false, error: "Unknown admin action" };
@@ -620,7 +737,7 @@ function go(t) {
   $("#pageTitle").textContent = TITLES[t] || "";
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   window.scrollTo(0, 0);
-  ({ dash, orders, themes, prices, reviews, messages, site, settings })[t]();
+  ({ dash, stats, report, sales, customers, coupons, ppts, orders, themes, prices, reviews, messages, site, settings })[t]();
 }
 async function startApp() {
   $("#app").hidden = false;
@@ -641,7 +758,7 @@ const STATUS_COL = { New: "var(--warn)", In: "var(--info)", Done: "var(--ok)", P
 const stCol = s => STATUS_COL[String(s).split(" ")[0]] || "var(--accent)";
 async function dash() {
   loading();
-  const [s, o] = await Promise.all([call("adminSummary"), call("adminOrders")]);
+  const [s, o, vs, sl] = await Promise.all([call("adminSummary"), call("adminOrders"), call("adminStats"), call("adminSales")]);
   if (!s.ok) return fail(s.error);
   SUM = s; setWho(); badge("#nOrders", s.newOrders); 
   const list = o.ok ? o.orders : [], stats = o.ok ? o.statuses : [];
@@ -656,13 +773,15 @@ async function dash() {
   const counts = (stats.length ? stats : [...new Set(list.map(x => x.status))]).map(st => [st, list.filter(x => x.status === st).length]).filter(x => x[1]);
   const total = list.length || 1;
   V(`<div class="hello"><h1>${greet}${SUM.user ? ", " + esc(SUM.user) : ""}! 👋</h1><p>${today} · Aapki website ka poora control yahan hai. Jo bhi yahan badlenge, website par turant dikhega.</p>
-    <div class="row"><button class="btn sm" data-go="orders">${ic("i-cart")} View orders</button><button class="btn sm" data-go="themes" data-add="1">${ic("i-plus")} Add theme</button><a class="btn sm" href="./" target="_blank" rel="noopener">${ic("i-ext")} Open website</a></div></div>
+    <div class="row"><button class="btn sm" data-go="orders">${ic("i-cart")} View orders</button><button class="btn sm" data-go="ppts">${ic("i-upload")} Upload PPT / PDF</button><button class="btn sm" data-go="themes" data-add="1">${ic("i-plus")} Add theme</button><a class="btn sm" href="./" target="_blank" rel="noopener">${ic("i-ext")} Open website</a></div></div>
   <div class="stats">
     <button class="stat ${s.newOrders ? "hot" : ""}" data-go="orders" style="--c:var(--warn)"><span class="ic">${ic("i-zap")}</span><b>${s.newOrders}</b><small>New orders</small></button>
     <button class="stat" data-go="orders" style="--c:var(--accent)"><span class="ic">${ic("i-cart")}</span><b>${s.orders}</b><small>Total orders${o.ok ? ` · ${todayN} today` : ""}</small></button>
     <button class="stat" data-go="themes" style="--c:var(--cyan)"><span class="ic">${ic("i-image")}</span><b>${s.liveThemes}</b><small>Themes live${s.themes > s.liveThemes ? ` · ${s.themes - s.liveThemes} hidden` : ""}</small></button>
     <button class="stat" data-go="reviews" style="--c:#fbbf24"><span class="ic">${ic("i-star")}</span><b>${s.pendingReviews}</b><small>Hidden reviews</small></button>
     <button class="stat" data-go="messages" style="--c:var(--ok)"><span class="ic">${ic("i-msg")}</span><b>${s.messages}</b><small>Messages / tickets</small></button>
+    ${vs.ok ? `<button class="stat" data-go="stats" style="--c:var(--info)"><span class="ic">${ic("i-eye")}</span><b>${nf(vs.todayUnique)}</b><small>Aaj ke visitors · ${nf(vs.monthUnique)} is mahine</small></button>` : ""}
+    ${sl.ok ? `<button class="stat" data-go="sales" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(sl.sales.filter(x => new Date(x.time) >= new Date(new Date().getFullYear(), new Date().getMonth(), 1)).reduce((a, x) => a + x.amount, 0))}</b><small>Online kamai is mahine · ${sl.sales.length} sale total</small></button>` : ""}
   </div>
   <div class="dgrid">
     <div class="card"><div class="ch"><h3>${ic("i-chart", "color:var(--accent)")} Orders — last 7 days</h3><span class="note">${week} this week</span></div>
@@ -1163,6 +1282,7 @@ async function settings() {
       <div class="row"><button class="btn pri" type="submit">Change Password</button></div>
       <p class="note">Password bhool gaye? Apps Script ("Lakshay Orders") mein function <b>resetAdminPassword</b> chuno → Run. Login wapas pehle wale (default) Admin ID + password par aa jayega.</p>
     </form>
+    <div class="card" id="payCard"><h3>💳 Online payment (Razorpay)</h3><p class="note">Loading…</p></div>
     <div class="card">
       <h3>🎨 Admin panel theme</h3>
       <div class="themepick"><button type="button" data-th="dark"><span class="sw d"></span>🌙 Dark</button><button type="button" data-th="light"><span class="sw l"></span>☀️ Light</button></div>
@@ -1171,6 +1291,7 @@ async function settings() {
   </div>`);
   $$(".themepick button").forEach(b => b.onclick = () => setTheme(b.dataset.th));
   setTheme(document.documentElement.getAttribute("data-theme"));
+  payCard();
   $("#pwUser").value = SUM.user || "";
   $("#stWa").value = s.whatsapp || ""; $("#stPh").value = s.phoneDisplay || ""; $("#stEm").value = s.email || "";
   $("#setForm").onsubmit = async e => {
@@ -1187,6 +1308,406 @@ async function settings() {
     b.disabled = false; if (!r.ok) return toast(r.error, true);
     setToken(r.token); SUM.user = r.user; setWho(); e.target.reset(); $("#pwUser").value = r.user || ""; toast("Admin ID / password changed ✓");
   };
+}
+
+/* ---------- Analytics (visitors) ---------- */
+const nf = n => (+n || 0).toLocaleString("en-IN");
+const rs = n => "₹" + (+n || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 });
+const NEW_SCRIPT = `<div class="empty"><b>🔧</b>Ye hissa Google Script update hone ke baad chalega.<br><small>Claude se kahein: "Google Script update kar do".</small></div>`;
+function toplist(rows, total, col) {
+  if (!rows || !rows.length) return `<p class="note">Abhi data nahi.</p>`;
+  const mx = Math.max(1, ...rows.map(r => r[1]));
+  return `<div class="toplist">${rows.map(([k, n]) => `<div><span class="tl" title="${esc(k)}">${esc(k)}</span><span class="tb"><i style="width:${n / mx * 100}%;background:${col || "var(--accent)"}"></i></span><b>${nf(n)}</b>${total ? `<small>${Math.round(n / total * 100)}%</small>` : ""}</div>`).join("")}</div>`;
+}
+const PAGE_NAMES = { "/": "Home", "/ready-ppts": "Ready to Use PPTs", "/order": "PPT Order", "/account": "My PPTs", "/about": "About", "/service": "Services", "/thank-you": "Thank you", "/track": "Track Order",
+  "/privacy": "Privacy", "/terms": "Terms", "/refund": "Refund", "/delivery": "Delivery", "/contact": "Contact" };
+async function stats() {
+  loading();
+  const r = await call("adminStats");
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Analytics", "") + NEW_SCRIPT) : fail(r.error);
+  const d = r.daily, mx = Math.max(1, ...d.map(x => x.visits));
+  const dev = r.devices.reduce((s, x) => s + x[1], 0) || 1;
+  const DEV_COL = { Mobile: "var(--accent)", Computer: "var(--cyan)", Tablet: "var(--warn)" };
+  V(head("Analytics", "Website par kitne log aaye, kahan se aaye aur kya dekha. (Har visitor ek baar gina jata hai, naam/number kabhi save nahi hota.)",
+      `<a class="btn sm" href="${esc(r.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Sheet</a>`) + `
+  <div class="stats">
+    <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-eye")}</span><b>${nf(r.todayUnique)}</b><small>Aaj ke visitors · ${nf(r.today)} page views</small></div>
+    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic("i-chart")}</span><b>${nf(r.weekUnique)}</b><small>Last 7 days visitors · ${nf(r.week)} views</small></div>
+    <div class="stat" style="--c:var(--cyan)"><span class="ic">${ic("i-globe")}</span><b>${nf(r.monthUnique)}</b><small>Last 30 days visitors · ${nf(r.month)} views</small></div>
+    <div class="stat" style="--c:var(--warn)"><span class="ic">${ic("i-zap")}</span><b>${nf(r.allTime)}</b><small>Total page views (shuru se)</small></div>
+  </div>
+  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>${ic("i-chart", "color:var(--accent)")} Visitors — last 30 days</h3><span class="note">${nf(r.monthUnique)} log</span></div>
+    <div class="bars b30">${d.map((x, k) => `<div class="bc" title="${new Date(x.day).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}: ${x.visitors} visitors, ${x.visits} views"><div class="b ${x.visits ? "" : "zero"}" style="height:${Math.max(3, x.visitors / mx * 100)}%"><span>${x.visitors || ""}</span></div><small>${k % 5 === 4 || k === 29 ? (k === 29 ? "Aaj" : new Date(x.day).getDate()) : ""}</small></div>`).join("")}</div></div>
+  <div class="dgrid">
+    <div class="card"><div class="ch"><h3>📄 Sabse zyada dekhe gaye pages</h3></div>${toplist(r.pages.map(([k, n]) => [PAGE_NAMES[k] || k, n]), r.month)}</div>
+    <div class="card"><div class="ch"><h3>🔗 Log kahan se aaye</h3></div>${toplist(r.sources, r.month, "var(--cyan)")}</div>
+  </div>
+  <div class="dgrid">
+    <div class="card"><div class="ch"><h3>📍 State / Country</h3></div>${toplist(r.states, r.month, "var(--ok)")}</div>
+    <div class="card"><div class="ch"><h3>🏙️ City</h3></div>${toplist(r.cities, r.month, "var(--warn)")}</div>
+  </div>
+  <div class="dgrid">
+    <div class="card"><div class="ch"><h3>📱 Mobile ya Computer</h3></div>
+      <div class="split">${r.devices.map(([k, n]) => `<i style="width:${n / dev * 100}%;background:${DEV_COL[k] || "var(--dim)"}" title="${esc(k)}: ${n}"></i>`).join("")}</div>
+      <div class="legend">${r.devices.map(([k, n]) => `<div><i style="background:${DEV_COL[k] || "var(--dim)"}"></i>${esc(k)}<b>${Math.round(n / dev * 100)}%</b></div>`).join("") || `<p class="note">Abhi data nahi.</p>`}</div></div>
+    <div class="card"><div class="ch"><h3>🌐 Browser</h3></div>${toplist(r.browsers, r.month, "var(--info)")}</div>
+  </div>
+  <p class="note" style="margin-top:6px">ℹ️ Male / female aur age koi website apne aap nahi jaan sakti (visitor batata hi nahi). Isliye ye yahan nahi dikhta.</p>`);
+}
+
+/* ---------- Sales (Razorpay se biki Ready PPTs) ---------- */
+let SALES = [], SQ = "";
+async function sales() {
+  loading();
+  const r = await call("adminSales");
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Sales", "") + NEW_SCRIPT) : fail(r.error);
+  SALES = r.sales;
+  const d0 = new Date(); d0.setHours(0, 0, 0, 0);
+  const m0 = new Date(d0.getFullYear(), d0.getMonth(), 1);
+  const sum = l => l.reduce((s, x) => s + x.amount, 0);
+  const today = SALES.filter(x => new Date(x.time) >= d0), month = SALES.filter(x => new Date(x.time) >= m0);
+  const per = {}; SALES.forEach(x => x.items.split(", ").forEach(t => { if (t) per[t] = (per[t] || 0) + 1; }));
+  V(head("Sales", "Website se Razorpay ke through biki Ready PPTs. Har sale ki email bhi aapko aati hai.", `<button class="btn sm" id="sCsv">${ic("i-down")} Export CSV</button>`) + `
+  <div class="stats">
+    <div class="stat" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(sum(today))}</b><small>Aaj ki kamai · ${today.length} sale</small></div>
+    <div class="stat" style="--c:var(--accent)"><span class="ic">₹</span><b>${rs(sum(month))}</b><small>Is mahine · ${month.length} sale</small></div>
+    <div class="stat" style="--c:var(--cyan)"><span class="ic">₹</span><b>${rs(sum(SALES))}</b><small>Kul kamai · ${SALES.length} sale</small></div>
+  </div>
+  <div class="dgrid">
+    <div class="card"><div class="ch"><h3>🏆 Sabse zyada biki PPTs</h3></div>${toplist(Object.entries(per).sort((a, b) => b[1] - a[1]).slice(0, 8), 0, "var(--ok)")}</div>
+    <div class="card"><div class="ch"><h3>${ic("i-clock", "color:var(--warn)")} Recent customers</h3></div>
+      <div class="recent">${SALES.slice(0, 6).map(x => `<a href="mailto:${esc(x.email)}"><span class="av">${esc(initials(x.name))}</span><span class="tx"><b>${esc(x.name)} · ${rs(x.amount)}</b><small>${esc(x.items)} · ${ago(x.time)}</small></span></a>`).join("") || `<p class="note">Abhi tak koi sale nahi.</p>`}</div></div>
+  </div>
+  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="sq" placeholder="Search name, email, mobile, PPT, payment ID…" aria-label="Search sales"></label></div>
+  <div class="olist" id="slist"></div>`);
+  $("#sq").value = SQ; $("#sq").oninput = () => { SQ = $("#sq").value; drawSales(); };
+  $("#sCsv").onclick = () => {
+    const rows = [["Time", "Name", "Email", "Mobile", "PPTs", "Amount", "Payment ID", "Order ID"], ...SALES.map(x => [fmtTime(x.time), x.name, x.email, x.mobile, x.items, x.amount, x.payment, x.order])];
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" }));
+    a.download = "lakshay-sales.csv"; a.click();
+  };
+  drawSales();
+}
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-rs]"); if (!b) return;
+  b.disabled = true; const r = await call("adminSaleResend", { payment: b.dataset.rs }); b.disabled = false;
+  toast(r.ok ? `Download link ${r.to} par bhej diya ✓` : r.error, !r.ok);
+});
+function drawSales() {
+  const q = SQ.toLowerCase().trim();
+  const list = SALES.filter(x => !q || [x.name, x.email, x.mobile, x.items, x.payment].join(" ").toLowerCase().includes(q));
+  $("#slist").innerHTML = list.length ? list.map(x => `<article class="order s-Paid"><div><h3>${esc(x.name)} · <span style="color:var(--ok)">${rs(x.amount)}</span></h3><div class="meta">${fmtTime(x.time)} · ${esc(x.payment)}</div></div>
+    <div class="side2"><div class="row"><button class="btn sm" data-rs="${esc(x.payment)}" title="Download link customer ko dobara email karein">${ic("i-mail")} Link dobara bhejein</button>${x.mobile ? `<a class="btn sm wa" href="https://wa.me/91${esc(x.mobile)}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}${x.email ? `<a class="btn sm" href="mailto:${esc(x.email)}">${ic("i-mail")} Email</a>` : ""}</div></div>
+    <div class="det">📦 ${esc(x.items)}<br>✉️ ${esc(x.email)} · 📞 ${esc(x.mobile)}</div></article>`).join("")
+    : `<div class="empty"><b>🧾</b>${SALES.length ? "Is search mein kuch nahi mila." : "Abhi tak koi sale nahi. Razorpay keys Settings mein daalein aur Ready PPTs add karein."}</div>`;
+}
+
+
+
+/* ---------- Kamai Report (12 mahine) ---------- */
+async function report() {
+  loading();
+  const r = await call("adminReport");
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Kamai Report", "") + NEW_SCRIPT) : fail(r.error);
+  const M = r.months, mx = Math.max(1, ...M.map(m => m.revenue)), name = k => new Date(k + "-15").toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
+  const sum = f => M.reduce((s, m) => s + m[f], 0), cur = M[M.length - 1], prev = M[M.length - 2];
+  const diff = prev.revenue ? Math.round((cur.revenue - prev.revenue) / prev.revenue * 100) : null;
+  V(head("Kamai Report", "Har mahine kitni kamai hui, kitne order aaye aur kitne log website par aaye. (Online kamai = Razorpay se biki Ready PPTs.)") + `
+  <div class="stats">
+    <div class="stat" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(cur.revenue)}</b><small>Is mahine ki online kamai${diff == null ? "" : ` · ${diff >= 0 ? "▲" : "▼"} ${Math.abs(diff)}% pichhle mahine se`}</small></div>
+    <div class="stat" style="--c:var(--accent)"><span class="ic">₹</span><b>${rs(sum("revenue"))}</b><small>Last 12 mahine · ${nf(sum("sales"))} sale</small></div>
+    <div class="stat" style="--c:var(--warn)"><span class="ic">${ic("i-cart")}</span><b>${nf(sum("orders"))}</b><small>Custom PPT orders (12 mahine) · ${nf(sum("done"))} complete</small></div>
+    <div class="stat" style="--c:var(--cyan)"><span class="ic">${ic("i-eye")}</span><b>${nf(cur.visitors)}</b><small>Is mahine ke visitors</small></div>
+  </div>
+  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>${ic("i-chart", "color:var(--ok)")} Online kamai — har mahina</h3></div>
+    <div class="bars">${M.map((m, i) => `<div class="bc" title="${name(m.month)}: ${rs(m.revenue)} · ${m.sales} sale"><div class="b ${m.revenue ? "" : "zero"}" style="height:${Math.max(3, m.revenue / mx * 100)}%;${i === M.length - 1 ? "" : "opacity:.75"}"><span>${m.revenue ? "₹" + nf(Math.round(m.revenue)) : ""}</span></div><small>${name(m.month)}</small></div>`).join("")}</div></div>
+  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>📅 Mahine ke hisaab se</h3></div>
+    <div class="rtbl"><table><thead><tr><th>Mahina</th><th>Visitors</th><th>Custom orders</th><th>Complete</th><th>Cancel</th><th>Online sale</th><th>Naye customer</th><th>Coupon</th><th>Kamai</th></tr></thead>
+    <tbody>${M.slice().reverse().map((m, i) => `<tr class="${i ? "" : "now"}"><td>${name(m.month)}</td><td>${nf(m.visitors)}</td><td>${nf(m.orders)}</td><td>${nf(m.done)}</td><td>${nf(m.cancelled)}</td><td>${nf(m.sales)}</td><td>${nf(m.newCustomers)}</td><td>${nf(m.coupons)}</td><td><b>${rs(m.revenue)}</b></td></tr>`).join("")}</tbody></table></div></div>
+  <div class="dgrid">
+    <div class="card"><div class="ch"><h3>🏆 Sabse zyada kamai wali PPTs</h3></div>${toplist(r.topPpts.map(p => [p[0] + " · " + p[1] + " sale", Math.round(p[2])]), 0, "var(--ok)")}</div>
+    <div class="card"><div class="ch"><h3>🏷️ Coupon kitni baar lage</h3><button class="btn sm" data-go="coupons" style="margin-left:auto">Coupons</button></div>${toplist(r.coupons, 0, "var(--warn)")}</div>
+  </div>
+  <p class="note">ℹ️ Custom PPT orders ka daam website par nahi bharta, isliye unki kamai yahan nahi judti. Unki ginti dikhti hai.</p>`);
+  $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+}
+
+/* ---------- Coupons ---------- */
+let CPN = [], CE = null;
+async function coupons() {
+  loading();
+  const r = await call("adminCoupons");
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Coupons", "") + NEW_SCRIPT) : fail(r.error);
+  CPN = r.coupons;
+  V(head("Coupons", "Discount code banaiye (jaise DIWALI20). Customer Ready PPT khareedte waqt checkout par lagayega. Sirf online payment (Razorpay) par chalta hai.") + `
+  <form class="card" id="cpForm" style="margin-bottom:14px;display:flex;flex-direction:column;gap:12px">
+    <h3 id="cpTitle" style="font-family:var(--display)">➕ Naya coupon</h3>
+    <div class="cform">
+      <label class="f">Code<input type="text" id="cpCode" maxlength="30" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="DIWALI20" style="text-transform:uppercase"></label>
+      <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Discount type</span><div class="seg" id="cpType"></div></div>
+      <label class="f">Discount<input type="number" id="cpVal" min="1" step="1" placeholder="20"></label>
+      <label class="f">Kam se kam khareed (₹) <span>optional</span><input type="number" id="cpMin" min="0" step="1" placeholder="0"></label>
+      <label class="f">Kitni baar chalega <span>0 = unlimited</span><input type="number" id="cpMax" min="0" step="1" placeholder="0"></label>
+      <label class="f">Last date <span>optional</span><input type="date" id="cpExp"></label>
+    </div>
+    <label class="f">Note <span>sirf aapke liye · optional</span><input type="text" id="cpNote" maxlength="120" placeholder="e.g. Diwali offer WhatsApp group ke liye"></label>
+    <label class="check"><input type="checkbox" id="cpOn" checked> Chalu (active)</label>
+    <div class="row"><button class="btn pri" type="submit" id="cpSave">Save Coupon</button><button class="btn" type="button" id="cpNew" hidden>Cancel edit</button><span class="err" id="cpErr" role="alert"></span></div>
+  </form>
+  <div class="card"><div class="ch"><h3>🏷️ Aapke coupons</h3><span class="note">${CPN.length} code</span></div><div class="clist" id="cpList"></div></div>`);
+  $("#cpForm").onsubmit = saveCoupon; $("#cpNew").onclick = () => editCoupon(null);
+  editCoupon(null); drawCoupons();
+}
+function editCoupon(c) {
+  CE = c ? Object.assign({}, c) : { code: "", type: "%", value: "", min: 0, max: 0, expiry: "", active: true, note: "" };
+  $("#cpTitle").textContent = c ? "✏️ Edit " + c.code : "➕ Naya coupon"; $("#cpNew").hidden = !c; $("#cpErr").textContent = "";
+  $("#cpCode").value = CE.code; $("#cpVal").value = CE.value; $("#cpMin").value = CE.min || ""; $("#cpMax").value = CE.max || "";
+  $("#cpExp").value = CE.expiry ? new Date(new Date(CE.expiry).getTime() + 19800000).toISOString().slice(0, 10) : ""; $("#cpNote").value = CE.note; $("#cpOn").checked = CE.active;
+  ED = CE; seg($("#cpType"), [["%", "% off"], ["₹", "₹ off"]], CE.type, "type");
+  if (c) $("#cpForm").scrollIntoView({ behavior: "smooth" });
+}
+async function saveCoupon(e) {
+  e.preventDefault();
+  const d = { old: CE.code || "", code: $("#cpCode").value.trim().toUpperCase(), type: CE.type, value: +$("#cpVal").value, min: +$("#cpMin").value || 0, max: +$("#cpMax").value || 0,
+    expiry: $("#cpExp").value, note: $("#cpNote").value.trim(), active: $("#cpOn").checked };
+  if (!/^[A-Z0-9_-]{3,30}$/.test(d.code)) return $("#cpErr").textContent = "Code 3-30 akshar ka ho (A-Z, 0-9), jaise DIWALI20";
+  if (!(d.value > 0)) return $("#cpErr").textContent = "Discount likhein";
+  $("#cpSave").disabled = true; const r = await call("adminCouponSave", d); $("#cpSave").disabled = false;
+  if (!r.ok) return $("#cpErr").textContent = r.error;
+  const i = CPN.findIndex(x => x.code === (d.old || r.coupon.code)); if (i >= 0) CPN[i] = r.coupon; else CPN.unshift(r.coupon);
+  toast(`Coupon ${r.coupon.code} saved ✓`); editCoupon(null); drawCoupons();
+}
+function drawCoupons() {
+  const now = Date.now();
+  $("#cpList").innerHTML = CPN.length ? CPN.map((c, i) => {
+    const exp = c.expiry && new Date(c.expiry).getTime() < now, full = c.max && c.used >= c.max, live = c.active && !exp && !full;
+    return `<div class="crow ${live ? "" : "off"}"><div><b>${esc(c.code)}</b> <span class="pill ${live ? "ok" : "off"}">${live ? "● Chalu" : exp ? "Expire" : full ? "Khatam" : "Band"}</span>
+      <small>${c.type === "%" ? c.value + "% off" : "₹" + c.value + " off"}${c.min ? ` · ₹${c.min}+ par` : ""} · ${c.used} baar laga${c.max ? ` / ${c.max}` : ""}${c.expiry ? ` · last date ${new Date(c.expiry).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}` : ""}${c.note ? " · " + esc(c.note) : ""}</small>
+      <div class="cf" data-ccf="${i}"></div></div>
+      <div class="row" style="gap:6px"><button class="btn sm" data-cpc="${i}" title="Code copy karein">${ic("i-copy")}</button><button class="btn sm" data-cpe="${i}">✏️ Edit</button><button class="btn sm danger" data-cpd="${i}" aria-label="Delete">🗑</button></div></div>`;
+  }).join("") : `<div class="empty"><b>🏷️</b>Abhi koi coupon nahi. Upar se pehla coupon banaiye.</div>`;
+  $$("[data-cpc]").forEach(b => b.onclick = () => copy(CPN[+b.dataset.cpc].code));
+  $$("[data-cpe]").forEach(b => b.onclick = () => editCoupon(CPN[+b.dataset.cpe]));
+  $$("[data-cpd]").forEach(b => b.onclick = () => {
+    const i = +b.dataset.cpd, box = document.querySelector(`[data-ccf="${i}"]`);
+    box.innerHTML = `<div class="confirm" style="margin-top:8px">Delete ${esc(CPN[i].code)}? <button class="btn sm danger" data-yes type="button">Yes, delete</button><button class="btn sm" data-no type="button">No</button></div>`;
+    box.querySelector("[data-no]").onclick = () => box.innerHTML = "";
+    box.querySelector("[data-yes]").onclick = async ev => {
+      ev.target.disabled = true; const r = await call("adminCouponDelete", { code: CPN[i].code });
+      if (!r.ok) return toast(r.error, true);
+      CPN.splice(i, 1); drawCoupons(); toast("Coupon deleted");
+    };
+  });
+}
+
+/* ---------- Customers (My PPTs login) ---------- */
+let CUS = [], CQ = "";
+async function customers() {
+  loading();
+  const r = await call("adminCustomers");
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Customers", "") + NEW_SCRIPT) : fail(r.error);
+  CUS = r.customers;
+  const d30 = Date.now() - 30 * 864e5, active = CUS.filter(c => c.lastLogin && new Date(c.lastLogin) >= d30).length;
+  V(head("Customers", "Jinhone website se PPT khareedi. Ye apne mobile / email + OTP se \"My PPTs\" mein login karke dobara download kar sakte hain.", `<button class="btn sm" id="cCsv">${ic("i-down")} Export CSV</button>`) + `
+  <div class="stats">
+    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic("i-phone")}</span><b>${nf(CUS.length)}</b><small>Total customers</small></div>
+    <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-eye")}</span><b>${nf(CUS.filter(c => c.logins).length)}</b><small>Kabhi login kiya · ${active} last 30 din</small></div>
+    <div class="stat" style="--c:var(--cyan)"><span class="ic">${ic("i-cart")}</span><b>${nf(CUS.filter(c => c.orders > 1).length)}</b><small>Dobara khareedne wale</small></div>
+  </div>
+  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="cq" placeholder="Search name, mobile, email, PPT…" aria-label="Search customers"></label></div>
+  <div class="olist" id="clist"></div>
+  <p class="note" style="margin-top:8px">🔄 <b>Reset login</b> = customer ke saare phone / computer se logout. Wo OTP se dobara login kar sakta hai. 🚫 <b>Block</b> = login band.</p>`);
+  $("#cq").value = CQ; $("#cq").oninput = () => { CQ = $("#cq").value; drawCus(); };
+  $("#cCsv").onclick = () => {
+    const rows = [["Name", "Mobile", "Email", "Orders", "Spent", "PPTs", "Logins", "Last login", "First buy"], ...CUS.map(c => [c.name, c.mobile, c.email, c.orders, c.spent, c.ppts.join(" | "), c.logins, c.lastLogin ? fmtTime(c.lastLogin) : "", fmtTime(c.first)])];
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" }));
+    a.download = "lakshay-customers.csv"; a.click();
+  };
+  drawCus();
+}
+function drawCus() {
+  const q = CQ.toLowerCase().trim();
+  const list = CUS.map((c, i) => [c, i]).filter(([c]) => !q || [c.name, c.mobile, c.email, ...c.ppts].join(" ").toLowerCase().includes(q));
+  $("#clist").innerHTML = list.length ? list.map(([c, i]) => `<article class="order ${c.blocked ? "s-Cancelled" : c.logins ? "s-Paid" : ""}"><div><h3>${esc(c.name || "—")} · <span style="color:var(--ok)">${rs(c.spent)}</span> ${c.blocked ? `<span class="pill" style="color:var(--bad)">Blocked</span>` : ""}</h3>
+      <div class="meta">${c.logins ? `🔐 ${c.logins} baar login · last ${ago(c.lastLogin)}${c.device ? " · " + esc(c.device) : ""}` : "Abhi tak login nahi kiya"} · ${c.orders} order</div></div>
+    <div class="side2"><div class="row">${c.mobile ? `<a class="btn sm wa" href="https://wa.me/91${esc(c.mobile)}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}
+      <button class="btn sm" data-cr="${i}">🔄 Reset login</button><button class="btn sm ${c.blocked ? "" : "danger"}" data-cb="${i}">${c.blocked ? "✅ Unblock" : "🚫 Block"}</button></div></div>
+    <div class="det">📞 ${esc(c.mobile || "—")} · ✉️ ${esc(c.email || "—")}<br>📦 ${c.ppts.map(esc).join(", ")}<br><small>Pehli khareed: ${fmtTime(c.first)}</small></div></article>`).join("")
+    : `<div class="empty"><b>👥</b>${CUS.length ? "Is search mein koi customer nahi." : "Abhi koi customer nahi. Jab koi Ready PPT online khareedega, yahan dikhega."}</div>`;
+  $$("[data-cr]").forEach(b => b.onclick = async () => {
+    b.disabled = true; const c = CUS[+b.dataset.cr], r = await call("adminCustomerSet", { key: c.key, reset: true }); b.disabled = false;
+    toast(r.ok ? `${c.name || "Customer"} ka login reset ho gaya ✓` : r.error, !r.ok);
+  });
+  $$("[data-cb]").forEach(b => b.onclick = async () => {
+    b.disabled = true; const c = CUS[+b.dataset.cb], r = await call("adminCustomerSet", { key: c.key, blocked: !c.blocked, reset: !c.blocked });
+    if (!r.ok) { b.disabled = false; return toast(r.error, true); }
+    c.blocked = !c.blocked; drawCus(); toast(c.blocked ? "Customer block ho gaya" : "Customer unblock ho gaya");
+  });
+}
+
+/* ---------- Ready PPTs (PPT / PDF upload) ---------- */
+let PP = [], PQ = "", PE = null, PPAY = false;
+const BOARDS = ["CBSE", "ICSE", "State Board", "NCERT", "Bihar Board", "UP Board", "Competitive"];
+const PCATS = [["edu", "📚 Educational"], ["biz", "💼 Business"], ["mkt", "📣 Marketing"]];
+const PBADGE = [["", "Koi nahi"], ["best", "🔥 Best Seller"], ["feat", "⭐ Featured"], ["new", "🆕 New"]];
+async function ppts() {
+  loading();
+  const r = await call("adminPpts");
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Ready PPTs", "") + NEW_SCRIPT) : fail(r.error);
+  PP = r.ppts; PPAY = r.payments;
+  const live = PP.filter(p => p.show).length, sold = PP.reduce((s, p) => s + p.sold, 0);
+  V(head("Ready PPTs", `Yahan PPT ya PDF upload karein — website ke "Ready to Use PPTs" page par turant dikhegi. Customer pay karega aur file apne aap download hogi.`,
+      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a><button class="btn pri" id="addPpt">${ic("i-plus")} Add PPT / PDF</button>`) + `
+  ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}
+  <div class="stats">
+    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic("i-upload")}</span><b>${PP.length}</b><small>Total PPTs · ${live} live</small></div>
+    <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-cart")}</span><b>${nf(sold)}</b><small>Total biki</small></div>
+    <div class="stat" style="--c:${PPAY ? "var(--ok)" : "var(--bad)"}"><span class="ic">₹</span><b>${PPAY ? "ON" : "OFF"}</b><small>Online payment (Razorpay)</small></div>
+  </div>
+  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="pq" placeholder="Search PPT name, class, subject…" aria-label="Search PPTs"></label></div>
+  <div class="tgrid" id="pgrid"></div>`);
+  $("#pq").value = PQ; $("#pq").oninput = () => { PQ = $("#pq").value; drawPpts(); };
+  $("#addPpt").onclick = () => editPpt(null);
+  $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+  drawPpts();
+}
+function drawPpts() {
+  const q = PQ.toLowerCase().trim();
+  const vis = PP.map((p, i) => [p, i]).filter(([p]) => !q || [p.title, p.subject, ...p.level, ...p.board].join(" ").toLowerCase().includes(q));
+  $("#pgrid").innerHTML = vis.length ? vis.map(([p, i]) => `<div class="tcard ${p.show ? "" : "hid"}">
+    <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${/\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
+    <div class="body"><b>${esc(p.title)}</b>
+      <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}</span></div>
+      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button></div>
+      <div class="cf" data-pcf="${i}"></div>
+    </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>📊</b>${PP.length ? "Is search mein koi PPT nahi." : `Abhi koi PPT nahi. "+ Add PPT / PDF" dabayein.`}</div>`;
+  $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
+  $$("[data-pv]").forEach(b => b.onclick = async () => {
+    const p = PP[+b.dataset.pv]; b.disabled = true;
+    const r = await call("adminPptSave", Object.assign(pptPayload(p), { show: !p.show }));
+    if (!r.ok) { b.disabled = false; return toast(r.error, true); }
+    PP[+b.dataset.pv] = r.ppt; drawPpts(); toast(r.ppt.show ? "PPT website par dikh rahi hai" : "PPT chhupa di");
+  });
+  $$("[data-pd]").forEach(b => b.onclick = () => {
+    const i = +b.dataset.pd, box = document.querySelector(`[data-pcf="${i}"]`);
+    box.innerHTML = `<div class="confirm">Delete "${esc(PP[i].title)}"? File bhi hat jayegi. <button class="btn sm danger" data-yes>Yes, delete</button><button class="btn sm" data-no>No</button></div>`;
+    box.querySelector("[data-no]").onclick = () => box.innerHTML = "";
+    box.querySelector("[data-yes]").onclick = async e => {
+      e.target.disabled = true;
+      const r = await call("adminPptDelete", { id: PP[i].id });
+      if (!r.ok) return toast(r.error, true);
+      PP.splice(i, 1); drawPpts(); toast("PPT deleted");
+    };
+  });
+}
+const pptPayload = p => ({ id: p.id, title: p.title, desc: p.desc, price: p.price, mrp: p.mrp, cat: p.cat, level: p.level, subject: p.subject, board: p.board, lang: p.lang,
+  theme: p.theme, slides: p.slides, anim: p.anim, badge: p.badge, refs: p.refs, file: p.file, fileName: p.fileName, show: p.show });
+function editPpt(p) {
+  PE = p ? Object.assign(JSON.parse(JSON.stringify(p)), { imgs: p.refs.map((r, k) => ({ ref: r, url: p.previews[k] })) })
+         : { id: 0, title: "", desc: "", price: "", mrp: "", cat: "edu", level: [], subject: "", board: [], lang: "English", theme: "Dark", slides: "", anim: false, badge: "", imgs: [], file: "", fileName: "", show: true };
+  $("#peTitle").textContent = p ? "Edit PPT" : "Add PPT / PDF";
+  $("#peName").value = PE.title; $("#peDesc").value = PE.desc; $("#pePrice").value = PE.price; $("#peMrp").value = PE.mrp || ""; $("#peSlides").value = PE.slides || "";
+  $("#peShow").checked = PE.show; $("#peAnim").checked = PE.anim; $("#peErr").textContent = "";
+  $("#peSubj").innerHTML = `<option value="">— Subject chunein —</option>` + SUBJECTS.map(s => `<option ${s === PE.subject ? "selected" : ""}>${esc(s)}</option>`).join("");
+  const S = (el, opts, key) => { ED = PE; seg(el, opts, PE[key], key); };
+  S($("#peCat"), PCATS, "cat"); S($("#peLang"), LANGS, "lang"); S($("#peTheme"), [["Dark", "🌙 Dark"], ["Light", "☀️ Light"]], "theme"); S($("#peBadge"), PBADGE, "badge");
+  ED = PE; mseg($("#peCls"), CLASSES, "level"); mseg($("#peBoard"), BOARDS, "board");
+  drawPeImgs(); drawPeFile(); $("#pptModal").hidden = false; $("#peName").focus();
+}
+function drawPeFile(prog) {
+  const f = PE.file, box = $("#peFile");
+  if (prog != null) box.innerHTML = `<div class="up"><b>⏫ Upload ho raha hai… ${prog}%</b><span class="tb"><i style="width:${prog}%"></i></span><small>Window band na karein</small></div>`;
+  else box.innerHTML = f ? `<div class="up done"><b>✅ ${esc(PE.fileName || "File")}</b><small>Upload ho gayi. Badalni ho to nayi file chunein.</small></div>`
+    : `<b>+ PPT / PDF file chunein</b><br><small>PPTX, PPT, PDF ya ZIP · 1 GB tak · ye file customer ko payment ke baad milegi</small>`;
+}
+function drawPeImgs() {
+  const s = PE.imgs;
+  $("#peImgs").innerHTML = s.map((x, k) => x.busy ? `<div class="sl up">${esc(x.busy)}</div>`
+    : `<div class="sl"><img src="${esc(x.url)}" alt="Preview ${k + 1}"><span class="no">${k + 1}</span><div class="ctr"><button type="button" data-im="${k}" data-d="-1" ${k ? "" : "disabled"} aria-label="Move left">←</button><button type="button" data-ix="${k}" aria-label="Remove">✕</button><button type="button" data-im="${k}" data-d="1" ${k < s.length - 1 ? "" : "disabled"} aria-label="Move right">→</button></div></div>`).join("");
+  $$("#peImgs [data-im]").forEach(b => b.onclick = () => { const k = +b.dataset.im, j = k + +b.dataset.d; [s[k], s[j]] = [s[j], s[k]]; drawPeImgs(); });
+  $$("#peImgs [data-ix]").forEach(b => b.onclick = () => { s.splice(+b.dataset.ix, 1); drawPeImgs(); });
+}
+async function addPeImgs(files) {
+  for (const f of [...files].filter(f => /^image\/(jpeg|png|webp)$/.test(f.type)).slice(0, 12 - PE.imgs.length)) {
+    const slot = { busy: "Uploading…" }; PE.imgs.push(slot); drawPeImgs();
+    try {
+      const blob = await shrink(f);
+      const r = await call("adminImage", { name: f.name.replace(/\.\w+$/, "") + (blob.type === "image/webp" ? ".webp" : ".jpg"), mime: blob.type, data: await b64(blob) });
+      if (!r.ok) throw new Error(r.error);
+      Object.assign(slot, { ref: r.ref, url: r.url }); delete slot.busy;
+    } catch (e) { PE.imgs.splice(PE.imgs.indexOf(slot), 1); toast(`"${f.name}" upload nahi hua: ${e.message}`, true); }
+    drawPeImgs();
+  }
+}
+// badi file → Google Drive, 8 MB ke tukdon mein
+async function uploadPptFile(file) {
+  if (!/\.(pptx?|pdf|zip)$/i.test(file.name)) return toast("Sirf PPT, PPTX, PDF ya ZIP file", true);
+  if (PE.uploading) return;
+  PE.uploading = true; drawPeFile(0);
+  try {
+    const s = await call("adminPptStart", { name: file.name, size: file.size, mime: file.type || "application/octet-stream" });
+    if (!s.ok) throw new Error(s.error);
+    const CH = 8 * 1048576; let start = 0, done = null, tries = 0;
+    while (!done) {
+      const part = file.slice(start, Math.min(file.size, start + CH));
+      const r = await call("chunk", { session: s.session, start, total: file.size, data: await b64(part) });
+      if (!r.ok) { if (r.stop || ++tries > 3) throw new Error(r.error); continue; }
+      tries = 0;
+      if (r.done) done = r; else { start = r.next || start + part.size; drawPeFile(Math.min(99, Math.round(start / file.size * 100))); }
+    }
+    PE.file = done.id; PE.fileName = file.name;
+    if (!$("#peName").value.trim()) $("#peName").value = file.name.replace(/\.\w+$/, "").replace(/[_-]+/g, " ");
+    toast("File upload ho gayi ✓");
+  } catch (e) { toast("File upload nahi hui: " + e.message, true); }
+  PE.uploading = false; drawPeFile();
+}
+function closePpt() { if (PE && (PE.uploading || PE.imgs.some(x => x.busy))) return toast("Upload ho raha hai — thoda rukiye", true); $("#pptModal").hidden = true; }
+$$("[data-pclose]").forEach(b => b.onclick = closePpt);
+$("#pptModal").addEventListener("click", e => { if (e.target.id === "pptModal") closePpt(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#pptModal").hidden) closePpt(); });
+$("#peFiles").onchange = e => { addPeImgs(e.target.files); e.target.value = ""; };
+$("#peFileIn").onchange = e => { if (e.target.files[0]) uploadPptFile(e.target.files[0]); e.target.value = ""; };
+[["#peDrop", f => addPeImgs(f)], ["#peFile", f => f[0] && uploadPptFile(f[0])]].forEach(([sel, fn]) => {
+  const el = $(sel);
+  ["dragenter", "dragover"].forEach(ev => el.addEventListener(ev, e => { e.preventDefault(); el.classList.add("on"); }));
+  ["dragleave", "drop"].forEach(ev => el.addEventListener(ev, e => { e.preventDefault(); el.classList.remove("on"); }));
+  el.addEventListener("drop", e => fn(e.dataTransfer.files));
+});
+$("#peSave").onclick = async () => {
+  if (PE.uploading || PE.imgs.some(x => x.busy)) return $("#peErr").textContent = "Upload ho raha hai — thoda rukiye";
+  Object.assign(PE, { title: $("#peName").value.trim(), desc: $("#peDesc").value.trim(), price: +$("#pePrice").value, mrp: +$("#peMrp").value || 0,
+    slides: +$("#peSlides").value || 0, subject: $("#peSubj").value, show: $("#peShow").checked, anim: $("#peAnim").checked, refs: PE.imgs.map(x => x.ref) });
+  if (PE.title.length < 3) return $("#peErr").textContent = "PPT ka naam likhein";
+  if (!(PE.price >= 1)) return $("#peErr").textContent = "Daam likhein (kam se kam ₹1)";
+  if (!PE.file) return $("#peErr").textContent = "PPT / PDF file upload karein";
+  $("#peSave").disabled = true; $("#peErr").textContent = "";
+  const r = await call("adminPptSave", pptPayload(PE));
+  $("#peSave").disabled = false;
+  if (!r.ok) return $("#peErr").textContent = r.error;
+  const i = PP.findIndex(x => x.id === r.ppt.id);
+  if (i >= 0) PP[i] = r.ppt; else PP.unshift(r.ppt);
+  $("#pptModal").hidden = true; drawPpts(); toast(r.ppt.show ? "PPT saved — website par dikh rahi hai" : "PPT saved (hidden)");
+};
+
+/* ---------- Settings → Razorpay ---------- */
+async function payCard() {
+  const box = $("#payCard"); if (!box) return;
+  const r = await call("adminPayStatus");
+  if (!r.ok) { box.innerHTML = `<h3>💳 Online payment (Razorpay)</h3>${/Unknown admin action/i.test(r.error || "") ? `<p class="note">Google Script update hone ke baad yahan keys daal sakenge.</p>` : `<p class="note">${esc(r.error)}</p>`}`; return; }
+  box.innerHTML = `<h3>💳 Online payment (Razorpay)</h3>
+    <p>${r.on ? `<span class="pill ok">● ON</span> Key: <b>${esc(r.keyId)}</b>${r.mode === "test" ? ` <span class="pill">Test mode</span>` : ""}` : `<span class="pill" style="color:var(--bad)">● OFF</span> Keys nahi lagi hain`}</p>
+    <label class="f">Key ID <span>rzp_live_… se shuru</span><input type="text" id="rzId" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="rzp_live_xxxxxxxx"></label>
+    <label class="f">Key Secret<input type="password" id="rzSec" autocomplete="new-password" placeholder="Razorpay se copy karke paste karein"></label>
+    <div class="row"><button class="btn pri" type="button" id="rzSave">Save &amp; Check</button>${r.on ? `<button class="btn sm danger" type="button" id="rzOff">Payment band karein</button>` : ""}</div>
+    <p class="note">Razorpay Dashboard → Account &amp; Settings → API Keys → Generate Key. Dono yahan paste karein. Secret sirf Google Script mein safe rehta hai, kabhi dikhta nahi.</p>`;
+  $("#rzSave").onclick = async e => {
+    e.target.disabled = true; e.target.textContent = "Checking…";
+    const s = await call("adminPaySave", { keyId: $("#rzId").value, secret: $("#rzSec").value });
+    e.target.disabled = false; e.target.textContent = "Save & Check";
+    if (!s.ok) return toast(s.error, true);
+    toast("Razorpay keys sahi hain ✓ Online payment ON"); payCard();
+  };
+  const off = $("#rzOff"); if (off) off.onclick = async () => { const s = await call("adminPaySave", { remove: true }); if (!s.ok) return toast(s.error, true); toast("Online payment band"); payCard(); };
 }
 
 /* start */

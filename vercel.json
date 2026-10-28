@@ -1,8 +1,28 @@
 {
   "rewrites": [
-    { "source": "/uploads/themes/samples/:file", "destination": "/:file" }
+    {
+      "source": "/uploads/themes/samples/:file",
+      "destination": "/:file"
+    }
   ],
   "headers": [
-    { "source": "/admin.html", "headers": [ { "key": "X-Robots-Tag", "value": "noindex, nofollow" }, { "key": "Cache-Control", "value": "no-store" } ] }
-  ]
+    {
+      "source": "/admin.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/hit.js": {
+      "includeFiles": "config.js"
+    }
+  }
 }
