@@ -210,12 +210,17 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .qr{width:180px;max-width:100%;aspect-ratio:1;margin:0 auto;background:#fff;border-radius:12px;padding:8px;display:grid;place-items:center}
 .qr svg,.qr img{width:100%;height:100%;display:block;object-fit:contain}
 .upi-id{font-size:.82rem;color:var(--muted)} .upi-id b{color:var(--text)}
-.apps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.apps button{display:grid;gap:6px;justify-items:center;padding:10px 4px;border-radius:14px;background:var(--card);border:1px solid var(--line2);font-size:.74rem;font-weight:700;transition:.15s}
-.apps button:hover{border-color:var(--gold);transform:translateY(-2px)}
+.apps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.apps button{display:grid;gap:3px;justify-items:center;padding:6px 2px;border-radius:10px;background:var(--card);border:1px solid var(--line2);font-size:.66rem;font-weight:700;line-height:1.2;transition:.15s}
+.apps button:hover{border-color:var(--gold);transform:translateY(-1px)}
 .apps button:disabled{opacity:.5;transform:none}
-.apps i{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:1.2rem;color:#fff}
-.apps i svg{width:24px;height:24px}
+.apps i{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:.9rem;color:#fff}
+.apps i svg{width:17px;height:17px}
+#upiBox{grid-template-columns:minmax(0,1fr)}
+#upiBox h4{font-size:.86rem;margin-bottom:8px}
+#upiBox .btn{white-space:normal;text-align:center}
+#upiBox .upi-id{overflow-wrap:anywhere}
+.pay-all{width:100%;margin-top:8px;padding:9px 12px;font-size:.84rem}
 .qr-box{position:relative;width:fit-content;max-width:100%;margin:0 auto}
 .qr-box .qr{transition:filter .3s}
 .qr-box.locked .qr{filter:blur(7px);opacity:.75}
@@ -692,7 +697,7 @@ function openPay(ids){
   $("#upiBox").hidden = m === "wa"; $("#payWa").hidden = m !== "wa"; $("#utrWrap").hidden = m !== "upi" && m !== "demo"; $("#payUtr").value = "";
   $("#upiBox").innerHTML = m === "wa" ? "" : VPAY ? `<h4>PhonePe / Google Pay / Paytm se <b class="js-amt">${inr(payTotal)}</b> pay karein</h4>
     <div class="apps">${APPS.map(a => `<button type="button" data-app="${a.id}">${a.ic}${a.name}</button>`).join("")}</div>
-    <button type="button" class="btn btn-gold" data-app="other" style="width:100%;margin-top:12px">💳 Pay <span class="js-amt">${inr(payTotal)}</span> — UPI QR / Card / Netbanking</button>
+    <button type="button" class="btn btn-gold pay-all" data-app="other">💳 Pay <span class="js-amt">${inr(payTotal)}</span> · Card / Netbanking</button>
     ${hasId ? `<div class="or">ya hamara UPI QR scan karein</div>
     <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg"></div>
       <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
@@ -845,6 +850,9 @@ $("#upiBox").onclick = async e => {
   rzp.open();
 };
 
+/* Drive ka link seedha download wale link mein (mobile par Drive app / account chooser nahi khulta) */
+const dlUrl = u => { const m = /drive\.google\.com\/.*(?:[?&]id=|\/d\/)([\w-]{20,})/.exec(u || ""); return m ? `https://drive.usercontent.google.com/download?id=${m[1]}&export=download&confirm=t` : u; };
+
 /* Payment successful: Congratulations + Download */
 function paid(d, orderId, links){
   stopQr();
@@ -854,7 +862,7 @@ function paid(d, orderId, links){
     try { const old = JSON.parse(localStorage.getItem("la_bought") || "[]"); localStorage.setItem("la_bought", JSON.stringify([...links, ...old].slice(0, 30))); } catch(e) {}
     $("#payDone").innerHTML = `<div class="tick">${icon("i-check")}</div><h3>🎉 Congratulations! Payment Successful</h3>
       <p style="color:var(--muted)">Abhi download kar lein${SPAY ? "" : " (link 7 din chalega)"}. Payment ID: <b>${esc(orderId)}</b></p>
-      ${links.map(l => `<a class="btn btn-gold" style="width:100%;margin-top:8px" href="${esc(l.url)}">${icon("i-dl")} ${esc(l.title)}</a>`).join("")}
+      ${links.map(l => `<a class="btn btn-gold" style="width:100%;margin-top:8px" href="${esc(dlUrl(l.url))}" download>${icon("i-dl")} ${esc(l.title)}</a>`).join("")}
       <p style="color:var(--dim);font-size:.82rem;margin-top:12px">Koi dikkat? WhatsApp par Payment ID bhejein.</p>`;
     const a = $("#payDone a.btn-gold"); if (a) setTimeout(() => a.click(), 900);
     return;

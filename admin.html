@@ -1817,6 +1817,7 @@ async function payCard() {
   if (!r.ok) { box.innerHTML = `<h3>💳 Online payment (Razorpay)</h3>${/Unknown admin action/i.test(r.error || "") ? `<p class="note">Google Script update hone ke baad yahan keys daal sakenge.</p>` : `<p class="note">${esc(r.error)}</p>`}`; return; }
   box.innerHTML = `<h3>💳 Online payment (Razorpay)</h3>
     <p>${r.on ? `<span class="pill ok">● ON</span> Key: <b>${esc(r.keyId)}</b>${r.mode === "test" ? ` <span class="pill">Test mode</span>` : ""}` : `<span class="pill" style="color:var(--bad)">● OFF</span> Keys nahi lagi hain`}</p>
+    ${r.on && r.mode === "test" ? `<div class="warnbox">⚠️ <b>Ye TEST key hai.</b> Test mode mein payment "successful" dikhta hai par asli paisa nahi katta, aur PPT free mein download ho jati hai. Razorpay Dashboard mein upar se <b>Live mode</b> chunein, Live key (rzp_live_…) generate karke yahan paste karein.</div>` : ""}
     <label class="f">Key ID <span>rzp_live_… se shuru</span><input type="text" id="rzId" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="rzp_live_xxxxxxxx"></label>
     <label class="f">Key Secret<input type="password" id="rzSec" autocomplete="new-password" placeholder="Razorpay se copy karke paste karein"></label>
     <div class="row"><button class="btn pri" type="button" id="rzSave">Save &amp; Check</button>${r.on ? `<button class="btn sm danger" type="button" id="rzOff">Payment band karein</button>` : ""}</div>
