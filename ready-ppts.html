@@ -429,9 +429,6 @@ const CONFIG = { whatsapp:"919711069435", perPage:12,
   upi:{ id:"7290933116@ybl", name:"MOHAMMAD IRFAN", qr:"uploads/payment/upi-qr.png" },
   /* Vercel / GitHub Pages par PHP nahi chalta: wahan demo checkout (asli server par kabhi nahi) */
   demoPay:/\.(vercel\.app|github\.io)$/.test(location.hostname) };
-const CATEGORIES = [
-  { id:"edu",  name:"Educational" }, { id:"biz", name:"Business" }, { id:"mkt", name:"Marketing" }, { id:"anim", name:"Animated" }
-];
 /* Server na mile (jaise sirf HTML preview) tab ye 5 demo PPTs dikhti hain */
 const DEMO = LA_CATALOG.map((p,i) => { const prev = [1,2,3,4].map(k => `uploads/previews/demo-${p.slug}-${k}.webp`); return { ...p, thumb:prev[0], previews:prev, sales:0, added:5-i }; });
 
@@ -532,9 +529,12 @@ document.querySelector(".kind").onclick = e => { const b = e.target.closest("but
 
 /* ---------- FILTERS ---------- */
 const PRICE = [[29,"₹29 tak"],[49,"₹49 tak"],[99,"₹99 tak"],[199,"₹199 tak"],[Infinity,"₹199 se zyada"]];
+/* Class / Subject: poori list hamesha dikhe (admin panel wali list), chahe PPT abhi na ho */
+const CLASS_ALL = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
+const SUBJ_ALL = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Physical Education","Corporate / Training"];
 const FILTERS = [
-  { key:"level",   label:"Class",    nl:"Class / Exam", get:p => lv(p), order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
-  { key:"subject", label:"Subject",  get:p => arr(p.subject) },
+  { key:"level",   label:"Class",    nl:"Class / Exam", get:p => lv(p), all:CLASS_ALL, order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
+  { key:"subject", label:"Subject",  get:p => arr(p.subject), all:SUBJ_ALL },
   { key:"lang",    label:"Language", get:p => p.lang === "Both" ? ["Hindi + English","Hindi","English"] : [p.lang], fixed:["Hindi","English","Hindi + English"], ppt:true },
   { key:"board",   label:"Board",    nl:"Board / Exam", get:p => arr(p.board) },
   { key:"theme",   label:"Theme",    get:p => [p.theme === "Light" ? "☀️ Light" : "🌙 Dark"], ppt:true },
@@ -551,7 +551,9 @@ const SORTS = { popular:(a,b) => b.sales - a.sales || b.added - a.added, low:(a,
 
 function renderCats(){
   const V = VIEW(), used = NOTES ? MEDIUM.map(([v,t]) => ({ id:"m:" + v, name:`${t} (${V.filter(p => p.lang === v).length})` })).filter(c => !c.name.endsWith("(0)"))
-    : CATEGORIES.filter(c => V.some(p => p.cat === c.id || (c.id === "anim" && p.anim)));
+    : [];
+  /* Ready PPTs mein Educational / Business wale button nahi: Class aur Subject se hi chunte hain */
+  $("#cats").parentElement.hidden = !NOTES;
   $("#cats").innerHTML = [{id:"all",name:`${W().all} (${V.length})`}, ...used]
     .map(c => `<button class="${st.cat === c.id ? "on" : ""}" data-cat="${c.id}">${esc(c.name)}</button>`).join("");
 }
@@ -561,7 +563,7 @@ function renderFilters(){
   const V = VIEW();
   $("#filters").innerHTML = FILTERS.filter(f => !(NOTES && f.ppt)).map(f => {
     const base = V.filter(p => matchC(p) && matchQ(p) && matchF(p, f.key));
-    let vals = f.fixed || [...new Set(V.flatMap(f.get))];
+    let vals = f.fixed || [...new Set([...(f.all || []), ...V.flatMap(f.get)])];
     if (f.order) vals = [...vals].sort((a,b) => f.order(a) - f.order(b) || a.localeCompare(b));
     else if (!f.fixed) vals.sort((a,b) => a.localeCompare(b));
     const cur = st.f[f.key] || "";
