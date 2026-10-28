@@ -132,6 +132,24 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .empty{grid-column:1/-1;text-align:center;padding:60px 16px;color:var(--muted);background:var(--card);border:1px dashed var(--line2);border-radius:18px}
 .empty b{display:block;color:var(--text);font-size:1.05rem;margin-bottom:6px}
 .more{display:flex;justify-content:center;padding-bottom:60px;margin-top:-30px}
+/* PPTs / Notes switch + A4 (khade) notes cards */
+.kind{display:inline-flex;gap:4px;padding:4px;border-radius:14px;background:var(--card);border:1px solid var(--line2);margin-top:18px}
+.kind button{padding:9px 16px;border-radius:10px;font-weight:700;font-size:.9rem;color:var(--muted);background:none;border:0;cursor:pointer}
+.kind button.on{color:#fff;background:var(--grad);box-shadow:0 0 14px rgba(139,44,255,.4)}
+.grid.notes{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.grid.notes .thumb{aspect-ratio:210/297;background-position:top center}
+.mini.a4{width:44px;aspect-ratio:210/297;justify-self:center}
+.stage.a4{aspect-ratio:210/297;width:min(100%,calc((100vh - 120px) * 210 / 297));margin:0 auto}
+.stage.a4 img{object-fit:contain;background:#fff}
+.strip.a4 button{flex:0 0 70px;aspect-ratio:210/297}
+/* Study Notes: A4 sample pages, dheere-dheere lagatar chalte hain */
+.samples{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;cursor:grab;touch-action:pan-x pan-y;user-select:none;-webkit-user-select:none;width:100%;padding:6px 0 30px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.samples::-webkit-scrollbar{display:none}
+.samples.drag{cursor:grabbing}
+.s-track{display:flex;width:max-content}
+.s-track img{height:clamp(250px,40vw,460px);aspect-ratio:210/297;margin-right:18px;border-radius:12px;object-fit:cover;object-position:top;background:#fff;border:1px solid var(--line2);box-shadow:0 18px 40px -18px rgba(0,0,0,.55)}
+@media(max-width:760px){.grid.notes{grid-template-columns:1fr 1fr;gap:12px}}
+@media(max-width:340px){.grid.notes{grid-template-columns:1fr}}
 
 /* ===== DRAWER + MODALS ===== */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:.25s;z-index:60}
@@ -295,16 +313,18 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 </header>
 
 <section class="hero container">
-  <span class="kicker"><i></i>Ready to Use PPT</span>
-  <h1>Turant download karein, <span class="grad-text">ready-made PPTs</span></h1>
-  <p>Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.</p>
-  <div class="perks">
+  <span class="kicker"><i></i><span id="hKick">Ready to Use PPT</span></span>
+  <h1 id="hTitle">Turant download karein, <span class="grad-text">ready-made PPTs</span></h1>
+  <p id="hText">Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.</p>
+  <div class="perks" id="hPerks">
     <span><svg class="i"><use href="#i-check"/></svg>100% Editable .pptx</span>
     <span><svg class="i"><use href="#i-check"/></svg>Instant Download</span>
     <span><svg class="i"><use href="#i-check"/></svg>UPI · Cards · Net Banking</span>
     <span><svg class="i"><use href="#i-check"/></svg>Google Slides & Keynote</span>
   </div>
+  <div class="kind" role="tablist" aria-label="Kya dekhna hai"><button type="button" role="tab" data-kind="ppt">📊 Ready PPTs</button><button type="button" role="tab" data-kind="notes">📝 Study Notes</button></div>
 </section>
+<section class="samples" id="samples" hidden aria-label="Study Notes ke sample pages"><div class="s-track" id="sTrack"></div></section>
 
 <div class="toolbar">
   <div class="container">
@@ -409,6 +429,7 @@ const arr = v => Array.isArray(v) ? v : (v ? [v] : []);
 const waURL = m => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(m)}`;
 const cssUrl = u => `url('${String(u).replace(/['"\\\n()]/g,"")}')`;
 const langTxt = l => l === "Both" ? "Hindi + English" : l;
+const langOf = p => isNote(p) ? langTxt(p.lang) + " Medium" : langTxt(p.lang);
 const thumbStyle = p => p.thumb ? `background-image:${cssUrl(p.thumb)}` : `background:linear-gradient(135deg,${p.colors[0]},${p.colors[1]})`;
 
 let PRODUCTS = [], API = false, PAY = false, VPAY = false, SPAY = false;   /* VPAY: Vercel par Razorpay (api/pay-*.js) · SPAY: admin panel wali PPTs (Google Script) */
@@ -421,41 +442,97 @@ async function postS(action, body){   /* Google Script (admin panel) */
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem("la_cart")) || []; } catch(e) {}
 const st = { q:"", cat:"all", f:{}, sort:"popular", shown:CONFIG.perPage };
+/* PPTs ya Notes: admin panel mein category "Notes" wali PDF yahan "Notes" tab mein dikhti hai */
+let NOTES = /\/notes/.test(location.pathname) || new URLSearchParams(location.search).get("type") === "notes";
+/* Notes ki pehchaan: category "notes" (naya Google Script) ya class list mein "Study Notes" tag (purana Script bhi chalta rahe) */
+const NOTE_TAG = "Study Notes";
+const isNote = p => p.cat === "notes" || arr(p.level).includes(NOTE_TAG);
+const lv = p => arr(p.level).filter(l => l !== NOTE_TAG);
+const VIEW = () => PRODUCTS.filter(p => isNote(p) === NOTES);
+const W = () => NOTES ? { one:"Notes", many:"Notes", all:"All Study Notes" } : { one:"PPT", many:"PPTs", all:"All PPTs" };
+const HERO = {
+  ppt:{ kick:"Ready to Use PPT", title:`Turant download karein, <span class="grad-text">ready-made PPTs</span>`, text:"Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.",
+    perks:["100% Editable .pptx","Instant Download","UPI · Cards · Net Banking","Google Slides & Keynote"], q:"Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" },
+  notes:{ kick:"Study Notes", title:`Har class aur exam ke <span class="grad-text">Study Notes</span>`, text:"School boards aur competitive exams ke chapter-wise notes, Hindi aur English medium mein. A4 size PDF, payment ke turant baad download karein, phone par padhein ya print karein.",
+    perks:["A4 size PDF (print ready)","Hindi & English Medium","Instant Download","Definitions, formulas, solved questions"], q:"Search: chapter, subject, class, exam… (e.g. Science, Class 10, SSC)" } };
+const SAMPLES = [1,2,3,4,5,6,7,8].map(n => `uploads/notes/sample-${n}.webp`);
+function drawSamples(){
+  const own = VIEW().flatMap(p => (p.previews || []).slice(0, 2)).slice(0, 12);
+  const list = own.length >= 4 ? own : [...own, ...SAMPLES].slice(0, 10);
+  $("#sTrack").innerHTML = [...list, ...list].map((u,k) => `<img src="${esc(u)}" alt="${k < list.length ? `Sample page ${k+1}` : ""}" loading="lazy" decoding="async" draggable="false">`).join("");
+  SP.pos = 0; $("#samples").scrollLeft = 0;
+}
+/* Sample pages: apne aap dheere chalte hain; mouse se pakad kar (ya ungli se) aage-peeche khiska sakte hain */
+const SP = { pos:0, drag:false, hold:false, last:0, sx:0, sp:0, mine:false };
+(function(){
+  const box = $("#samples"), slow = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const half = () => $("#sTrack").scrollWidth / 2;
+  const put = () => { const h = half(); if (h > 0) { SP.pos = ((SP.pos % h) + h) % h; } SP.mine = true; box.scrollLeft = SP.pos; };
+  function tick(t){
+    const dt = Math.min(50, t - (SP.last || t)); SP.last = t;
+    if (!box.hidden && !SP.drag && !SP.hold && !slow) { SP.pos += dt * 0.045; put(); }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  box.addEventListener("scroll", () => { if (SP.mine) { SP.mine = false; return; } SP.pos = box.scrollLeft; });   // touch / trackpad
+  box.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse" || e.button) return; SP.drag = true; SP.sx = e.clientX; SP.sp = SP.pos; box.classList.add("drag"); box.setPointerCapture(e.pointerId); });
+  box.addEventListener("pointermove", e => { if (!SP.drag) return; SP.pos = SP.sp - (e.clientX - SP.sx); put(); });
+  const end = () => { SP.drag = false; box.classList.remove("drag"); };
+  box.addEventListener("pointerup", end); box.addEventListener("pointercancel", end);
+  box.addEventListener("touchstart", () => SP.hold = true, { passive:true });
+  box.addEventListener("touchend", () => setTimeout(() => { SP.pos = box.scrollLeft; SP.hold = false; }, 900), { passive:true });
+  box.addEventListener("wheel", () => { SP.hold = true; clearTimeout(SP.wt); SP.wt = setTimeout(() => SP.hold = false, 1200); }, { passive:true });
+})();
+function setKind(n, push){
+  NOTES = n; st.cat = "all"; st.f = {}; st.shown = CONFIG.perPage;
+  const h = HERO[n ? "notes" : "ppt"];
+  $("#hKick").textContent = h.kick; $("#hTitle").innerHTML = h.title; $("#hText").textContent = h.text; $("#q").placeholder = h.q;
+  $("#hPerks").innerHTML = h.perks.map(t => `<span>${icon("i-check")}${esc(t)}</span>`).join("");
+  document.querySelectorAll(".kind button").forEach(b => { const on = (b.dataset.kind === "notes") === n; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
+  document.title = (n ? "Study Notes" : "Ready to Use PPTs") + " — Lakshay Agency";
+  $("#samples").hidden = !n; if (n) drawSamples();
+  $("#more").textContent = `Load more ${W().many}`;
+  if (push) history.replaceState(null, "", location.pathname + (n ? "?type=notes" : ""));
+}
+document.querySelector(".kind").onclick = e => { const b = e.target.closest("button"); if (!b) return; setKind(b.dataset.kind === "notes", true); render(); };
 
 /* ---------- FILTERS ---------- */
 const PRICE = [[29,"₹29 tak"],[49,"₹49 tak"],[99,"₹99 tak"],[199,"₹199 tak"],[Infinity,"₹199 se zyada"]];
 const FILTERS = [
-  { key:"level",   label:"Class",    get:p => arr(p.level), order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
+  { key:"level",   label:"Class",    nl:"Class / Exam", get:p => lv(p), order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
   { key:"subject", label:"Subject",  get:p => arr(p.subject) },
-  { key:"lang",    label:"Language", get:p => p.lang === "Both" ? ["Hindi + English","Hindi","English"] : [p.lang], fixed:["Hindi","English","Hindi + English"] },
-  { key:"board",   label:"Board",    get:p => arr(p.board) },
-  { key:"theme",   label:"Theme",    get:p => [p.theme === "Light" ? "☀️ Light" : "🌙 Dark"] },
-  { key:"style",   label:"Style",    get:p => [p.anim ? "Animated" : "Without Animation"] },
+  { key:"lang",    label:"Language", get:p => p.lang === "Both" ? ["Hindi + English","Hindi","English"] : [p.lang], fixed:["Hindi","English","Hindi + English"], ppt:true },
+  { key:"board",   label:"Board",    nl:"Board / Exam", get:p => arr(p.board) },
+  { key:"theme",   label:"Theme",    get:p => [p.theme === "Light" ? "☀️ Light" : "🌙 Dark"], ppt:true },
+  { key:"style",   label:"Style",    get:p => [p.anim ? "Animated" : "Without Animation"], ppt:true },
   { key:"price",   label:"Price",    get:p => PRICE.filter(b => p.price <= b[0]).map(b => b[1]), fixed:PRICE.map(b => b[1]) }
 ];
 const matchQ = p => { const q = st.q.trim().toLowerCase(); if (!q) return true;
-  const hay = [p.title, p.desc, p.subject, langTxt(p.lang), ...arr(p.level), ...arr(p.board)].join(" ").toLowerCase();
+  const hay = [p.title, p.desc, p.subject, langOf(p), ...lv(p), ...arr(p.board)].join(" ").toLowerCase();
   return q.split(/\s+/).every(w => hay.includes(w)); };
-const matchF = (p, skip) => FILTERS.every(f => f.key === skip || !st.f[f.key] || f.get(p).includes(st.f[f.key]));
-const matchC = p => st.cat === "all" || p.cat === st.cat || (st.cat === "anim" && p.anim);
+const matchF = (p, skip) => FILTERS.every(f => f.key === skip || (NOTES && f.ppt) || !st.f[f.key] || f.get(p).includes(st.f[f.key]));
+const MEDIUM = [["Hindi","Hindi Medium"],["English","English Medium"],["Both","Hindi + English"]];
+const matchC = p => st.cat === "all" || (st.cat.startsWith("m:") ? p.lang === st.cat.slice(2) : p.cat === st.cat || (st.cat === "anim" && p.anim));
 const SORTS = { popular:(a,b) => b.sales - a.sales || b.added - a.added, low:(a,b) => a.price - b.price, high:(a,b) => b.price - a.price, new:(a,b) => b.added - a.added };
 
 function renderCats(){
-  const used = CATEGORIES.filter(c => PRODUCTS.some(p => p.cat === c.id || (c.id === "anim" && p.anim)));
-  $("#cats").innerHTML = [{id:"all",name:`All PPTs (${PRODUCTS.length})`}, ...used]
+  const V = VIEW(), used = NOTES ? MEDIUM.map(([v,t]) => ({ id:"m:" + v, name:`${t} (${V.filter(p => p.lang === v).length})` })).filter(c => !c.name.endsWith("(0)"))
+    : CATEGORIES.filter(c => V.some(p => p.cat === c.id || (c.id === "anim" && p.anim)));
+  $("#cats").innerHTML = [{id:"all",name:`${W().all} (${V.length})`}, ...used]
     .map(c => `<button class="${st.cat === c.id ? "on" : ""}" data-cat="${c.id}">${esc(c.name)}</button>`).join("");
 }
 $("#cats").onclick = e => { const b = e.target.closest("button"); if (!b) return; st.cat = b.dataset.cat; st.shown = CONFIG.perPage; render(); };
 
 function renderFilters(){
-  $("#filters").innerHTML = FILTERS.map(f => {
-    const base = PRODUCTS.filter(p => matchC(p) && matchQ(p) && matchF(p, f.key));
-    let vals = f.fixed || [...new Set(PRODUCTS.flatMap(f.get))];
+  const V = VIEW();
+  $("#filters").innerHTML = FILTERS.filter(f => !(NOTES && f.ppt)).map(f => {
+    const base = V.filter(p => matchC(p) && matchQ(p) && matchF(p, f.key));
+    let vals = f.fixed || [...new Set(V.flatMap(f.get))];
     if (f.order) vals = [...vals].sort((a,b) => f.order(a) - f.order(b) || a.localeCompare(b));
     else if (!f.fixed) vals.sort((a,b) => a.localeCompare(b));
     const cur = st.f[f.key] || "";
     if (vals.length < 2 && !cur) return "";
-    return `<label class="fsel ${cur ? "on" : ""}"><span>${f.label}</span><select data-f="${f.key}"><option value="">All</option>${
+    return `<label class="fsel ${cur ? "on" : ""}"><span>${(NOTES && f.nl) || f.label}</span><select data-f="${f.key}"><option value="">All</option>${
       vals.map(v => `<option value="${esc(v)}" ${v === cur ? "selected" : ""}>${esc(v)} (${base.filter(p => f.get(p).includes(v)).length})</option>`).join("")}</select></label>`;
   }).join("") + `<label class="fsel"><span>Sort by</span><select id="sort">${[["popular","Most Popular"],["low","Price: Low to High"],["high","Price: High to Low"],["new","Newest"]]
       .map(([v,t]) => `<option value="${v}" ${st.sort === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>`;
@@ -483,13 +560,13 @@ function card(p){
     <button class="thumb" style="${thumbStyle(p)}" onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
       ${ribbon(p.badge)}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
       <span class="peek">👁 Preview</span>
-      ${p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
+      ${isNote(p) ? `<span class="sl-badge">📄 A4 PDF${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
     </button>
     <div class="c-body">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3>
       <p>${esc(p.desc)}</p>
-      <div class="tags">${[langTxt(p.lang), ...arr(p.level).filter(l => l !== "Other"), p.subject, p.anim ? "Animated" : ""].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      <div class="tags">${[langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, p.anim ? "Animated" : ""].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
       <div class="acts">
         <button class="btn btn-ghost btn-sm add ${inCart ? "added" : ""}" onclick="toggleCart(${p.id})">${inCart ? "✓ In Cart" : "+ Add to Cart"}</button>
@@ -499,11 +576,14 @@ function card(p){
 }
 function render(){
   renderCats(); renderFilters();
-  const list = PRODUCTS.filter(p => matchC(p) && matchQ(p) && matchF(p)).sort(SORTS[st.sort]);
+  const V = VIEW(), w = W();
+  const list = V.filter(p => matchC(p) && matchQ(p) && matchF(p)).sort(SORTS[st.sort]);
   const show = list.slice(0, st.shown);
-  $("#resultTxt").textContent = PRODUCTS.length ? `${list.length} PPT${list.length === 1 ? "" : "s"} mili` : "";
+  $("#grid").classList.toggle("notes", NOTES);
+  $("#resultTxt").textContent = V.length ? (NOTES ? `${list.length} Notes mile` : `${list.length} PPT${list.length === 1 ? "" : "s"} mili`) : "";
   $("#grid").innerHTML = show.length ? show.map(card).join("")
-    : `<div class="empty"><b>${PRODUCTS.length ? "Is filter mein koi PPT nahi mili" : "Ready PPTs jald aa rahi hain"}</b>Filter badal kar dekhiye, ya apni custom PPT banwaiye. <a class="clear" href="order.html">PPT Order Now →</a></div>`;
+    : NOTES ? `<div class="empty"><b>${V.length ? "Is filter mein koi Notes nahi mile" : "Notes jald aa rahe hain"}</b>Tab tak Ready PPTs dekhiye, ya WhatsApp par apne chapter ke notes maangiye. <button class="clear" type="button" onclick="setKind(false,true);render()">Ready PPTs dekhein →</button></div>`
+    : `<div class="empty"><b>${V.length ? "Is filter mein koi PPT nahi mili" : "Ready PPTs jald aa rahi hain"}</b>Filter badal kar dekhiye, ya apni custom PPT banwaiye. <a class="clear" href="order.html">PPT Order Now →</a></div>`;
   $("#more").hidden = list.length <= show.length;
   renderCart();
 }
@@ -524,7 +604,7 @@ function buyNow(id){
 function renderCart(){
   const items = cart.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
   $("#cartCount").textContent = items.length; $("#cartCount").dataset.n = items.length;
-  $("#cartBody").innerHTML = items.length ? items.map(p => `<div class="ci"><span class="mini" style="${thumbStyle(p)}"></span>
+  $("#cartBody").innerHTML = items.length ? items.map(p => `<div class="ci"><span class="mini${isNote(p) ? " a4" : ""}" style="${thumbStyle(p)}"></span>
       <div><b>${esc(p.title)}</b><small>${inr(p.price)}</small></div>
       <button onclick="toggleCart(${p.id})" aria-label="Remove ${esc(p.title)}">${icon("i-trash")}</button></div>`).join("")
     : `<div class="empty" style="padding:40px 10px"><b>Cart khaali hai</b>PPT par "Add to Cart" dabaiye.</div>`;
@@ -557,16 +637,16 @@ function openPreview(id){
   const imgs = p.previews && p.previews.length ? p.previews : (p.thumb ? [p.thumb] : []);
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
   $("#previewBody").innerHTML = `
-    <div class="stage" id="stage" style="${imgs.length ? "" : thumbStyle(p)}">
+    <div class="stage${isNote(p) ? " a4" : ""}" id="stage" style="${imgs.length ? "" : thumbStyle(p)}">
       ${imgs.length ? `<img id="stageImg" src="${esc(imgs[0])}" alt="${esc(p.title)} slide 1">` : `<span class="gt" style="position:absolute;inset:auto 20px 20px;color:#fff;font:700 1.5rem 'Space Grotesk','Hind'">${esc(p.title)}</span>`}
       ${imgs.length > 1 ? `<button class="s-nav s-prev" onclick="slide(-1)" aria-label="Previous slide">${icon("i-left")}</button><button class="s-nav s-next" onclick="slide(1)" aria-label="Next slide">${icon("i-right")}</button><span class="s-pos" id="spos">1 / ${imgs.length}</span>` : ""}
     </div>
-    ${imgs.length > 1 ? `<div class="strip">${imgs.map((u,k) => `<button class="${k ? "" : "on"}" onclick="slide(${k},true)" aria-label="Slide ${k+1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
+    ${imgs.length > 1 ? `<div class="strip${isNote(p) ? " a4" : ""}">${imgs.map((u,k) => `<button class="${k ? "" : "on"}" onclick="slide(${k},true)" aria-label="Slide ${k+1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
     <div class="m-info">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
-      <div class="tags">${[p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...arr(p.level).filter(l => l !== "Other"), p.subject, ...arr(p.board), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "ZIP file" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
-      ${imgs.length ? `<p style="font-size:.78rem;color:var(--dim)">Preview mein ${imgs.length} slides dikhayi gayi hain. Poori PPT mein ${p.slides} slides hain.</p>` : ""}
+      <div class="tags">${(isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "ZIP file" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      ${imgs.length ? `<p style="font-size:.78rem;color:var(--dim)">${isNote(p) ? `Preview mein ${imgs.length} page dikhaye gaye hain.${p.slides ? ` Poore notes mein ${p.slides} pages hain.` : ""}` : `Preview mein ${imgs.length} slides dikhayi gayi hain.${p.slides ? ` Poori PPT mein ${p.slides} slides hain.` : ""}`}</p>` : ""}
       <div class="m-buy">
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
         <div class="grow">
@@ -826,11 +906,11 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   if (!API && PRODUCTS === DEMO) try { const v = await (await fetch("api/pay-config", { cache:"no-store" })).json(); if (v.ok && v.payments) VPAY = PAY = true; } catch(e) {}
   if (!API && PRODUCTS === DEMO && CONFIG.demoPay) PRODUCTS.forEach((p,i) => p.sales = [128,64,97,41,23][i] || 0); /* preview ke sample numbers */
   const qs = new URLSearchParams(location.search), q = qs.get("q"); if (q) { st.q = q; $("#q").value = q; }
-  render();
+  setKind(NOTES); render();
   /* homepage se "Buy / Checkout": seedha payment kholo */
   const pay = (qs.get("pay") || "").split(",").map(Number).filter(id => PRODUCTS.some(p => p.id === id));
-  if (pay.length) { pay.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart(); history.replaceState(null, "", location.pathname); openPay(pay); }
-  else if (qs.has("cart")) { history.replaceState(null, "", location.pathname); openCart(true); }   /* homepage ka cart button */
+  if (pay.length) { pay.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart(); history.replaceState(null, "", location.pathname + (NOTES ? "?type=notes" : "")); openPay(pay); }
+  else if (qs.has("cart")) { history.replaceState(null, "", location.pathname + (NOTES ? "?type=notes" : "")); openCart(true); }   /* homepage ka cart button */
 })();
 </script>
 <script>/* Theme switch: homepage wali choice (la_theme) har page par same */
