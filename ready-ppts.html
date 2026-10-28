@@ -321,7 +321,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 
 <section class="hero container">
   <span class="kicker"><i></i><span id="hKick">Ready to Use PPT</span></span>
-  <h1 id="hTitle">Turant download karein, <span class="grad-text">ready-made PPTs</span></h1>
+  <h1 id="hTitle">PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span></h1>
   <p id="hText">Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.</p>
   <div class="perks" id="hPerks">
     <span><svg class="i"><use href="#i-check"/></svg>100% Editable .pptx</span>
@@ -458,7 +458,7 @@ const lv = p => arr(p.level).filter(l => l !== NOTE_TAG);
 const VIEW = () => PRODUCTS.filter(p => isNote(p) === NOTES);
 const W = () => NOTES ? { one:"Notes", many:"Notes", all:"All Study Notes" } : { one:"PPT", many:"PPTs", all:"All PPTs" };
 const HERO = {
-  ppt:{ kick:"Ready to Use PPT", title:`Turant download karein, <span class="grad-text">ready-made PPTs</span>`, text:"Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.",
+  ppt:{ kick:"Ready to Use PPT", title:`PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span>`, text:"Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.",
     perks:["100% Editable .pptx","Instant Download","UPI · Cards · Net Banking","Google Slides & Keynote"], q:"Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" },
   notes:{ kick:"Study Notes", title:`Har class aur exam ke <span class="grad-text">Study Notes</span>`, text:"School boards aur competitive exams ke chapter-wise notes, Hindi aur English medium mein. A4 size PDF, payment ke turant baad download karein, phone par padhein ya print karein.",
     perks:["A4 size PDF (print ready)","Hindi & English Medium","Instant Download","Definitions, formulas, solved questions"], q:"Search: chapter, subject, class, exam… (e.g. Science, Class 10, SSC)" } };
@@ -499,7 +499,8 @@ function setKind(n, push){
   document.title = (n ? "Study Notes" : "Ready to Use PPTs") + " — Lakshay Agency";
   $("#samples").hidden = !n; if (n) drawSamples();
   $("#more").textContent = `Load more ${W().many}`;
-  if (push) history.replaceState(null, "", location.pathname + (n ? "?type=notes" : ""));
+  /* URL saaf: page dobara khulne / refresh par hamesha Ready PPTs hi khule */
+  if (push) history.replaceState(null, "", location.pathname);
 }
 document.querySelector(".kind").onclick = e => { const b = e.target.closest("button"); if (!b) return; setKind(b.dataset.kind === "notes", true); render(); };
 
@@ -950,7 +951,7 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   if (!API && PRODUCTS === DEMO) try { const v = await (await fetch("api/pay-config", { cache:"no-store" })).json(); if (v.ok && v.payments) VPAY = PAY = true; } catch(e) {}
   if (!API && PRODUCTS === DEMO && CONFIG.demoPay) PRODUCTS.forEach((p,i) => p.sales = [128,64,97,41,23][i] || 0); /* preview ke sample numbers */
   const qs = new URLSearchParams(location.search), q = qs.get("q"); if (q) { st.q = q; $("#q").value = q; }
-  setKind(NOTES); render();
+  setKind(NOTES, true); render();
   /* homepage se "Buy / Checkout": seedha payment kholo */
   const pay = (qs.get("pay") || "").split(",").map(Number).filter(id => PRODUCTS.some(p => p.id === id));
   if (pay.length) { pay.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart(); history.replaceState(null, "", location.pathname + (NOTES ? "?type=notes" : "")); openPay(pay); }
