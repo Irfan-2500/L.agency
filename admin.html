@@ -451,7 +451,7 @@ label.f span{font-weight:500;color:var(--dim)}
         <button data-t="reviews"><svg class="i"><use href="#i-star"/></svg>Reviews<span class="n" id="nReviews" hidden></span></button>
         <span class="lbl">Website</span>
         <button data-t="ppts"><svg class="i"><use href="#i-upload"/></svg>Ready PPTs (Upload)</button>
-        <button data-t="notes"><svg class="i"><use href="#i-book"/></svg>Notes (A4 PDF)</button>
+        <button data-t="notes"><svg class="i"><use href="#i-book"/></svg>Study Notes (PDF)</button>
         <button data-t="themes"><svg class="i"><use href="#i-image"/></svg>Themes</button>
         <button data-t="prices"><svg class="i"><use href="#i-tag"/></svg>Prices</button>
         <button data-t="site"><svg class="i"><use href="#i-sliders"/></svg>Website Controls</button>
@@ -521,7 +521,7 @@ label.f span{font-weight:500;color:var(--dim)}
     </div>
     <div style="display:flex;flex-direction:column;gap:6px" id="peCatW"><span class="phead">Category</span><div class="seg" id="peCat"></div></div>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Class <span style="text-transform:none;letter-spacing:0;font-weight:500">— kai chun sakte hain</span></span><div class="seg" id="peCls"></div></div>
-    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Board</span><div class="seg" id="peBoard"></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Board / Exam</span><div class="seg" id="peBoard"></div></div>
     <div class="grid2">
       <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Language</span><div class="seg" id="peLang"></div></div>
       <div style="display:flex;flex-direction:column;gap:6px" id="peThemeW"><span class="phead">Theme</span><div class="seg" id="peTheme"></div></div>
@@ -551,7 +551,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Kamai Report", coupons: "Coupons", sales: "Sales", customers: "Customers", ppts: "Ready PPTs", notes: "Notes (A4 PDF)", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Kamai Report", coupons: "Coupons", sales: "Sales", customers: "Customers", ppts: "Ready PPTs", notes: "Study Notes", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -1554,7 +1554,7 @@ function drawCus() {
 let PP = [], PQ = "", PE = null, PPAY = false, KIND = "ppt", PFOLDER = "#";
 const isNote = p => p.cat === "notes";
 const KW = () => KIND === "notes" ? { one: "Notes", add: "Add Notes (PDF)", icon: "📝" } : { one: "PPT", add: "Add PPT / PDF", icon: "📊" };
-const BOARDS = ["CBSE", "ICSE", "State Board", "NCERT", "Bihar Board", "UP Board", "Competitive"];
+const BOARDS = ["CBSE", "ICSE", "State Board", "NCERT", "Bihar Board", "UP Board", "Competitive", "SSC", "Railway", "Banking", "UPSC / State PSC", "CTET / TET", "JEE", "NEET", "Police / Defence", "Navodaya / Sainik"];
 const PCATS = [["edu", "📚 Educational"], ["biz", "💼 Business"], ["mkt", "📣 Marketing"]];
 const PBADGE = [["", "Koi nahi"], ["best", "🔥 Best Seller"], ["feat", "⭐ Featured"], ["new", "🆕 New"]];
 function notes() { KIND = "notes"; return pptView(); }
@@ -1566,7 +1566,7 @@ async function pptView() {
   PP = r.ppts; PPAY = r.payments; PFOLDER = r.folderUrl;
   const mine = PP.filter(p => isNote(p) === (KIND === "notes")), live = mine.filter(p => p.show).length, sold = mine.reduce((s, p) => s + p.sold, 0), w = KW();
   V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], KIND === "notes"
-      ? `Yahan apne Notes ki A4 PDF upload karein — website ke Ready PPTs page par "📝 Notes" tab mein turant dikhenge. Customer pay karega aur PDF apne aap download hogi.`
+      ? `Yahan apne Notes ki A4 PDF upload karein — website ke "Study Notes" page par turant dikhenge. Customer pay karega aur PDF apne aap download hogi.`
       : `Yahan PPT ya PDF upload karein — website ke "Ready to Use PPTs" page par turant dikhegi. Customer pay karega aur file apne aap download hogi.`,
       `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>` : ""}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
   ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}

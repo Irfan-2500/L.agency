@@ -241,7 +241,7 @@ const SERVICES = [
     what: ["YouTube video and live-class thumbnails", "Course, playlist and series cover designs", "Hindi, English and bilingual text styles", "Consistent channel branding and colours", "Batch / bulk thumbnails for full playlists", "Sizes for YouTube, Instagram and apps"],
     who: ["YouTube educators and channels", "Coaching institutes running live classes", "Course creators and EdTech brands"],
     steps: [["Share", "Send your video title, photo and channel style."], ["Design", "We create the thumbnail and share it for review."], ["Use", "Get the final image in the right size for upload."]] },
-  { id: "study-material-creation", icon: "i-book", c: "#22c55e", name: "Study Material Creation",
+  { id: "study-material-creation", icon: "i-book", c: "#22c55e", name: "Study Notes", href: "ready-ppts.html?type=notes",
     tag: "Notes, worksheets aur practice sets — exam ke hisaab se.",
     intro: "Well-organised study material for your students — notes, worksheets, question banks and practice papers, designed neatly and ready to print or share as PDF.",
     what: ["Chapter-wise notes and short revision notes", "Worksheets, MCQ banks and practice sets", "Mock tests and sample papers with answer keys", "Hindi, English and bilingual material", "Print-ready PDF and editable Word files", "Material for school boards and competitive exams"],
@@ -267,8 +267,9 @@ const wa = msg => "https://wa.me/" + WA + "?text=" + encodeURIComponent(msg);
 function render() {
   const p = new URLSearchParams(location.search), id = p.get("s") || location.hash.slice(1);
   const s = SERVICES.find(x => x.id === id) || SERVICES[0];
+  if (s.href) { location.replace(s.href); return; }   /* Study Notes = notes kharidne wala page */
   document.title = s.name + " — Lakshay Agency";
-  $tabs.innerHTML = SERVICES.map(x => `<a href="service.html?s=${x.id}" class="${x === s ? "on" : ""}" style="--c:${x.c}" ${x === s ? 'aria-current="page"' : ""}>${icon(x.icon)}<span>${esc(x.name)}</span></a>`).join("");
+  $tabs.innerHTML = SERVICES.map(x => `<a href="${x.href || "service.html?s=" + x.id}" class="${x === s ? "on" : ""}" style="--c:${x.c}" ${x === s ? 'aria-current="page"' : ""}>${icon(x.icon)}<span>${esc(x.name)}</span></a>`).join("");
   const on = $tabs.querySelector(".on"); if (on) on.scrollIntoView({ block: "nearest", inline: "center" });
   const msg = `Hi Lakshay Agency! I am interested in your "${s.name}" service. Please share the details.`;
   const others = SERVICES.filter(x => x !== s);
@@ -297,7 +298,7 @@ function render() {
       <p>Tell us what you need — our team will get back to you on WhatsApp.</p>
       <div class="actions"><a class="btn wa" href="${wa(msg)}" target="_blank" rel="noopener">${icon("i-wa")} Chat on WhatsApp</a><a class="btn" href="./#contact">Send a Message</a></div>
     </section>
-    <section><h2 class="more-h">Other offerings</h2><div class="more">${others.map(x => `<a href="service.html?s=${x.id}" style="--c:${x.c}"><span class="svc-ic sm">${icon(x.icon)}</span><b>${esc(x.name)}</b>${icon("i-right")}</a>`).join("")}</div></section>`;
+    <section><h2 class="more-h">Other offerings</h2><div class="more">${others.map(x => `<a href="${x.href || "service.html?s=" + x.id}" style="--c:${x.c}"><span class="svc-ic sm">${icon(x.icon)}</span><b>${esc(x.name)}</b>${icon("i-right")}</a>`).join("")}</div></section>`;
 }
 const $tabs = document.getElementById("svcTabs"), $svc = document.getElementById("svc");
 document.getElementById("year").textContent = new Date().getFullYear();
