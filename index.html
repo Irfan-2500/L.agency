@@ -1200,6 +1200,18 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 .th-k12 small{font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--card2);color:var(--dim)}
 #thGrid.th-grid{display:block}
 .th-sec+.th-sec{margin-top:22px}
+.th-sh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.th-sh .th-k12{margin:0}
+.th-all{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);border:0;box-shadow:0 6px 16px -8px rgba(139,44,255,.7)}
+.th-all span{transition:transform .2s}.th-all:hover span{transform:translateX(3px)}
+/* "View All" — saari themes ek alag page jaisi screen par */
+.th-page{position:fixed;inset:0;z-index:75;overflow-y:auto;background:var(--bg);display:none}
+.th-page.on{display:block;animation:ddIn .2s ease-out}
+.thp-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:12px 0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.thp-back{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:12px;border:1px solid var(--line2);background:var(--card);color:var(--text);font-size:1.1rem;cursor:pointer}
+.thp-top h2{font-size:1.3rem;margin:0}.thp-top h2 small{font-size:.8rem;color:var(--dim);font-weight:600;margin-left:6px}
+.th-page .th-grid{display:grid;padding:18px 0 40px}
+html.light .thp-back{background:#fff}
 /* Dark / Light: ek line, left-right swipe + apne aap dheere chalti rahe */
 .th-row{display:flex;gap:16px;overflow-x:auto;padding:4px 2px 18px;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab;-webkit-user-select:none;user-select:none}
 .th-row::-webkit-scrollbar{display:none}
@@ -1498,6 +1510,13 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
     <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
   </div>
 </section>
+
+<div class="th-page" id="thPage" role="dialog" aria-modal="true" aria-label="All themes">
+  <div class="container">
+    <div class="thp-top"><button type="button" class="thp-back" id="thpBack" aria-label="Back">←</button><h2 id="thpTitle"></h2></div>
+    <div class="th-grid" id="thpGrid"></div>
+  </div>
+</div>
 
 <!-- ================= CATEGORIES ================= -->
 <section class="section" id="categories" style="padding-top:20px" hidden>
@@ -2868,6 +2887,7 @@ if (!reduceMotion) setInterval(() => {
   });
 }, 1000);
 
+let thCard = () => "";
 function renderThemes(){
   renderThemeChips();
   thList = THEMES.filter(t => thMatch(t));
@@ -2884,18 +2904,30 @@ function renderThemes(){
   const show = thList.slice(0, thState.shown), q = String(thState.q || "").trim();
   $("#thQ").hidden = !q;
   if (q) $("#thQ").innerHTML = `${icon("i-search","width:16px;height:16px")}<span><b>${thList.length}</b> theme${thList.length === 1 ? "" : "s"} for "<b>${esc(q)}</b>"</span><button type="button" onclick="onSearch('')">✕ Clear search</button>`;
-  const thCard = (t,i) => `
+  thCard = (t,i) => `
     <div class="th-card" role="button" tabindex="0" onclick="openTheme(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTheme(${i})}" aria-label="View ${esc(t.name)}">
       <div class="th-pic">${cardSlides(t)}<span class="zoom">🔍 View Theme</span></div>
       <div class="th-meta"><div class="th-name"><b>${esc(t.name)}</b><span class="th-views" data-vid="${esc(t.id)}" title="${(+t.views || 0).toLocaleString("en-IN")} views">${icon("i-eye","width:14px;height:14px")}<em>${fmtViews(t.views)}</em></span></div><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span></div></div>
       ${t.slides && t.slides.length > 1 ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${t.slides.length} slides</span>` : ""}
     </div>`;
   const rows = [["🌙 Dark Theme", thList.map((t,i) => [t,i]).filter(x => x[0].tone !== "White")], ["☀️ Light Theme", thList.map((t,i) => [t,i]).filter(x => x[0].tone === "White")]].filter(r => r[1].length);
-  $("#thGrid").innerHTML = rows.length ? rows.map(([h, arr]) => `<div class="th-sec"><h3 class="th-k12">${h} <small>${arr.length}</small></h3><div class="th-row">${arr.map(([t,i]) => thCard(t,i)).join("")}</div></div>`).join("")
+  $("#thGrid").innerHTML = rows.length ? rows.map(([h, arr]) => `<div class="th-sec"><div class="th-sh"><h3 class="th-k12">${h} <small>${arr.length}</small></h3><button type="button" class="th-all" data-tone="${h.includes("Dark") ? "dark" : "light"}">View All <span>→</span></button></div><div class="th-row">${arr.map(([t,i]) => thCard(t,i)).join("")}</div></div>`).join("")
     : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>${String(thState.q||"").trim() ? `No theme found for "${esc(thState.q.trim())}". Try another word — or <a href="#custom" class="js-custom" style="color:var(--cyan)">request a custom PPT</a>.` : "No theme matches these filters. Try another combination."}</p></div>`;
   $("#thMore").parentNode.style.display = "none";
 }
 $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
+/* View All: Dark ya Light ki saari themes alag page par (phone ka Back button bhi kaam kare) */
+function openThPage(tone, push){
+  const arr = thList.map((t,i) => [t,i]).filter(x => (x[0].tone === "White") === (tone === "light"));
+  $("#thpTitle").innerHTML = `${tone === "light" ? "☀️ Light Theme" : "🌙 Dark Theme"}<small>${arr.length} themes</small>`;
+  $("#thpGrid").innerHTML = arr.map(([t,i]) => thCard(t,i)).join("");
+  $("#thPage").classList.add("on"); $("#thPage").scrollTop = 0; document.body.style.overflow = "hidden";
+  if (push) history.pushState({ thPage: tone }, "", "#themes-" + tone);
+}
+function closeThPage(){ $("#thPage").classList.remove("on"); document.body.style.overflow = ""; }
+document.addEventListener("click", e => { const b = e.target.closest(".th-all"); if (b) openThPage(b.dataset.tone, true); });
+$("#thpBack").onclick = () => { if (history.state && history.state.thPage) history.back(); else closeThPage(); };
+addEventListener("popstate", () => { if (history.state && history.state.thPage) openThPage(history.state.thPage); else closeThPage(); });
 /* Theme lines: dheere-dheere left chalein; chhoone / mouse rakhne par ruk jaayein, mouse se kheench bhi sakein */
 (() => {
   const S = new WeakMap(), st = r => S.get(r) || (S.set(r, { x: 0, pause: 0 }), S.get(r));
