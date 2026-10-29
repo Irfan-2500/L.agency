@@ -280,12 +280,12 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 @media(max-width:380px){.grid{grid-template-columns:1fr}}
 /* Phone: PPT cards ek line me, left-right swipe + apne aap aage chalte rahein */
 @media(max-width:600px){
-  .grid,.grid.notes{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding:4px 2px 24px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .grid,.grid.notes{display:flex;overflow-x:auto;gap:12px;padding:4px 2px 24px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .grid::-webkit-scrollbar{display:none}
-  .grid>*:not(.empty){flex:0 0 78%;min-width:0;scroll-snap-align:start}
+  .grid>*:not(.empty){flex:0 0 78%;min-width:0}
   .grid>.empty{flex:1 0 100%}
   .grid{cursor:grab;-webkit-user-select:none;user-select:none}
-  .grid.dragging{cursor:grabbing;scroll-snap-type:none}
+  .grid.dragging{cursor:grabbing}
   .grid.dragging *{pointer-events:none}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -668,16 +668,19 @@ function render(){
   renderCart();
 }
 $("#more").onclick = () => { st.shown += CONFIG.perPage; render(); };
-/* Phone par cards har 3 sec me agle card par khisakte rahein; chhoone par 6 sec ruk jaayein */
+/* Phone par cards dheere-dheere lagatar left ki taraf chalte rahein; chhoone par 4 sec ruk jaayein */
 const rowMQ = matchMedia("(max-width:600px)");
-let rowPause = 0;
-setInterval(() => {
-  const g = $("#grid"), c = g.firstElementChild;
-  if (!rowMQ.matches || document.hidden || Date.now() < rowPause || !c || c.classList.contains("empty")) return;
-  if (g.scrollLeft + g.clientWidth >= g.scrollWidth - 4) g.scrollTo({ left: 0, behavior: "smooth" });
-  else g.scrollBy({ left: c.offsetWidth + 12, behavior: "smooth" });
-}, 3000);
-["touchstart", "pointerdown", "wheel"].forEach(ev => $("#grid").addEventListener(ev, () => { rowPause = Date.now() + 6000; }, { passive: true }));
+let rowPause = 0, rowX = 0, rowT = 0;
+(function rowTick(t){
+  const g = $("#grid"), dt = rowT ? Math.min(t - rowT, 100) : 0; rowT = t;
+  if (rowMQ.matches && !document.hidden && Date.now() >= rowPause && g.firstElementChild && !g.firstElementChild.classList.contains("empty")) {
+    if (Math.abs(rowX - g.scrollLeft) > 2) rowX = g.scrollLeft;
+    if (g.scrollLeft + g.clientWidth >= g.scrollWidth - 1) { rowX = 0; rowPause = Date.now() + 2500; g.scrollTo({ left: 0, behavior: "smooth" }); }
+    else { rowX += dt * 0.03; g.scrollLeft = rowX; }
+  }
+  requestAnimationFrame(rowTick);
+})(0);
+["touchstart", "pointerdown", "wheel"].forEach(ev => $("#grid").addEventListener(ev, () => { rowPause = Date.now() + 4000; }, { passive: true }));
 /* Mouse se bhi kheench kar cards khiska sakein (touch par browser khud karta hai) */
 (() => {
   const g = $("#grid"); let drag = null;
@@ -690,15 +693,13 @@ setInterval(() => {
     const dx = e.clientX - drag.x;
     if (!drag.moved && Math.abs(dx) < 6) return;
     if (!drag.moved) { drag.moved = true; g.classList.add("dragging"); }
-    g.scrollLeft = drag.left - dx; rowPause = Date.now() + 6000;
+    g.scrollLeft = drag.left - dx; rowPause = Date.now() + 4000;
   });
   addEventListener("pointerup", () => {
     if (!drag) return;
     const moved = drag.moved; drag = null;
     if (!moved) return;
-    const c = g.firstElementChild, step = c ? c.offsetWidth + 12 : 1, left = g.scrollLeft;
     g.classList.remove("dragging");
-    g.scrollLeft = left; g.scrollTo({ left: Math.round(left / step) * step, behavior: "smooth" });
     const block = ev => { ev.stopPropagation(); ev.preventDefault(); };
     g.addEventListener("click", block, true); setTimeout(() => g.removeEventListener("click", block, true), 60);
   });
