@@ -6,7 +6,7 @@
 <title>Lakshay Agency — Premium PowerPoint Store</title>
 <script>
 /* Theme: "system" (default) | "dark" | "light" — page dikhne se pehle lagta hai, taaki flash na ho */
-(function(){var m="system";try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+(function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
 var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
 var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();
 </script>
@@ -354,7 +354,8 @@ footer{border-top:1px solid var(--line);padding:64px 0 28px;background:var(--bg2
 .m-specs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
 .m-specs span{padding:6px 11px;border-radius:8px;background:var(--card2);font-size:.76rem;color:var(--muted)}
 .m-buy{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.m-close{position:absolute;top:14px;right:14px;z-index:2;background:rgba(0,0,0,.6)}
+.m-close{position:absolute;top:14px;right:14px;z-index:2;background:rgba(0,0,0,.6);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.m-close svg.i{stroke:#fff;stroke-width:2.6}
 .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);padding:12px 20px;border-radius:12px;background:var(--card2);border:1px solid var(--line2);font-size:.88rem;font-weight:600;z-index:100;transition:.35s;display:flex;align-items:center;gap:8px}
 .toast.on{transform:translate(-50%,0)}
 .wa-float{position:fixed;right:22px;bottom:22px;z-index:70;display:flex;align-items:center;gap:10px}
@@ -1257,6 +1258,44 @@ html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110
 
 /* Theme: band rahe to sirf chuni hui theme dikhe, click par teeno khulein */
 .theme-sw:not(.open) button:not([aria-checked="true"]){display:none}
+
+/* Hero CTA cards — teeno buttons ek jaise: icon + naam + chhoti line + arrow */
+.hero-cta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:560px}
+.hero-cta .hcta{justify-content:flex-start;gap:12px;padding:12px 14px;border-radius:16px;text-align:left;white-space:normal;min-height:64px}
+.hero-cta .btn-ready{grid-column:1/-1}
+.cta-ic{position:relative;flex:none;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.2)}
+.cta-ic svg.i{width:19px;height:19px}
+.cta-tx{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.2}
+.cta-tx b{font-size:.96rem;font-weight:700}
+.cta-tx small{font-size:.74rem;font-weight:500;opacity:.8;margin-top:2px}
+.cta-go{flex:none;width:18px;height:18px;transition:transform .25s}
+.hcta:hover .cta-go{transform:translateX(4px)}
+.hero-cta .btn-ghost{border:1.5px solid rgba(139,44,255,.45)}
+.hero-cta .btn-ghost .cta-ic{background:rgba(139,44,255,.14);color:#a855f7}
+.hero-cta .btn-ghost:hover{transform:translateY(-2px);box-shadow:0 10px 26px -10px rgba(139,44,255,.6)}
+.hero-cta .btn-ready .cta-ic{background:rgba(26,18,0,.12)}
+.hero-cta .btn-ready .ready-dot{position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:#ef4444;border:2px solid #fde047}
+.hero-cta .btn-ready .cta-tx b{font-size:1.02rem}
+@media(max-width:600px){.hero-cta{grid-template-columns:1fr;max-width:none}}
+html.light .hero-cta .btn-ghost{background:#fff;border-color:rgba(139,44,255,.35);box-shadow:0 6px 18px -10px rgba(60,30,120,.35)}
+
+/* Phone par section ki heading compact: ek line ka title, balanced subtitle, kam khaali jagah */
+.section-head h2,.section-head p{text-wrap:balance}
+@media(max-width:600px){
+  .section{padding:56px 0}
+  .section-head{margin-bottom:22px}
+  .section-head h2{font-size:clamp(1.35rem,6.6vw,1.9rem);line-height:1.2;margin-top:6px}
+  .section-head p{font-size:.9rem;margin-top:8px}
+}
+
+/* Section headings: highlight — pill eyebrow, bold title, gradient shabd, neeche chhoti rangeen patti */
+.section-head .eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.3);font-weight:800}
+.section-head .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.section-head h2{font-weight:800;letter-spacing:-.01em}
+.section-head h2::after{content:"";display:block;width:64px;height:4px;border-radius:4px;margin:12px auto 0;background:linear-gradient(90deg,#8b2cff,#d500f9,#06b6d4)}
+.section-head p{font-weight:500;color:var(--text);opacity:.75}
+html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
+@media(max-width:600px){.section-head h2::after{width:48px;height:3px;margin-top:10px}}
 </style>
 </head>
 <body>
@@ -1356,9 +1395,9 @@ html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110
         </div>
       </div>
       <div class="hero-cta">
-        <a href="#themes" class="btn btn-primary" data-ui="hero_explore">Explore Themes <svg class="i"><use href="#i-arrow"/></svg></a>
-        <a href="order.html" class="btn btn-ghost" data-ui="hero_order"><svg class="i" style="color:#c084fc"><use href="#i-sparkle"/></svg> PPT Order Now</a>
-        <a href="ready-ppts.html" class="btn btn-ready" id="readyPptBtn" data-ui="hero_ready"><span class="ready-dot" aria-hidden="true"></span><svg class="i"><use href="#i-cloud"/></svg> Ready to Use PPT</a>
+        <a href="#themes" class="btn btn-primary hcta" data-ui="hero_explore"><span class="cta-ic"><svg class="i"><use href="#i-grid"/></svg></span><span class="cta-tx"><b>Explore Themes</b><small>Browse PPT designs</small></span><svg class="i cta-go"><use href="#i-arrow"/></svg></a>
+        <a href="order.html" class="btn btn-ghost hcta" data-ui="hero_order"><span class="cta-ic"><svg class="i"><use href="#i-sparkle"/></svg></span><span class="cta-tx"><b>PPT Order Now</b><small>Custom PPT in 1 hour</small></span><svg class="i cta-go"><use href="#i-arrow"/></svg></a>
+        <a href="ready-ppts.html" class="btn btn-ready hcta" id="readyPptBtn" data-ui="hero_ready"><span class="cta-ic"><svg class="i"><use href="#i-cloud"/></svg><span class="ready-dot" aria-hidden="true"></span></span><span class="cta-tx"><b>Ready to Use PPT</b><small>Pay &amp; download instantly</small></span><svg class="i cta-go"><use href="#i-arrow"/></svg></a>
       </div>
     </div>
 
@@ -1389,7 +1428,7 @@ html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110
 <!-- ================= PPT THEMES ================= -->
 <section class="section" id="themes" style="padding-top:10px">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Our Designs</span><h2>Choose Your PPT Theme</h2><p>Pick a design you like. We'll make your PPT in it.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">Our Designs</span><h2>Choose Your <span class="grad-text">PPT Theme</span></h2><p>Pick a design you like. We'll make your PPT in it.</p></div>
     <div class="th-bar2 reveal" role="group" aria-label="Filter themes">
       <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>🎓</i><span class="tf-k">Class</span><b data-cur="cls">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="cls" role="listbox"></div></div>
       <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>📖</i><span class="tf-k">Subject</span><b data-cur="subj">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="subj" role="listbox"></div></div>
@@ -1416,7 +1455,7 @@ html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110
 <!-- ================= PRODUCTS ================= -->
 <section class="section" id="shop" style="padding-top:20px" hidden>
   <div class="container">
-    <div class="section-head reveal"><h2>Best-Selling Presentations</h2></div>
+    <div class="section-head reveal"><h2>Best-Selling <span class="grad-text">Presentations</span></h2></div>
     <div class="toolbar reveal">
       <label class="big-search">
         <svg class="i"><use href="#i-search"/></svg>
@@ -1478,7 +1517,7 @@ html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110
 <!-- ================= WHY US ================= -->
 <section class="section" id="why">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">The Lakshay Advantage</span><h2>Why Choose Lakshay Agency?</h2><p>Fast, affordable and fully editable PPTs, made the way you need.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">The Lakshay Advantage</span><h2>Why Choose <span class="grad-text">Lakshay Agency?</span></h2><p>Fast, affordable and fully editable PPTs, made the way you need.</p></div>
     <div class="feats" id="feats"></div>
   </div>
 </section>
@@ -1535,7 +1574,7 @@ html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110
 <!-- ================= FAQ ================= -->
 <section class="section" id="faq" style="background:var(--bg2)">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Got Questions?</span><h2>Frequently Asked Questions</h2><p>Everything you need to know about buying, editing and ordering custom PowerPoint decks.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">Got Questions?</span><h2>Frequently Asked <span class="grad-text">Questions</span></h2><p>Everything you need to know about buying, editing and ordering custom PowerPoint decks.</p></div>
     <div class="faq reveal" id="faqList"></div>
   </div>
 </section>
@@ -2289,7 +2328,10 @@ document.addEventListener("click", async e => {
 
 /* ---------- MISC ---------- */
 let tt; function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("on"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("on"),2200); }
-$("#menuBtn").onclick = () => $("#navLinks").classList.toggle("open");
+$("#menuBtn").onclick = e => { e.stopPropagation(); $("#navLinks").classList.toggle("open"); };
+/* Mobile menu: bahar kahin bhi tap/click, kisi link par click ya Esc dabane par apne aap band */
+document.addEventListener("click", e => { const m = $("#navLinks"); if (m.classList.contains("open") && (!m.contains(e.target) || e.target.closest("a"))) m.classList.remove("open"); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("#navLinks").classList.remove("open"); });
 document.querySelectorAll("#navLinks a").forEach(a => a.onclick = () => $("#navLinks").classList.remove("open"));
 // reveal on scroll
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold:.12});
@@ -2855,7 +2897,7 @@ $("#thStage").addEventListener("mouseleave", () => { if ($("#themeModal").classL
   };
   apply(root.getAttribute("data-mode") || "system");
   document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => {
-    try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {}
+    try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {} window.name = "la_theme=" + b.dataset.mode;
     apply(b.dataset.mode); toast({dark:"🌙 Dark theme", light:"☀️ Light theme", system:"🖥️ System default"}[b.dataset.mode]);
   });
   (mq.addEventListener ? mq.addEventListener.bind(mq,"change") : mq.addListener.bind(mq))(() => { if (root.getAttribute("data-mode") === "system") apply("system"); });

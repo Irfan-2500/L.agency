@@ -6,9 +6,9 @@
 <title>Ready to Use PPTs — Lakshay Agency</title>
 <script>
 /* Theme: homepage wali setting yahan bhi lagti hai */
-(function(){var m="system";try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+(function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
 var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
-document.documentElement.classList.toggle("light",l);})();
+var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();
 </script>
 <meta name="description" content="Ready to use, fully editable PowerPoint presentations. Filter by class, subject and language. Instant download after payment." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -74,16 +74,29 @@ header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 8
 html.light .kicker{color:#a16207;background:#fef9c3}
 .kicker i{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1s steps(2,start) infinite}
 @keyframes blink{to{visibility:hidden}}
-.hero h1{font-size:clamp(1.4rem,3vw,2.1rem);margin:8px 0 4px;text-wrap:balance}
-.hero p{color:var(--muted);max-width:640px;font-size:.9rem}
-.perks{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:.78rem;color:var(--muted);font-weight:600}
+.hero h1{font-size:clamp(1rem,3vw,2.1rem);margin:0 0 4px;white-space:nowrap}
+.h-row{display:flex;align-items:center;gap:8px;margin:0 0 4px}.h-row h1{flex:1;min-width:0;margin:0}
+.h-back{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--text);background:var(--card2);border:1px solid var(--line2)}
+.h-back svg.i{width:16px;height:16px;stroke-width:2.6}.h-back:hover{border-color:var(--violet);color:var(--violet)}
+.h-back.fx{position:fixed;left:12px;z-index:45;box-shadow:0 6px 18px -6px rgba(0,0,0,.35);opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s}
+.h-back.fx.on{opacity:1;pointer-events:auto;transform:none}
+.ticker{display:flex;align-items:stretch;max-width:760px;margin-top:8px;border-radius:10px;overflow:hidden;background:linear-gradient(90deg,rgba(139,44,255,.16),rgba(6,182,212,.16));border:1px solid rgba(139,44,255,.35);font-size:.88rem;font-weight:600}
+.ticker b{flex:none;display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--grad);color:#fff;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase}
+.ticker b::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.tk-win{flex:1;min-width:0;overflow:hidden;display:flex;align-items:center;-webkit-mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent);mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent)}
+.tk-run{display:flex;flex:none;white-space:nowrap;animation:tk var(--tk,30s) linear infinite}
+.tk-run span{padding:6px 0}.tk-run span::after{content:"✦";margin:0 22px;color:var(--amber)}
+.ticker:hover .tk-run{animation-play-state:paused}
+@keyframes tk{to{transform:translateX(-50%)}}
+.perks{display:grid;grid-template-columns:repeat(2,minmax(0,max-content));gap:4px 18px;margin-top:6px;font-size:.78rem;color:var(--muted);font-weight:600}
 .perks span{display:inline-flex;align-items:center;gap:6px}
 .perks svg{color:var(--green);width:14px;height:14px}
 
 /* ===== FILTERS ===== */
 .toolbar{position:sticky;top:68px;z-index:30;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);padding:12px 0;border-bottom:1px solid var(--line)}
 .trow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.search{flex:1 1 260px;position:relative}
+.search{flex:1 1 160px;min-width:0;position:relative}
 .search input{width:100%;background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:11px 14px 11px 40px;font-size:.9rem;outline:none}
 .search input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,44,255,.2)}
 .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--dim)}
@@ -98,7 +111,18 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .fsel span{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
 .fsel select{background:transparent;border:0;outline:none;font-size:.86rem;font-weight:600;padding:1px 0;width:100%}
 .fsel select option{background:var(--card);color:var(--text)}
+/* Dark theme: search + filters ubhre hue aur saaf dikhein */
+html:not(.light) .search input{background:#151a2a;border:1.5px solid rgba(139,44,255,.55);color:#fff;font-size:.95rem;box-shadow:0 0 0 1px rgba(6,182,212,.08),0 8px 24px -12px rgba(139,44,255,.55)}
+html:not(.light) .search input::placeholder{color:#a7aec6}
+html:not(.light) .search input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.28),0 8px 28px -10px rgba(139,44,255,.7)}
+html:not(.light) .search svg{color:#c084fc}
+html:not(.light) .fsel{background:#131828;border:1px solid rgba(255,255,255,.14);transition:border-color .2s,box-shadow .2s}
+html:not(.light) .fsel:hover{border-color:rgba(168,85,247,.6)}
+html:not(.light) .fsel.on{border-color:#a855f7;background:#1a1530;box-shadow:0 0 0 2px rgba(168,85,247,.25)}
+html:not(.light) .fsel span{color:#67e8f9}
+html:not(.light) .fsel select{color:#fff;font-weight:700}
 .result{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 14px;color:var(--muted);font-size:.88rem;flex-wrap:wrap}
+#resultTxt{color:var(--text);font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:.02em}
 .clear{color:var(--cyan);font-weight:700;font-size:.85rem}
 
 /* ===== CARDS ===== */
@@ -138,8 +162,9 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .kind button.on{color:#fff;background:var(--grad);box-shadow:0 0 14px rgba(139,44,255,.4)}
 .grid.notes{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 .grid.notes .thumb{aspect-ratio:210/297;background-position:top center}
-.thumb .wipe{position:absolute;inset:0;background-size:cover;background-position:center;clip-path:inset(0 100% 0 0);animation:wipe .9s cubic-bezier(.65,0,.35,1) forwards;pointer-events:none}
-@keyframes wipe{to{clip-path:inset(0 0 0 0)}}
+.thumb{overflow:hidden}
+.thumb .wipe{position:absolute;inset:0;background-size:cover;background-position:center;animation:fly .85s cubic-bezier(.2,.85,.25,1) forwards;pointer-events:none;box-shadow:-10px 0 24px -6px rgba(0,0,0,.45)}
+@keyframes fly{from{transform:translateX(105%) rotate(5deg) scale(.88);opacity:.3}70%{opacity:1}to{transform:none;opacity:1}}
 .mini.a4{width:44px;aspect-ratio:210/297;justify-self:center}
 .stage.a4{aspect-ratio:210/297;width:min(100%,calc((100vh - 120px) * 210 / 297));margin:0 auto}
 .stage.a4 img{object-fit:contain;background:#fff}
@@ -150,6 +175,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .samples.drag{cursor:grabbing}
 .s-track{display:flex;width:max-content}
 .s-track img{height:clamp(250px,40vw,460px);aspect-ratio:210/297;margin-right:18px;border-radius:12px;object-fit:cover;object-position:top;background:#fff;border:1px solid var(--line2);box-shadow:0 18px 40px -18px rgba(0,0,0,.55)}
+.s-track.wide img{height:clamp(150px,24vw,300px);aspect-ratio:16/9;object-position:center}
 @media(max-width:760px){.grid.notes{grid-template-columns:1fr 1fr;gap:12px}}
 @media(max-width:340px){.grid.notes{grid-template-columns:1fr}}
 
@@ -247,9 +273,9 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 
 @media(max-width:760px){
   .hidden-sm{display:none}
-  .ftoggle{display:inline-flex}
+  .ftoggle{display:inline-flex;flex:none}
   .filters{display:none}
-  .hero p{display:none}
+  .ticker{font-size:.8rem}.ticker b{padding:6px 9px}
   .filters.open{display:grid;grid-template-columns:1fr 1fr}
   .fsel{max-width:none}
   .toolbar{position:static}
@@ -265,7 +291,20 @@ html.light .kicker{color:#a16207;background:#fef9c3}
   .acts .btn{padding:8px 6px;font-size:.78rem}
 }
 @media(max-width:380px){.grid{grid-template-columns:1fr}}
+/* Phone: PPT cards ek line me, left-right swipe + apne aap aage chalte rahein */
+@media(max-width:600px){
+  .grid,.grid.notes{display:flex;overflow-x:auto;gap:12px;padding:4px 2px 24px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .grid::-webkit-scrollbar{display:none}
+  .grid>*:not(.empty){flex:0 0 78%;min-width:0}
+  .grid>.empty{flex:1 0 100%}
+  .grid{cursor:grab;-webkit-user-select:none;user-select:none}
+  .grid.dragging{cursor:grabbing}
+  .grid.dragging *{pointer-events:none}
+  .grid>.card,.grid>.card:hover{box-shadow:none;transform:none}
+  .grid .sold{box-shadow:none}
+}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(prefers-reduced-motion:reduce){.tk-run{white-space:normal}.tk-run span:nth-child(n+2),.tk-run span::after{display:none}}
 
 /* Dark / Light / System switch (homepage jaisa) */
 .theme-sw{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:12px;background:var(--card);border:1px solid var(--line2);flex:none}
@@ -278,6 +317,9 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 @media(max-width:420px){.nav{gap:6px}.nav .back{display:none}.theme-sw{margin-left:auto}.theme-sw button{width:27px}}
 /* Theme: band rahe to sirf chuni hui theme dikhe, click par teeno khulein */
 .theme-sw:not(.open) button:not([aria-checked="true"]){display:none}
+/* Theme sirf Home page par chuni jaati hai; baaki pages wahi theme follow karte hain */
+.theme-sw{display:none!important}
+@media(max-width:420px){.nav .my-btn{margin-left:auto}}
 </style>
 </head>
 <body>
@@ -321,18 +363,18 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 </header>
 
 <section class="hero container">
-  <span class="kicker"><i></i><span id="hKick">Ready to Use PPT</span></span>
-  <h1 id="hTitle">PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span></h1>
-  <p id="hText">Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.</p>
+  <div class="h-row"><a href="index.html" class="h-back" id="hBack" aria-label="Back" title="Back"><svg class="i"><use href="#i-left"/></svg></a>
+  <h1 id="hTitle">PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span></h1></div>
+  <div class="ticker" role="marquee" aria-label="Updates"><b>Note</b><div class="tk-win"><div class="tk-run" id="hText"><span>Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.</span></div></div></div>
   <div class="perks" id="hPerks">
     <span><svg class="i"><use href="#i-check"/></svg>100% Editable .pptx</span>
     <span><svg class="i"><use href="#i-check"/></svg>Instant Download</span>
-    <span><svg class="i"><use href="#i-check"/></svg>UPI · Cards · Net Banking</span>
-    <span><svg class="i"><use href="#i-check"/></svg>Google Slides & Keynote</span>
+    <span><svg class="i"><use href="#i-check"/></svg>UPI Payment</span>
+    <span><svg class="i"><use href="#i-check"/></svg>High & Best Quality</span>
   </div>
   <div class="kind" role="tablist" aria-label="Kya dekhna hai"><button type="button" role="tab" data-kind="ppt">📊 Ready PPTs</button><button type="button" role="tab" data-kind="notes">📝 Study Notes</button></div>
 </section>
-<section class="samples" id="samples" hidden aria-label="Study Notes ke sample pages"><div class="s-track" id="sTrack"></div></section>
+<section class="samples" id="samples" hidden aria-label="Sample slides aur pages"><div class="s-track" id="sTrack"></div></section>
 
 <div class="toolbar">
   <div class="container">
@@ -420,9 +462,6 @@ const CONFIG = { whatsapp:"919711069435", perPage:12,
   upi:{ id:"7290933116@ybl", name:"MOHAMMAD IRFAN", qr:"uploads/payment/upi-qr.png" },
   /* Vercel / GitHub Pages par PHP nahi chalta: wahan demo checkout (asli server par kabhi nahi) */
   demoPay:/\.(vercel\.app|github\.io)$/.test(location.hostname) };
-const CATEGORIES = [
-  { id:"edu",  name:"Educational" }, { id:"biz", name:"Business" }, { id:"mkt", name:"Marketing" }, { id:"anim", name:"Animated" }
-];
 /* Server na mile (jaise sirf HTML preview) tab ye 5 demo PPTs dikhti hain */
 const DEMO = LA_CATALOG.map((p,i) => { const prev = [1,2,3,4].map(k => `uploads/previews/demo-${p.slug}-${k}.webp`); return { ...p, thumb:prev[0], previews:prev, sales:0, added:5-i }; });
 
@@ -459,15 +498,26 @@ const lv = p => arr(p.level).filter(l => l !== NOTE_TAG);
 const VIEW = () => PRODUCTS.filter(p => isNote(p) === NOTES);
 const W = () => NOTES ? { one:"Notes", many:"Notes", all:"All Study Notes" } : { one:"PPT", many:"PPTs", all:"All PPTs" };
 const HERO = {
-  ppt:{ kick:"Ready to Use PPT", title:`PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span>`, text:"Class, subject aur language se apni PPT chuniye. Payment ke turant baad editable file aapke email aur screen par.",
-    perks:["100% Editable .pptx","Instant Download","UPI · Cards · Net Banking","Google Slides & Keynote"], q:"Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" },
-  notes:{ kick:"Study Notes", title:`Har class aur exam ke <span class="grad-text">Study Notes</span>`, text:"School boards aur competitive exams ke chapter-wise notes, Hindi aur English medium mein. A4 size PDF, payment ke turant baad download karein, phone par padhein ya print karein.",
+  ppt:{ kick:"Ready to Use PPT", title:`PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span>`, text:["Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.", "क्लास, विषय और भाषा से अपनी PPT चुनिए। पेमेंट होते ही एडिटेबल फाइल आपकी स्क्रीन और ईमेल पर।"],
+    perks:["100% Editable .pptx","Instant Download","UPI Payment","High & Best Quality"], q:"Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" },
+  notes:{ kick:"Study Notes", title:`Har class aur exam ke <span class="grad-text">Study Notes</span>`, text:["Chapter-wise notes for school boards and competitive exams, in Hindi and English medium. A4 PDF, download right after payment.", "स्कूल बोर्ड और प्रतियोगी परीक्षाओं के अध्याय-वार नोट्स, हिंदी और इंग्लिश मीडियम में। A4 PDF, पेमेंट होते ही डाउनलोड करें।"],
     perks:["A4 size PDF (print ready)","Hindi & English Medium","Instant Download","Definitions, formulas, solved questions"], q:"Search: chapter, subject, class, exam… (e.g. Science, Class 10, SSC)" } };
 const SAMPLES = [1,2,3,4,5,6,7,8].map(n => `uploads/notes/sample-${n}.webp`);
+/* Ready PPTs: admin mein "⭐ Featured" wali PPT ki slides (warna sabse nayi PPT ki); 10 se kam hon to baaki PPTs se bharte hain */
+function pptSlides(){
+  const ps = VIEW().filter(p => arr(p.previews).length), byNew = (a,b) => (b.added || b.id || 0) - (a.added || a.id || 0);
+  const main = ps.filter(p => p.badge === "feat").sort(byNew)[0] || [...ps].sort(byNew)[0];
+  if (!main) return [];
+  const list = [...main.previews];
+  for (const p of [...ps].sort(byNew)) { if (list.length >= 10) break; if (p !== main) list.push(...p.previews.slice(0, 2)); }
+  return list.slice(0, 12);
+}
 function drawSamples(){
-  const own = VIEW().flatMap(p => (p.previews || []).slice(0, 2)).slice(0, 12);
-  const list = own.length >= 4 ? own : [...own, ...SAMPLES].slice(0, 10);
-  $("#sTrack").innerHTML = [...list, ...list].map((u,k) => `<img src="${esc(u)}" alt="${k < list.length ? `Sample page ${k+1}` : ""}" loading="lazy" decoding="async" draggable="false">`).join("");
+  let list;
+  if (NOTES) { const own = VIEW().flatMap(p => (p.previews || []).slice(0, 2)).slice(0, 12); list = own.length >= 4 ? own : [...own, ...SAMPLES].slice(0, 10); }
+  else list = pptSlides();
+  $("#samples").hidden = !list.length; $("#sTrack").classList.toggle("wide", !NOTES);
+  $("#sTrack").innerHTML = [...list, ...list].map((u,k) => `<img src="${esc(u)}" alt="${k < list.length ? `Sample ${NOTES ? "page" : "slide"} ${k+1}` : ""}" loading="lazy" decoding="async" draggable="false">`).join("");
   SP.pos = 0; $("#samples").scrollLeft = 0;
 }
 /* Sample pages: apne aap dheere chalte hain; mouse se pakad kar (ya ungli se) aage-peeche khiska sakte hain */
@@ -491,14 +541,36 @@ const SP = { pos:0, drag:false, hold:false, last:0, sx:0, sp:0, mine:false };
   box.addEventListener("touchend", () => setTimeout(() => { SP.pos = box.scrollLeft; SP.hold = false; }, 900), { passive:true });
   box.addEventListener("wheel", () => { SP.hold = true; clearTimeout(SP.wt); SP.wt = setTimeout(() => SP.hold = false, 1200); }, { passive:true });
 })();
+/* Hero ki patti: English + Hindi lines news channel ki tarah chalti rehti hain */
+function heroLines(list){
+  const el = $("#hText"), one = list.map(t => `<span>${esc(t)}</span>`).join("");
+  el.innerHTML = one + one; el.style.setProperty("--tk", Math.max(18, list.join("").length / 7) + "s");
+}
+/* Heading hamesha ek hi line mein: jagah kam ho to font apne aap chhota */
+function fitTitle(){
+  const el = $("#hTitle"); el.style.fontSize = "";
+  const w = el.clientWidth, sw = el.scrollWidth;
+  if (sw > w) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * w / sw * 0.98) + "px";
+}
+addEventListener("resize", () => fitTitle());
+const goBack = e => { if (history.length > 1 && document.referrer.startsWith(location.origin)) { e.preventDefault(); history.back(); } };
+$("#hBack").onclick = goBack;
+/* Scroll karne par bhi back arrow kone me dikhta rahe (header ke theek neeche) */
+(() => {
+  const fx = $("#hBack").cloneNode(true); fx.id = ""; fx.classList.add("fx"); fx.onclick = goBack; document.body.appendChild(fx);
+  const place = () => { fx.style.top = (document.querySelector("header").getBoundingClientRect().bottom + 10) + "px"; };
+  new IntersectionObserver(([en]) => { place(); fx.classList.toggle("on", !en.isIntersecting); }, { rootMargin: "-80px 0px 0px 0px" }).observe($("#hBack"));
+  addEventListener("resize", place); place();
+})();
+document.fonts && document.fonts.ready.then(() => fitTitle());
 function setKind(n, push){
   NOTES = n; st.cat = "all"; st.f = {}; st.shown = CONFIG.perPage;
   const h = HERO[n ? "notes" : "ppt"];
-  $("#hKick").textContent = h.kick; $("#hTitle").innerHTML = h.title; $("#hText").textContent = h.text; $("#q").placeholder = h.q;
+  $("#hTitle").innerHTML = h.title; fitTitle(); heroLines(h.text); $("#q").placeholder = h.q;
   $("#hPerks").innerHTML = h.perks.map(t => `<span>${icon("i-check")}${esc(t)}</span>`).join("");
   document.querySelectorAll(".kind button").forEach(b => { const on = (b.dataset.kind === "notes") === n; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
   document.title = (n ? "Study Notes" : "Ready to Use PPTs") + " — Lakshay Agency";
-  $("#samples").hidden = !n; if (n) drawSamples();
+  drawSamples();
   $("#more").textContent = `Load more ${W().many}`;
   /* URL saaf: page dobara khulne / refresh par hamesha Ready PPTs hi khule */
   if (push) history.replaceState(null, "", location.pathname);
@@ -507,9 +579,12 @@ document.querySelector(".kind").onclick = e => { const b = e.target.closest("but
 
 /* ---------- FILTERS ---------- */
 const PRICE = [[29,"₹29 tak"],[49,"₹49 tak"],[99,"₹99 tak"],[199,"₹199 tak"],[Infinity,"₹199 se zyada"]];
+/* Class / Subject: poori list hamesha dikhe (admin panel wali list), chahe PPT abhi na ho */
+const CLASS_ALL = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
+const SUBJ_ALL = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Physical Education","Corporate / Training"];
 const FILTERS = [
-  { key:"level",   label:"Class",    nl:"Class / Exam", get:p => lv(p), order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
-  { key:"subject", label:"Subject",  get:p => arr(p.subject) },
+  { key:"level",   label:"Class",    nl:"Class / Exam", get:p => lv(p), all:CLASS_ALL, order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
+  { key:"subject", label:"Subject",  get:p => arr(p.subject), all:SUBJ_ALL },
   { key:"lang",    label:"Language", get:p => p.lang === "Both" ? ["Hindi + English","Hindi","English"] : [p.lang], fixed:["Hindi","English","Hindi + English"], ppt:true },
   { key:"board",   label:"Board",    nl:"Board / Exam", get:p => arr(p.board) },
   { key:"theme",   label:"Theme",    get:p => [p.theme === "Light" ? "☀️ Light" : "🌙 Dark"], ppt:true },
@@ -526,7 +601,9 @@ const SORTS = { popular:(a,b) => b.sales - a.sales || b.added - a.added, low:(a,
 
 function renderCats(){
   const V = VIEW(), used = NOTES ? MEDIUM.map(([v,t]) => ({ id:"m:" + v, name:`${t} (${V.filter(p => p.lang === v).length})` })).filter(c => !c.name.endsWith("(0)"))
-    : CATEGORIES.filter(c => V.some(p => p.cat === c.id || (c.id === "anim" && p.anim)));
+    : [];
+  /* Ready PPTs mein Educational / Business wale button nahi: Class aur Subject se hi chunte hain */
+  $("#cats").parentElement.hidden = !NOTES;
   $("#cats").innerHTML = [{id:"all",name:`${W().all} (${V.length})`}, ...used]
     .map(c => `<button class="${st.cat === c.id ? "on" : ""}" data-cat="${c.id}">${esc(c.name)}</button>`).join("");
 }
@@ -536,7 +613,7 @@ function renderFilters(){
   const V = VIEW();
   $("#filters").innerHTML = FILTERS.filter(f => !(NOTES && f.ppt)).map(f => {
     const base = V.filter(p => matchC(p) && matchQ(p) && matchF(p, f.key));
-    let vals = f.fixed || [...new Set(V.flatMap(f.get))];
+    let vals = f.fixed || [...new Set([...(f.all || []), ...V.flatMap(f.get)])];
     if (f.order) vals = [...vals].sort((a,b) => f.order(a) - f.order(b) || a.localeCompare(b));
     else if (!f.fixed) vals.sort((a,b) => a.localeCompare(b));
     const cur = st.f[f.key] || "";
@@ -563,23 +640,26 @@ const ribbon = b => ({ best:`<span class="ribbon r-best">BEST SELLER</span>`, ne
 const soldTag = p => p.sales > 0
   ? `<span class="sold" title="${p.sales} customers ne ye PPT khareedi">🔥 <b>${p.sales.toLocaleString("en-IN")}</b> Sold</span>`
   : `<span class="sold fresh">✨ New</span>`;
-/* PPT card par pehli 5 slides baari-baari wipe hokar badalti rehti hain */
-const WIPE = { i:{}, at:{} };
+/* PPT card par saari slides baari-baari "fly" hokar har 5 second me badalti rehti hain */
+const WIPE = { i:{}, at:{} }, FLY_MS = 5000;
 function wipeTick(){
-  const now = Date.now(), el = [...document.querySelectorAll(".thumb[data-wipe]")]
-    .filter(el => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && !el.querySelector(".wipe"); })
-    .sort((a, b) => (WIPE.at[a.dataset.wipe] || 0) - (WIPE.at[b.dataset.wipe] || 0))[0];
-  if (!el || now - (WIPE.at[el.dataset.wipe] || 0) < 3200) return;
-  const p = PRODUCTS.find(x => x.id === +el.dataset.wipe); if (!p) return;
-  const imgs = arr(p.previews).slice(0, 5), n = ((WIPE.i[p.id] || 0) + 1) % imgs.length;
-  WIPE.at[p.id] = now; WIPE.i[p.id] = n;
-  const img = new Image(); img.onload = () => {
-    const w = document.createElement("span"); w.className = "wipe"; w.style.backgroundImage = cssUrl(imgs[n]);
-    w.addEventListener("animationend", () => { el.style.backgroundImage = cssUrl(imgs[n]); w.remove(); });
-    el.prepend(w); };
-  img.src = imgs[n];
+  const now = Date.now();
+  [...document.querySelectorAll(".thumb[data-wipe]")].forEach((el, k) => {
+    const r = el.getBoundingClientRect(), id = el.dataset.wipe;
+    if (r.bottom <= 0 || r.top >= innerHeight || r.right <= 0 || r.left >= innerWidth || el.querySelector(".wipe")) return;
+    if (!WIPE.at[id]) { WIPE.at[id] = now - (k % 5) * 900; return; } // pehli baar: thoda aage-peeche taaki sab ek saath na badlein
+    if (now - WIPE.at[id] < FLY_MS) return;
+    const p = PRODUCTS.find(x => x.id === +id); if (!p) return;
+    const imgs = arr(p.previews), n = ((WIPE.i[p.id] || 0) + 1) % imgs.length;
+    WIPE.at[id] = now; WIPE.i[p.id] = n;
+    const img = new Image(); img.onload = () => {
+      const w = document.createElement("span"); w.className = "wipe"; w.style.backgroundImage = cssUrl(imgs[n]);
+      w.addEventListener("animationend", () => { el.style.backgroundImage = cssUrl(imgs[n]); w.remove(); });
+      el.prepend(w); };
+    img.src = imgs[n];
+  });
 }
-if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(() => { if (!document.hidden) wipeTick(); }, 900);
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(() => { if (!document.hidden) wipeTick(); }, 500);
 function card(p){
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, inCart = cart.includes(p.id);
   return `<article class="card">
@@ -606,7 +686,7 @@ function render(){
   const list = V.filter(p => matchC(p) && matchQ(p) && matchF(p)).sort(SORTS[st.sort]);
   const show = list.slice(0, st.shown);
   $("#grid").classList.toggle("notes", NOTES);
-  $("#resultTxt").textContent = V.length ? (NOTES ? `${list.length} Notes mile` : `${list.length} PPT${list.length === 1 ? "" : "s"} mili`) : "";
+  $("#resultTxt").textContent = V.length ? "K-12" : "";
   $("#grid").innerHTML = show.length ? show.map(card).join("")
     : NOTES ? `<div class="empty"><b>${V.length ? "Is filter mein koi Notes nahi mile" : "Notes jald aa rahe hain"}</b>Tab tak Ready PPTs dekhiye, ya WhatsApp par apne chapter ke notes maangiye. <button class="clear" type="button" onclick="setKind(false,true);render()">Ready PPTs dekhein →</button></div>`
     : `<div class="empty"><b>${V.length ? "Is filter mein koi PPT nahi mili" : "Ready PPTs jald aa rahi hain"}</b>Filter badal kar dekhiye, ya apni custom PPT banwaiye. <a class="clear" href="order.html">PPT Order Now →</a></div>`;
@@ -614,6 +694,42 @@ function render(){
   renderCart();
 }
 $("#more").onclick = () => { st.shown += CONFIG.perPage; render(); };
+/* Phone par cards dheere-dheere lagatar left ki taraf chalte rahein; chhoone par 4 sec ruk jaayein */
+const rowMQ = matchMedia("(max-width:600px)");
+let rowPause = 0, rowX = 0, rowT = 0;
+(function rowTick(t){
+  const g = $("#grid"), dt = rowT ? Math.min(t - rowT, 100) : 0; rowT = t;
+  if (rowMQ.matches && !document.hidden && Date.now() >= rowPause && g.firstElementChild && !g.firstElementChild.classList.contains("empty")) {
+    if (Math.abs(rowX - g.scrollLeft) > 2) rowX = g.scrollLeft;
+    if (g.scrollLeft + g.clientWidth >= g.scrollWidth - 1) { rowX = 0; rowPause = Date.now() + 2500; g.scrollTo({ left: 0, behavior: "smooth" }); }
+    else { rowX += dt * 0.03; g.scrollLeft = rowX; }
+  }
+  requestAnimationFrame(rowTick);
+})(0);
+["touchstart", "pointerdown", "wheel"].forEach(ev => $("#grid").addEventListener(ev, () => { rowPause = Date.now() + 4000; }, { passive: true }));
+/* Mouse se bhi kheench kar cards khiska sakein (touch par browser khud karta hai) */
+(() => {
+  const g = $("#grid"); let drag = null;
+  g.addEventListener("pointerdown", e => {
+    if (e.pointerType !== "mouse" || e.button !== 0 || !rowMQ.matches) return;
+    drag = { x: e.clientX, left: g.scrollLeft, moved: false };
+  });
+  addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 6) return;
+    if (!drag.moved) { drag.moved = true; g.classList.add("dragging"); }
+    g.scrollLeft = drag.left - dx; rowPause = Date.now() + 4000;
+  });
+  addEventListener("pointerup", () => {
+    if (!drag) return;
+    const moved = drag.moved; drag = null;
+    if (!moved) return;
+    g.classList.remove("dragging");
+    const block = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    g.addEventListener("click", block, true); setTimeout(() => g.removeEventListener("click", block, true), 60);
+  });
+})();
 
 /* ---------- CART ---------- */
 function saveCart(){ try { localStorage.setItem("la_cart", JSON.stringify(cart)); } catch(e) {} render(); }
@@ -723,9 +839,7 @@ function openPay(ids){
     ${hasId ? `<div class="or">ya hamara UPI QR scan karein</div>
     <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg"></div>
       <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
-    <div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed <b class="js-amt">${inr(payTotal)}</b></div>
-    <button type="button" class="btn btn-wa" id="qrPaidWa" style="width:100%;margin-top:10px">${icon("i-msg")} QR se pay kar diya? WhatsApp par screenshot bhejein</button>
-    <p class="note" style="margin-top:6px">QR se pay karne par screenshot bhejiye, PPT aapke Email / WhatsApp par bheji jayegi.</p>` : ""}` : `<h4>QR scan karke <b>${inr(payTotal)}</b> pay karein</h4>
+    <div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed <b class="js-amt">${inr(payTotal)}</b></div>` : ""}` : `<h4>QR scan karke <b>${inr(payTotal)}</b> pay karein</h4>
     <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg">${(!hasId && u.qr) ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""}</div>
       <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
     ${m === "rzp" ? `<div class="live" id="qrLive" hidden>● Payment ka intezaar… pay hote hi download khulega</div>` : hasId ? `<div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed ${inr(payTotal)}</div>` : ""}
@@ -751,9 +865,6 @@ function drawUpiQr(){
   loadQR().then(() => { const q = qrcode(0, "M"); q.addData(upiLink("upi://pay", payTotal)); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:`UPI QR code, ${inr(payTotal)}` }); })
     .catch(() => { $("#qrImg").innerHTML = CONFIG.upi.qr ? `<img src="${esc(CONFIG.upi.qr)}" alt="UPI QR code">` : ""; });
 }
-document.addEventListener("click", e => { if (e.target.closest("#qrPaidWa")) { const d = buyer(); if (!d) return;
-  const items = payIds.map(id => PRODUCTS.find(p => p.id === id));
-  window.open(waURL(`Hi Lakshay Agency! Maine QR se payment kar diya hai (screenshot bhej raha hoon).\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}${COUPON ? `\nCoupon: ${COUPON.code}` : ""}\nTotal: ${inr(payTotal)}\n\nName: ${d.name}\nEmail: ${d.email}\nPhone: ${d.phone}`), "_blank"); } });
 /* Coupon (sirf admin panel wali PPTs + Razorpay) */
 let COUPON = null;
 $("#cpnBtn").onclick = async () => {
@@ -966,7 +1077,7 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   const apply = m => { root.classList.toggle("light", m === "light" || (m === "system" && mq.matches)); root.setAttribute("data-mode", m);
     document.querySelectorAll(".theme-sw button").forEach(b => b.setAttribute("aria-checked", String(b.dataset.mode === m))); };
   apply(root.getAttribute("data-mode") || "system");
-  document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => { try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {} apply(b.dataset.mode); });
+  document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => { try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {} window.name = "la_theme=" + b.dataset.mode; apply(b.dataset.mode); });
   (mq.addEventListener ? mq.addEventListener.bind(mq,"change") : mq.addListener.bind(mq))(() => { if (root.getAttribute("data-mode") === "system") apply("system"); });
 })();
 </script>

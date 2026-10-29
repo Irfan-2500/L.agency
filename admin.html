@@ -1633,7 +1633,7 @@ function editPpt(p) {
   $("#peName").placeholder = N ? "e.g. Class 10 Science Ch 1 — Chemical Reactions Notes" : "e.g. Class 10 Science — Light Reflection";
   $("#peDescL").textContent = N ? "(chhota sa — kya kya hai in notes mein)" : "(chhota sa — kya kya hai is PPT mein)";
   $("#peSlidesL").textContent = N ? "Pages kitne hain" : "Slides kitni hain"; $("#peSlides").placeholder = N ? "14" : "25";
-  $("#peImgsL").textContent = N ? "2. Preview pages (PDF se apne aap bante hain · badal bhi sakte hain)" : "2. Preview images (PPTX chunte hi pehli 5 slides ki photo apne aap banti hai · optional)";
+  $("#peImgsL").textContent = N ? "2. Preview pages (PDF se apne aap bante hain · badal bhi sakte hain)" : "2. Preview images (PPTX chunte hi saari slides ki photo apne aap banti hai · ⭐ Featured badge wali PPT ki slides website par upar chalti hain)";
   $("#peFileIn").accept = N ? ".pdf,.zip,application/pdf,application/zip" : ".ppt,.pptx,.pdf,.zip,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/zip";
   $("#peSave").textContent = N ? "Save Notes" : "Save PPT";
   $("#peName").value = PE.title; $("#peDesc").value = PE.desc; $("#pePrice").value = PE.price; $("#peMrp").value = PE.mrp || ""; $("#peSlides").value = PE.slides || "";
@@ -1730,7 +1730,7 @@ async function pdfPreview(file, pe, pages) {
     }
   } catch (e) { toast("PDF ki preview apne aap nahi bani. Photo khud add kar sakte hain.", true); }
 }
-// PPTX se slides ki ginti, naam, description, animation aur pehli 5 slides ki photo (sab browser mein hi)
+// PPTX se slides ki ginti, naam, description, animation aur saari slides ki photo (sab browser mein hi)
 const xmlText = x => [...x.matchAll(/<a:t(?:\s[^>]*)?>([^<]*)<\/a:t>/g)].map(m => m[1]).join(" ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/\s+/g, " ").trim();
 const slideTitle = x => {   // title placeholder, warna sabse bade font wala text
   const sps = x.match(/<p:sp>[\s\S]*?<\/p:sp>/g) || [], ph = sps.find(sp => /<p:ph[^>]*type="(?:title|ctrTitle)"/.test(sp) && xmlText(sp));
@@ -1759,7 +1759,7 @@ async function pptxAuto(file, pe) {
     if (hi + en > 40) { pe.lang = hi > en * 4 ? "Hindi" : en > hi * 4 ? "English" : "Both"; ED = pe; seg($("#peLang"), LANGS, pe.lang, "lang"); }
     const subj = SUBJECTS.find(x => new RegExp("\\b" + x.replace(/[^\w ]/g, "").replace(/ /g, "\\s*") + "\\b", "i").test(head));
     if (subj && !$("#peSubj").value) $("#peSubj").value = subj;
-    if (!pe.imgs.length) await pptxShots(file, pe, Math.min(5, names.length));
+    if (!pe.imgs.length) await pptxShots(file, pe, names.length);
   } catch (e) { console.error(e); toast("PPT se details apne aap nahi nikli. Khud bhar dijiye.", true); }
 }
 async function pptxShots(file, pe, count) {
