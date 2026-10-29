@@ -1141,6 +1141,26 @@ html.light .bs-deck i{background:linear-gradient(135deg,#ffffff,#e9e5ff);box-sha
 html.light .slider .s-nav{background:rgba(255,255,255,.85);color:#1a1433;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 html.light .slider .dots button:not(.on){background:rgba(30,20,70,.22)}
 
+/* Smart Board: "Order kaise karein" video slide */
+.bs-how{flex-direction:row;align-items:center;gap:4cqw;padding:6cqw 9cqw 6cqw;background:radial-gradient(circle at 80% 30%,rgba(139,44,255,.35),transparent 45%),linear-gradient(135deg,#0b1f4d,#1e1b6b 55%,#4c1d95)}
+.bh-tx{flex:1;display:flex;flex-direction:column;gap:1.8cqw;min-width:0}
+.bs-how h3{font-size:5.2cqw;line-height:1.1}
+.bs-how h3 b{background:linear-gradient(90deg,#c084fc,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bh-steps{list-style:none;display:flex;flex-direction:column;gap:1cqw;font-size:2.2cqw;font-weight:600;padding:0;margin:0}
+.bh-steps li::before{content:attr(data-n);display:inline-grid;place-items:center;width:3cqw;height:3cqw;margin-right:1.2cqw;border-radius:50%;font-size:1.6cqw;font-weight:800;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4)}
+.bh-play{align-self:flex-start;font:inherit;font-size:2cqw;font-weight:800;padding:1cqw 2.4cqw;border-radius:99px;border:0;cursor:pointer;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4)}
+.bh-ph{height:100%;aspect-ratio:540/1172;flex:none;border-radius:2.4cqw;padding:.7cqw;background:#0b0b12;box-shadow:0 0 0 .3cqw rgba(255,255,255,.18),0 2cqw 5cqw rgba(0,0,0,.5);cursor:pointer}
+.bh-ph video{width:100%;height:100%;display:block;border-radius:1.8cqw;object-fit:cover;background:#111}
+html.light .bs-how{background:radial-gradient(circle at 80% 30%,rgba(139,44,255,.14),transparent 45%),linear-gradient(135deg,#ffffff,#eef2ff 55%,#f3e8ff)}
+html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
+@media(max-width:600px){
+  .bs-how{padding:9cqw 5cqw 9cqw;gap:3cqw}
+  .bs-how h3{font-size:6cqw}
+  .bh-steps{font-size:3.3cqw;gap:1.6cqw}
+  .bh-steps li::before{width:4.4cqw;height:4.4cqw;font-size:2.4cqw}
+  .bh-play{font-size:3cqw;padding:1.4cqw 3cqw}
+}
+
 /* =========================================================
    31. THEME FILTERS — ek line, dropdown
    ========================================================= */
@@ -2021,6 +2041,15 @@ function buildBoardSlides(){
      <div class="bs-share">📩 Share your content &amp; design references to get started!</div>
      <p class="bs-tag">✨ You provide the content. <b>We create the presentation.</b></p>
      <div class="bs-deck" aria-hidden="true"><i></i><i></i><i></i></div>
+   </div>`,
+  `<div class="bs bs-how">
+     <div class="bh-tx">
+       <span class="bs-kicker">🎬 Video Guide</span>
+       <h3>PPT order kaise <b>karein?</b></h3>
+       <ol class="bh-steps"><li data-n="1">Naam &amp; mobile likhiye</li><li data-n="2">PPT type chuniye</li><li data-n="3">Details / files bhejiye</li><li data-n="4">Submit — 1 ghante mein PPT!</li></ol>
+       <button type="button" class="bh-play hv-go">▶ Video dekhein</button>
+     </div>
+     <div class="bh-ph hv-go"><video src="videos/how-to-order.mp4" poster="videos/how-to-order.jpg" muted playsinline preload="none"></video></div>
    </div>`];
   // Pricing popup bhi same data se
   $("#prTitle").textContent = PRICING.title;
@@ -2049,7 +2078,11 @@ function go(i){
   ss[cur].classList.remove("on"); ss[cur].classList.add("prev"); dd[cur].classList.remove("on");
   cur = (i + ss.length) % ss.length;
   ss[cur].classList.add("on"); dd[cur].classList.add("on");
-  clearInterval(timer); timer = setInterval(() => go(cur+1), 5000);
+  clearInterval(timer);
+  slider.querySelectorAll(".bh-ph video").forEach(v => v.pause());
+  const v = ss[cur].querySelector(".bh-ph video");
+  if (v) { v.currentTime = 0; v.play().catch(() => {}); v.onended = () => go(cur+1); timer = setTimeout(() => go(cur+1), 40000); }
+  else timer = setInterval(() => go(cur+1), 5000);
 }
 $(".s-prev").onclick = e => { e.stopPropagation(); go(cur-1); };
 $(".s-next").onclick = e => { e.stopPropagation(); go(cur+1); };
@@ -3010,7 +3043,7 @@ document.addEventListener("click", e => {
   const pop = document.getElementById("hvPop"), vid = document.getElementById("hvVid");
   const close = () => { vid.pause(); pop.hidden = true; };
   document.addEventListener("click", e => {
-    if (e.target.closest(".hv-btn")) { pop.hidden = false; vid.currentTime = 0; vid.play().catch(() => {}); }
+    if (e.target.closest(".hv-btn,.hv-go")) { pop.hidden = false; vid.currentTime = 0; vid.play().catch(() => {}); }
     else if (e.target === pop || e.target.closest("#hvX")) close();
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !pop.hidden) close(); });
