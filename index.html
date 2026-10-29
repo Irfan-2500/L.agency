@@ -61,7 +61,9 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.75);backdrop-fil
 .nav{display:flex;align-items:center;gap:20px;height:72px}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-icon{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;border:1.5px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--grad) border-box}
-@media(max-width:480px){.nav .logo small{white-space:nowrap;letter-spacing:.06em}}
+.nav .logo small{white-space:nowrap}
+@media(max-width:480px){.nav .logo small{letter-spacing:.06em}}
+@media(min-width:481px) and (max-width:1100px){.nav .logo small{display:none}}
 .logo b{font-family:'Space Grotesk';font-size:1.05rem;display:block;line-height:1}
 .logo small{font-size:.6rem;letter-spacing:.14em;color:var(--muted);font-weight:700}
 .search{flex:1;max-width:420px;position:relative}
@@ -1429,7 +1431,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
       <img class="logo-img" src="uploads/brand/logo.webp" srcset="uploads/brand/logo.webp 1x, uploads/brand/logo-200.webp 2x" alt="PPT Store logo" width="50" height="22" style="height:22px;width:auto;display:block;flex:none">
       <span><b>PPT <span class="grad-text">STORE</span></b><small>YOU TEACH, WE DESIGN</small></span>
     </a>
-    <label class="search" data-ui="nav_search">
+    <label class="search" data-ui="nav_search" hidden style="display:none">
       <svg class="i"><use href="#i-search"/></svg>
       <input id="topSearch" type="search" placeholder="Search presentations, topics, categories…" aria-label="Search presentations">
     </label>
