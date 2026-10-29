@@ -111,6 +111,16 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .fsel span{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
 .fsel select{background:transparent;border:0;outline:none;font-size:.86rem;font-weight:600;padding:1px 0;width:100%}
 .fsel select option{background:var(--card);color:var(--text)}
+/* Dark theme: search + filters ubhre hue aur saaf dikhein */
+html:not(.light) .search input{background:#151a2a;border:1.5px solid rgba(139,44,255,.55);color:#fff;font-size:.95rem;box-shadow:0 0 0 1px rgba(6,182,212,.08),0 8px 24px -12px rgba(139,44,255,.55)}
+html:not(.light) .search input::placeholder{color:#a7aec6}
+html:not(.light) .search input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.28),0 8px 28px -10px rgba(139,44,255,.7)}
+html:not(.light) .search svg{color:#c084fc}
+html:not(.light) .fsel{background:#131828;border:1px solid rgba(255,255,255,.14);transition:border-color .2s,box-shadow .2s}
+html:not(.light) .fsel:hover{border-color:rgba(168,85,247,.6)}
+html:not(.light) .fsel.on{border-color:#a855f7;background:#1a1530;box-shadow:0 0 0 2px rgba(168,85,247,.25)}
+html:not(.light) .fsel span{color:#67e8f9}
+html:not(.light) .fsel select{color:#fff;font-weight:700}
 .result{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 14px;color:var(--muted);font-size:.88rem;flex-wrap:wrap}
 #resultTxt{color:var(--text);font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:.02em}
 .clear{color:var(--cyan);font-weight:700;font-size:.85rem}
