@@ -75,6 +75,9 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .kicker i{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1s steps(2,start) infinite}
 @keyframes blink{to{visibility:hidden}}
 .hero h1{font-size:clamp(1rem,3vw,2.1rem);margin:0 0 4px;white-space:nowrap}
+.h-row{display:flex;align-items:center;gap:8px;margin:0 0 4px}.h-row h1{flex:1;min-width:0;margin:0}
+.h-back{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--text);background:var(--card2);border:1px solid var(--line2)}
+.h-back svg.i{width:16px;height:16px;stroke-width:2.6}.h-back:hover{border-color:var(--violet);color:var(--violet)}
 .ticker{display:flex;align-items:stretch;max-width:760px;margin-top:8px;border-radius:10px;overflow:hidden;background:linear-gradient(90deg,rgba(139,44,255,.16),rgba(6,182,212,.16));border:1px solid rgba(139,44,255,.35);font-size:.88rem;font-weight:600}
 .ticker b{flex:none;display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--grad);color:#fff;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase}
 .ticker b::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
@@ -334,7 +337,8 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 </header>
 
 <section class="hero container">
-  <h1 id="hTitle">PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span></h1>
+  <div class="h-row"><a href="index.html" class="h-back" id="hBack" aria-label="Back" title="Back"><svg class="i"><use href="#i-left"/></svg></a>
+  <h1 id="hTitle">PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span></h1></div>
   <div class="ticker" role="marquee" aria-label="Updates"><b>Note</b><div class="tk-win"><div class="tk-run" id="hText"><span>Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.</span></div></div></div>
   <div class="perks" id="hPerks">
     <span><svg class="i"><use href="#i-check"/></svg>100% Editable .pptx</span>
@@ -519,10 +523,11 @@ function heroLines(list){
 /* Heading hamesha ek hi line mein: jagah kam ho to font apne aap chhota */
 function fitTitle(){
   const el = $("#hTitle"); el.style.fontSize = "";
-  const w = el.parentElement.clientWidth, sw = el.scrollWidth;
+  const w = el.clientWidth, sw = el.scrollWidth;
   if (sw > w) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * w / sw * 0.98) + "px";
 }
 addEventListener("resize", () => fitTitle());
+$("#hBack").onclick = e => { if (history.length > 1 && document.referrer.startsWith(location.origin)) { e.preventDefault(); history.back(); } };
 document.fonts && document.fonts.ready.then(() => fitTitle());
 function setKind(n, push){
   NOTES = n; st.cat = "all"; st.f = {}; st.shown = CONFIG.perPage;
