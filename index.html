@@ -1296,6 +1296,25 @@ html.light .hero-cta .btn-ghost{background:#fff;border-color:rgba(139,44,255,.35
 .section-head p{font-weight:500;color:var(--text);opacity:.75}
 html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 @media(max-width:600px){.section-head h2::after{width:48px;height:3px;margin-top:10px}}
+
+/* Ready to Use PPT section — custom wale jaisa dhaancha, peela rang, chalti slides */
+.rx{background:radial-gradient(circle at 0% 0%,rgba(250,204,21,.12),transparent 45%),radial-gradient(circle at 100% 100%,rgba(245,158,11,.10),transparent 50%),var(--card)}
+.rx .cx-badge{color:#fde047;background:rgba(250,204,21,.1);border-color:rgba(250,204,21,.4)}
+.rx-right{position:relative;display:flex;flex-direction:column;gap:14px;padding:34px 0;min-width:0;overflow:hidden;
+  -webkit-mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.rx-row{overflow:hidden}
+.rx-run{display:flex;gap:14px;width:max-content;animation:rxMove 36s linear infinite}
+.rx-row.rev .rx-run{animation-direction:reverse;animation-duration:42s}
+.rx-run img{width:220px;aspect-ratio:16/9;object-fit:cover;border-radius:12px;border:1px solid var(--line2);box-shadow:0 14px 30px -14px rgba(0,0,0,.6)}
+@keyframes rxMove{to{transform:translateX(calc(-50% - 7px))}}
+.rx-pop1{top:4px;left:10%;animation:cxFloat 5s ease-in-out infinite}
+.rx-pop2{right:6%;bottom:2px;color:#fde047;border-color:rgba(250,204,21,.45);animation:cxFloat 5s ease-in-out 2.5s infinite}
+html.light .rx{background:radial-gradient(circle at 0% 0%,rgba(250,204,21,.16),transparent 45%),radial-gradient(circle at 100% 100%,rgba(245,158,11,.12),transparent 50%),var(--card)}
+html.light .rx .cx-badge{color:#a16207;background:#fef9c3;border-color:#fde68a}
+html.light .rx-pop2{color:#a16207}
+@media(max-width:900px){.rx-right{order:-1;padding:30px 0 26px}}
+@media(max-width:480px){.rx-run img{width:170px}.rx .cx-cta .btn-ghost{width:100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.rx-run{animation:none}}
 </style>
 </head>
 <body>
@@ -1471,6 +1490,41 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
     </div>
     <div class="grid" id="grid"></div>
     <div class="load-more"><button class="btn btn-ghost" id="loadMore">Load More Presentations</button></div>
+  </div>
+</section>
+
+<!-- ================= READY TO USE PPT ================= -->
+<section class="section" id="ready">
+  <div class="container">
+    <div class="cx rx reveal">
+      <div class="cx-left">
+        <span class="cx-badge"><svg class="i"><use href="#i-cloud"/></svg>Ready to Use PPT</span>
+        <h2>Ready PPTs. <span class="grad-text">Instant Download.</span><br>Use in Class Today.</h2>
+        <p class="cx-hi" lang="hi">पेमेंट कीजिए, PPT तुरंत डाउनलोड — <b>कोई इंतज़ार नहीं</b>।</p>
+
+        <ol class="cx-steps">
+          <li style="--c:#facc15"><span class="cx-ic"><svg class="i"><use href="#i-search"/></svg></span>
+            <div><b>Choose your PPT</b><small>Filter by class, subject &amp; language</small></div><em>1</em></li>
+          <li style="--c:#d500f9"><span class="cx-ic"><svg class="i"><use href="#i-card"/></svg></span>
+            <div><b>Pay securely</b><small>UPI, cards or net banking</small></div><em>2</em></li>
+          <li style="--c:#22c55e"><span class="cx-ic"><svg class="i"><use href="#i-cloud"/></svg></span>
+            <div><b>Download instantly</b><small>Editable .pptx on screen &amp; email</small></div><em>3</em></li>
+        </ol>
+
+        <div class="cx-cta">
+          <a href="ready-ppts.html" class="btn btn-ready cx-main" data-ui="rx_shop"><svg class="i"><use href="#i-cloud"/></svg> See Ready PPTs <svg class="i"><use href="#i-arrow"/></svg></a>
+          <a href="ready-ppts.html?type=notes" class="btn btn-ghost" data-ui="rx_notes"><svg class="i"><use href="#i-book"/></svg> Study Notes</a>
+        </div>
+        <div class="cx-chips"><span>✓ Class 1–12</span><span>✓ Hindi / English</span><span>✓ 100% Editable</span></div>
+      </div>
+
+      <div class="rx-right" aria-hidden="true">
+        <div class="rx-row"><div class="rx-run"><img src="uploads/themes/samples/dark-chalk-physics-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/formula-board-maths-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/kids-grammar-bright-2.webp" alt="" loading="lazy"><img src="uploads/themes/samples/green-chalkboard-biology-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/blue-red-gradient-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/hindi-marathon-pyq-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/dark-chalk-physics-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/formula-board-maths-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/kids-grammar-bright-2.webp" alt="" loading="lazy"><img src="uploads/themes/samples/green-chalkboard-biology-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/blue-red-gradient-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/hindi-marathon-pyq-1.webp" alt="" loading="lazy"></div></div>
+        <div class="rx-row rev"><div class="rx-run"><img src="uploads/themes/samples/light-paper-science-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/black-bilingual-questions-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/kids-grammar-purple-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/blackboard-theory-quiz-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/dark-bilingual-screenshot-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/formula-board-maths-2.webp" alt="" loading="lazy"><img src="uploads/themes/samples/light-paper-science-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/black-bilingual-questions-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/kids-grammar-purple-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/blackboard-theory-quiz-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/dark-bilingual-screenshot-1.webp" alt="" loading="lazy"><img src="uploads/themes/samples/formula-board-maths-2.webp" alt="" loading="lazy"></div></div>
+        <div class="cx-pop rx-pop1"><span class="dot"></span>Payment done ✓</div>
+        <div class="cx-pop rx-pop2">⬇ Downloading your PPT…</div>
+      </div>
+    </div>
   </div>
 </section>
 
