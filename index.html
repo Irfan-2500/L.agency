@@ -1196,7 +1196,18 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 .th-ft{display:none;align-items:center;gap:7px;flex:none;padding:10px 14px;border-radius:12px;font:inherit;font-size:.84rem;font-weight:700;color:var(--text);background:var(--card);border:1px solid var(--line2);cursor:pointer}
 .th-ft svg{width:15px;height:15px}
 .th-ft.on{border-color:#a855f7;box-shadow:0 0 0 2px rgba(139,44,255,.18)}
-.th-k12{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:.02em;color:var(--text);margin:0 0 14px}
+.th-k12{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:.02em;color:var(--text);margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.th-k12 small{font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--card2);color:var(--dim)}
+#thGrid.th-grid{display:block}
+.th-sec+.th-sec{margin-top:22px}
+/* Dark / Light: ek line, left-right swipe + apne aap dheere chalti rahe */
+.th-row{display:flex;gap:16px;overflow-x:auto;padding:4px 2px 18px;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab;-webkit-user-select:none;user-select:none}
+.th-row::-webkit-scrollbar{display:none}
+.th-row>.th-card{flex:0 0 calc((100% - 48px)/4);min-width:0}
+.th-row.dragging{cursor:grabbing}
+.th-row.dragging *{pointer-events:none}
+@media(max-width:1024px){.th-row>.th-card{flex-basis:calc((100% - 32px)/3)}}
+@media(max-width:760px){.th-row{gap:12px}.th-row>.th-card{flex-basis:62%}}
 html:not(.light) .th-search input{background:#151a2a;border:1.5px solid rgba(139,44,255,.55);color:#fff;box-shadow:0 8px 24px -12px rgba(139,44,255,.55)}
 html:not(.light) .th-search input::placeholder{color:#a7aec6}
 html:not(.light) .th-search svg{color:#c084fc}
@@ -1482,7 +1493,6 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
       <span class="tf-count" id="thCount"></span>
       <button type="button" id="thReset" hidden>↺ Reset</button>
     </div>
-    <div class="th-k12" id="thK12">K-12</div>
     <div class="th-q" id="thQ" hidden role="status"></div>
     <div class="th-grid" id="thGrid"></div>
     <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
@@ -2871,22 +2881,59 @@ function renderThemes(){
   $("#thReset").hidden = !active;
   const nAct = ["tone","type","lang","cls","subj"].filter(k => thState[k]).length;
   $("#thFc").textContent = nAct ? `(${nAct})` : "";
-  $("#thK12").hidden = !thList.length;
   const show = thList.slice(0, thState.shown), q = String(thState.q || "").trim();
   $("#thQ").hidden = !q;
   if (q) $("#thQ").innerHTML = `${icon("i-search","width:16px;height:16px")}<span><b>${thList.length}</b> theme${thList.length === 1 ? "" : "s"} for "<b>${esc(q)}</b>"</span><button type="button" onclick="onSearch('')">✕ Clear search</button>`;
-  $("#thGrid").innerHTML = show.length ? show.map((t,i) => `
+  const thCard = (t,i) => `
     <div class="th-card" role="button" tabindex="0" onclick="openTheme(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTheme(${i})}" aria-label="View ${esc(t.name)}">
       <div class="th-pic">${cardSlides(t)}<span class="zoom">🔍 View Theme</span></div>
       <div class="th-meta"><div class="th-name"><b>${esc(t.name)}</b><span class="th-views" data-vid="${esc(t.id)}" title="${(+t.views || 0).toLocaleString("en-IN")} views">${icon("i-eye","width:14px;height:14px")}<em>${fmtViews(t.views)}</em></span></div><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span></div></div>
       ${t.slides && t.slides.length > 1 ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${t.slides.length} slides</span>` : ""}
-    </div>`).join("")
+    </div>`;
+  const rows = [["🌙 Dark Theme", thList.map((t,i) => [t,i]).filter(x => x[0].tone !== "White")], ["☀️ Light Theme", thList.map((t,i) => [t,i]).filter(x => x[0].tone === "White")]].filter(r => r[1].length);
+  $("#thGrid").innerHTML = rows.length ? rows.map(([h, arr]) => `<div class="th-sec"><h3 class="th-k12">${h} <small>${arr.length}</small></h3><div class="th-row">${arr.map(([t,i]) => thCard(t,i)).join("")}</div></div>`).join("")
     : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>${String(thState.q||"").trim() ? `No theme found for "${esc(thState.q.trim())}". Try another word — or <a href="#custom" class="js-custom" style="color:var(--cyan)">request a custom PPT</a>.` : "No theme matches these filters. Try another combination."}</p></div>`;
-  const rem = thList.length - show.length;
-  $("#thMore").parentNode.style.display = rem > 0 ? "" : "none";
-  $("#thMore").innerHTML = `Show More Themes <span style="color:var(--dim);font-size:.8rem">(${rem} more)</span>`;
+  $("#thMore").parentNode.style.display = "none";
 }
 $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
+/* Theme lines: dheere-dheere left chalein; chhoone / mouse rakhne par ruk jaayein, mouse se kheench bhi sakein */
+(() => {
+  const S = new WeakMap(), st = r => S.get(r) || (S.set(r, { x: 0, pause: 0 }), S.get(r));
+  let T = 0;
+  (function tick(t){
+    const dt = T ? Math.min(t - T, 100) : 0; T = t;
+    if (!document.hidden && !reduceMotion) document.querySelectorAll("#thGrid .th-row").forEach(r => {
+      const o = st(r); if (Date.now() < o.pause || r.matches(":hover") || r.scrollWidth <= r.clientWidth + 2) return;
+      const b = r.getBoundingClientRect(); if (b.bottom < 0 || b.top > innerHeight) return;
+      if (Math.abs(o.x - r.scrollLeft) > 2) o.x = r.scrollLeft;
+      if (r.scrollLeft + r.clientWidth >= r.scrollWidth - 1) { o.x = 0; o.pause = Date.now() + 2500; r.scrollTo({ left: 0, behavior: "smooth" }); }
+      else { o.x += dt * 0.03; r.scrollLeft = o.x; }
+    });
+    requestAnimationFrame(tick);
+  })(0);
+  const g = $("#thGrid"); let drag = null;
+  ["touchstart", "wheel"].forEach(ev => g.addEventListener(ev, e => { const r = e.target.closest(".th-row"); if (r) st(r).pause = Date.now() + 4000; }, { passive: true }));
+  g.addEventListener("pointerdown", e => {
+    const r = e.target.closest(".th-row"); if (!r) return; st(r).pause = Date.now() + 4000;
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    drag = { r, x: e.clientX, left: r.scrollLeft, moved: false };
+  });
+  addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 6) return;
+    if (!drag.moved) { drag.moved = true; drag.r.classList.add("dragging"); }
+    drag.r.scrollLeft = drag.left - dx; st(drag.r).pause = Date.now() + 4000;
+  });
+  addEventListener("pointerup", () => {
+    if (!drag) return;
+    const { r, moved } = drag; drag = null;
+    if (!moved) return;
+    r.classList.remove("dragging");
+    const block = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    r.addEventListener("click", block, true); setTimeout(() => r.removeEventListener("click", block, true), 60);
+  });
+})();
 /* Filter dropdowns */
 function closeTf(){ document.querySelectorAll(".tf-dd.open").forEach(d => { d.classList.remove("open"); d.querySelector(".tf-btn").setAttribute("aria-expanded","false"); }); }
 document.querySelectorAll(".tf-btn").forEach(b => b.onclick = e => { e.stopPropagation(); const d = b.parentNode, was = d.classList.contains("open"); closeTf(); if (!was) { d.classList.add("open"); b.setAttribute("aria-expanded","true"); } });
