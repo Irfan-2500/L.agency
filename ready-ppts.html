@@ -284,6 +284,9 @@ html.light .kicker{color:#a16207;background:#fef9c3}
   .grid::-webkit-scrollbar{display:none}
   .grid>*:not(.empty){flex:0 0 78%;min-width:0;scroll-snap-align:start}
   .grid>.empty{flex:1 0 100%}
+  .grid{cursor:grab;-webkit-user-select:none;user-select:none}
+  .grid.dragging{cursor:grabbing;scroll-snap-type:none}
+  .grid.dragging *{pointer-events:none}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media(prefers-reduced-motion:reduce){.tk-run{white-space:normal}.tk-run span:nth-child(n+2),.tk-run span::after{display:none}}
@@ -675,6 +678,31 @@ setInterval(() => {
   else g.scrollBy({ left: c.offsetWidth + 12, behavior: "smooth" });
 }, 3000);
 ["touchstart", "pointerdown", "wheel"].forEach(ev => $("#grid").addEventListener(ev, () => { rowPause = Date.now() + 6000; }, { passive: true }));
+/* Mouse se bhi kheench kar cards khiska sakein (touch par browser khud karta hai) */
+(() => {
+  const g = $("#grid"); let drag = null;
+  g.addEventListener("pointerdown", e => {
+    if (e.pointerType !== "mouse" || e.button !== 0 || !rowMQ.matches) return;
+    drag = { x: e.clientX, left: g.scrollLeft, moved: false };
+  });
+  addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 6) return;
+    if (!drag.moved) { drag.moved = true; g.classList.add("dragging"); }
+    g.scrollLeft = drag.left - dx; rowPause = Date.now() + 6000;
+  });
+  addEventListener("pointerup", () => {
+    if (!drag) return;
+    const moved = drag.moved; drag = null;
+    if (!moved) return;
+    const c = g.firstElementChild, step = c ? c.offsetWidth + 12 : 1, left = g.scrollLeft;
+    g.classList.remove("dragging");
+    g.scrollLeft = left; g.scrollTo({ left: Math.round(left / step) * step, behavior: "smooth" });
+    const block = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    g.addEventListener("click", block, true); setTimeout(() => g.removeEventListener("click", block, true), 60);
+  });
+})();
 
 /* ---------- CART ---------- */
 function saveCart(){ try { localStorage.setItem("la_cart", JSON.stringify(cart)); } catch(e) {} render(); }
