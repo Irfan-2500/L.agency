@@ -1186,13 +1186,31 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 .th-pills button.on{color:#fff;background:linear-gradient(135deg,#8b2cff,#c026d3)}
 .th-pills button.on small{background:rgba(255,255,255,.24);color:#fff}
 .th-pills button.zero:not(.on){opacity:.45}
-.tf-count{font-size:.82rem;color:var(--dim);padding:0 4px}
+.tf-count{display:none}
+/* Themes: Ready PPTs jaisa search + Filters button + K-12 */
+.th-tools{display:flex;gap:10px;align-items:center;max-width:760px;margin:0 auto 12px}
+.th-search{flex:1;min-width:0;position:relative}
+.th-search input{width:100%;background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:11px 14px 11px 40px;font:inherit;font-size:.9rem;color:var(--text);outline:none}
+.th-search input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(139,44,255,.2)}
+.th-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--dim)}
+.th-ft{display:none;align-items:center;gap:7px;flex:none;padding:10px 14px;border-radius:12px;font:inherit;font-size:.84rem;font-weight:700;color:var(--text);background:var(--card);border:1px solid var(--line2);cursor:pointer}
+.th-ft svg{width:15px;height:15px}
+.th-ft.on{border-color:#a855f7;box-shadow:0 0 0 2px rgba(139,44,255,.18)}
+.th-k12{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:.02em;color:var(--text);margin:0 0 14px}
+html:not(.light) .th-search input{background:#151a2a;border:1.5px solid rgba(139,44,255,.55);color:#fff;box-shadow:0 8px 24px -12px rgba(139,44,255,.55)}
+html:not(.light) .th-search input::placeholder{color:#a7aec6}
+html:not(.light) .th-search svg{color:#c084fc}
+html.light .th-search input,html.light .th-ft{background:#fff}
 .tf-count b{color:var(--text)}
 #thReset{padding:9px 12px;border-radius:12px;font-size:.8rem;font-weight:700;color:var(--pink);background:transparent;border:1px dashed color-mix(in srgb,var(--pink) 50%,transparent)}
 #thReset:hover{background:color-mix(in srgb,var(--pink) 10%,transparent)}
 html.light .tf-btn{background:#fff}
 html.light .tf-btn.set b{color:#7c3aed}
 html.light .th-pills{background:#fff;box-shadow:0 20px 44px -16px rgba(60,30,140,.35)}
+@media(max-width:760px){
+  .th-ft{display:inline-flex}
+  .th-bar2:not(.open){display:none}
+}
 @media(max-width:640px){
   .th-bar2{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
   .th-bar2 .tf-dd{grid-column:span 2}
@@ -1451,7 +1469,11 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 <section class="section" id="themes" style="padding-top:10px">
   <div class="container">
     <div class="section-head reveal"><span class="eyebrow">Our Designs</span><h2>Choose Your <span class="grad-text">PPT Theme</span></h2><p>Pick a design you like. We'll make your PPT in it.</p></div>
-    <div class="th-bar2 reveal" role="group" aria-label="Filter themes">
+    <div class="th-tools reveal">
+      <label class="th-search"><svg class="i"><use href="#i-search"/></svg><input id="thSearch" type="search" placeholder="Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" aria-label="Search themes"></label>
+      <button type="button" class="th-ft" id="thFt" aria-expanded="false"><svg class="i"><use href="#i-sliders"/></svg>Filters <span id="thFc"></span></button>
+    </div>
+    <div class="th-bar2" id="thBar" role="group" aria-label="Filter themes">
       <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>🎓</i><span class="tf-k">Class</span><b data-cur="cls">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="cls" role="listbox"></div></div>
       <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>📖</i><span class="tf-k">Subject</span><b data-cur="subj">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="subj" role="listbox"></div></div>
       <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>🎨</i><span class="tf-k">Background</span><b data-cur="tone">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="tone" role="listbox"></div></div>
@@ -1460,6 +1482,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
       <span class="tf-count" id="thCount"></span>
       <button type="button" id="thReset" hidden>↺ Reset</button>
     </div>
+    <div class="th-k12" id="thK12">K-12</div>
     <div class="th-q" id="thQ" hidden role="status"></div>
     <div class="th-grid" id="thGrid"></div>
     <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
@@ -2202,7 +2225,7 @@ function renderGrid(){
 }
 $("#loadMore").onclick = () => { state.shown += CONFIG.perPage; renderGrid(); };
 function onSearch(v){
-  state.q=v; state.shown=CONFIG.perPage; if($("#gridSearch").value!==v)$("#gridSearch").value=v; if($("#topSearch").value!==v)$("#topSearch").value=v; renderGrid();
+  state.q=v; state.shown=CONFIG.perPage; if($("#gridSearch").value!==v)$("#gridSearch").value=v; if($("#topSearch").value!==v)$("#topSearch").value=v; if($("#thSearch").value!==v)$("#thSearch").value=v; renderGrid();
   // Themes bhi isi search se filter hote hain (website par abhi themes hi dikhte hain)
   thState.q = v; thState.shown = 12; renderThemes();
 }
@@ -2210,7 +2233,7 @@ function onSearch(v){
 function goToResults(){
   const sec = PRODUCTS.length && !$("#shop").hidden && filtered().length ? $("#shop") : $("#themes");
   if (sec.hidden) return;
-  const el = sec.id === "themes" ? sec.querySelector(".th-bar2") : sec;
+  const el = sec.id === "themes" ? sec.querySelector(".th-tools") : sec;
   scrollTo({ top: el.getBoundingClientRect().top + scrollY - 96, behavior:"smooth" });
 }
 let srchT;
@@ -2846,6 +2869,9 @@ function renderThemes(){
   const active = !!(thState.tone || thState.type || thState.lang || thState.cls || thState.subj);
   $("#thCount").innerHTML = `<b>${thList.length}</b> of ${THEMES.length} themes`;
   $("#thReset").hidden = !active;
+  const nAct = ["tone","type","lang","cls","subj"].filter(k => thState[k]).length;
+  $("#thFc").textContent = nAct ? `(${nAct})` : "";
+  $("#thK12").hidden = !thList.length;
   const show = thList.slice(0, thState.shown), q = String(thState.q || "").trim();
   $("#thQ").hidden = !q;
   if (q) $("#thQ").innerHTML = `${icon("i-search","width:16px;height:16px")}<span><b>${thList.length}</b> theme${thList.length === 1 ? "" : "s"} for "<b>${esc(q)}</b>"</span><button type="button" onclick="onSearch('')">✕ Clear search</button>`;
@@ -2866,6 +2892,8 @@ function closeTf(){ document.querySelectorAll(".tf-dd.open").forEach(d => { d.cl
 document.querySelectorAll(".tf-btn").forEach(b => b.onclick = e => { e.stopPropagation(); const d = b.parentNode, was = d.classList.contains("open"); closeTf(); if (!was) { d.classList.add("open"); b.setAttribute("aria-expanded","true"); } });
 document.addEventListener("click", e => { if (!e.target.closest(".tf-dd")) closeTf(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeTf(); });
+$("#thFt").onclick = () => { const o = $("#thBar").classList.toggle("open"); $("#thFt").classList.toggle("on", o); $("#thFt").setAttribute("aria-expanded", o); };
+$("#thSearch").oninput = e => onSearch(e.target.value);
 $("#thReset").onclick = () => { thState.tone = thState.type = thState.lang = thState.cls = thState.subj = ""; thState.shown = 12; renderThemes(); };
 let thIdx = 0, thSlide = 0;
 let lbTimer = null;
