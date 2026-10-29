@@ -2289,7 +2289,10 @@ document.addEventListener("click", async e => {
 
 /* ---------- MISC ---------- */
 let tt; function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("on"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("on"),2200); }
-$("#menuBtn").onclick = () => $("#navLinks").classList.toggle("open");
+$("#menuBtn").onclick = e => { e.stopPropagation(); $("#navLinks").classList.toggle("open"); };
+/* Mobile menu: bahar kahin bhi tap/click, kisi link par click ya Esc dabane par apne aap band */
+document.addEventListener("click", e => { const m = $("#navLinks"); if (m.classList.contains("open") && (!m.contains(e.target) || e.target.closest("a"))) m.classList.remove("open"); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("#navLinks").classList.remove("open"); });
 document.querySelectorAll("#navLinks a").forEach(a => a.onclick = () => $("#navLinks").classList.remove("open"));
 // reveal on scroll
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold:.12});
