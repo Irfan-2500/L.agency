@@ -110,6 +110,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .fsel select{background:transparent;border:0;outline:none;font-size:.86rem;font-weight:600;padding:1px 0;width:100%}
 .fsel select option{background:var(--card);color:var(--text)}
 .result{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 14px;color:var(--muted);font-size:.88rem;flex-wrap:wrap}
+#resultTxt{color:var(--text);font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:.02em}
 .clear{color:var(--cyan);font-weight:700;font-size:.85rem}
 
 /* ===== CARDS ===== */
@@ -277,6 +278,13 @@ html.light .kicker{color:#a16207;background:#fef9c3}
   .acts .btn{padding:8px 6px;font-size:.78rem}
 }
 @media(max-width:380px){.grid{grid-template-columns:1fr}}
+/* Phone: PPT cards ek line me, left-right swipe + apne aap aage chalte rahein */
+@media(max-width:600px){
+  .grid,.grid.notes{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding:4px 2px 24px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .grid::-webkit-scrollbar{display:none}
+  .grid>*:not(.empty){flex:0 0 78%;min-width:0;scroll-snap-align:start}
+  .grid>.empty{flex:1 0 100%}
+}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media(prefers-reduced-motion:reduce){.tk-run{white-space:normal}.tk-run span:nth-child(n+2),.tk-run span::after{display:none}}
 
@@ -649,7 +657,7 @@ function render(){
   const list = V.filter(p => matchC(p) && matchQ(p) && matchF(p)).sort(SORTS[st.sort]);
   const show = list.slice(0, st.shown);
   $("#grid").classList.toggle("notes", NOTES);
-  $("#resultTxt").textContent = V.length ? (NOTES ? `${list.length} Notes mile` : `${list.length} PPT${list.length === 1 ? "" : "s"} mili`) : "";
+  $("#resultTxt").textContent = V.length ? "K-12" : "";
   $("#grid").innerHTML = show.length ? show.map(card).join("")
     : NOTES ? `<div class="empty"><b>${V.length ? "Is filter mein koi Notes nahi mile" : "Notes jald aa rahe hain"}</b>Tab tak Ready PPTs dekhiye, ya WhatsApp par apne chapter ke notes maangiye. <button class="clear" type="button" onclick="setKind(false,true);render()">Ready PPTs dekhein →</button></div>`
     : `<div class="empty"><b>${V.length ? "Is filter mein koi PPT nahi mili" : "Ready PPTs jald aa rahi hain"}</b>Filter badal kar dekhiye, ya apni custom PPT banwaiye. <a class="clear" href="order.html">PPT Order Now →</a></div>`;
@@ -657,6 +665,16 @@ function render(){
   renderCart();
 }
 $("#more").onclick = () => { st.shown += CONFIG.perPage; render(); };
+/* Phone par cards har 3 sec me agle card par khisakte rahein; chhoone par 6 sec ruk jaayein */
+const rowMQ = matchMedia("(max-width:600px)");
+let rowPause = 0;
+setInterval(() => {
+  const g = $("#grid"), c = g.firstElementChild;
+  if (!rowMQ.matches || document.hidden || Date.now() < rowPause || !c || c.classList.contains("empty")) return;
+  if (g.scrollLeft + g.clientWidth >= g.scrollWidth - 4) g.scrollTo({ left: 0, behavior: "smooth" });
+  else g.scrollBy({ left: c.offsetWidth + 12, behavior: "smooth" });
+}, 3000);
+["touchstart", "pointerdown", "wheel"].forEach(ev => $("#grid").addEventListener(ev, () => { rowPause = Date.now() + 6000; }, { passive: true }));
 
 /* ---------- CART ---------- */
 function saveCart(){ try { localStorage.setItem("la_cart", JSON.stringify(cart)); } catch(e) {} render(); }
