@@ -84,7 +84,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .tk-run span{padding:6px 0}.tk-run span::after{content:"✦";margin:0 22px;color:var(--amber)}
 .ticker:hover .tk-run{animation-play-state:paused}
 @keyframes tk{to{transform:translateX(-50%)}}
-.perks{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:.78rem;color:var(--muted);font-weight:600}
+.perks{display:grid;grid-template-columns:repeat(2,minmax(0,max-content));gap:4px 18px;margin-top:6px;font-size:.78rem;color:var(--muted);font-weight:600}
 .perks span{display:inline-flex;align-items:center;gap:6px}
 .perks svg{color:var(--green);width:14px;height:14px}
 
@@ -336,8 +336,8 @@ html.light .kicker{color:#a16207;background:#fef9c3}
   <div class="perks" id="hPerks">
     <span><svg class="i"><use href="#i-check"/></svg>100% Editable .pptx</span>
     <span><svg class="i"><use href="#i-check"/></svg>Instant Download</span>
-    <span><svg class="i"><use href="#i-check"/></svg>UPI · Cards · Net Banking</span>
-    <span><svg class="i"><use href="#i-check"/></svg>Google Slides & Keynote</span>
+    <span><svg class="i"><use href="#i-check"/></svg>UPI Payment</span>
+    <span><svg class="i"><use href="#i-check"/></svg>High & Best Quality</span>
   </div>
   <div class="kind" role="tablist" aria-label="Kya dekhna hai"><button type="button" role="tab" data-kind="ppt">📊 Ready PPTs</button><button type="button" role="tab" data-kind="notes">📝 Study Notes</button></div>
 </section>
@@ -466,7 +466,7 @@ const VIEW = () => PRODUCTS.filter(p => isNote(p) === NOTES);
 const W = () => NOTES ? { one:"Notes", many:"Notes", all:"All Study Notes" } : { one:"PPT", many:"PPTs", all:"All PPTs" };
 const HERO = {
   ppt:{ kick:"Ready to Use PPT", title:`PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span>`, text:["Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.", "क्लास, विषय और भाषा से अपनी PPT चुनिए। पेमेंट होते ही एडिटेबल फाइल आपकी स्क्रीन और ईमेल पर।"],
-    perks:["100% Editable .pptx","Instant Download","UPI · Cards · Net Banking","Google Slides & Keynote"], q:"Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" },
+    perks:["100% Editable .pptx","Instant Download","UPI Payment","High & Best Quality"], q:"Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" },
   notes:{ kick:"Study Notes", title:`Har class aur exam ke <span class="grad-text">Study Notes</span>`, text:["Chapter-wise notes for school boards and competitive exams, in Hindi and English medium. A4 PDF, download right after payment.", "स्कूल बोर्ड और प्रतियोगी परीक्षाओं के अध्याय-वार नोट्स, हिंदी और इंग्लिश मीडियम में। A4 PDF, पेमेंट होते ही डाउनलोड करें।"],
     perks:["A4 size PDF (print ready)","Hindi & English Medium","Instant Download","Definitions, formulas, solved questions"], q:"Search: chapter, subject, class, exam… (e.g. Science, Class 10, SSC)" } };
 const SAMPLES = [1,2,3,4,5,6,7,8].map(n => `uploads/notes/sample-${n}.webp`);
