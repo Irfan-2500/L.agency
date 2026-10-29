@@ -1287,6 +1287,15 @@ html.light .hero-cta .btn-ghost{background:#fff;border-color:rgba(139,44,255,.35
   .section-head h2{font-size:clamp(1.35rem,6.6vw,1.9rem);line-height:1.2;margin-top:6px}
   .section-head p{font-size:.9rem;margin-top:8px}
 }
+
+/* Section headings: highlight — pill eyebrow, bold title, gradient shabd, neeche chhoti rangeen patti */
+.section-head .eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.3);font-weight:800}
+.section-head .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.section-head h2{font-weight:800;letter-spacing:-.01em}
+.section-head h2::after{content:"";display:block;width:64px;height:4px;border-radius:4px;margin:12px auto 0;background:linear-gradient(90deg,#8b2cff,#d500f9,#06b6d4)}
+.section-head p{font-weight:500;color:var(--text);opacity:.75}
+html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
+@media(max-width:600px){.section-head h2::after{width:48px;height:3px;margin-top:10px}}
 </style>
 </head>
 <body>
@@ -1419,7 +1428,7 @@ html.light .hero-cta .btn-ghost{background:#fff;border-color:rgba(139,44,255,.35
 <!-- ================= PPT THEMES ================= -->
 <section class="section" id="themes" style="padding-top:10px">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Our Designs</span><h2>Choose Your PPT Theme</h2><p>Pick a design you like. We'll make your PPT in it.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">Our Designs</span><h2>Choose Your <span class="grad-text">PPT Theme</span></h2><p>Pick a design you like. We'll make your PPT in it.</p></div>
     <div class="th-bar2 reveal" role="group" aria-label="Filter themes">
       <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>🎓</i><span class="tf-k">Class</span><b data-cur="cls">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="cls" role="listbox"></div></div>
       <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>📖</i><span class="tf-k">Subject</span><b data-cur="subj">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="subj" role="listbox"></div></div>
@@ -1446,7 +1455,7 @@ html.light .hero-cta .btn-ghost{background:#fff;border-color:rgba(139,44,255,.35
 <!-- ================= PRODUCTS ================= -->
 <section class="section" id="shop" style="padding-top:20px" hidden>
   <div class="container">
-    <div class="section-head reveal"><h2>Best-Selling Presentations</h2></div>
+    <div class="section-head reveal"><h2>Best-Selling <span class="grad-text">Presentations</span></h2></div>
     <div class="toolbar reveal">
       <label class="big-search">
         <svg class="i"><use href="#i-search"/></svg>
@@ -1508,7 +1517,7 @@ html.light .hero-cta .btn-ghost{background:#fff;border-color:rgba(139,44,255,.35
 <!-- ================= WHY US ================= -->
 <section class="section" id="why">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">The Lakshay Advantage</span><h2>Why Choose Lakshay Agency?</h2><p>Fast, affordable and fully editable PPTs, made the way you need.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">The Lakshay Advantage</span><h2>Why Choose <span class="grad-text">Lakshay Agency?</span></h2><p>Fast, affordable and fully editable PPTs, made the way you need.</p></div>
     <div class="feats" id="feats"></div>
   </div>
 </section>
@@ -1565,7 +1574,7 @@ html.light .hero-cta .btn-ghost{background:#fff;border-color:rgba(139,44,255,.35
 <!-- ================= FAQ ================= -->
 <section class="section" id="faq" style="background:var(--bg2)">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Got Questions?</span><h2>Frequently Asked Questions</h2><p>Everything you need to know about buying, editing and ordering custom PowerPoint decks.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">Got Questions?</span><h2>Frequently Asked <span class="grad-text">Questions</span></h2><p>Everything you need to know about buying, editing and ordering custom PowerPoint decks.</p></div>
     <div class="faq reveal" id="faqList"></div>
   </div>
 </section>
