@@ -418,8 +418,8 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
   <div class="m-box sm">
     <button class="close-x m-close" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
     <div id="payMain">
-      <h3 id="payTitle">Checkout</h3>
-      <div class="pay-items" id="payItems"></div>
+      <h3 id="payTitle" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Checkout</h3>
+      <div class="pay-items" id="payItems" hidden></div>
       <div class="pay-alert" id="payAlert" role="alert" hidden>⚠ Pehle apna <b>Name</b>, <b>Mobile number</b> aur <b>Email</b> bharein, tab QR aur payment khulega.</div>
       <form class="form" id="payForm" novalidate>
         <div class="row2">
