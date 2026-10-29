@@ -245,6 +245,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .apps button:disabled{opacity:.5;transform:none}
 .apps i{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:.9rem;color:#fff}
 .apps i svg{width:17px;height:17px}
+.apps i.logo{background:#fff;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.08)}.apps i.logo img{width:100%;height:100%;object-fit:cover;display:block}
 #upiBox{grid-template-columns:minmax(0,1fr)}
 #upiBox h4{font-size:.86rem;margin-bottom:8px}
 #upiBox .btn{white-space:normal;text-align:center}
@@ -815,9 +816,9 @@ function slide(d, abs){
 let payIds = [], payTotal = 0;
 const cleanPhone = v => v.replace(/\D/g,"").replace(/^(91|0)(?=\d{10}$)/,"");
 const APPS = [
-  { id:"phonepe", name:"PhonePe", ic:`<i style="background:#5f259f">${icon("b-phonepe")}</i>`, deep:"phonepe://pay", rzp:"phonepe" },
-  { id:"gpay", name:"Google Pay", ic:`<i style="background:#fff;color:#4285f4">${icon("b-gpay")}</i>`, deep:"tez://upi/pay", rzp:"google_pay" },
-  { id:"paytm", name:"Paytm", ic:`<i style="background:#00baf2">${icon("b-paytm")}</i>`, deep:"paytmmp://pay", rzp:"paytm" },
+  { id:"phonepe", name:"PhonePe", ic:`<i class="logo"><img src="uploads/brand/apps/phonepe.webp" alt="" width="28" height="28"></i>`, deep:"phonepe://pay", rzp:"phonepe" },
+  { id:"gpay", name:"Google Pay", ic:`<i class="logo"><img src="uploads/brand/apps/gpay.webp" alt="" width="28" height="28"></i>`, deep:"tez://upi/pay", rzp:"google_pay" },
+  { id:"paytm", name:"Paytm", ic:`<i class="logo"><img src="uploads/brand/apps/paytm.webp" alt="" width="28" height="28"></i>`, deep:"paytmmp://pay", rzp:"paytm" },
   { id:"other", name:"Other UPI", ic:`<i style="background:#22c55e">₹</i>`, deep:"upi://pay", rzp:"" }
 ];
 const isMobile = () => matchMedia("(pointer:coarse)").matches;
