@@ -1278,6 +1278,15 @@ html.light .qr-wrap{box-shadow:0 0 0 1px var(--line2),0 18px 40px -20px rgba(110
 .hero-cta .btn-ready .cta-tx b{font-size:1.02rem}
 @media(max-width:600px){.hero-cta{grid-template-columns:1fr;max-width:none}}
 html.light .hero-cta .btn-ghost{background:#fff;border-color:rgba(139,44,255,.35);box-shadow:0 6px 18px -10px rgba(60,30,120,.35)}
+
+/* Phone par section ki heading compact: ek line ka title, balanced subtitle, kam khaali jagah */
+.section-head h2,.section-head p{text-wrap:balance}
+@media(max-width:600px){
+  .section{padding:56px 0}
+  .section-head{margin-bottom:22px}
+  .section-head h2{font-size:clamp(1.35rem,6.6vw,1.9rem);line-height:1.2;margin-top:6px}
+  .section-head p{font-size:.9rem;margin-top:8px}
+}
 </style>
 </head>
 <body>
