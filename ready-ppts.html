@@ -74,7 +74,7 @@ header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 8
 html.light .kicker{color:#a16207;background:#fef9c3}
 .kicker i{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1s steps(2,start) infinite}
 @keyframes blink{to{visibility:hidden}}
-.hero h1{font-size:clamp(1.4rem,3vw,2.1rem);margin:0 0 4px;text-wrap:balance}
+.hero h1{font-size:clamp(1rem,3vw,2.1rem);margin:0 0 4px;white-space:nowrap}
 .ticker{display:flex;align-items:stretch;max-width:760px;margin-top:8px;border-radius:10px;overflow:hidden;background:linear-gradient(90deg,rgba(139,44,255,.16),rgba(6,182,212,.16));border:1px solid rgba(139,44,255,.35);font-size:.88rem;font-weight:600}
 .ticker b{flex:none;display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--grad);color:#fff;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase}
 .ticker b::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
@@ -513,10 +513,18 @@ function heroLines(list){
   const el = $("#hText"), one = list.map(t => `<span>${esc(t)}</span>`).join("");
   el.innerHTML = one + one; el.style.setProperty("--tk", Math.max(18, list.join("").length / 7) + "s");
 }
+/* Heading hamesha ek hi line mein: jagah kam ho to font apne aap chhota */
+function fitTitle(){
+  const el = $("#hTitle"); el.style.fontSize = "";
+  const w = el.parentElement.clientWidth, sw = el.scrollWidth;
+  if (sw > w) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * w / sw * 0.98) + "px";
+}
+addEventListener("resize", () => fitTitle());
+document.fonts && document.fonts.ready.then(() => fitTitle());
 function setKind(n, push){
   NOTES = n; st.cat = "all"; st.f = {}; st.shown = CONFIG.perPage;
   const h = HERO[n ? "notes" : "ppt"];
-  $("#hTitle").innerHTML = h.title; heroLines(h.text); $("#q").placeholder = h.q;
+  $("#hTitle").innerHTML = h.title; fitTitle(); heroLines(h.text); $("#q").placeholder = h.q;
   $("#hPerks").innerHTML = h.perks.map(t => `<span>${icon("i-check")}${esc(t)}</span>`).join("");
   document.querySelectorAll(".kind button").forEach(b => { const on = (b.dataset.kind === "notes") === n; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
   document.title = (n ? "Study Notes" : "Ready to Use PPTs") + " — Lakshay Agency";
