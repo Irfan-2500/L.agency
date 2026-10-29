@@ -1208,6 +1208,9 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 .rd-price{display:flex;align-items:center;gap:8px;font-size:.8rem}
 .rd-price b{font-size:1.05rem;color:var(--text)}.rd-price s{color:var(--dim)}.rd-price em{font-style:normal;font-weight:800;color:#16a34a}
 .rd-buy{margin-left:auto;width:36px;height:36px;display:grid;place-items:center;border-radius:10px;font-size:.78rem;font-weight:800;color:#1a1433;background:linear-gradient(135deg,#ffd166,#f59e0b);text-decoration:none;border:0;cursor:pointer;position:relative}
+@media(max-width:760px){.rd-price{gap:6px}.rd-price s{display:none}}
+.rd-price em{white-space:nowrap}
+.rd-dl{margin-left:6px;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4)}
 .rd-buy.in{color:#fff;background:linear-gradient(135deg,#22c55e,#16a34a)}
 .rd-buy.in::after{content:"✓";position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;display:grid;place-items:center;font-size:.6rem;color:#16a34a;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .th-all{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);border:0;box-shadow:0 6px 16px -8px rgba(139,44,255,.7)}
@@ -2940,7 +2943,7 @@ $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
       <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span></div>
       <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
         <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
-        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button></div></div>
+        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
       ${p.slides ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${+p.slides} slides</span>` : ""}
     </div>`; }).join("");
   $("#rdSec").hidden = false;
