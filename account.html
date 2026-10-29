@@ -109,6 +109,9 @@ input:focus-visible{outline:none}
 .theme-sw:not(.open) button:not([aria-checked="true"]){display:none}
 /* Theme sirf Home page par chuni jaati hai; baaki pages wahi theme follow karte hain */
 .theme-sw{display:none!important}
+.otp-note{display:inline-block;margin:6px 0 2px;padding:4px 10px;border-radius:9px;font-weight:800;color:#7c2d12;background:linear-gradient(135deg,#fde68a,#fbbf24);box-shadow:0 0 0 2px rgba(251,191,36,.35);animation:otpPulse 1.6s ease-in-out infinite;transform-origin:left center}
+@keyframes otpPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07);box-shadow:0 0 0 5px rgba(251,191,36,.25)}}
+@media(prefers-reduced-motion:reduce){.otp-note{animation:none}}
 </style>
 </head>
 <body>
@@ -152,7 +155,7 @@ input:focus-visible{outline:none}
   <!-- Login -->
   <section class="box" id="login" hidden>
     <span class="ic"><svg class="i"><use href="#i-user"/></svg></span>
-    <div><h1>My PPTs</h1><p>वही मोबाइल नंबर या ईमेल डालें जो PPT खरीदते समय भरा था। OTP आपके ईमेल पर आएगा।<span class="en">Use the mobile / email you bought with. OTP comes on email.</span></p></div>
+    <div><h1>My PPTs</h1><p>वही मोबाइल नंबर या ईमेल डालें जो PPT खरीदते समय भरा था। <b class="otp-note">📧 OTP आपके ईमेल पर आएगा।</b><span class="en">Use the mobile / email you bought with. OTP comes on email.</span></p></div>
     <form id="fPhone" novalidate style="display:grid;gap:14px">
       <label>Mobile Number / Email<input id="phone" type="text" maxlength="120" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Mobile no. or Email"></label>
       <input type="text" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
