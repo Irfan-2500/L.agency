@@ -193,6 +193,10 @@ form{gap:10px;margin-top:12px}
 .note{font-size:.68rem}
 .sr-label{font-size:.74rem!important;margin-bottom:3px!important}
 .hint-in{display:none;font-weight:500;color:var(--dim)}
+.ptype{width:100%;margin-bottom:8px;appearance:none;-webkit-appearance:none;background:var(--bg2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border:1px solid var(--line2);border-radius:10px;padding:9px 34px 9px 12px;font:inherit;font-size:.88rem;color:var(--text);outline:none;cursor:pointer}
+.ptype:focus{border-color:#c084fc;box-shadow:0 0 0 3px rgba(139,44,255,.22)}
+.ptype option{background:var(--card);color:var(--text)}
 /* Description: scrollbar nahi — likhte waqt box apne aap bada hota hai */
 .q textarea{overflow:hidden;resize:none;line-height:1.4}
 @media(max-width:480px){.hint-in{display:inline}}
@@ -268,13 +272,14 @@ form{gap:10px;margin-top:12px}
 
         <div class="q" id="q-desc">
           <span class="lbl">Which PPT do you need? <b>*</b></span>
-          <div class="chips" id="chips" role="group" aria-label="PPT type">
-            <button type="button" data-type="School / Class Education">🎓 School / Class</button>
-            <button type="button" data-type="College / University">🏫 College</button>
-            <button type="button" data-type="Business">💼 Business</button>
-            <button type="button" data-type="Competitive Exam">📝 Competitive Exam</button>
-            <button type="button" data-type="Other">✨ Other</button>
-          </div>
+          <select id="ptype" class="ptype" aria-label="PPT type">
+            <option value="">Chuniye: kis tarah ki PPT?</option>
+            <option value="School / Class Education">🎓 School / Class</option>
+            <option value="College / University">🏫 College</option>
+            <option value="Business">💼 Business</option>
+            <option value="Competitive Exam">📝 Competitive Exam</option>
+            <option value="Other">✨ Other</option>
+          </select>
           <label for="desc" class="sr-label" style="font-weight:600;color:var(--muted);font-size:.8rem">Short description <span class="hint-in">(topic, class, slides, language)</span></label>
           <textarea id="desc" name="desc" maxlength="1500" placeholder="e.g. Class 10 Science — Chapter 'Life Processes', 15 slides, Hindi + English"></textarea>
           <div class="err">Please write a few words about your PPT</div>
@@ -332,14 +337,8 @@ let theme = "";
 try { theme = (new URLSearchParams(location.search).get("theme") || "").slice(0, 80); } catch (e) {}
 if (theme) { $("#picked").hidden = false; $("#pickedName").textContent = theme; }
 
-// PPT type chips (optional)
-document.querySelectorAll("#chips button").forEach(b => b.onclick = () => {
-  const on = b.getAttribute("aria-pressed") === "true";
-  document.querySelectorAll("#chips button").forEach(x => x.setAttribute("aria-pressed", "false"));
-  b.setAttribute("aria-pressed", on ? "false" : "true");
-  type = on ? "" : b.dataset.type;
-  $("#q-desc").classList.remove("bad");
-});
+// PPT type list (optional)
+$("#ptype").onchange = e => { type = e.target.value; $("#q-desc").classList.remove("bad"); };
 $("#phone").oninput = e => { e.target.value = e.target.value.replace(/[^\d ]/g, ""); };
 ["name","phone","desc"].forEach(id => $("#"+id).addEventListener("input", e => e.target.closest(".q").classList.remove("bad")));
 
