@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>More Offerings — Lakshay Agency</title>
+<title>More Offerings — PPT Store</title>
 <script>
 (function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
 var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
 var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();
 </script>
-<meta name="description" content="Lakshay Agency — More Offerings: ready-to-use presentations, lecture recording, thumbnail design, study material, video editing and social media management for educators.">
+<meta name="description" content="PPT Store — More Offerings: ready-to-use presentations, lecture recording, thumbnail design, study material, video editing and social media management for educators.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -198,7 +198,7 @@ main section{margin-top:0}
   <header class="top">
     <a href="./" class="logo">
       <span class="logo-icon"><svg class="i" style="color:#c4b5fd"><use href="#i-layers"/></svg></span>
-      <span><b>LAKSHAY <span>AGENCY</span></b><small>PREMIUM PPT STORE</small></span>
+      <span><b>PPT <span>STORE</span></b><small>PREMIUM PRESENTATIONS</small></span>
     </a>
     <a href="./" class="back"><svg class="i"><use href="#i-left"/></svg><span>Back to Home</span></a>
   </header>
@@ -208,7 +208,7 @@ main section{margin-top:0}
   <main id="svc"></main>
 
   <footer class="foot">
-    <span>© <span id="year"></span> Lakshay Agency. All Rights Reserved.</span>
+    <span>© <span id="year"></span> PPT Store. All Rights Reserved.</span>
     <span><a href="./">Home</a> · <a href="about.html">About Us</a> · <a href="./#contact">Contact Us</a></span>
   </footer>
 </div>
@@ -268,10 +268,10 @@ function render() {
   const p = new URLSearchParams(location.search), id = p.get("s") || location.hash.slice(1);
   const s = SERVICES.find(x => x.id === id) || SERVICES[0];
   if (s.href) { location.replace(s.href); return; }   /* Study Notes = notes kharidne wala page */
-  document.title = s.name + " — Lakshay Agency";
+  document.title = s.name + " — PPT Store";
   $tabs.innerHTML = SERVICES.map(x => `<a href="${x.href || "service.html?s=" + x.id}" class="${x === s ? "on" : ""}" style="--c:${x.c}" ${x === s ? 'aria-current="page"' : ""}>${icon(x.icon)}<span>${esc(x.name)}</span></a>`).join("");
   const on = $tabs.querySelector(".on"); if (on) on.scrollIntoView({ block: "nearest", inline: "center" });
-  const msg = `Hi Lakshay Agency! I am interested in your "${s.name}" service. Please share the details.`;
+  const msg = `Hi PPT Store! I am interested in your "${s.name}" service. Please share the details.`;
   const others = SERVICES.filter(x => x !== s);
   $svc.innerHTML = `
     <section class="svc-hero" style="--c:${s.c}">
