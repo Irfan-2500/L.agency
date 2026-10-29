@@ -6,7 +6,7 @@
 <title>Lakshay Agency — Premium PowerPoint Store</title>
 <script>
 /* Theme: "system" (default) | "dark" | "light" — page dikhne se pehle lagta hai, taaki flash na ho */
-(function(){var m="system";try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+(function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
 var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
 var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();
 </script>
@@ -2897,7 +2897,7 @@ $("#thStage").addEventListener("mouseleave", () => { if ($("#themeModal").classL
   };
   apply(root.getAttribute("data-mode") || "system");
   document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => {
-    try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {}
+    try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {} window.name = "la_theme=" + b.dataset.mode;
     apply(b.dataset.mode); toast({dark:"🌙 Dark theme", light:"☀️ Light theme", system:"🖥️ System default"}[b.dataset.mode]);
   });
   (mq.addEventListener ? mq.addEventListener.bind(mq,"change") : mq.addListener.bind(mq))(() => { if (root.getAttribute("data-mode") === "system") apply("system"); });

@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Privacy Policy — Lakshay Agency</title>
-<script>(function(){var m="system";try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+<script>(function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
 var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
-document.documentElement.classList.toggle("light",l);})();</script>
+var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();</script>
 <style>
 :root{--bg:#07080c;--card:#0f121b;--line:rgba(255,255,255,.12);--text:#f4f5fb;--muted:#9aa1b8;--accent:#c084fc}
 html.light{--bg:#f7f7fb;--card:#fff;--line:rgba(0,0,0,.1);--text:#14151c;--muted:#5b6070;--accent:#7c3aed}

@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>More Offerings — Lakshay Agency</title>
 <script>
-(function(){var m="system";try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+(function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
 var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
-document.documentElement.classList.toggle("light",l);})();
+var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();
 </script>
 <meta name="description" content="Lakshay Agency — More Offerings: ready-to-use presentations, lecture recording, thumbnail design, study material, video editing and social media management for educators.">
 <link rel="preconnect" href="https://fonts.googleapis.com">

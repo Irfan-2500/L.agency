@@ -6,9 +6,9 @@
 <title>Ready to Use PPTs — Lakshay Agency</title>
 <script>
 /* Theme: homepage wali setting yahan bhi lagti hai */
-(function(){var m="system";try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+(function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
 var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
-document.documentElement.classList.toggle("light",l);})();
+var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();
 </script>
 <meta name="description" content="Ready to use, fully editable PowerPoint presentations. Filter by class, subject and language. Instant download after payment." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1063,7 +1063,7 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   const apply = m => { root.classList.toggle("light", m === "light" || (m === "system" && mq.matches)); root.setAttribute("data-mode", m);
     document.querySelectorAll(".theme-sw button").forEach(b => b.setAttribute("aria-checked", String(b.dataset.mode === m))); };
   apply(root.getAttribute("data-mode") || "system");
-  document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => { try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {} apply(b.dataset.mode); });
+  document.querySelectorAll(".theme-sw button").forEach(b => b.onclick = () => { try { localStorage.setItem("la_theme", b.dataset.mode); } catch(e) {} window.name = "la_theme=" + b.dataset.mode; apply(b.dataset.mode); });
   (mq.addEventListener ? mq.addEventListener.bind(mq,"change") : mq.addListener.bind(mq))(() => { if (root.getAttribute("data-mode") === "system") apply("system"); });
 })();
 </script>
