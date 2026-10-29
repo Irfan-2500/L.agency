@@ -289,6 +289,8 @@ html.light .kicker{color:#a16207;background:#fef9c3}
   .grid{cursor:grab;-webkit-user-select:none;user-select:none}
   .grid.dragging{cursor:grabbing}
   .grid.dragging *{pointer-events:none}
+  .grid>.card,.grid>.card:hover{box-shadow:none;transform:none}
+  .grid .sold{box-shadow:none}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media(prefers-reduced-motion:reduce){.tk-run{white-space:normal}.tk-run span:nth-child(n+2),.tk-run span::after{display:none}}
