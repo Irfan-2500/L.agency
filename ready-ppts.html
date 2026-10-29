@@ -91,7 +91,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 /* ===== FILTERS ===== */
 .toolbar{position:sticky;top:68px;z-index:30;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);padding:12px 0;border-bottom:1px solid var(--line)}
 .trow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.search{flex:1 1 260px;position:relative}
+.search{flex:1 1 160px;min-width:0;position:relative}
 .search input{width:100%;background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:11px 14px 11px 40px;font-size:.9rem;outline:none}
 .search input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,44,255,.2)}
 .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--dim)}
@@ -256,7 +256,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 
 @media(max-width:760px){
   .hidden-sm{display:none}
-  .ftoggle{display:inline-flex}
+  .ftoggle{display:inline-flex;flex:none}
   .filters{display:none}
   .ticker{font-size:.8rem}.ticker b{padding:6px 9px}
   .filters.open{display:grid;grid-template-columns:1fr 1fr}
