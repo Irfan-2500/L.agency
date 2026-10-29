@@ -1202,6 +1202,12 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 .th-sec+.th-sec{margin-top:22px}
 .th-sh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 .th-sh .th-k12{margin:0}
+#rdSec{margin-top:22px}
+@media(max-width:420px){.th-sh .th-k12{font-size:1.12rem;white-space:nowrap}.th-all{padding:6px 11px;font-size:.76rem}}
+.th-all{text-decoration:none}
+.rd-price{display:flex;align-items:center;gap:8px;font-size:.8rem}
+.rd-price b{font-size:1.05rem;color:var(--text)}.rd-price s{color:var(--dim)}.rd-price em{font-style:normal;font-weight:800;color:#16a34a}
+.rd-buy{margin-left:auto;padding:6px 12px;border-radius:9px;font-size:.78rem;font-weight:800;color:#1a1433;background:linear-gradient(135deg,#ffd166,#f59e0b);text-decoration:none}
 .th-all{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);border:0;box-shadow:0 6px 16px -8px rgba(139,44,255,.7)}
 .th-all span{transition:transform .2s}.th-all:hover span{transform:translateX(3px)}
 /* "View All" — saari themes ek alag page jaisi screen par */
@@ -1507,6 +1513,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
     </div>
     <div class="th-q" id="thQ" hidden role="status"></div>
     <div class="th-grid" id="thGrid"></div>
+    <div class="th-sec" id="rdSec" hidden><div class="th-sh"><h3 class="th-k12">📦 Ready to Use PPT <small id="rdN"></small></h3><a class="th-all" href="ready-ppts.html">View All <span>→</span></a></div><div class="th-row" id="rdRow"></div></div>
     <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
   </div>
 </section>
@@ -1921,6 +1928,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 </div>
 
 <script src="config.js"></script>
+<script src="catalog.js"></script>
 <script>
 /* =========================================================
    ⚙️ SETTINGS — sirf yahan apni details daalo
@@ -2916,6 +2924,24 @@ function renderThemes(){
   $("#thMore").parentNode.style.display = "none";
 }
 $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
+/* Ready to Use PPT: Ready PPTs page wali list (admin panel ki PPTs, warna built-in) ek line mein */
+(async function readyRow(){
+  let list = [];
+  const SCR = String((window.LA_CONFIG || {}).orderUrl || "").trim();
+  if (SCR) try { const j = await (await fetch(SCR + "?action=ppts", { cache:"no-store" })).json(); if (j.ok && j.products) list = j.products.map(p => ({ ...p, thumb:(p.previews || [])[0] || "" })); } catch(e) {}
+  if (!list.length && window.LA_CATALOG) list = LA_CATALOG.map(p => ({ ...p, thumb:`uploads/previews/demo-${p.slug}-1.webp` }));
+  if (!list.length) return;
+  $("#rdN").textContent = list.length;
+  $("#rdRow").innerHTML = list.map(p => { const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, u = "ready-ppts.html?q=" + encodeURIComponent(p.title).replace(/'/g, "%27");
+    return `<div class="th-card" role="link" tabindex="0" onclick="location.href='${u}'" onkeydown="if(event.key==='Enter')location.href='${u}'" aria-label="${esc(p.title)}">
+      <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span></div>
+      <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
+        <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()">Buy</a></div></div>
+      ${p.slides ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${+p.slides} slides</span>` : ""}
+    </div>`; }).join("");
+  $("#rdSec").hidden = false;
+})();
 /* View All: Dark ya Light ki saari themes alag page par (phone ka Back button bhi kaam kare) */
 function openThPage(tone, push){
   const arr = thList.map((t,i) => [t,i]).filter(x => (x[0].tone === "White") === (tone === "light"));
@@ -2934,7 +2960,7 @@ addEventListener("popstate", () => { if (history.state && history.state.thPage) 
   let T = 0;
   (function tick(t){
     const dt = T ? Math.min(t - T, 100) : 0; T = t;
-    if (!document.hidden && !reduceMotion) document.querySelectorAll("#thGrid .th-row").forEach(r => {
+    if (!document.hidden && !reduceMotion) document.querySelectorAll("#thGrid .th-row, #rdRow").forEach(r => {
       const o = st(r); if (Date.now() < o.pause || r.matches(":hover") || r.scrollWidth <= r.clientWidth + 2) return;
       const b = r.getBoundingClientRect(); if (b.bottom < 0 || b.top > innerHeight) return;
       if (Math.abs(o.x - r.scrollLeft) > 2) o.x = r.scrollLeft;
@@ -2943,13 +2969,13 @@ addEventListener("popstate", () => { if (history.state && history.state.thPage) 
     });
     requestAnimationFrame(tick);
   })(0);
-  const g = $("#thGrid"); let drag = null;
-  ["touchstart", "wheel"].forEach(ev => g.addEventListener(ev, e => { const r = e.target.closest(".th-row"); if (r) st(r).pause = Date.now() + 4000; }, { passive: true }));
-  g.addEventListener("pointerdown", e => {
+  let drag = null;
+  [$("#thGrid"), $("#rdRow")].forEach(g => ["touchstart", "wheel"].forEach(ev => g.addEventListener(ev, e => { const r = e.target.closest(".th-row"); if (r) st(r).pause = Date.now() + 4000; }, { passive: true })));
+  [$("#thGrid"), $("#rdRow")].forEach(g => g.addEventListener("pointerdown", e => {
     const r = e.target.closest(".th-row"); if (!r) return; st(r).pause = Date.now() + 4000;
     if (e.pointerType !== "mouse" || e.button !== 0) return;
     drag = { r, x: e.clientX, left: r.scrollLeft, moved: false };
-  });
+  }));
   addEventListener("pointermove", e => {
     if (!drag) return;
     const dx = e.clientX - drag.x;
