@@ -742,7 +742,8 @@ const APPS = [
   { id:"other", name:"Other UPI", ic:`<i style="background:#22c55e">₹</i>`, deep:"upi://pay", rzp:"" }
 ];
 const isMobile = () => matchMedia("(pointer:coarse)").matches;
-const payMode = () => PAY ? "rzp" : upiOn() ? "upi" : (!API && CONFIG.demoPay && PRODUCTS === DEMO) ? "demo" : "wa";
+/* Razorpay laga hai: UTR wala tareeka band. Razorpay band ho to WhatsApp par order */
+const payMode = () => PAY ? "rzp" : (!API && CONFIG.demoPay && PRODUCTS === DEMO) ? "demo" : "wa";
 const upiOn = () => !!(CONFIG.upi && (/^[\w.-]{2,}@[a-z][a-z0-9.]+$/i.test(CONFIG.upi.id || "") || CONFIG.upi.qr));
 const upiLink = (scheme, total) => `${scheme}?` + new URLSearchParams({ pa:CONFIG.upi.id, pn:CONFIG.upi.name || "Lakshay Agency", am:total.toFixed(2), cu:"INR", tn:"Lakshay PPT" }).toString().replace(/\+/g,"%20").replace(/%40/g,"@");
 
@@ -753,7 +754,7 @@ function openPay(ids){
   $("#payItems").innerHTML = items.map(p => `<div class="pi"><b>${esc(p.title)}</b><span>${inr(p.price)}</span></div>`).join("") + (items.length > 1 ? `<div class="pi tot"><span>Total</span><span>${inr(payTotal)}</span></div>` : "");
   const m = payMode(), u = CONFIG.upi || {}, hasId = /@/.test(u.id || ""), showApps = m !== "upi" || hasId;
   stopQr(); qrSt = { orderId:0, busy:false, timer:0 };
-  $("#upiBox").hidden = m === "wa"; $("#payWa").hidden = m !== "wa"; $("#utrWrap").hidden = m !== "upi" && m !== "demo"; $("#payUtr").value = "";
+  $("#upiBox").hidden = m === "wa"; $("#payWa").hidden = m !== "wa"; $("#utrWrap").hidden = true; $("#payUtr").value = "";
   $("#upiBox").innerHTML = m === "wa" ? "" : VPAY ? `<h4>PhonePe / Google Pay / Paytm se <b class="js-amt">${inr(payTotal)}</b> pay karein</h4>
     <div class="apps">${APPS.map(a => `<button type="button" data-app="${a.id}">${a.ic}${a.name}</button>`).join("")}</div>
     <button type="button" class="btn btn-gold pay-all" data-app="other">💳 Pay <span class="js-amt">${inr(payTotal)}</span> · Card / Netbanking</button>
