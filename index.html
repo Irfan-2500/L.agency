@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>PPT Store — Premium PowerPoint Presentations</title>
+<link rel="icon" type="image/png" href="uploads/brand/favicon.png"><link rel="apple-touch-icon" href="uploads/brand/apple-touch-icon.png">
 <script>
 /* Theme: "system" (default) | "dark" | "light" — page dikhne se pehle lagta hai, taaki flash na ho */
 (function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
@@ -60,6 +61,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.75);backdrop-fil
 .nav{display:flex;align-items:center;gap:20px;height:72px}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-icon{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;border:1.5px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--grad) border-box}
+@media(max-width:480px){.nav .logo small{white-space:nowrap;letter-spacing:.06em}}
 .logo b{font-family:'Space Grotesk';font-size:1.05rem;display:block;line-height:1}
 .logo small{font-size:.6rem;letter-spacing:.14em;color:var(--muted);font-weight:700}
 .search{flex:1;max-width:420px;position:relative}
@@ -1371,8 +1373,8 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 <header>
   <div class="container nav">
     <a href="#home" class="logo">
-      <span class="logo-icon"><svg class="i" style="color:#a78bfa"><use href="#i-layers"/></svg></span>
-      <span><b>PPT <span class="grad-text">STORE</span></b><small>PREMIUM PRESENTATIONS</small></span>
+      <img class="logo-img" src="uploads/brand/logo.webp" srcset="uploads/brand/logo.webp 1x, uploads/brand/logo-200.webp 2x" alt="PPT Store logo" width="101" height="44" style="height:44px;width:auto;display:block;flex:none">
+      <span><b>PPT <span class="grad-text">STORE</span></b><small>YOU TEACH, WE DESIGN</small></span>
     </a>
     <label class="search" data-ui="nav_search">
       <svg class="i"><use href="#i-search"/></svg>
@@ -1667,7 +1669,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
   <div class="container">
     <div class="f-grid">
       <div>
-        <a href="#home" class="logo"><span class="logo-icon"><svg class="i" style="color:#a78bfa"><use href="#i-layers"/></svg></span><span><b>PPT <span class="grad-text">STORE</span></b><small>PREMIUM PRESENTATIONS</small></span></a>
+        <a href="#home" class="logo"><img class="logo-img" src="uploads/brand/logo.webp" srcset="uploads/brand/logo.webp 1x, uploads/brand/logo-200.webp 2x" alt="PPT Store logo" width="101" height="44" style="height:44px;width:auto;display:block;flex:none"><span><b>PPT <span class="grad-text">STORE</span></b><small>YOU TEACH, WE DESIGN</small></span></a>
         <p>Empowering students, educators and business leaders with world-class PowerPoint presentations. Present better. Impress more.</p>
         <a class="btn btn-wa btn-sm wa-link" data-msg="Hi PPT Store!"><svg class="i"><use href="#i-msg"/></svg> WhatsApp Support</a>
       </div>
