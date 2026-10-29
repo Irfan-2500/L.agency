@@ -1207,7 +1207,9 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 .th-all{text-decoration:none}
 .rd-price{display:flex;align-items:center;gap:8px;font-size:.8rem}
 .rd-price b{font-size:1.05rem;color:var(--text)}.rd-price s{color:var(--dim)}.rd-price em{font-style:normal;font-weight:800;color:#16a34a}
-.rd-buy{margin-left:auto;width:36px;height:36px;display:grid;place-items:center;border-radius:10px;font-size:.78rem;font-weight:800;color:#1a1433;background:linear-gradient(135deg,#ffd166,#f59e0b);text-decoration:none}
+.rd-buy{margin-left:auto;width:36px;height:36px;display:grid;place-items:center;border-radius:10px;font-size:.78rem;font-weight:800;color:#1a1433;background:linear-gradient(135deg,#ffd166,#f59e0b);text-decoration:none;border:0;cursor:pointer;position:relative}
+.rd-buy.in{color:#fff;background:linear-gradient(135deg,#22c55e,#16a34a)}
+.rd-buy.in::after{content:"✓";position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;display:grid;place-items:center;font-size:.6rem;color:#16a34a;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .th-all{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);border:0;box-shadow:0 6px 16px -8px rgba(139,44,255,.7)}
 .th-all span{transition:transform .2s}.th-all:hover span{transform:translateX(3px)}
 /* "View All" — saari themes ek alag page jaisi screen par */
@@ -2938,11 +2940,12 @@ $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
       <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span></div>
       <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
         <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
-        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
+        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button></div></div>
       ${p.slides ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${+p.slides} slides</span>` : ""}
     </div>`; }).join("");
   $("#rdSec").hidden = false;
 })();
+function rdCart(id){ toggleCart(id); document.querySelectorAll(`.rd-buy[data-rid="${id}"]`).forEach(b => b.classList.toggle("in", cart.includes(id))); }
 /* View All: Dark ya Light ki saari themes alag page par (phone ka Back button bhi kaam kare) */
 function openThPage(tone, push){
   const arr = thList.map((t,i) => [t,i]).filter(x => (x[0].tone === "White") === (tone === "light"));
