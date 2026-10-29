@@ -182,7 +182,7 @@ input:focus-visible{outline:none}
 <script src="config.js"></script>
 <script>
 /* demo:true sirf preview ke liye: koi bhi number, OTP 123456 */
-const CONFIG = { demo:/\.(vercel\.app|github\.io)$/.test(location.hostname) };   /* PHP ke bina (Vercel) demo login */
+const CONFIG = { demo:/\.(vercel\.app|github\.io)$/.test(location.hostname) || !String((window.LA_CONFIG || {}).orderUrl || "").trim() };   /* server na ho (preview) to bhi demo login */   /* PHP ke bina (Vercel) demo login */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 /* Drive ka link seedha download wale link mein (mobile par Drive app / account chooser nahi khulta) */
