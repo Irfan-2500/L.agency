@@ -1847,6 +1847,45 @@ async function cleanPptx(file) {
   if (x === y) return file.arrayBuffer();
   z.file("[Content_Types].xml", y); return z.generateAsync({ type: "arraybuffer", compression: "STORE" });
 }
+// PPTX ki sirf shuru ki n slides wali chhoti copy (Google Slides mein badalne ke liye — badi file ki PDF nahi banti)
+async function trimPptx(file, n) {
+  const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(file);
+  const txt = p => z.file(p) ? z.file(p).async("string") : "";
+  const relPath = (relsFile, target) => {   // "ppt/slides/_rels/slide1.xml.rels" + "../media/a.png" → "ppt/media/a.png"
+    if (target.startsWith("/")) return target.slice(1);
+    const parts = relsFile.replace(/_rels\/[^/]+$/, "").split("/").filter(Boolean);
+    for (const t of target.split("/")) { if (t === "..") parts.pop(); else if (t !== ".") parts.push(t); }
+    return parts.join("/");
+  };
+  const pres = await txt("ppt/presentation.xml"), prel = await txt("ppt/_rels/presentation.xml.rels");
+  const ids = [...pres.matchAll(/<p:sldId\b[^>]*r:id="([^"]+)"[^>]*\/>/g)], drop = ids.slice(n).map(m => m[1]);
+  if (drop.length) {
+    const target = id => (new RegExp(`<Relationship\\b[^>]*Id="${id}"[^>]*>`).exec(prel) || [""])[0].replace(/^.*Target="([^"]+)".*$/, "$1");
+    drop.forEach(id => { const p = relPath("ppt/_rels/presentation.xml.rels", target(id)); z.remove(p); z.remove(p.replace(/([^/]+)$/, "_rels/$1.rels")); });
+    z.file("ppt/presentation.xml", pres.replace(/<p:sldId\b[^>]*r:id="([^"]+)"[^>]*\/>/g, (m, id) => drop.includes(id) ? "" : m));
+    z.file("ppt/_rels/presentation.xml.rels", prel.replace(/<Relationship\b[^>]*Id="([^"]+)"[^>]*\/>/g, (m, id) => drop.includes(id) ? "" : m));
+    // jo media / notes / chart ab kisi slide mein nahi, unhe bhi hatao (file chhoti)
+    const used = new Set();
+    for (const r of Object.keys(z.files).filter(k => k.endsWith(".rels")))
+      for (const m of (await txt(r)).matchAll(/Target="([^"]+)"/g)) used.add(relPath(r, m[1]));
+    Object.keys(z.files).filter(k => /^ppt\/(media|notesSlides|charts|embeddings)\/[^/]+$/.test(k) && !used.has(k))
+      .forEach(k => { z.remove(k); z.remove(k.replace(/([^/]+)$/, "_rels/$1.rels")); });
+  }
+  const ct = await txt("[Content_Types].xml");
+  z.file("[Content_Types].xml", ct.replace(/<Override[^>]*PartName="\/([^"]+)"[^>]*\/>/g, (m, p) => z.files[p] ? m : ""));
+  return z.generateAsync({ type: "blob", compression: "DEFLATE", mimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation" });
+}
+// PPTX ki asli jaisi photo: chhoti copy Drive par → Google Slides PDF banata hai → PDF ke pages ki photo
+async function slidesShots(file, set) {
+  const b = await trimPptx(file, PV_AUTO), tmp = new File([b], "preview-src-" + Date.now() + ".pptx", { type: b.type }), key = "tmp-" + Date.now();
+  set("Photo ke liye bhej rahe…", 0);
+  const src = await sendFile(tmp, pc => set(`Photo ke liye bhej rahe ${pc}%`, pc), { key }); dropJob({ key });
+  set("Google Slides se photo ban rahi…", null);
+  const r = await call("adminPptThumbs", { src });
+  if (!r.ok) throw new Error(r.error);
+  const pdf = new File([Uint8Array.from(atob(r.pdf), c => c.charCodeAt(0))], file.name.replace(/\.\w+$/, "") + ".pdf", { type: "application/pdf" });
+  return (await pdfShots(pdf, null, t => set(t, null))).refs;
+}
 // PPTX ki saari slides ki photo (background job mein)
 async function pptxShots(file, count, tick, each) {
   const refs = [], host = document.createElement("div"); host.style.cssText = "position:fixed;left:-20000px;top:0;width:1280px;pointer-events:none";
@@ -1908,11 +1947,6 @@ async function runJob(j) {
   const p = j.pe, set = (msg, prog) => { j.msg = msg; j.prog = prog; drawUQ(); };
   let f = j.file;
   try {
-    if (!f && j.pv && /\.pptx$/i.test(p.fileName)) {   // pehle Google Slides se (file laane ki zaroorat nahi)
-      set("Google Slides se photo ban rahi…", null);
-      const t = await call("adminPptThumbs", { file: p.file, n: PV_AUTO, name: p.fileName.replace(/\.\w+$/, "") });
-      if (t.ok && t.refs.length) { p.refs = t.refs; f = { name: p.fileName }; }
-    }
     if (!f && j.pv) f = j.file = await fetchFile(p, set);
     if (j.auto && !j.metaDone && /\.pptx$/i.test(f.name)) {   // ZIP wali PPT: naam, slides, class wagaira apne aap
       set("PPT padh rahe hain…", null);
@@ -1929,9 +1963,8 @@ async function runJob(j) {
       set("Photo ban rahi…", null);
       if (/\.pdf$/i.test(f.name)) { const r = await pdfShots(f, j.pages, t => set(t, null)); p.refs = r.refs; p.slides = p.slides || r.count; }
       else {
-        set("Google Slides se photo ban rahi…", null);
-        const t = await call("adminPptThumbs", { file: p.file, n: PV_AUTO, name: f.name.replace(/\.\w+$/, "") });
-        p.refs = t.ok && t.refs.length ? t.refs : await pptxShots(f, PV_AUTO, t => set(t, null));
+        try { p.refs = await slidesShots(f, set); } catch (e) { console.error(e); }
+        if (!p.refs.length) p.refs = await pptxShots(f, PV_AUTO, t => set(t, null));
       }
       keepJob(j);
     }
