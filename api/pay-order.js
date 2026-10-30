@@ -17,6 +17,6 @@ module.exports = async (req, res) => {
   try {
     const o = await rzp("orders", { amount, currency: "INR", receipt: "la_" + Date.now(),
       notes: { items: items.map(p => p.id).join(","), name, email, phone } });
-    send(res, 200, { ok: true, key: KEY_ID, amount, rzpOrderId: o.id, name: "Lakshay Agency", prefill: { name, email, contact: phone } });
+    send(res, 200, { ok: true, key: KEY_ID, amount, rzpOrderId: o.id, name: "PPT Store", prefill: { name, email, contact: phone } });
   } catch (e) { send(res, 502, { ok: false, error: "Payment shuru nahi hua: " + e.message }); }
 };

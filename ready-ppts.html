@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ready to Use PPTs — Lakshay Agency</title>
+<title>Ready to Use PPTs — PPT Store</title>
+<link rel="icon" type="image/png" href="uploads/brand/favicon.png"><link rel="apple-touch-icon" href="uploads/brand/apple-touch-icon.png">
 <script>
 /* Theme: homepage wali setting yahan bhi lagti hai */
 (function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
@@ -244,6 +245,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .apps button:disabled{opacity:.5;transform:none}
 .apps i{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:.9rem;color:#fff}
 .apps i svg{width:17px;height:17px}
+.apps i.logo{background:#fff;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.08)}.apps i.logo img{width:100%;height:100%;object-fit:cover;display:block}
 #upiBox{grid-template-columns:minmax(0,1fr)}
 #upiBox h4{font-size:.86rem;margin-bottom:8px}
 #upiBox .btn{white-space:normal;text-align:center}
@@ -347,9 +349,9 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 
 <header>
   <div class="container nav">
-    <a href="index.html" class="logo" aria-label="Lakshay Agency home">
-      <span class="logo-icon"><svg class="i" style="color:#c084fc"><use href="#i-layers"/></svg></span>
-      <span><b>LAKSHAY <span class="grad-text">AGENCY</span></b><small>PREMIUM PPT STORE</small></span>
+    <a href="index.html" class="logo" aria-label="PPT Store home">
+      <img class="logo-img" src="uploads/brand/logo.webp" srcset="uploads/brand/logo.webp 1x, uploads/brand/logo-200.webp 2x" alt="PPT Store logo" width="50" height="22" style="height:22px;width:auto;display:block;flex:none">
+      <span><b>PPT <span class="grad-text">STORE</span></b><small>YOU TEACH, WE DESIGN</small></span>
     </a>
     <a href="index.html" class="back"><svg class="i" style="width:16px"><use href="#i-left"/></svg><span class="hidden-sm">Back to Home</span></a>
     <div class="theme-sw" role="radiogroup" aria-label="Website theme">
@@ -372,7 +374,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
     <span><svg class="i"><use href="#i-check"/></svg>UPI Payment</span>
     <span><svg class="i"><use href="#i-check"/></svg>High & Best Quality</span>
   </div>
-  <div class="kind" role="tablist" aria-label="Kya dekhna hai"><button type="button" role="tab" data-kind="ppt">📊 Ready PPTs</button><button type="button" role="tab" data-kind="notes">📝 Study Notes</button></div>
+  <div class="kind" role="tablist" aria-label="Kya dekhna hai"><button type="button" role="tab" data-kind="ppt">📊 Ready PPTs</button><button type="button" role="tab" data-kind="notes">📝 PDF Study Notes</button></div>
 </section>
 <section class="samples" id="samples" hidden aria-label="Sample slides aur pages"><div class="s-track" id="sTrack"></div></section>
 
@@ -416,8 +418,8 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
   <div class="m-box sm">
     <button class="close-x m-close" data-close aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
     <div id="payMain">
-      <h3 id="payTitle">Checkout</h3>
-      <div class="pay-items" id="payItems"></div>
+      <h3 id="payTitle" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Checkout</h3>
+      <div class="pay-items" id="payItems" hidden></div>
       <div class="pay-alert" id="payAlert" role="alert" hidden>⚠ Pehle apna <b>Name</b>, <b>Mobile number</b> aur <b>Email</b> bharein, tab QR aur payment khulega.</div>
       <form class="form" id="payForm" novalidate>
         <div class="row2">
@@ -569,7 +571,7 @@ function setKind(n, push){
   $("#hTitle").innerHTML = h.title; fitTitle(); heroLines(h.text); $("#q").placeholder = h.q;
   $("#hPerks").innerHTML = h.perks.map(t => `<span>${icon("i-check")}${esc(t)}</span>`).join("");
   document.querySelectorAll(".kind button").forEach(b => { const on = (b.dataset.kind === "notes") === n; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
-  document.title = (n ? "Study Notes" : "Ready to Use PPTs") + " — Lakshay Agency";
+  document.title = (n ? "Study Notes" : "Ready to Use PPTs") + " — PPT Store";
   drawSamples();
   $("#more").textContent = `Load more ${W().many}`;
   /* URL saaf: page dobara khulne / refresh par hamesha Ready PPTs hi khule */
@@ -814,9 +816,9 @@ function slide(d, abs){
 let payIds = [], payTotal = 0;
 const cleanPhone = v => v.replace(/\D/g,"").replace(/^(91|0)(?=\d{10}$)/,"");
 const APPS = [
-  { id:"phonepe", name:"PhonePe", ic:`<i style="background:#5f259f">${icon("b-phonepe")}</i>`, deep:"phonepe://pay", rzp:"phonepe" },
-  { id:"gpay", name:"Google Pay", ic:`<i style="background:#fff;color:#4285f4">${icon("b-gpay")}</i>`, deep:"tez://upi/pay", rzp:"google_pay" },
-  { id:"paytm", name:"Paytm", ic:`<i style="background:#00baf2">${icon("b-paytm")}</i>`, deep:"paytmmp://pay", rzp:"paytm" },
+  { id:"phonepe", name:"PhonePe", ic:`<i class="logo"><img src="uploads/brand/apps/phonepe.webp" alt="" width="28" height="28"></i>`, deep:"phonepe://pay", rzp:"phonepe" },
+  { id:"gpay", name:"Google Pay", ic:`<i class="logo"><img src="uploads/brand/apps/gpay.webp" alt="" width="28" height="28"></i>`, deep:"tez://upi/pay", rzp:"google_pay" },
+  { id:"paytm", name:"Paytm", ic:`<i class="logo"><img src="uploads/brand/apps/paytm.webp" alt="" width="28" height="28"></i>`, deep:"paytmmp://pay", rzp:"paytm" },
   { id:"other", name:"Other UPI", ic:`<i style="background:#22c55e">₹</i>`, deep:"upi://pay", rzp:"" }
 ];
 const isMobile = () => matchMedia("(pointer:coarse)").matches;
@@ -839,18 +841,17 @@ function openPay(ids){
     ${hasId ? `<div class="or">ya hamara UPI QR scan karein</div>
     <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg"></div>
       <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
-    <div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed <b class="js-amt">${inr(payTotal)}</b></div>` : ""}` : `<h4>QR scan karke <b>${inr(payTotal)}</b> pay karein</h4>
+    <div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed <b class="js-amt">${inr(payTotal)}</b></div>` : ""}` : `
     <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg">${(!hasId && u.qr) ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""}</div>
       <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
     ${m === "rzp" ? `<div class="live" id="qrLive" hidden>● Payment ka intezaar… pay hote hi download khulega</div>` : hasId ? `<div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed ${inr(payTotal)}</div>` : ""}
-    ${m === "demo" && window.claude ? `<button type="button" class="note" id="demoQrPaid" style="text-decoration:underline">(Demo) QR se payment ho gaya maan lo</button>` : ""}
     ${showApps ? `<div class="or">ya app se pay karein</div>
     <div class="apps">${APPS.map(a => `<button type="button" data-app="${a.id}">${a.ic}${a.name}</button>`).join("")}</div>` : ""}`;
   /* rzp: asli QR details ke baad banta hai, tab tak blur ke peeche ek namuna QR */
   if (VPAY && hasId) drawUpiQr();
   if (!VPAY && (hasId || m === "rzp")) loadQR().then(() => { if (qrSt.orderId) return; const q = qrcode(0, "M"); q.addData(hasId ? upiLink("upi://pay", payTotal) : location.origin + "/ready-ppts.html"); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:"UPI QR code" }); })
     .catch(() => { $("#qrImg").innerHTML = u.qr ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""; });
-  $("#payNote").textContent = { rzp: VPAY && hasId ? "🔒 Upar ke buttons (Razorpay) se pay karne par PPT turant yahin download hogi." : "🔒 Razorpay se safe payment. Amount fixed hai, payment hote hi PPT yahin download hogi.", demo:"Demo: asli paisa nahi katega.",
+  $("#payNote").textContent = { rzp: VPAY && hasId ? "🔒 Upar ke buttons (Razorpay) se pay karne par PPT turant yahin download hogi." : "🔒 Razorpay se safe payment. Amount fixed hai, payment hote hi PPT yahin download hogi.", demo:"",
     upi: !API ? "Pay karke UTR (12 digit) daalein. Payment check hone ke baad hi PPT milegi." : CONFIG.upiInstant ? "UTR daalte hi PPT yahin download ho jayegi." : "Payment check hone ke baad download link Email par aayega aur My PPTs mein khulega (10–30 min).", wa:"Online payment jald shuru hoga. Abhi WhatsApp par order karein." }[m];
   $("#payMain").hidden = false; $("#payDone").hidden = true;
   try { const s = JSON.parse(localStorage.getItem("la_buyer") || "{}"); ["payName","payEmail","payPhone"].forEach(k => { if (s[k] && !$("#"+k).value) $("#"+k).value = s[k]; }); } catch(e) {}
@@ -1029,7 +1030,7 @@ $("#utrBtn").onclick = async () => {
 function checking(d, orderId, utr){
   cart = cart.filter(id => !payIds.includes(id)); saveCart();
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id));
-  const msg = `Hi Lakshay Agency! Maine UPI se payment kar diya hai.\n${orderId ? `Order #${orderId}\n` : ""}${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\nUTR: ${utr}\nEmail: ${d.email}`;
+  const msg = `Hi PPT Store! Maine UPI se payment kar diya hai.\n${orderId ? `Order #${orderId}\n` : ""}${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\nUTR: ${utr}\nEmail: ${d.email}`;
   $("#payMain").hidden = true; $("#payDone").hidden = false;
   $("#payDone").innerHTML = `<div class="tick" style="background:rgba(245,158,11,.15);color:#f59e0b">⏳</div><h3>पेमेंट चेक हो रहा है 🙏</h3>
     <p style="color:var(--muted)">${orderId ? `Order #${orderId} · ` : ""}UTR <b>${esc(utr)}</b><br>${orderId ? `पेमेंट मिलते ही PPT का download link <b>${esc(d.email)}</b> पर आ जाएगा और <b>My PPTs</b> में download खुल जाएगा (आमतौर पर 10–30 मिनट)।` : `नीचे बटन से WhatsApp पर UTR भेजें। हमारे खाते में पेमेंट आया है, यह check करके PPT <b>${esc(d.email)}</b> / WhatsApp पर भेजी जाएगी।`}<br><small style="color:var(--dim)">We'll verify your payment, then send the download link.</small></p>
@@ -1040,7 +1041,7 @@ function checking(d, orderId, utr){
 $("#payWa").onclick = () => {
   const d = buyer(); if (!d) return;
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id));
-  window.open(waURL(`Hi Lakshay Agency! Mujhe ye Ready PPT${items.length > 1 ? "s" : ""} chahiye:\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\n\nEmail: ${d.email}\nPhone: ${d.phone}`), "_blank");
+  window.open(waURL(`Hi PPT Store! Mujhe ye Ready PPT${items.length > 1 ? "s" : ""} chahiye:\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\n\nEmail: ${d.email}\nPhone: ${d.phone}`), "_blank");
 };
 
 let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 2200); }

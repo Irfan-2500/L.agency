@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Order Your PPT — Lakshay Agency</title>
+<title>Order Your PPT — PPT Store</title>
+<link rel="icon" type="image/png" href="uploads/brand/favicon.png"><link rel="apple-touch-icon" href="uploads/brand/apple-touch-icon.png">
 <script>
 (function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
 var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
 var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();
 </script>
-<meta name="description" content="Order your PPT from Lakshay Agency. 1 Hour. Your PPT. Ready!">
+<meta name="description" content="Order your PPT from PPT Store. 1 Hour. Your PPT. Ready!">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Hind:wght@500;600;700&display=swap" rel="stylesheet">
@@ -204,7 +205,9 @@ form{gap:10px;margin-top:12px}
 .chips button{flex:none}
 .q .drop{padding:8px 10px}
 .drop small{font-size:.64rem;line-height:1.3}
-.ftypes{width:100%;flex-wrap:nowrap;gap:3px}.ftypes span{white-space:nowrap;padding:2px 5px}
+.ftypes i{font-style:normal;margin-right:3px}
+/* Phone: 6 chhote box barabar jagah mein, box ke bahar na jaayein */
+@media(max-width:480px){.ftypes{display:grid;width:100%;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px}.ftypes span{min-width:0;text-align:center;white-space:nowrap;overflow:hidden;padding:2px 0}.ftypes i{display:none}}
 @media(max-width:480px){.card{padding:12px 12px 10px}.top{padding-bottom:8px}.logo-icon{width:34px;height:34px}h1{margin-top:6px}form{gap:8px;margin-top:8px}.hint{display:none}.q textarea{min-height:58px;height:58px}}
 @media(max-width:360px){.row2{grid-template-columns:1fr}}   /* chhupi cheez hamesha chhupi rahe */
 
@@ -239,8 +242,8 @@ form{gap:10px;margin-top:12px}
 <div class="wrap">
   <header class="top">
     <a href="./" class="logo">
-      <span class="logo-icon"><svg class="i" style="color:#c4b5fd"><use href="#i-layers"/></svg></span>
-      <span><b>LAKSHAY <span>AGENCY</span></b><small>PREMIUM PPT STORE</small></span>
+      <img class="logo-img" src="uploads/brand/logo.webp" srcset="uploads/brand/logo.webp 1x, uploads/brand/logo-200.webp 2x" alt="PPT Store logo" width="50" height="22" style="height:22px;width:auto;display:block;flex:none">
+      <span><b>PPT <span>STORE</span></b><small>YOU TEACH, WE DESIGN</small></span>
     </a>
     <a href="./" class="back"><svg class="i"><use href="#i-left"/></svg><span>Back to Home</span></a>
     <div class="theme-sw" role="radiogroup" aria-label="Website theme">
@@ -255,6 +258,7 @@ form{gap:10px;margin-top:12px}
       <span class="badge"><svg class="i"><use href="#i-zap"/></svg>India's Fastest PPT Services</span>
       <h1><span class="hl">1 Hour.</span> Your PPT. <span class="rd">Ready!</span></h1>
       <p class="hi" lang="hi">सिर्फ <b>1 घंटे</b> में आपकी PPT तैयार!</p>
+      <div style="margin:8px 0 2px"><button type="button" class="hv-btn"><i>▶</i>Order kaise karein? <small>Video dekhein</small></button></div>
 
       <form id="orderForm" novalidate>
         <div class="picked" id="picked" hidden>🎨 Selected theme: <b id="pickedName"></b> <a href="./#themes">Change</a></div>
@@ -276,7 +280,7 @@ form{gap:10px;margin-top:12px}
           <span class="lbl">Which PPT do you need? <b>*</b></span>
           <select id="ptype" class="ptype" aria-label="PPT type">
             <option value="">Chuniye: kis tarah ki PPT?</option>
-            <option value="School / Class Education">🎓 School / Class</option>
+            <option value="School / Class Education" selected>🎓 School / Class</option>
             <option value="College / University">🏫 College</option>
             <option value="Business">💼 Business</option>
             <option value="Competitive Exam">📝 Competitive Exam</option>
@@ -294,7 +298,7 @@ form{gap:10px;margin-top:12px}
             <svg class="i"><use href="#i-upload"/></svg>
             <b>Click to upload or drag &amp; drop</b>
             <small>Upload Images, PDF, Docs, Word, Excel, ZIP etc. · Max 1 GB per file · up to 5 files</small>
-            <span class="ftypes"><span>🖼️ Images</span><span>📄 PDF</span><span>📝 Word</span><span>📊 Excel</span><span>📽️ PPT</span><span>🗜️ ZIP</span></span>
+            <span class="ftypes"><span><i>🖼️</i>Images</span><span><i>📄</i>PDF</span><span><i>📝</i>Word</span><span><i>📊</i>Excel</span><span><i>📽️</i>PPT</span><span><i>🗜️</i>ZIP</span></span>
           </label>
           <input type="file" id="files" multiple hidden accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx,.txt,.zip,.rar,.7z">
           <p class="ferr" id="fileErr" role="alert"></p>
@@ -333,7 +337,7 @@ form{gap:10px;margin-top:12px}
 </script>
 <script>
 const $ = s => document.querySelector(s);
-let type = "";
+let type = "School / Class Education";   /* School pehle se chuna hua */
 // Themes gallery se "Order in This Theme" dabaya ho toh theme ka naam aata hai
 let theme = "";
 try { theme = (new URLSearchParams(location.search).get("theme") || "").slice(0, 80); } catch (e) {}
@@ -631,5 +635,33 @@ document.addEventListener("click", e => {
 }, true);
 </script>
 <script src="js/track.js" defer></script>
+<!-- "Kaise order karein" video (phone view) -->
+<style>
+.hv-btn{display:inline-flex;align-items:center;gap:9px;padding:7px 14px 7px 7px;border-radius:99px;font:inherit;font-size:.86rem;font-weight:700;cursor:pointer;color:inherit;background:var(--card2,#f1effa);border:1px solid rgba(139,44,255,.4)}
+.hv-btn:hover{border-color:#8b2cff;box-shadow:0 6px 18px -8px rgba(139,44,255,.6)}
+.hv-btn i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:.7rem;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);box-shadow:0 0 0 4px rgba(139,44,255,.15)}
+.hv-btn small{font-weight:600;opacity:.65;font-size:.74rem}
+.hv-pop{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:16px;background:rgba(5,6,12,.78);backdrop-filter:blur(6px)}
+.hv-pop[hidden]{display:none}
+.hv-box{position:relative;width:min(340px,100%);max-height:calc(100vh - 32px);aspect-ratio:540/1170;border-radius:26px;overflow:hidden;background:#000;border:6px solid #16131f;box-shadow:0 30px 70px -20px rgba(0,0,0,.7)}
+.hv-box video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
+.hv-x{position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.6);color:#fff;font-size:1.3rem;line-height:1;cursor:pointer}
+</style>
+<div class="hv-pop" id="hvPop" hidden role="dialog" aria-modal="true" aria-label="PPT order kaise karein — video">
+  <div class="hv-box"><button type="button" class="hv-x" id="hvX" aria-label="Close">×</button>
+    <video id="hvVid" src="videos/how-to-order.mp4" poster="videos/how-to-order.jpg" controls playsinline preload="none"></video></div>
+</div>
+<script>
+(function(){
+  const pop = document.getElementById("hvPop"), vid = document.getElementById("hvVid");
+  const close = () => { vid.pause(); pop.hidden = true; };
+  document.addEventListener("click", e => {
+    if (e.target.closest(".hv-btn")) { pop.hidden = false; vid.currentTime = 0; vid.play().catch(() => {}); }
+    else if (e.target === pop || e.target.closest("#hvX")) close();
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !pop.hidden) close(); });
+})();
+</script>
+
 </body>
 </html>

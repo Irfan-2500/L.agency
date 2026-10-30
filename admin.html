@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Admin Panel — Lakshay Agency</title>
+<title>Admin Panel — PPT Store</title>
+<link rel="icon" type="image/png" href="uploads/brand/favicon.png"><link rel="apple-touch-icon" href="uploads/brand/apple-touch-icon.png">
 <script>
 /* Admin theme: "dark" | "light" — pehle admin ki apni choice, warna website wali / system */
 (function(){var t="";try{t=localStorage.getItem("la_admin_theme")||"";if(!t){var m=localStorage.getItem("la_theme")||"system";t=m==="system"?"":m}}catch(e){}
@@ -16,7 +17,7 @@ document.documentElement.setAttribute("data-theme",t);})();
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* =========================================================
-   LAKSHAY AGENCY — ADMIN PANEL
+   PPT STORE — ADMIN PANEL
    Dark (default) + Light theme. Colors sirf yahan badlein.
    ========================================================= */
 :root,[data-theme="dark"]{
@@ -420,7 +421,7 @@ label.f span{font-weight:500;color:var(--dim)}
 <section class="login" id="loginView" hidden>
   <div class="card">
     <div class="tgl js-tgl" aria-label="Theme"></div>
-    <div class="brand" style="margin:6px auto 0"><i>📊</i><span><b>Lakshay Agency</b><small>Admin Panel</small></span></div>
+    <div class="brand" style="margin:6px auto 0"><img src="uploads/brand/logo.webp" alt="PPT Store" width="46" height="20" style="height:20px;width:auto"><span><b>PPT Store</b><small>Admin Panel</small></span></div>
     <div id="loginBox"><h1>Admin Login</h1><p>Apna Admin ID aur password daalein.</p></div>
     <form id="loginForm" style="display:flex;flex-direction:column;gap:12px">
       <label class="f">Admin ID<input type="text" id="uid" autocomplete="username" autocapitalize="off" spellcheck="false" required></label>
@@ -436,7 +437,7 @@ label.f span{font-weight:500;color:var(--dim)}
 <section id="app" hidden>
   <div class="shell">
     <aside class="side" id="side">
-      <div class="brand"><i>📊</i><span><b>Lakshay Agency</b><small>Admin Panel</small></span></div>
+      <div class="brand"><img src="uploads/brand/logo.webp" alt="PPT Store" width="46" height="20" style="height:20px;width:auto"><span><b>PPT Store</b><small>Admin Panel</small></span></div>
       <nav class="nav" id="tabs" aria-label="Admin sections">
         <span class="lbl">Overview</span>
         <button data-t="dash"><svg class="i"><use href="#i-home"/></svg>Dashboard</button>
@@ -1172,7 +1173,7 @@ function drawMessages() {
   const vis = MS.filter(m => !q || [m.name, m.email, m.phone, m.subject, m.message, m.ticket].join(" ").toLowerCase().includes(q));
   $("#mlist").innerHTML = vis.length ? vis.map(m => {
     const tk = m.ticket || ticketOf(m.subject), sub = stripTicket(m.subject), wn = waNum(m.phone);
-    const hi = `Hi ${String(m.name || "").split(" ")[0]}, this is Lakshay Agency${tk ? ` regarding your Ticket ${tk}` : ""}. `;
+    const hi = `Hi ${String(m.name || "").split(" ")[0]}, this is PPT Store${tk ? ` regarding your Ticket ${tk}` : ""}. `;
     return `<div class="rv">
       <div class="row"><span class="av">${esc(initials(m.name))}</span><div><b>${esc(m.name)}</b><div class="note">${fmtTime(m.time)} · ${ago(m.time)}</div></div><span class="sp"></span>
         ${tk ? `<button class="pill tk" data-copy="${esc(tk)}" title="Copy ticket ID">🎫 ${esc(tk)}</button>` : ""}${sub ? `<span class="pill">${esc(sub)}</span>` : ""}</div>

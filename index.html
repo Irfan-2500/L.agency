@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Lakshay Agency — Premium PowerPoint Store</title>
+<title>PPT Store — Premium PowerPoint Presentations</title>
+<link rel="icon" type="image/png" href="uploads/brand/favicon.png"><link rel="apple-touch-icon" href="uploads/brand/apple-touch-icon.png">
 <script>
 /* Theme: "system" (default) | "dark" | "light" — page dikhne se pehle lagta hai, taaki flash na ho */
 (function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
 var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
 var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();
 </script>
-<meta name="description" content="Lakshay Agency: Premium, fully editable educational, business, marketing and animated PowerPoint presentations. Instant download + custom PPT service." />
+<meta name="description" content="PPT Store: Premium, fully editable educational, business, marketing and animated PowerPoint presentations. Instant download + custom PPT service." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Hind:wght@600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -60,6 +61,9 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.75);backdrop-fil
 .nav{display:flex;align-items:center;gap:20px;height:72px}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-icon{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;border:1.5px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--grad) border-box}
+.nav .logo small{white-space:nowrap}
+@media(max-width:480px){.nav .logo small{letter-spacing:.06em}}
+@media(min-width:481px) and (max-width:1100px){.nav .logo small{display:none}}
 .logo b{font-family:'Space Grotesk';font-size:1.05rem;display:block;line-height:1}
 .logo small{font-size:.6rem;letter-spacing:.14em;color:var(--muted);font-weight:700}
 .search{flex:1;max-width:420px;position:relative}
@@ -1141,6 +1145,26 @@ html.light .bs-deck i{background:linear-gradient(135deg,#ffffff,#e9e5ff);box-sha
 html.light .slider .s-nav{background:rgba(255,255,255,.85);color:#1a1433;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 html.light .slider .dots button:not(.on){background:rgba(30,20,70,.22)}
 
+/* Smart Board: "Order kaise karein" video slide */
+.bs-how{flex-direction:row;align-items:center;gap:4cqw;padding:6cqw 9cqw 6cqw;background:radial-gradient(circle at 80% 30%,rgba(139,44,255,.35),transparent 45%),linear-gradient(135deg,#0b1f4d,#1e1b6b 55%,#4c1d95)}
+.bh-tx{flex:1;display:flex;flex-direction:column;gap:1.8cqw;min-width:0}
+.bs-how h3{font-size:5.2cqw;line-height:1.1}
+.bs-how h3 b{background:linear-gradient(90deg,#c084fc,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bh-steps{list-style:none;display:flex;flex-direction:column;gap:1cqw;font-size:2.2cqw;font-weight:600;padding:0;margin:0}
+.bh-steps li::before{content:attr(data-n);display:inline-grid;place-items:center;width:3cqw;height:3cqw;margin-right:1.2cqw;border-radius:50%;font-size:1.6cqw;font-weight:800;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4)}
+.bh-play{align-self:flex-start;font:inherit;font-size:2cqw;font-weight:800;padding:1cqw 2.4cqw;border-radius:99px;border:0;cursor:pointer;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4)}
+.bh-ph{height:100%;aspect-ratio:540/1172;flex:none;border-radius:2.4cqw;padding:.7cqw;background:#0b0b12;box-shadow:0 0 0 .3cqw rgba(255,255,255,.18),0 2cqw 5cqw rgba(0,0,0,.5);cursor:pointer}
+.bh-ph video{width:100%;height:100%;display:block;border-radius:1.8cqw;object-fit:cover;background:#111}
+html.light .bs-how{background:radial-gradient(circle at 80% 30%,rgba(139,44,255,.14),transparent 45%),linear-gradient(135deg,#ffffff,#eef2ff 55%,#f3e8ff)}
+html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
+@media(max-width:600px){
+  .bs-how{padding:9cqw 5cqw 9cqw;gap:3cqw}
+  .bs-how h3{font-size:6cqw}
+  .bh-steps{font-size:3.3cqw;gap:1.6cqw}
+  .bh-steps li::before{width:4.4cqw;height:4.4cqw;font-size:2.4cqw}
+  .bh-play{font-size:3cqw;padding:1.4cqw 3cqw}
+}
+
 /* =========================================================
    31. THEME FILTERS — ek line, dropdown
    ========================================================= */
@@ -1164,13 +1188,65 @@ html.light .slider .dots button:not(.on){background:rgba(30,20,70,.22)}
 .th-pills button.on{color:#fff;background:linear-gradient(135deg,#8b2cff,#c026d3)}
 .th-pills button.on small{background:rgba(255,255,255,.24);color:#fff}
 .th-pills button.zero:not(.on){opacity:.45}
-.tf-count{font-size:.82rem;color:var(--dim);padding:0 4px}
+.tf-count{display:none}
+/* Themes: Ready PPTs jaisa search + Filters button + K-12 */
+.th-tools{display:flex;gap:10px;align-items:center;max-width:760px;margin:0 auto 12px}
+.th-search{flex:1;min-width:0;position:relative}
+.th-search input{width:100%;background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:11px 14px 11px 40px;font:inherit;font-size:.9rem;color:var(--text);outline:none}
+.th-search input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(139,44,255,.2)}
+.th-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--dim)}
+.th-ft{display:none;align-items:center;gap:7px;flex:none;padding:10px 14px;border-radius:12px;font:inherit;font-size:.84rem;font-weight:700;color:var(--text);background:var(--card);border:1px solid var(--line2);cursor:pointer}
+.th-ft svg{width:15px;height:15px}
+.th-ft.on{border-color:#a855f7;box-shadow:0 0 0 2px rgba(139,44,255,.18)}
+.th-k12{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:.02em;color:var(--text);margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.th-k12 small{font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--card2);color:var(--dim)}
+#thGrid.th-grid{display:block}
+.th-sec+.th-sec{margin-top:22px}
+.th-sh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.th-sh .th-k12{margin:0}
+#rdSec{margin-top:22px}
+@media(max-width:420px){.th-sh .th-k12{font-size:1.12rem;white-space:nowrap}.th-all{padding:6px 11px;font-size:.76rem}}
+.th-all{text-decoration:none}
+.rd-price{display:flex;align-items:center;gap:8px;font-size:.8rem}
+.rd-price b{font-size:1.05rem;color:var(--text)}.rd-price s{color:var(--dim)}.rd-price em{font-style:normal;font-weight:800;color:#16a34a}
+.rd-buy{margin-left:auto;width:36px;height:36px;display:grid;place-items:center;border-radius:10px;font-size:.78rem;font-weight:800;color:#1a1433;background:linear-gradient(135deg,#ffd166,#f59e0b);text-decoration:none;border:0;cursor:pointer;position:relative}
+@media(max-width:760px){.rd-price{gap:6px}.rd-price s{display:none}}
+.rd-price em{white-space:nowrap}
+.rd-dl{margin-left:6px;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4)}
+.rd-buy.in{color:#fff;background:linear-gradient(135deg,#22c55e,#16a34a)}
+.rd-buy.in::after{content:"✓";position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;display:grid;place-items:center;font-size:.6rem;color:#16a34a;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.th-all{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);border:0;box-shadow:0 6px 16px -8px rgba(139,44,255,.7)}
+.th-all span{transition:transform .2s}.th-all:hover span{transform:translateX(3px)}
+/* "View All" — saari themes ek alag page jaisi screen par */
+.th-page{position:fixed;inset:0;z-index:75;overflow-y:auto;background:var(--bg);display:none}
+.th-page.on{display:block;animation:ddIn .2s ease-out}
+.thp-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:12px 0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.thp-back{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:12px;border:1px solid var(--line2);background:var(--card);color:var(--text);font-size:1.1rem;cursor:pointer}
+.thp-top h2{font-size:1.3rem;margin:0}.thp-top h2 small{font-size:.8rem;color:var(--dim);font-weight:600;margin-left:6px}
+.th-page .th-grid{display:grid;padding:18px 0 40px}
+html.light .thp-back{background:#fff}
+/* Dark / Light: ek line, left-right swipe + apne aap dheere chalti rahe */
+.th-row{display:flex;gap:16px;overflow-x:auto;padding:4px 2px 18px;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab;-webkit-user-select:none;user-select:none}
+.th-row::-webkit-scrollbar{display:none}
+.th-row>.th-card{flex:0 0 calc((100% - 48px)/4);min-width:0}
+.th-row.dragging{cursor:grabbing}
+.th-row.dragging *{pointer-events:none}
+@media(max-width:1024px){.th-row>.th-card{flex-basis:calc((100% - 32px)/3)}}
+@media(max-width:760px){.th-row{gap:12px}.th-row>.th-card{flex-basis:62%}}
+html:not(.light) .th-search input{background:#151a2a;border:1.5px solid rgba(139,44,255,.55);color:#fff;box-shadow:0 8px 24px -12px rgba(139,44,255,.55)}
+html:not(.light) .th-search input::placeholder{color:#a7aec6}
+html:not(.light) .th-search svg{color:#c084fc}
+html.light .th-search input,html.light .th-ft{background:#fff}
 .tf-count b{color:var(--text)}
 #thReset{padding:9px 12px;border-radius:12px;font-size:.8rem;font-weight:700;color:var(--pink);background:transparent;border:1px dashed color-mix(in srgb,var(--pink) 50%,transparent)}
 #thReset:hover{background:color-mix(in srgb,var(--pink) 10%,transparent)}
 html.light .tf-btn{background:#fff}
 html.light .tf-btn.set b{color:#7c3aed}
 html.light .th-pills{background:#fff;box-shadow:0 20px 44px -16px rgba(60,30,140,.35)}
+@media(max-width:760px){
+  .th-ft{display:inline-flex}
+  .th-bar2:not(.open){display:none}
+}
 @media(max-width:640px){
   .th-bar2{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
   .th-bar2 .tf-dd{grid-column:span 2}
@@ -1303,6 +1379,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 
 <!-- SVG ICON SPRITE -->
 <svg width="0" height="0" style="position:absolute">
+  <symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
   <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
   <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
@@ -1351,10 +1428,10 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 <header>
   <div class="container nav">
     <a href="#home" class="logo">
-      <span class="logo-icon"><svg class="i" style="color:#a78bfa"><use href="#i-layers"/></svg></span>
-      <span><b>LAKSHAY <span class="grad-text">AGENCY</span></b><small>PREMIUM PPT STORE</small></span>
+      <img class="logo-img" src="uploads/brand/logo.webp" srcset="uploads/brand/logo.webp 1x, uploads/brand/logo-200.webp 2x" alt="PPT Store logo" width="50" height="22" style="height:22px;width:auto;display:block;flex:none">
+      <span><b>PPT <span class="grad-text">STORE</span></b><small>YOU TEACH, WE DESIGN</small></span>
     </a>
-    <label class="search" data-ui="nav_search">
+    <label class="search" data-ui="nav_search" hidden style="display:none">
       <svg class="i"><use href="#i-search"/></svg>
       <input id="topSearch" type="search" placeholder="Search presentations, topics, categories…" aria-label="Search presentations">
     </label>
@@ -1409,13 +1486,13 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
         <div class="slider" id="slider">
           <button class="s-nav s-prev" aria-label="Previous"><svg class="i"><use href="#i-left"/></svg></button>
           <button class="s-nav s-next" aria-label="Next"><svg class="i"><use href="#i-right"/></svg></button>
-          <div class="screen-ui"><span>● LIMITED TIME OFFER</span><span>LAKSHAY AGENCY</span></div>
+          <div class="screen-ui"><span>● LIMITED TIME OFFER</span><span>PPT STORE</span></div>
           <div class="dots" id="dots"></div>
           <span class="glare"></span>
         </div>
         <div class="bezel-bottom">
           <span class="speaker"></span>
-          <span class="brand">LAKSHAY <b>SMART BOARD</b></span>
+          <span class="brand">PPT STORE <b>SMART BOARD</b></span>
           <span class="led"></span>
         </div>
         <div class="pen-tray"><i style="background:#8b2cff"></i><i style="background:#06b6d4"></i><i style="background:#ec4899"></i></div>
@@ -1429,7 +1506,11 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 <section class="section" id="themes" style="padding-top:10px">
   <div class="container">
     <div class="section-head reveal"><span class="eyebrow">Our Designs</span><h2>Choose Your <span class="grad-text">PPT Theme</span></h2><p>Pick a design you like. We'll make your PPT in it.</p></div>
-    <div class="th-bar2 reveal" role="group" aria-label="Filter themes">
+    <div class="th-tools reveal">
+      <label class="th-search"><svg class="i"><use href="#i-search"/></svg><input id="thSearch" type="search" placeholder="Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" aria-label="Search themes"></label>
+      <button type="button" class="th-ft" id="thFt" aria-expanded="false"><svg class="i"><use href="#i-sliders"/></svg>Filters <span id="thFc"></span></button>
+    </div>
+    <div class="th-bar2" id="thBar" role="group" aria-label="Filter themes">
       <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>🎓</i><span class="tf-k">Class</span><b data-cur="cls">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="cls" role="listbox"></div></div>
       <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>📖</i><span class="tf-k">Subject</span><b data-cur="subj">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="subj" role="listbox"></div></div>
       <div class="tf-dd"><button type="button" class="tf-btn" aria-haspopup="listbox" aria-expanded="false"><i>🎨</i><span class="tf-k">Background</span><b data-cur="tone">All</b><svg class="i"><use href="#i-down"/></svg></button><div class="th-pills" data-g="tone" role="listbox"></div></div>
@@ -1440,9 +1521,17 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
     </div>
     <div class="th-q" id="thQ" hidden role="status"></div>
     <div class="th-grid" id="thGrid"></div>
+    <div class="th-sec" id="rdSec" hidden><div class="th-sh"><h3 class="th-k12">📦 Ready to Use PPT <small id="rdN"></small></h3><a class="th-all" href="ready-ppts.html">View All <span>→</span></a></div><div class="th-row" id="rdRow"></div></div>
     <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
   </div>
 </section>
+
+<div class="th-page" id="thPage" role="dialog" aria-modal="true" aria-label="All themes">
+  <div class="container">
+    <div class="thp-top"><button type="button" class="thp-back" id="thpBack" aria-label="Back">←</button><h2 id="thpTitle"></h2></div>
+    <div class="th-grid" id="thpGrid"></div>
+  </div>
+</div>
 
 <!-- ================= CATEGORIES ================= -->
 <section class="section" id="categories" style="padding-top:20px" hidden>
@@ -1494,8 +1583,9 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 
         <div class="cx-cta">
           <a href="order.html" class="btn btn-primary cx-main" data-ui="cx_order"><svg class="i"><use href="#i-sparkle"/></svg> PPT Order Now <svg class="i"><use href="#i-arrow"/></svg></a>
-          <a class="btn btn-wa wa-link" data-msg="Hi Lakshay Agency! I want a custom PPT made." data-ui="cx_wa"><svg class="i"><use href="#i-msg"/></svg> Ask on WhatsApp</a>
+          <a class="btn btn-wa wa-link" data-msg="Hi PPT Store! I want a custom PPT made." data-ui="cx_wa"><svg class="i"><use href="#i-msg"/></svg> Ask on WhatsApp</a>
         </div>
+        <div style="margin-top:14px"><button type="button" class="hv-btn"><i>▶</i>Order kaise karein? <small>Video dekhein</small></button></div>
         <div class="cx-chips"><span>✓ Hindi / English</span><span>✓ Class 1–12 &amp; Exams</span><span>✓ 100% Editable</span></div>
       </div>
 
@@ -1517,7 +1607,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 <!-- ================= WHY US ================= -->
 <section class="section" id="why">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">The Lakshay Advantage</span><h2>Why Choose <span class="grad-text">Lakshay Agency?</span></h2><p>Fast, affordable and fully editable PPTs, made the way you need.</p></div>
+    <div class="section-head reveal"><span class="eyebrow">The PPT Store Advantage</span><h2>Why Choose <span class="grad-text">PPT Store?</span></h2><p>Fast, affordable and fully editable PPTs, made the way you need.</p></div>
     <div class="feats" id="feats"></div>
   </div>
 </section>
@@ -1539,7 +1629,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
       <div class="pcard qr" style="--pc:#06b6d4">
         <span class="pn"><i>2</i> Scan &amp; Pay</span>
         <h3>Scan our official UPI QR code</h3>
-        <div class="qr-wrap"><img src="uploads/payment/upi-qr.png" alt="Lakshay Agency official UPI QR code" width="220" height="220" loading="lazy"></div>
+        <div class="qr-wrap"><img src="uploads/payment/upi-qr.png" alt="PPT Store official UPI QR code" width="220" height="220" loading="lazy"></div>
         <p class="qr-name">Payee name: <b>MOHAMMAD IRFAN</b><br>Check this name before you pay.</p>
       </div>
       <div class="pcard" style="--pc:#f59e0b">
@@ -1556,7 +1646,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
     <div class="pay-confirm reveal">
       <span class="ic"><svg class="i" style="width:22px;height:22px"><use href="#i-check"/></svg></span>
       <div><h3>Payment Confirmation</h3><p>After completing your payment, please save your <b>Transaction ID or UTR number</b> for future reference, and share the screenshot with us on WhatsApp.</p></div>
-      <a class="btn btn-wa wa-link" data-msg="Hi Lakshay Agency! I have made the payment. My Transaction ID / UTR is: "><svg class="i"><use href="#i-msg"/></svg> Share Payment Proof</a>
+      <a class="btn btn-wa wa-link" data-msg="Hi PPT Store! I have made the payment. My Transaction ID / UTR is: "><svg class="i"><use href="#i-msg"/></svg> Share Payment Proof</a>
     </div>
   </div>
 </section>
@@ -1587,7 +1677,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
       <h2>Need Help?</h2>
       <p>Message us anytime. We reply fast.</p>
       <div class="info-list">
-        <a class="info wa-link" data-msg="Hi Lakshay Agency!" style="--fc:var(--green)"><span class="ic"><svg class="i"><use href="#i-msg"/></svg></span><span><small>WhatsApp</small><b class="js-phone"></b></span></a>
+        <a class="info wa-link" data-msg="Hi PPT Store!" style="--fc:var(--green)"><span class="ic"><svg class="i"><use href="#i-msg"/></svg></span><span><small>WhatsApp</small><b class="js-phone"></b></span></a>
         <a class="info js-mail" style="--fc:#c084fc"><span class="ic"><svg class="i"><use href="#i-mail"/></svg></span><span><small>Email</small><b class="js-email"></b></span></a>
         <div class="info" style="--fc:var(--cyan)"><span class="ic"><svg class="i"><use href="#i-clock"/></svg></span><span><small>Support</small><b>24/7 Support</b></span></div>
       </div>
@@ -1646,12 +1736,12 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
   <div class="container">
     <div class="f-grid">
       <div>
-        <a href="#home" class="logo"><span class="logo-icon"><svg class="i" style="color:#a78bfa"><use href="#i-layers"/></svg></span><span><b>LAKSHAY <span class="grad-text">AGENCY</span></b><small>PREMIUM PPT STORE</small></span></a>
+        <a href="#home" class="logo"><img class="logo-img" src="uploads/brand/logo.webp" srcset="uploads/brand/logo.webp 1x, uploads/brand/logo-200.webp 2x" alt="PPT Store logo" width="50" height="22" style="height:22px;width:auto;display:block;flex:none"><span><b>PPT <span class="grad-text">STORE</span></b><small>YOU TEACH, WE DESIGN</small></span></a>
         <p>Empowering students, educators and business leaders with world-class PowerPoint presentations. Present better. Impress more.</p>
-        <a class="btn btn-wa btn-sm wa-link" data-msg="Hi Lakshay Agency!"><svg class="i"><use href="#i-msg"/></svg> WhatsApp Support</a>
+        <a class="btn btn-wa btn-sm wa-link" data-msg="Hi PPT Store!"><svg class="i"><use href="#i-msg"/></svg> WhatsApp Support</a>
       </div>
       <div><h5>NAVIGATION</h5><ul>
-        <li><a href="#home">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="ready-ppts.html">All Presentations</a></li><li data-ui="foot_admin"><a href="admin.html">🔐 Admin Panel</a></li><li><a href="#custom" class="js-custom">Custom PPT Services</a></li><li><a href="#why">Why Lakshay Agency</a></li><li><a href="#payment">Payment &amp; Billing</a></li><li><a href="track.html">Track Order</a></li><li><a href="#contact">Contact Us</a></li><li><a href="#faq">FAQs</a></li></ul></div>
+        <li><a href="#home">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="ready-ppts.html">All Presentations</a></li><li data-ui="foot_admin"><a href="admin.html">🔐 Admin Panel</a></li><li><a href="#custom" class="js-custom">Custom PPT Services</a></li><li><a href="#why">Why PPT Store</a></li><li><a href="#payment">Payment &amp; Billing</a></li><li><a href="track.html">Track Order</a></li><li><a href="#contact">Contact Us</a></li><li><a href="#faq">FAQs</a></li></ul></div>
       <div><h5>CATEGORIES</h5><ul id="footCats"></ul></div>
       <div data-ui="foot_more"><h5>MORE OFFERINGS</h5><ul><li><a href="service.html?s=ready-to-use-presentations">Ready-to-Use Presentations</a></li><li><a href="service.html?s=lecture-recording">Lecture Recording</a></li><li><a href="service.html?s=thumbnail-design">Thumbnail Design</a></li><li><a href="ready-ppts.html?type=notes">Study Notes</a></li><li><a href="service.html?s=video-editing">Video Editing</a></li><li><a href="service.html?s=social-media-management">Social Media Management</a></li></ul></div>
       <div><h5>TRUST & LEGAL</h5><ul>
@@ -1665,7 +1755,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
         </div>
       </div>
     </div>
-    <div class="f-bottom"><span>© <span id="year"></span> Lakshay Agency. All Rights Reserved. <span class="grad-text">Present Better. Impress More.</span></span><span>Works with PowerPoint · Google Slides · Keynote</span></div>
+    <div class="f-bottom"><span>© <span id="year"></span> PPT Store. All Rights Reserved. <span class="grad-text">Present Better. Impress More.</span></span><span>Works with PowerPoint · Google Slides · Keynote</span></div>
   </div>
 </footer>
 
@@ -1815,7 +1905,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
         <p class="pr-tag">✨ You provide the content. <b>We create the presentation.</b></p>
         <div class="pr-cta">
           <a href="order.html" class="btn btn-primary"><svg class="i"><use href="#i-sparkle"/></svg> PPT Order Now</a>
-          <a class="btn btn-wa wa-link" data-msg="Hi Lakshay Agency! I want to know about PPT pricing."><svg class="i"><use href="#i-msg"/></svg> Ask on WhatsApp</a>
+          <a class="btn btn-wa wa-link" data-msg="Hi PPT Store! I want to know about PPT pricing."><svg class="i"><use href="#i-msg"/></svg> Ask on WhatsApp</a>
         </div>
       </div>
     </div>
@@ -1842,10 +1932,11 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 
 <div class="wa-float" data-ui="wa_float">
   <div class="wa-tip" id="waTip"><span class="pill" style="padding:0;border:0;background:none"><span class="dot"></span></span>Need PPT help? <a class="wa-link" data-msg="Hi! I need help choosing a PPT.">Chat on WhatsApp</a><button onclick="this.parentNode.remove()" aria-label="Close tip" style="color:var(--dim)">✕</button></div>
-  <a class="wa-btn wa-link" data-msg="Hi Lakshay Agency!" aria-label="WhatsApp"><svg class="i"><use href="#i-msg"/></svg></a>
+  <a class="wa-btn wa-link" data-msg="Hi PPT Store!" aria-label="WhatsApp"><svg class="i"><use href="#i-msg"/></svg></a>
 </div>
 
 <script src="config.js"></script>
+<script src="catalog.js"></script>
 <script>
 /* =========================================================
    ⚙️ SETTINGS — sirf yahan apni details daalo
@@ -1969,7 +2060,7 @@ function applySettings(){
 $("#year").textContent = new Date().getFullYear();
 document.addEventListener("click", e => {
   const a = e.target.closest(".wa-link");
-  if (a) { e.preventDefault(); window.open(waURL(a.dataset.msg || "Hi Lakshay Agency!"), "_blank"); }
+  if (a) { e.preventDefault(); window.open(waURL(a.dataset.msg || "Hi PPT Store!"), "_blank"); }
 });
 
 /* thumbnail generator (no images needed) */
@@ -2020,6 +2111,15 @@ function buildBoardSlides(){
      <div class="bs-share">📩 Share your content &amp; design references to get started!</div>
      <p class="bs-tag">✨ You provide the content. <b>We create the presentation.</b></p>
      <div class="bs-deck" aria-hidden="true"><i></i><i></i><i></i></div>
+   </div>`,
+  `<div class="bs bs-how">
+     <div class="bh-tx">
+       <span class="bs-kicker">🎬 Video Guide</span>
+       <h3>PPT order kaise <b>karein?</b></h3>
+       <ol class="bh-steps"><li data-n="1">Naam &amp; mobile likhiye</li><li data-n="2">PPT type chuniye</li><li data-n="3">Details / files bhejiye</li><li data-n="4">Submit — 1 ghante mein PPT!</li></ol>
+       <button type="button" class="bh-play hv-go">▶ Video dekhein</button>
+     </div>
+     <div class="bh-ph hv-go"><video src="videos/how-to-order.mp4" poster="videos/how-to-order.jpg" muted playsinline preload="none"></video></div>
    </div>`];
   // Pricing popup bhi same data se
   $("#prTitle").textContent = PRICING.title;
@@ -2048,7 +2148,11 @@ function go(i){
   ss[cur].classList.remove("on"); ss[cur].classList.add("prev"); dd[cur].classList.remove("on");
   cur = (i + ss.length) % ss.length;
   ss[cur].classList.add("on"); dd[cur].classList.add("on");
-  clearInterval(timer); timer = setInterval(() => go(cur+1), 5000);
+  clearInterval(timer);
+  slider.querySelectorAll(".bh-ph video").forEach(v => v.pause());
+  const v = ss[cur].querySelector(".bh-ph video");
+  if (v) { v.currentTime = 0; v.play().catch(() => {}); v.onended = () => go(cur+1); timer = setTimeout(() => go(cur+1), 40000); }
+  else timer = setInterval(() => go(cur+1), 5000);
 }
 $(".s-prev").onclick = e => { e.stopPropagation(); go(cur-1); };
 $(".s-next").onclick = e => { e.stopPropagation(); go(cur+1); };
@@ -2166,7 +2270,7 @@ function renderGrid(){
 }
 $("#loadMore").onclick = () => { state.shown += CONFIG.perPage; renderGrid(); };
 function onSearch(v){
-  state.q=v; state.shown=CONFIG.perPage; if($("#gridSearch").value!==v)$("#gridSearch").value=v; if($("#topSearch").value!==v)$("#topSearch").value=v; renderGrid();
+  state.q=v; state.shown=CONFIG.perPage; if($("#gridSearch").value!==v)$("#gridSearch").value=v; if($("#topSearch").value!==v)$("#topSearch").value=v; if($("#thSearch").value!==v)$("#thSearch").value=v; renderGrid();
   // Themes bhi isi search se filter hote hain (website par abhi themes hi dikhte hain)
   thState.q = v; thState.shown = 12; renderThemes();
 }
@@ -2174,7 +2278,7 @@ function onSearch(v){
 function goToResults(){
   const sec = PRODUCTS.length && !$("#shop").hidden && filtered().length ? $("#shop") : $("#themes");
   if (sec.hidden) return;
-  const el = sec.id === "themes" ? sec.querySelector(".th-bar2") : sec;
+  const el = sec.id === "themes" ? sec.querySelector(".th-tools") : sec;
   scrollTo({ top: el.getBoundingClientRect().top + scrollY - 96, behavior:"smooth" });
 }
 let srchT;
@@ -2276,7 +2380,7 @@ function showTicket(d, tk){
   $("#tkId").textContent = tk;
   const first = d.name.split(/\s+/)[0]; $("#tkName").textContent = first ? ", " + first : "";
   $("#tkSum").innerHTML = [["Subject", d.subject], ["Email", d.email], ["Phone / WhatsApp", d.phone]].filter(r => r[1]).map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("");
-  $("#tkWa").href = waURL(`Hi Lakshay Agency! My Ticket ID is ${tk}.\nSubject: ${d.subject}\nName: ${d.name}`);
+  $("#tkWa").href = waURL(`Hi PPT Store! My Ticket ID is ${tk}.\nSubject: ${d.subject}\nName: ${d.name}`);
   $("#tkCopy").dataset.copy = tk;
   $("#contactForm").hidden = true; $("#ticketDone").hidden = false;
   $("#ticketDone").scrollIntoView({ behavior:"smooth", block:"center" });
@@ -2799,6 +2903,7 @@ if (!reduceMotion) setInterval(() => {
   });
 }, 1000);
 
+let thCard = () => "";
 function renderThemes(){
   renderThemeChips();
   thList = THEMES.filter(t => thMatch(t));
@@ -2810,26 +2915,99 @@ function renderThemes(){
   const active = !!(thState.tone || thState.type || thState.lang || thState.cls || thState.subj);
   $("#thCount").innerHTML = `<b>${thList.length}</b> of ${THEMES.length} themes`;
   $("#thReset").hidden = !active;
+  const nAct = ["tone","type","lang","cls","subj"].filter(k => thState[k]).length;
+  $("#thFc").textContent = nAct ? `(${nAct})` : "";
   const show = thList.slice(0, thState.shown), q = String(thState.q || "").trim();
   $("#thQ").hidden = !q;
   if (q) $("#thQ").innerHTML = `${icon("i-search","width:16px;height:16px")}<span><b>${thList.length}</b> theme${thList.length === 1 ? "" : "s"} for "<b>${esc(q)}</b>"</span><button type="button" onclick="onSearch('')">✕ Clear search</button>`;
-  $("#thGrid").innerHTML = show.length ? show.map((t,i) => `
+  thCard = (t,i) => `
     <div class="th-card" role="button" tabindex="0" onclick="openTheme(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTheme(${i})}" aria-label="View ${esc(t.name)}">
       <div class="th-pic">${cardSlides(t)}<span class="zoom">🔍 View Theme</span></div>
       <div class="th-meta"><div class="th-name"><b>${esc(t.name)}</b><span class="th-views" data-vid="${esc(t.id)}" title="${(+t.views || 0).toLocaleString("en-IN")} views">${icon("i-eye","width:14px;height:14px")}<em>${fmtViews(t.views)}</em></span></div><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span></div></div>
       ${t.slides && t.slides.length > 1 ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${t.slides.length} slides</span>` : ""}
-    </div>`).join("")
+    </div>`;
+  const rows = [["🌙 Dark Theme", thList.map((t,i) => [t,i]).filter(x => x[0].tone !== "White")], ["☀️ Light Theme", thList.map((t,i) => [t,i]).filter(x => x[0].tone === "White")]].filter(r => r[1].length);
+  $("#thGrid").innerHTML = rows.length ? rows.map(([h, arr]) => `<div class="th-sec"><div class="th-sh"><h3 class="th-k12">${h} <small>${arr.length}</small></h3><button type="button" class="th-all" data-tone="${h.includes("Dark") ? "dark" : "light"}">View All <span>→</span></button></div><div class="th-row">${arr.map(([t,i]) => thCard(t,i)).join("")}</div></div>`).join("")
     : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>${String(thState.q||"").trim() ? `No theme found for "${esc(thState.q.trim())}". Try another word — or <a href="#custom" class="js-custom" style="color:var(--cyan)">request a custom PPT</a>.` : "No theme matches these filters. Try another combination."}</p></div>`;
-  const rem = thList.length - show.length;
-  $("#thMore").parentNode.style.display = rem > 0 ? "" : "none";
-  $("#thMore").innerHTML = `Show More Themes <span style="color:var(--dim);font-size:.8rem">(${rem} more)</span>`;
+  $("#thMore").parentNode.style.display = "none";
 }
 $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
+/* Ready to Use PPT: Ready PPTs page wali list (admin panel ki PPTs, warna built-in) ek line mein */
+(async function readyRow(){
+  let list = [];
+  const SCR = String((window.LA_CONFIG || {}).orderUrl || "").trim();
+  if (SCR) try { const j = await (await fetch(SCR + "?action=ppts", { cache:"no-store" })).json(); if (j.ok && j.products) list = j.products.map(p => ({ ...p, thumb:(p.previews || [])[0] || "" })); } catch(e) {}
+  if (!list.length && window.LA_CATALOG) list = LA_CATALOG.map(p => ({ ...p, thumb:`uploads/previews/demo-${p.slug}-1.webp` }));
+  if (!list.length) return;
+  $("#rdN").textContent = list.length;
+  $("#rdRow").innerHTML = list.map(p => { const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, u = "ready-ppts.html?q=" + encodeURIComponent(p.title).replace(/'/g, "%27");
+    return `<div class="th-card" role="link" tabindex="0" onclick="location.href='${u}'" onkeydown="if(event.key==='Enter')location.href='${u}'" aria-label="${esc(p.title)}">
+      <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span></div>
+      <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
+        <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
+      ${p.slides ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${+p.slides} slides</span>` : ""}
+    </div>`; }).join("");
+  $("#rdSec").hidden = false;
+})();
+function rdCart(id){ toggleCart(id); document.querySelectorAll(`.rd-buy[data-rid="${id}"]`).forEach(b => b.classList.toggle("in", cart.includes(id))); }
+/* View All: Dark ya Light ki saari themes alag page par (phone ka Back button bhi kaam kare) */
+function openThPage(tone, push){
+  const arr = thList.map((t,i) => [t,i]).filter(x => (x[0].tone === "White") === (tone === "light"));
+  $("#thpTitle").innerHTML = `${tone === "light" ? "☀️ Light Theme" : "🌙 Dark Theme"}<small>${arr.length} themes</small>`;
+  $("#thpGrid").innerHTML = arr.map(([t,i]) => thCard(t,i)).join("");
+  $("#thPage").classList.add("on"); $("#thPage").scrollTop = 0; document.body.style.overflow = "hidden";
+  if (push) history.pushState({ thPage: tone }, "", "#themes-" + tone);
+}
+function closeThPage(){ $("#thPage").classList.remove("on"); document.body.style.overflow = ""; }
+document.addEventListener("click", e => { const b = e.target.closest(".th-all"); if (b) openThPage(b.dataset.tone, true); });
+$("#thpBack").onclick = () => { if (history.state && history.state.thPage) history.back(); else closeThPage(); };
+addEventListener("popstate", () => { if (history.state && history.state.thPage) openThPage(history.state.thPage); else closeThPage(); });
+/* Theme lines: dheere-dheere left chalein; chhoone / mouse rakhne par ruk jaayein, mouse se kheench bhi sakein */
+(() => {
+  const S = new WeakMap(), st = r => S.get(r) || (S.set(r, { x: 0, pause: 0 }), S.get(r));
+  let T = 0;
+  (function tick(t){
+    const dt = T ? Math.min(t - T, 100) : 0; T = t;
+    if (!document.hidden && !reduceMotion) document.querySelectorAll("#thGrid .th-row, #rdRow").forEach(r => {
+      const o = st(r); if (Date.now() < o.pause || r.matches(":hover") || r.scrollWidth <= r.clientWidth + 2) return;
+      const b = r.getBoundingClientRect(); if (b.bottom < 0 || b.top > innerHeight) return;
+      if (Math.abs(o.x - r.scrollLeft) > 2) o.x = r.scrollLeft;
+      if (r.scrollLeft + r.clientWidth >= r.scrollWidth - 1) { o.x = 0; o.pause = Date.now() + 2500; r.scrollTo({ left: 0, behavior: "smooth" }); }
+      else { o.x += dt * 0.03; r.scrollLeft = o.x; }
+    });
+    requestAnimationFrame(tick);
+  })(0);
+  let drag = null;
+  [$("#thGrid"), $("#rdRow")].forEach(g => ["touchstart", "wheel"].forEach(ev => g.addEventListener(ev, e => { const r = e.target.closest(".th-row"); if (r) st(r).pause = Date.now() + 4000; }, { passive: true })));
+  [$("#thGrid"), $("#rdRow")].forEach(g => g.addEventListener("pointerdown", e => {
+    const r = e.target.closest(".th-row"); if (!r) return; st(r).pause = Date.now() + 4000;
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    drag = { r, x: e.clientX, left: r.scrollLeft, moved: false };
+  }));
+  addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 6) return;
+    if (!drag.moved) { drag.moved = true; drag.r.classList.add("dragging"); }
+    drag.r.scrollLeft = drag.left - dx; st(drag.r).pause = Date.now() + 4000;
+  });
+  addEventListener("pointerup", () => {
+    if (!drag) return;
+    const { r, moved } = drag; drag = null;
+    if (!moved) return;
+    r.classList.remove("dragging");
+    const block = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    r.addEventListener("click", block, true); setTimeout(() => r.removeEventListener("click", block, true), 60);
+  });
+})();
 /* Filter dropdowns */
 function closeTf(){ document.querySelectorAll(".tf-dd.open").forEach(d => { d.classList.remove("open"); d.querySelector(".tf-btn").setAttribute("aria-expanded","false"); }); }
 document.querySelectorAll(".tf-btn").forEach(b => b.onclick = e => { e.stopPropagation(); const d = b.parentNode, was = d.classList.contains("open"); closeTf(); if (!was) { d.classList.add("open"); b.setAttribute("aria-expanded","true"); } });
 document.addEventListener("click", e => { if (!e.target.closest(".tf-dd")) closeTf(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeTf(); });
+$("#thFt").onclick = () => { const o = $("#thBar").classList.toggle("open"); $("#thFt").classList.toggle("on", o); $("#thFt").setAttribute("aria-expanded", o); };
+$("#thSearch").oninput = e => onSearch(e.target.value);
 $("#thReset").onclick = () => { thState.tone = thState.type = thState.lang = thState.cls = thState.subj = ""; thState.shown = 12; renderThemes(); };
 let thIdx = 0, thSlide = 0;
 let lbTimer = null;
@@ -2988,5 +3166,33 @@ document.addEventListener("click", e => {
 }, true);
 </script>
 <script src="js/track.js" defer></script>
+<!-- "Kaise order karein" video (phone view) -->
+<style>
+.hv-btn{display:inline-flex;align-items:center;gap:9px;padding:7px 14px 7px 7px;border-radius:99px;font:inherit;font-size:.86rem;font-weight:700;cursor:pointer;color:inherit;background:var(--card2,#f1effa);border:1px solid rgba(139,44,255,.4)}
+.hv-btn:hover{border-color:#8b2cff;box-shadow:0 6px 18px -8px rgba(139,44,255,.6)}
+.hv-btn i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:.7rem;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4);box-shadow:0 0 0 4px rgba(139,44,255,.15)}
+.hv-btn small{font-weight:600;opacity:.65;font-size:.74rem}
+.hv-pop{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:16px;background:rgba(5,6,12,.78);backdrop-filter:blur(6px)}
+.hv-pop[hidden]{display:none}
+.hv-box{position:relative;width:min(340px,100%);max-height:calc(100vh - 32px);aspect-ratio:540/1170;border-radius:26px;overflow:hidden;background:#000;border:6px solid #16131f;box-shadow:0 30px 70px -20px rgba(0,0,0,.7)}
+.hv-box video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
+.hv-x{position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.6);color:#fff;font-size:1.3rem;line-height:1;cursor:pointer}
+</style>
+<div class="hv-pop" id="hvPop" hidden role="dialog" aria-modal="true" aria-label="PPT order kaise karein — video">
+  <div class="hv-box"><button type="button" class="hv-x" id="hvX" aria-label="Close">×</button>
+    <video id="hvVid" src="videos/how-to-order.mp4" poster="videos/how-to-order.jpg" controls playsinline preload="none"></video></div>
+</div>
+<script>
+(function(){
+  const pop = document.getElementById("hvPop"), vid = document.getElementById("hvVid");
+  const close = () => { vid.pause(); pop.hidden = true; };
+  document.addEventListener("click", e => {
+    if (e.target.closest(".hv-btn,.hv-go")) { pop.hidden = false; vid.currentTime = 0; vid.play().catch(() => {}); }
+    else if (e.target === pop || e.target.closest("#hvX")) close();
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !pop.hidden) close(); });
+})();
+</script>
+
 </body>
 </html>
