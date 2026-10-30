@@ -771,6 +771,7 @@ async function startApp() {
   $("#app").hidden = false;
   const h = (location.hash || "").slice(1);
   go(Object.keys(TITLES).includes(h) ? h : "dash");
+  resumeUQ();
 }
 function badge(id, n) { const el = $(id); el.hidden = !n; el.textContent = n || ""; }
 const V = html => { $("#view").innerHTML = html; };
@@ -1704,17 +1705,25 @@ async function uploadPptFile(file, pages) {
   if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); if (m && PE === pe) applyMeta(pe, m, file); }
 }
 // badi file → Google Drive, 8 MB ke tukdon mein
-async function sendFile(file, prog) {
-  const s = await call("adminPptStart", { name: file.name, size: file.size, mime: file.type || "application/octet-stream" });
-  if (!s.ok) throw new Error(s.error);
-  const CH = 8 * 1048576; let start = 0, tries = 0;
+// refresh ke baad: jahan tak gaya tha wahin se (j.up = Drive session + kitna gaya)
+async function sendFile(file, prog, j) {
+  if (!j.up) {
+    const s = await call("adminPptStart", { name: file.name, size: file.size, mime: file.type || "application/octet-stream" });
+    if (!s.ok) throw new Error(s.error);
+    j.up = { session: s.session, start: 0 }; j.resumed = false; keepJob(j);
+  }
+  const CH = 8 * 1048576; let tries = 0;
   for (;;) {
-    const part = file.slice(start, Math.min(file.size, start + CH));
-    const r = await call("chunk", { session: s.session, start, total: file.size, data: await b64(part) });
-    if (!r.ok) { if (r.stop || ++tries > 3) throw new Error(r.error); continue; }
-    tries = 0;
-    if (r.done) return r.id;
-    start = r.next || start + part.size; prog(Math.min(99, Math.round(start / file.size * 100)));
+    const start = j.up.start, part = file.slice(start, Math.min(file.size, start + CH));
+    const r = await call("chunk", { session: j.up.session, start, total: file.size, data: await b64(part) });
+    if (!r.ok) {
+      if (j.resumed) { j.resumed = false; j.up = null; return sendFile(file, prog, j); }   // purana session nahi chala → shuru se
+      if (r.stop || ++tries > 3) { j.up = null; keepJob(j); throw new Error(r.error); }
+      continue;
+    }
+    j.resumed = false; tries = 0;
+    if (r.done) { j.up = null; return r.id; }
+    j.up.start = r.next || start + part.size; keepJob(j); prog(Math.min(99, Math.round(j.up.start / file.size * 100)));
   }
 }
 // canvas → webp/jpg → Drive image ref
@@ -1815,7 +1824,34 @@ async function pptxShots(file, count, tick) {
 }
 /* ---------- Background upload queue: Save dabate hi modal band, upload peeche chalta rahe ---------- */
 const UQ = []; let UQRUN = 0, UQOPEN = true;
-function enqueue(job) { UQ.push(Object.assign({ st: "wait", msg: "Line mein…", prog: null }, job)); UQOPEN = true; drawUQ(); pumpUQ(); }
+// queue browser ke IndexedDB mein bhi rehti hai, taaki page refresh / band hone par upload wahin se chale
+const UDB = (() => {
+  let db = null;
+  const open = () => db || (db = new Promise((ok, no) => { const r = indexedDB.open("ppt_uploads", 1);
+    r.onupgradeneeded = () => { r.result.createObjectStore("jobs", { keyPath: "key" }); r.result.createObjectStore("files"); };
+    r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); }));
+  const tx = async (store, mode, fn) => { const d = await open(); return new Promise((ok, no) => { const t = d.transaction(store, mode), r = fn(t.objectStore(store)); t.oncomplete = () => ok(r && r.result); t.onerror = () => no(t.error); }); };
+  return { put: (st, v, k) => tx(st, "readwrite", s => s.put(v, k)).catch(() => {}), get: (st, k) => tx(st, "readonly", s => s.get(k)).catch(() => null),
+    del: (st, k) => tx(st, "readwrite", s => s.delete(k)).catch(() => {}), all: st => tx(st, "readonly", s => s.getAll()).catch(() => []) };
+})();
+const keepJob = j => UDB.put("jobs", { key: j.key, name: j.name, pe: j.pe, pages: j.pages || null, auto: !!j.auto, up: j.up || null, metaDone: !!j.metaDone });
+const dropJob = j => { UDB.del("jobs", j.key); UDB.del("files", j.key); };
+function enqueue(job) {
+  const j = Object.assign({ st: "wait", msg: "Line mein…", prog: null, key: Date.now() + "-" + Math.random().toString(36).slice(2, 8) }, job);
+  UQ.push(j); UDB.put("files", j.file, j.key); keepJob(j); UQOPEN = true; drawUQ(); pumpUQ();
+}
+let UQRESUMED = false;
+async function resumeUQ() {
+  if (UQRESUMED) return; UQRESUMED = true;
+  const jobs = await UDB.all("jobs");
+  for (const r of jobs || []) {
+    if (UQ.some(x => x.key === r.key)) continue;
+    const file = await UDB.get("files", r.key);
+    if (!file) { dropJob(r); continue; }
+    UQ.push(Object.assign(r, { file, st: "wait", msg: "Refresh ke baad wahin se chalu…", prog: null, resumed: true }));
+  }
+  if (UQ.length) { toast(`⏫ ${UQ.filter(j => j.st === "wait").length} adhoore upload phir se chalu ho gaye`); drawUQ(); pumpUQ(); }
+}
 function pumpUQ() {
   while (UQRUN < 2) {
     const j = UQ.find(x => x.st === "wait"); if (!j) break;
@@ -1826,27 +1862,30 @@ function pumpUQ() {
 async function runJob(j) {
   const p = j.pe, f = j.file, set = (msg, prog) => { j.msg = msg; j.prog = prog; drawUQ(); };
   try {
-    if (j.auto && /\.pptx$/i.test(f.name)) {   // ZIP wali PPT: naam, slides, class wagaira apne aap
+    if (j.auto && !j.metaDone && /\.pptx$/i.test(f.name)) {   // ZIP wali PPT: naam, slides, class wagaira apne aap
       set("PPT padh rahe hain…", null);
       const m = await pptxMeta(f);
       if (m) { p.title = p.title || m.title; p.desc = p.desc || m.desc; p.slides = p.slides || m.slides; p.anim = p.anim || m.anim;
         if (m.cls && !p.level.length) p.level = [m.cls]; if (m.lang) p.lang = m.lang; p.subject = p.subject || m.subj; }
     }
-    p.title = (p.title || nice(f.name)).slice(0, 120); j.name = p.title;
-    set("Upload 0%", 0);
-    p.file = await sendFile(f, pc => set(`Upload ${pc}%`, pc)); p.fileName = f.name;
+    j.metaDone = true; p.title = (p.title || nice(f.name)).slice(0, 120); j.name = p.title;
+    if (!p.file || p.fileName !== f.name) {
+      set(`Upload ${j.up ? Math.round(j.up.start / f.size * 100) : 0}%`, j.up ? Math.round(j.up.start / f.size * 100) : 0);
+      p.file = await sendFile(f, pc => set(`Upload ${pc}%`, pc), j); p.fileName = f.name; keepJob(j);
+    }
     if (!p.refs.length && /\.(pdf|pptx)$/i.test(f.name)) {
       set("Photo ban rahi…", null);
       if (/\.pdf$/i.test(f.name)) { const r = await pdfShots(f, j.pages, t => set(t, null)); p.refs = r.refs; p.slides = p.slides || r.count; }
       else p.refs = await pptxShots(f, p.slides, t => set(t, null));
+      keepJob(j);
     }
     set("Save ho raha hai…", null);
     const r = await call("adminPptSave", pptPayload(p));
     if (!r.ok) throw new Error(r.error);
     const i = PP.findIndex(x => x.id === r.ppt.id); if (i >= 0) PP[i] = r.ppt; else PP.unshift(r.ppt);
     if ($("#pgrid")) drawPpts();
-    j.st = "ok"; j.msg = r.ppt.show ? "✅ Website par live" : "✅ Saved (hidden)";
-  } catch (e) { j.st = "bad"; j.msg = "❌ " + e.message; }
+    j.st = "ok"; j.msg = r.ppt.show ? "✅ Website par live" : "✅ Saved (hidden)"; dropJob(j);
+  } catch (e) { j.st = "bad"; j.msg = "❌ " + e.message; keepJob(j); }
   j.prog = null;
 }
 function drawUQ() {
@@ -1856,12 +1895,11 @@ function drawUQ() {
   const done = UQ.filter(j => j.st === "ok").length, busy = UQ.some(j => j.st === "wait" || j.st === "run");
   box.innerHTML = `<div class="uqh"><b>${busy ? "⏫" : "✅"} Upload ${done} / ${UQ.length}</b><span class="sp"></span>${busy ? "" : `<button type="button" data-uqx>Clear</button>`}<button type="button" data-uqt>${UQOPEN ? "▾" : "▴"}</button></div>`
     + (UQOPEN ? `<div class="uql">${UQ.map((j, k) => `<div class="uqi ${j.st}"><b>${esc(j.name)}</b><small>${esc(j.msg)}</small>${j.prog != null ? `<span class="tb"><i style="width:${j.prog}%"></i></span>` : ""}${j.st === "bad" ? `<button type="button" data-uqr="${k}">↻ Dobara</button>` : ""}</div>`).join("")}</div>`
-      + (busy ? `<p>Is tab ko band na karein. Aap doosre page dekh sakte hain aur nayi PPT add kar sakte hain.</p>` : "") : "");
+      + (busy ? `<p>Aap doosre page dekh sakte hain aur nayi PPT add kar sakte hain. Page refresh / band ho jaye to admin dobara kholte hi upload wahin se chalu ho jayega.</p>` : "") : "");
   box.querySelector("[data-uqt]").onclick = () => { UQOPEN = !UQOPEN; drawUQ(); };
-  const x = box.querySelector("[data-uqx]"); if (x) x.onclick = () => { UQ.length = 0; drawUQ(); };
+  const x = box.querySelector("[data-uqx]"); if (x) x.onclick = () => { UQ.forEach(dropJob); UQ.length = 0; drawUQ(); };
   box.querySelectorAll("[data-uqr]").forEach(b => b.onclick = () => { const j = UQ[+b.dataset.uqr]; j.st = "wait"; j.msg = "Line mein…"; drawUQ(); pumpUQ(); });
 }
-window.addEventListener("beforeunload", e => { if (UQ.some(j => j.st === "wait" || j.st === "run")) { e.preventDefault(); e.returnValue = ""; } });
 // Poora subject: folder / kai PDF / ZIP → saare chapter kram se jod kar ek PDF (pdf-lib), phir wahi upload
 const loadLib = (src, name) => window[name] ? Promise.resolve(window[name]) : new Promise((ok, no) => {
   const sc = document.createElement("script"); sc.src = src; sc.onload = () => ok(window[name]); sc.onerror = () => no(new Error(name + " load nahi hua")); document.head.appendChild(sc); });
