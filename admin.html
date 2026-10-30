@@ -1662,7 +1662,7 @@ function editPpt(p) {
   $("#peName").placeholder = N ? "e.g. Class 10 Science Ch 1 — Chemical Reactions Notes" : "e.g. Class 10 Science — Light Reflection";
   $("#peDescL").textContent = N ? "(chhota sa — kya kya hai in notes mein)" : "(chhota sa — kya kya hai is PPT mein)";
   $("#peSlidesL").textContent = N ? "Pages kitne hain" : "Slides kitni hain"; $("#peSlides").placeholder = N ? "14" : "25";
-  $("#peImgsL").textContent = N ? "2. Preview pages (PDF chunte hi pehle 5 page apne aap · hata ya badal sakte hain)" : "2. Preview images (PPT / PDF chunte hi pehli 5 slides ki photo apne aap lag jaati hai · hata ya badal sakte hain · ⭐ Featured badge wali PPT ki slides website par upar chalti hain)";
+  $("#peImgsL").textContent = N ? "2. Preview pages (PDF chunte hi pehle 8 page apne aap · hata ya badal sakte hain)" : "2. Preview images (PPT / PDF chunte hi pehli 8 slides ki photo apne aap lag jaati hai · hata ya badal sakte hain · ⭐ Featured badge wali PPT ki slides website par upar chalti hain)";
   $("#peFileIn").accept = N ? ".pdf,.zip,application/pdf,application/zip" : ".ppt,.pptx,.pdf,.zip,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/zip";
   $("#peSave").textContent = N ? "Save Notes" : "Save PPT";
   $("#peName").value = PE.title; $("#peDesc").value = PE.desc; $("#pePrice").value = PE.price; $("#peMrp").value = PE.mrp || ""; $("#peSlides").value = PE.slides || "";
@@ -1712,8 +1712,8 @@ async function uploadPptFile(file, pages) {
   if (/\.pdf$/i.test(file.name)) pdfMeta(file, pe);
   if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); if (m && PE === pe) applyMeta(pe, m, file); }
 }
-// file chunte hi pehli 5 slide / page ki photo "Preview images" mein apne aap (hata / badal sakte hain)
-const PV_AUTO = 5;
+// file chunte hi pehli 8 slide / page ki photo "Preview images" mein apne aap (hata / badal sakte hain)
+const PV_AUTO = 8;
 async function autoPreview(file, pe, pages) {
   const isPdf = /\.pdf$/i.test(file.name); if (!isPdf && !/\.pptx$/i.test(file.name)) return;
   const slots = Array.from({ length: PV_AUTO }, (_, i) => ({ busy: `${isPdf ? "Page" : "Slide"} ${i + 1}…`, auto: true }));
@@ -1774,7 +1774,7 @@ async function pdfMeta(file, pe) {
 // PDF ke kuch page ki preview photo (background job mein)
 async function pdfShots(file, pages, tick, each) {
   const lib = await loadPdfJs(), doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise, refs = [];
-  const list = (pages || [1, 2, 3, 4, 5]).filter(n => n <= doc.numPages);
+  const list = (pages || Array.from({ length: PV_AUTO }, (_, i) => i + 1)).filter(n => n <= doc.numPages);
   for (const n of list) {
     tick(`Page ${n} ki photo…`);
     try {

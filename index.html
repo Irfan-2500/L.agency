@@ -2942,8 +2942,8 @@ function renderThemes(){
 $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
 /* Ready to Use PPT: Ready PPTs page wali list (admin panel ki PPTs, warna built-in) ek line mein; click par theme jaisa popup */
 let RD_LIST = [], NT_LIST = [];
-/* Preview: pehli 10 slide khuli, baaki sab dikhti hain par lock (halki blur) — click par kharidne ka popup */
-const FREE_N = 10;
+/* Preview: pehli 8 slide khuli, baaki sab dikhti hain par lock (halki blur) — click par kharidne ka popup */
+const FREE_N = 8;
 const pvSlots = (pics, n) => { const N = Math.max(n || 0, pics.length); if (!pics.length) return [];
   return Array.from({ length:N }, (_, k) => ({ src:pics[k] || pics[k % Math.min(pics.length, FREE_N)], lock:k >= FREE_N || !pics[k] })); };
 function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
