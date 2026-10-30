@@ -503,11 +503,27 @@ label.f span{font-weight:500;color:var(--dim)}
   </div>
 </div>
 
-<style>#pptModal.zip [data-solo]{display:none}
-#peZipList{display:flex;flex-direction:column;gap:4px;margin-top:8px;max-height:220px;overflow:auto}
-#peZipList div{display:flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--line,#ddd);border-radius:8px;font-size:.85rem}
-#peZipList div b{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#peZipList div small{white-space:nowrap}</style>
+<style>#uq{position:fixed;right:16px;bottom:16px;z-index:9000;width:min(360px,calc(100vw - 32px));background:var(--card,#fff);color:inherit;border:1px solid var(--line,#ddd);border-radius:14px;box-shadow:0 18px 40px -12px rgba(0,0,0,.35);font-size:.85rem;overflow:hidden}
+#uq .uqh{display:flex;align-items:center;gap:6px;padding:10px 12px;background:linear-gradient(135deg,#8b2cff,#06b6d4);color:#fff}
+#uq .uqh .sp{flex:1}#uq .uqh button{background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:8px;padding:3px 9px;font:inherit;cursor:pointer}
+#uq .uql{max-height:260px;overflow:auto;padding:6px}#uq .uqi{display:flex;flex-direction:column;gap:3px;padding:7px 8px;border-radius:9px}
+#uq .uqi+.uqi{border-top:1px solid var(--line,#eee)}#uq .uqi b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#uq .uqi small{opacity:.75}#uq .uqi.bad small{color:var(--bad,#e11d48);opacity:1}#uq .uqi.ok small{color:var(--ok,#16a34a);opacity:1}
+#uq .uqi button{align-self:flex-start;border:1px solid var(--line,#ddd);background:none;color:inherit;border-radius:7px;padding:2px 8px;font:inherit;cursor:pointer}
+#uq .tb{height:5px;border-radius:9px;background:rgba(127,127,127,.2);overflow:hidden}#uq .tb i{display:block;height:100%;background:#8b2cff}
+#uq p{margin:0;padding:6px 12px 10px;font-size:.75rem;opacity:.7}
+#pptModal.zip [data-solo]{display:none}
+#peZipList{display:flex;flex-direction:column;gap:5px;margin-top:8px;max-height:460px;overflow:auto}
+#peZipList .zi{border:1px solid var(--line,#ddd);border-radius:10px;font-size:.85rem}
+#peZipList .zi.open{border-color:var(--accent,#8b2cff);box-shadow:0 0 0 2px rgba(139,44,255,.15)}
+#peZipList .zh{display:flex;gap:9px;align-items:center;width:100%;padding:7px 10px;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+#peZipList .zt{flex:1;min-width:0;display:flex;flex-direction:column}
+#peZipList .zt b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#peZipList .zt small{opacity:.7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#peZipList .ze{font-size:.78rem;padding:3px 8px;border-radius:7px;border:1px solid var(--line,#ddd);white-space:nowrap}
+#peZipList .zf{display:flex;flex-direction:column;gap:8px;padding:4px 10px 12px}
+#peZipList .zf .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media(max-width:600px){#peZipList .zf .g3{grid-template-columns:1fr 1fr}}</style>
 <!-- READY PPT EDITOR -->
 <div class="modal" id="pptModal" hidden role="dialog" aria-modal="true" aria-labelledby="peTitle">
   <div class="mbox">
@@ -518,7 +534,7 @@ label.f span{font-weight:500;color:var(--dim)}
       <div id="peBulk" hidden><div class="row" style="gap:8px;flex-wrap:wrap"><label class="btn sm" for="peDirIn">📁 Poora subject folder chunein</label><label class="btn sm" for="peMultiIn">📚 Kai chapter PDF / ZIP chunein</label></div>
         <p class="note" style="margin-top:6px">Folder ya ZIP ke saare chapter (Ch01, Ch02…) kram se jud kar <b>ek PDF</b> ban jayenge. Customer ko poora subject ek file mein milega. Naam, medium, chapter list aur pages apne aap bhar jayenge.</p></div>
       <div id="peZip" hidden><label class="btn sm" for="peZipIn">📦 ZIP se kai PPT ek saath (har PPT alag)</label>
-        <p class="note" style="margin-top:6px">ZIP ki har PPT / PDF website par <b>alag card</b> banegi. Daam, class, board neeche ek baar bhariye, sab par lag jayega. Naam, slides, description aur photo har PPT se apne aap banenge.</p>
+        <p class="note" style="margin-top:6px">ZIP ki har PPT / PDF website par <b>alag card</b> banegi. Naam, class, subject, medium, slides aur description file se apne aap bharte hain. Kisi file ka daam ya detail alag rakhni ho to us file par click karein. Baaki sab par neeche wala daam / board lagega.</p>
         <div id="peZipList"></div></div>
       <input type="file" id="peZipIn" accept=".zip,application/zip" hidden>
       <input type="file" id="peDirIn" webkitdirectory directory multiple hidden>
@@ -762,6 +778,7 @@ async function startApp() {
   $("#app").hidden = false;
   const h = (location.hash || "").slice(1);
   go(Object.keys(TITLES).includes(h) ? h : "dash");
+  resumeUQ();
 }
 function badge(id, n) { const el = $(id); el.hidden = !n; el.textContent = n || ""; }
 const V = html => { $("#view").innerHTML = html; };
@@ -1658,7 +1675,7 @@ function editPpt(p) {
 }
 function drawPeFile(prog) {
   const f = PE.file, box = $("#peFile");
-  if (prog != null) box.innerHTML = `<div class="up"><b>⏫ Upload ho raha hai… ${prog}%</b><span class="tb"><i style="width:${prog}%"></i></span><small>Window band na karein</small></div>`;
+  if (PE.newFile) box.innerHTML = `<div class="up done"><b>✅ ${esc(PE.newFile.name)}</b><small>Save dabate hi background mein upload hogi. Badalni ho to nayi file chunein.</small></div>`;
   else box.innerHTML = f ? `<div class="up done"><b>✅ ${esc(PE.fileName || "File")}</b><small>Upload ho gayi. Badalni ho to nayi file chunein.</small></div>`
     : isNote(PE) ? `<b>+ Notes ki PDF chunein</b><br><small>A4 size PDF · ye file customer ko payment ke baad milegi</small>`
     : `<b>+ PPT / PDF file chunein</b><br><small>PPTX, PPT, PDF ya ZIP · 1 GB tak · ye file customer ko payment ke baad milegi</small>`;
@@ -1682,32 +1699,48 @@ async function addPeImgs(files) {
     drawPeImgs();
   }
 }
-// badi file → Google Drive, 8 MB ke tukdon mein
+// File chunte hi sirf browser mein details padhte hain; asli upload "Save" ke baad background mein hota hai
+const nice = n => n.replace(/\.\w+$/, "").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
 async function uploadPptFile(file, pages) {
   if (isNote(PE) && /\.zip$/i.test(file.name)) return bulkNotes([file]);
   if (isNote(PE) && !/\.pdf$/i.test(file.name)) return toast("Notes ke liye sirf PDF file", true);
   if (!/\.(pptx?|pdf|zip)$/i.test(file.name)) return toast("Sirf PPT, PPTX, PDF ya ZIP file", true);
-  if (PE.uploading) return;
-  PE.uploading = true; drawPeFile(0);
-  PE.auto = Promise.all([/\.pdf$/i.test(file.name) && pdfPreview(file, PE, pages), /\.pptx$/i.test(file.name) && pptxAuto(file, PE)]);
-  try {
+  const pe = PE; pe.newFile = file; pe.pages = pages; pe.fileName = file.name;
+  if (!$("#peName").value.trim()) $("#peName").value = nice(file.name).slice(0, 120);
+  drawPeFile();
+  if (/\.pdf$/i.test(file.name)) pdfMeta(file, pe);
+  if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); if (m && PE === pe) applyMeta(pe, m, file); }
+}
+// badi file → Google Drive, 8 MB ke tukdon mein
+// refresh ke baad: jahan tak gaya tha wahin se (j.up = Drive session + kitna gaya)
+async function sendFile(file, prog, j) {
+  if (!j.up) {
     const s = await call("adminPptStart", { name: file.name, size: file.size, mime: file.type || "application/octet-stream" });
     if (!s.ok) throw new Error(s.error);
-    const CH = 8 * 1048576; let start = 0, done = null, tries = 0;
-    while (!done) {
-      const part = file.slice(start, Math.min(file.size, start + CH));
-      const r = await call("chunk", { session: s.session, start, total: file.size, data: await b64(part) });
-      if (!r.ok) { if (r.stop || ++tries > 3) throw new Error(r.error); continue; }
-      tries = 0;
-      if (r.done) done = r; else { start = r.next || start + part.size; drawPeFile(Math.min(99, Math.round(start / file.size * 100))); }
+    j.up = { session: s.session, start: 0 }; j.resumed = false; keepJob(j);
+  }
+  const CH = 8 * 1048576; let tries = 0;
+  for (;;) {
+    const start = j.up.start, part = file.slice(start, Math.min(file.size, start + CH));
+    const r = await call("chunk", { session: j.up.session, start, total: file.size, data: await b64(part) });
+    if (!r.ok) {
+      if (j.resumed) { j.resumed = false; j.up = null; return sendFile(file, prog, j); }   // purana session nahi chala → shuru se
+      if (r.stop || ++tries > 3) { j.up = null; keepJob(j); throw new Error(r.error); }
+      continue;
     }
-    PE.file = done.id; PE.fileName = file.name;
-    if (!$("#peName").value.trim()) $("#peName").value = file.name.replace(/\.\w+$/, "").replace(/[_-]+/g, " ");
-    toast("File upload ho gayi ✓");
-  } catch (e) { toast("File upload nahi hui: " + e.message, true); }
-  PE.uploading = false; drawPeFile();
+    j.resumed = false; tries = 0;
+    if (r.done) { j.up = null; return r.id; }
+    j.up.start = r.next || start + part.size; keepJob(j); prog(Math.min(99, Math.round(j.up.start / file.size * 100)));
+  }
 }
-// PDF se pehle 4 page ki preview photo + pages ki ginti (pdf.js, browser mein hi)
+// canvas → webp/jpg → Drive image ref
+async function shotUpload(c, name) {
+  const blob = await new Promise((ok, no) => c.toBlob(b => b && b.type === "image/webp" ? ok(b) : c.toBlob(j => j ? ok(j) : no(new Error("convert")), "image/jpeg", .85), "image/webp", .82));
+  const res = await call("adminImage", { name: name + (blob.type === "image/webp" ? ".webp" : ".jpg"), mime: blob.type, data: await b64(blob) });
+  if (!res.ok) throw new Error(res.error);
+  return res.ref;
+}
+// PDF: pages ki ginti (aur Notes ke liye A4 check)
 let pdfLib = null;
 function loadPdfJs() {
   return pdfLib || (pdfLib = new Promise((ok, no) => {
@@ -1716,87 +1749,163 @@ function loadPdfJs() {
     sc.onerror = () => { pdfLib = null; no(new Error("pdf.js load nahi hua")); }; document.head.appendChild(sc);
   }));
 }
-async function pdfPreview(file, pe, pages) {
+async function pdfMeta(file, pe) {
   try {
     const lib = await loadPdfJs(), doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise;
     if (PE !== pe) return;
     if (!+$("#peSlides").value) $("#peSlides").value = doc.numPages;
     const v0 = (await doc.getPage(1)).getViewport({ scale: 1 }), r = Math.max(v0.width, v0.height) / Math.min(v0.width, v0.height);
     if (isNote(pe) && Math.abs(r - 1.414) > .04) toast("⚠️ Ye PDF A4 size ki nahi lagti. Notes A4 (210 × 297 mm) mein ho to print achha aata hai.", true);
-    if (pe.imgs.length) return;                                   // pehle se preview hain to mat badlo
-    for (const n of (pages || [1, 2, 3, 4]).filter(n => n <= doc.numPages)) { if (PE !== pe) break;
-      const slot = { busy: `Page ${n}…` }; pe.imgs.push(slot); drawPeImgs();
-      try {
-        const page = await doc.getPage(n), vp = page.getViewport({ scale: 1100 / page.getViewport({ scale: 1 }).width }), c = document.createElement("canvas");
-        c.width = Math.round(vp.width); c.height = Math.round(vp.height);
-        const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
-        await page.render({ canvasContext: g, viewport: vp }).promise;
-        const blob = await new Promise((ok, no) => c.toBlob(b => b && b.type === "image/webp" ? ok(b) : c.toBlob(j => j ? ok(j) : no(new Error("convert")), "image/jpeg", .85), "image/webp", .82));
-        const base = file.name.replace(/\.\w+$/, "").slice(0, 60) + "-p" + n;
-        const res = await call("adminImage", { name: base + (blob.type === "image/webp" ? ".webp" : ".jpg"), mime: blob.type, data: await b64(blob) });
-        if (!res.ok) throw new Error(res.error);
-        Object.assign(slot, { ref: res.ref, url: res.url }); delete slot.busy;
-      } catch (e) { pe.imgs.splice(pe.imgs.indexOf(slot), 1); toast(`Page ${n} ki preview nahi bani: ${e.message}`, true); }
-      if (PE === pe) drawPeImgs();
-    }
-  } catch (e) { toast("PDF ki preview apne aap nahi bani. Photo khud add kar sakte hain.", true); }
+  } catch (e) {}
 }
-// PPTX se slides ki ginti, naam, description, animation aur saari slides ki photo (sab browser mein hi)
+// PDF ke kuch page ki preview photo (background job mein)
+async function pdfShots(file, pages, tick) {
+  const lib = await loadPdfJs(), doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise, refs = [];
+  const list = (pages || [1, 2, 3, 4]).filter(n => n <= doc.numPages);
+  for (const n of list) {
+    tick(`Page ${n} ki photo…`);
+    try {
+      const page = await doc.getPage(n), vp = page.getViewport({ scale: 1100 / page.getViewport({ scale: 1 }).width }), c = document.createElement("canvas");
+      c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+      const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+      await page.render({ canvasContext: g, viewport: vp }).promise;
+      refs.push(await shotUpload(c, file.name.replace(/\.\w+$/, "").slice(0, 60) + "-p" + n));
+    } catch (e) {}
+  }
+  return { refs, count: doc.numPages };
+}
+// PPTX se slides ki ginti, naam, description, animation, class, language, subject (sab browser mein hi)
 const xmlText = x => [...x.matchAll(/<a:t(?:\s[^>]*)?>([^<]*)<\/a:t>/g)].map(m => m[1]).join(" ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/\s+/g, " ").trim();
 const slideTitle = x => {   // title placeholder, warna sabse bade font wala text
   const sps = x.match(/<p:sp>[\s\S]*?<\/p:sp>/g) || [], ph = sps.find(sp => /<p:ph[^>]*type="(?:title|ctrTitle)"/.test(sp) && xmlText(sp));
   if (ph) return xmlText(ph).slice(0, 80);
   const big = sps.map(sp => ({ t: xmlText(sp), sz: Math.max(0, ...[...sp.matchAll(/<a:rPr[^>]*\ssz="(\d+)"/g)].map(m => +m[1])) })).filter(o => o.t).sort((a, b) => b.sz - a.sz)[0];
   return big ? big.t.slice(0, 80) : ""; };
-async function pptxAuto(file, pe) {
+async function pptxMeta(file) {
   try {
     const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(file);
     const names = Object.keys(z.files).filter(n => /^ppt\/slides\/slide\d+\.xml$/.test(n)).sort((a, b) => +a.match(/\d+/)[0] - +b.match(/\d+/)[0]);
-    if (PE !== pe || !names.length) return;
+    if (!names.length) return null;
     const xml = await Promise.all(names.map(n => z.file(n).async("string")));
     const core = z.file("docProps/core.xml") ? await z.file("docProps/core.xml").async("string") : "";
-    const titles = xml.map(slideTitle);
+    const titles = xml.map(slideTitle), fromFile = nice(file.name);
     const docTitle = xmlText("<a:t>" + ((/<dc:title>([^<]*)<\/dc:title>/.exec(core) || [])[1] || "") + "</a:t>");
-    if (!+$("#peSlides").value) $("#peSlides").value = names.length;
-    const fromFile = file.name.replace(/\.\w+$/, "").replace(/[_-]+/g, " ");
-    if (!$("#peName").value.trim() || $("#peName").value.trim() === fromFile.trim()) $("#peName").value = (docTitle && !/^(PowerPoint Presentation|Presentation\d*)$/i.test(docTitle) ? docTitle : titles[0] || fromFile).slice(0, 120);
-    if (!$("#peDesc").value.trim()) { const list = [...new Set(titles.slice(1).filter(t => t && t.length > 2))];
-      if (list.length) $("#peDesc").value = (`${names.length} slides: ` + list.join(", ")).slice(0, 600); }
-    if (xml.some(x => /<p:timing>[\s\S]*<p:anim|<p:transition[\s>]/.test(x))) $("#peAnim").checked = true;
-    // class, language, subject bhi andaza lagakar (baad mein badal sakte hain)
-    const all = xml.map(xmlText).join(" "), head = $("#peName").value + " " + fromFile + " " + titles.slice(0, 2).join(" "), cls = /(?:\bClass|कक्षा)\s*[-:]?\s*(1[0-2]|[1-9])\b/i.exec(head + " " + all);
-    if (cls && !pe.level.length) { pe.level.push("Class " + cls[1]); ED = pe; mseg($("#peCls"), CLASSES, "level"); }
-    const hi = (all.match(/[\u0900-\u097F]/g) || []).length, en = (all.match(/[A-Za-z]/g) || []).length;
-    if (hi + en > 40) { pe.lang = hi > en * 4 ? "Hindi" : en > hi * 4 ? "English" : "Both"; ED = pe; seg($("#peLang"), LANGS, pe.lang, "lang"); }
-    const subj = SUBJECTS.find(x => new RegExp("\\b" + x.replace(/[^\w ]/g, "").replace(/ /g, "\\s*") + "\\b", "i").test(head));
-    if (subj && !$("#peSubj").value) $("#peSubj").value = subj;
-    if (!pe.imgs.length) await pptxShots(file, pe, names.length);
-  } catch (e) { console.error(e); toast("PPT se details apne aap nahi nikli. Khud bhar dijiye.", true); }
+    const title = (docTitle && !/^(PowerPoint Presentation|Presentation\d*)$/i.test(docTitle) ? docTitle : titles[0] || fromFile).slice(0, 120);
+    const list = [...new Set(titles.slice(1).filter(t => t && t.length > 2))];
+    const all = xml.map(xmlText).join(" "), head = title + " " + fromFile + " " + titles.slice(0, 2).join(" "), cls = /(?:\bClass|कक्षा)\s*[-:]?\s*(1[0-2]|[1-9])\b/i.exec(head + " " + all);
+    const hi = (all.match(/[ऀ-ॿ]/g) || []).length, en = (all.match(/[A-Za-z]/g) || []).length;
+    return { slides: names.length, title, desc: list.length ? (`${names.length} slides: ` + list.join(", ")).slice(0, 600) : "",
+      anim: xml.some(x => /<p:timing>[\s\S]*<p:anim|<p:transition[\s>]/.test(x)), cls: cls ? "Class " + cls[1] : "",
+      lang: hi + en > 40 ? (hi > en * 4 ? "Hindi" : en > hi * 4 ? "English" : "Both") : "",
+      subj: SUBJECTS.find(x => new RegExp("\\b" + x.replace(/[^\w ]/g, "").replace(/ /g, "\\s*") + "\\b", "i").test(head)) || "" };
+  } catch (e) { console.error(e); return null; }
 }
-async function pptxShots(file, pe, count) {
-  const slots = Array.from({ length: count }, (_, i) => ({ busy: `Slide ${i + 1}…` })); pe.imgs.push(...slots); drawPeImgs();
-  const drop = slot => { const i = pe.imgs.indexOf(slot); if (i > -1) pe.imgs.splice(i, 1); };
-  const host = document.createElement("div"); host.style.cssText = "position:fixed;left:-20000px;top:0;width:1280px;pointer-events:none";
+function applyMeta(pe, m, file) {   // modal ke khaali khaane bharo
+  if (!+$("#peSlides").value) $("#peSlides").value = m.slides;
+  if (!$("#peName").value.trim() || $("#peName").value.trim() === nice(file.name)) $("#peName").value = m.title;
+  if (!$("#peDesc").value.trim() && m.desc) $("#peDesc").value = m.desc;
+  if (m.anim) $("#peAnim").checked = true;
+  if (m.cls && !pe.level.length) { pe.level.push(m.cls); ED = pe; mseg($("#peCls"), CLASSES, "level"); }
+  if (m.lang) { pe.lang = m.lang; ED = pe; seg($("#peLang"), LANGS, pe.lang, "lang"); }
+  if (m.subj && !$("#peSubj").value) $("#peSubj").value = m.subj;
+}
+// PPTX ki saari slides ki photo (background job mein)
+async function pptxShots(file, count, tick) {
+  const refs = [], host = document.createElement("div"); host.style.cssText = "position:fixed;left:-20000px;top:0;width:1280px;pointer-events:none";
   try {
     const lib = await loadLib("https://cdn.jsdelivr.net/npm/pptx-preview@1.0.7/dist/pptx-preview.umd.js", "pptxPreview");
     const h2c = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js", "html2canvas");
     document.body.appendChild(host);
     await lib.init(host, { width: 1280, height: 720, mode: "list" }).preview(await file.arrayBuffer());
     await new Promise(r => setTimeout(r, 600));
-    const els = [...host.querySelectorAll(".pptx-preview-slide-wrapper")];
-    for (let i = 0; i < count; i++) { const slot = slots[i];
-      if (PE !== pe || !els[i]) { drop(slot); continue; }
+    const els = [...host.querySelectorAll(".pptx-preview-slide-wrapper")].slice(0, count || 99);
+    for (let i = 0; i < els.length; i++) {
+      tick(`Slide ${i + 1} / ${els.length} ki photo…`);
       try {
         const c = await h2c(els[i], { scale: 1100 / els[i].offsetWidth, backgroundColor: "#ffffff", useCORS: true, logging: false });
-        const blob = await new Promise((ok, no) => c.toBlob(b => b && b.type === "image/webp" ? ok(b) : c.toBlob(j => j ? ok(j) : no(new Error("convert")), "image/jpeg", .85), "image/webp", .82));
-        const res = await call("adminImage", { name: file.name.replace(/\.\w+$/, "").slice(0, 60) + "-s" + (i + 1) + (blob.type === "image/webp" ? ".webp" : ".jpg"), mime: blob.type, data: await b64(blob) });
-        if (!res.ok) throw new Error(res.error);
-        Object.assign(slot, { ref: res.ref, url: res.url }); delete slot.busy;
-      } catch (e) { drop(slot); toast(`Slide ${i + 1} ki photo nahi bani: ${e.message}`, true); }
-      if (PE === pe) drawPeImgs();
+        refs.push(await shotUpload(c, file.name.replace(/\.\w+$/, "").slice(0, 60) + "-s" + (i + 1)));
+      } catch (e) {}
     }
-  } catch (e) { slots.forEach(drop); toast("PPT ki slides se photo apne aap nahi bani. Photo khud add kar sakte hain.", true); }
-  host.remove(); if (PE === pe) drawPeImgs();
+  } catch (e) {}
+  host.remove(); return refs;
+}
+/* ---------- Background upload queue: Save dabate hi modal band, upload peeche chalta rahe ---------- */
+const UQ = []; let UQRUN = 0, UQOPEN = true;
+// queue browser ke IndexedDB mein bhi rehti hai, taaki page refresh / band hone par upload wahin se chale
+const UDB = (() => {
+  let db = null;
+  const open = () => db || (db = new Promise((ok, no) => { const r = indexedDB.open("ppt_uploads", 1);
+    r.onupgradeneeded = () => { r.result.createObjectStore("jobs", { keyPath: "key" }); r.result.createObjectStore("files"); };
+    r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); }));
+  const tx = async (store, mode, fn) => { const d = await open(); return new Promise((ok, no) => { const t = d.transaction(store, mode), r = fn(t.objectStore(store)); t.oncomplete = () => ok(r && r.result); t.onerror = () => no(t.error); }); };
+  return { put: (st, v, k) => tx(st, "readwrite", s => s.put(v, k)).catch(() => {}), get: (st, k) => tx(st, "readonly", s => s.get(k)).catch(() => null),
+    del: (st, k) => tx(st, "readwrite", s => s.delete(k)).catch(() => {}), all: st => tx(st, "readonly", s => s.getAll()).catch(() => []) };
+})();
+const keepJob = j => UDB.put("jobs", { key: j.key, name: j.name, pe: j.pe, pages: j.pages || null, auto: !!j.auto, up: j.up || null, metaDone: !!j.metaDone });
+const dropJob = j => { UDB.del("jobs", j.key); UDB.del("files", j.key); };
+function enqueue(job) {
+  const j = Object.assign({ st: "wait", msg: "Line mein…", prog: null, key: Date.now() + "-" + Math.random().toString(36).slice(2, 8) }, job);
+  UQ.push(j); UDB.put("files", j.file, j.key); keepJob(j); UQOPEN = true; drawUQ(); pumpUQ();
+}
+let UQRESUMED = false;
+async function resumeUQ() {
+  if (UQRESUMED) return; UQRESUMED = true;
+  const jobs = await UDB.all("jobs");
+  for (const r of jobs || []) {
+    if (UQ.some(x => x.key === r.key)) continue;
+    const file = await UDB.get("files", r.key);
+    if (!file) { dropJob(r); continue; }
+    UQ.push(Object.assign(r, { file, st: "wait", msg: "Refresh ke baad wahin se chalu…", prog: null, resumed: true }));
+  }
+  if (UQ.length) { toast(`⏫ ${UQ.filter(j => j.st === "wait").length} adhoore upload phir se chalu ho gaye`); drawUQ(); pumpUQ(); }
+}
+function pumpUQ() {
+  while (UQRUN < 2) {
+    const j = UQ.find(x => x.st === "wait"); if (!j) break;
+    j.st = "run"; UQRUN++;
+    runJob(j).finally(() => { UQRUN--; drawUQ(); pumpUQ(); });
+  }
+}
+async function runJob(j) {
+  const p = j.pe, f = j.file, set = (msg, prog) => { j.msg = msg; j.prog = prog; drawUQ(); };
+  try {
+    if (j.auto && !j.metaDone && /\.pptx$/i.test(f.name)) {   // ZIP wali PPT: naam, slides, class wagaira apne aap
+      set("PPT padh rahe hain…", null);
+      const m = await pptxMeta(f);
+      if (m) { p.title = p.title || m.title; p.desc = p.desc || m.desc; p.slides = p.slides || m.slides; p.anim = p.anim || m.anim;
+        if (m.cls && !p.level.length) p.level = [m.cls]; if (m.lang) p.lang = m.lang; p.subject = p.subject || m.subj; }
+    }
+    j.metaDone = true; p.title = (p.title || nice(f.name)).slice(0, 120); j.name = p.title;
+    if (!p.file || p.fileName !== f.name) {
+      set(`Upload ${j.up ? Math.round(j.up.start / f.size * 100) : 0}%`, j.up ? Math.round(j.up.start / f.size * 100) : 0);
+      p.file = await sendFile(f, pc => set(`Upload ${pc}%`, pc), j); p.fileName = f.name; keepJob(j);
+    }
+    if (!p.refs.length && /\.(pdf|pptx)$/i.test(f.name)) {
+      set("Photo ban rahi…", null);
+      if (/\.pdf$/i.test(f.name)) { const r = await pdfShots(f, j.pages, t => set(t, null)); p.refs = r.refs; p.slides = p.slides || r.count; }
+      else p.refs = await pptxShots(f, p.slides, t => set(t, null));
+      keepJob(j);
+    }
+    set("Save ho raha hai…", null);
+    const r = await call("adminPptSave", pptPayload(p));
+    if (!r.ok) throw new Error(r.error);
+    const i = PP.findIndex(x => x.id === r.ppt.id); if (i >= 0) PP[i] = r.ppt; else PP.unshift(r.ppt);
+    if ($("#pgrid")) drawPpts();
+    j.st = "ok"; j.msg = r.ppt.show ? "✅ Website par live" : "✅ Saved (hidden)"; dropJob(j);
+  } catch (e) { j.st = "bad"; j.msg = "❌ " + e.message; keepJob(j); }
+  j.prog = null;
+}
+function drawUQ() {
+  let box = $("#uq");
+  if (!UQ.length) { if (box) box.remove(); return; }
+  if (!box) { box = document.createElement("div"); box.id = "uq"; document.body.appendChild(box); }
+  const done = UQ.filter(j => j.st === "ok").length, busy = UQ.some(j => j.st === "wait" || j.st === "run");
+  box.innerHTML = `<div class="uqh"><b>${busy ? "⏫" : "✅"} Upload ${done} / ${UQ.length}</b><span class="sp"></span>${busy ? "" : `<button type="button" data-uqx>Clear</button>`}<button type="button" data-uqt>${UQOPEN ? "▾" : "▴"}</button></div>`
+    + (UQOPEN ? `<div class="uql">${UQ.map((j, k) => `<div class="uqi ${j.st}"><b>${esc(j.name)}</b><small>${esc(j.msg)}</small>${j.prog != null ? `<span class="tb"><i style="width:${j.prog}%"></i></span>` : ""}${j.st === "bad" ? `<button type="button" data-uqr="${k}">↻ Dobara</button>` : ""}</div>`).join("")}</div>`
+      + (busy ? `<p>Aap doosre page dekh sakte hain aur nayi PPT add kar sakte hain. Page refresh / band ho jaye to admin dobara kholte hi upload wahin se chalu ho jayega.</p>` : "") : "");
+  box.querySelector("[data-uqt]").onclick = () => { UQOPEN = !UQOPEN; drawUQ(); };
+  const x = box.querySelector("[data-uqx]"); if (x) x.onclick = () => { UQ.forEach(dropJob); UQ.length = 0; drawUQ(); };
+  box.querySelectorAll("[data-uqr]").forEach(b => b.onclick = () => { const j = UQ[+b.dataset.uqr]; j.st = "wait"; j.msg = "Line mein…"; drawUQ(); pumpUQ(); });
 }
 // Poora subject: folder / kai PDF / ZIP → saare chapter kram se jod kar ek PDF (pdf-lib), phir wahi upload
 const loadLib = (src, name) => window[name] ? Promise.resolve(window[name]) : new Promise((ok, no) => {
@@ -1823,7 +1932,7 @@ async function bulkNotes(files) {
       }
     }
     if (!list.length) throw new Error("Isme koi PDF nahi mili");
-    if (list.length === 1) { pe.uploading = false; drawPeFile(); return uploadPptFile(new File([list[0].data], list[0].name.split("/").pop(), { type: "application/pdf" })); }
+    if (list.length === 1) { pe.uploading = false; return uploadPptFile(new File([list[0].data], list[0].name.split("/").pop(), { type: "application/pdf" })); }
     list.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
     const L = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js", "PDFLib"), out = await L.PDFDocument.create(), starts = [];
     for (let i = 0; i < list.length; i++) {
@@ -1845,13 +1954,13 @@ async function bulkNotes(files) {
     if (!$("#peDesc").value.trim()) $("#peDesc").value = (`${list.length} chapters ek PDF mein: ` + list.map(x => chName(x.name)).join(", ")).slice(0, 600);
     $("#peSlides").value = out.getPageCount();
     pe.uploading = false;
-    toast(`✓ ${list.length} chapters jud gaye (${out.getPageCount()} pages). Ab upload ho raha hai…`);
+    toast(`✓ ${list.length} chapters jud gaye (${out.getPageCount()} pages). Ab "Save" dabayein`);
     uploadPptFile(new File([bytes], base + "_All_Chapters.pdf", { type: "application/pdf" }), starts.slice(0, 6));
   } catch (e) { pe.uploading = false; if (PE === pe) drawPeFile(); toast("Folder se Notes nahi bane: " + e.message, true); }
 }
 $("#peDirIn").onchange = e => { const f = [...e.target.files]; e.target.value = ""; if (f.length) bulkNotes(f); };
 $("#peMultiIn").onchange = e => { const f = [...e.target.files]; e.target.value = ""; if (f.length) bulkNotes(f); };
-function closePpt() { if (ZRUN) return toast("Saari PPT upload ho rahi hain — thoda rukiye", true); if (PE && (PE.uploading || PE.imgs.some(x => x.busy))) return toast("Upload ho raha hai — thoda rukiye", true); $("#pptModal").hidden = true; }
+function closePpt() { if (PE && (PE.uploading || PE.imgs.some(x => x.busy))) return toast("Photo / chapters taiyar ho rahe hain — thoda rukiye", true); $("#pptModal").hidden = true; }
 $$("[data-pclose]").forEach(b => b.onclick = closePpt);
 $("#pptModal").addEventListener("click", e => { if (e.target.id === "pptModal") closePpt(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#pptModal").hidden) closePpt(); });
@@ -1864,63 +1973,98 @@ $("#peFileIn").onchange = e => { if (e.target.files[0]) uploadPptFile(e.target.f
   el.addEventListener("drop", e => fn(e.dataTransfer.files));
 });
 // ZIP mein kai PPT → har PPT ka alag card (daam, class, board sab par ek jaisa)
-let ZQ = null, ZRUN = false;
+let ZQ = null;
 $("#peZipIn").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) zipPick(f); };
+// file ke naam se andaza: "CH-1_Chemical Reactions | Science | Class-10 EM.pptx"
+function fileGuess(name) {
+  const base = name.replace(/\.\w+$/, ""), parts = base.split(/\s*[|｜]\s*/).map(x => x.trim()).filter(Boolean), all = base.replace(/_+/g, " ");
+  const chRe = /^\s*(?:ch(?:apter)?|अध्याय|पाठ|unit|lesson)[\s._-]*0*(\d+)[\s._:-]*/i, ch = chRe.exec(parts[0] || "");
+  const t = (parts[0] || base).replace(chRe, "").replace(/_+/g, " ").replace(/\s+/g, " ").trim();
+  const cm = /(?:\bclass|\bstd|कक्षा)[\s._-]*(1[0-2]|[1-9])(?!\d)/i.exec(all), cls = cm ? "Class " + cm[1] : "";
+  const subj = SUBJECTS.find(x => new RegExp("\\b" + x.replace(/[^\w ]/g, "").replace(/ /g, "\\s*") + "\\b", "i").test(all)) || "";
+  const lang = /\b(EM|english\s*medium)\b/i.test(all) ? "English" : /\b(HM|hindi\s*medium)\b/i.test(all) ? "Hindi" : "";
+  const tail = [cls, subj].filter(Boolean).join(" ") + (ch ? ` Ch ${ch[1]}` : "");
+  return { title: (t + (t && tail.trim() ? " — " + tail.trim() : "")).slice(0, 120), cls, subj, lang, sure: parts.length > 1 || !!ch || !!cm };
+}
+const zv = (it, k) => k in it.ed ? it.ed[k] : it.auto[k];
+let ZOPEN = -1;
 async function zipPick(f) {
-  if (ZRUN) return;
-  $("#peZipList").innerHTML = `<div><b>📦 ZIP khol rahe hain…</b></div>`;
+  $("#peZipList").innerHTML = `<div class="zi"><span class="zh"><b>📦 ZIP khol rahe hain…</b></span></div>`;
   try {
     const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(f);
     const list = Object.values(z.files).filter(e => !e.dir && /\.(pptx?|pdf)$/i.test(e.name) && !/(^|\/)(__MACOSX|\.)/.test(e.name))
       .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
     if (!list.length) { $("#peZipList").innerHTML = ""; return toast("Is ZIP mein koi PPT / PDF nahi mili", true); }
     const mime = n => /\.pdf$/i.test(n) ? "application/pdf" : /\.pptx$/i.test(n) ? "application/vnd.openxmlformats-officedocument.presentationml.presentation" : "application/vnd.ms-powerpoint";
-    ZQ = await Promise.all(list.map(async e => { const n = e.name.split("/").pop(); return { file: new File([await e.async("blob")], n, { type: mime(n) }), st: "Ready" }; }));
+    ZQ = await Promise.all(list.map(async e => { const n = e.name.split("/").pop(), g = fileGuess(n);
+      return { file: new File([await e.async("blob")], n, { type: mime(n) }), ed: {}, meta: false,
+        auto: { title: g.title || nice(n), desc: "", slides: "", cls: g.cls, subj: g.subj, lang: g.lang, price: "", mrp: "", anim: false } }; }));
+    ZOPEN = -1;
     $("#pptModal").classList.add("zip"); $("#peTitle").textContent = `ZIP: ${ZQ.length} PPT (har ek alag)`; $("#peSave").textContent = `Save sab ${ZQ.length} PPT`;
     $("#peFile").hidden = true; drawZip();
+    const zq = ZQ;
+    for (const it of zq) {   // andar ki slides padh kar baaki details
+      const n = it.file.name, g = fileGuess(n), a = it.auto;
+      try {
+        if (/\.pptx$/i.test(n)) { const m = await pptxMeta(it.file);
+          if (m) Object.assign(a, { title: g.sure && g.title ? g.title : m.title || a.title, desc: m.desc, slides: m.slides, cls: g.cls || m.cls, subj: g.subj || m.subj, lang: g.lang || m.lang, anim: m.anim }); }
+        else if (/\.pdf$/i.test(n)) { const doc = await (await loadPdfJs()).getDocument({ data: await it.file.arrayBuffer() }).promise; a.slides = doc.numPages; }
+      } catch (e) {}
+      it.meta = true; if (ZQ === zq) drawZip();
+    }
   } catch (e) { ZQ = null; $("#peZipList").innerHTML = ""; toast("ZIP nahi khuli: " + e.message, true); }
 }
-function drawZip() {
-  $("#peZipList").innerHTML = ZQ.map(x => `<div><span>${/\.pdf$/i.test(x.file.name) ? "📕" : "📊"}</span><b>${esc(x.file.name)}</b><small>${esc(x.st)}</small></div>`).join("");
+function zipLine(it) {
+  const v = k => zv(it, k), cp = $("#pePrice").value, pr = v("price") || cp;
+  return [v("subj"), v("cls"), v("lang") && (LANGS.find(l => l[0] === v("lang")) || [, v("lang")])[1], v("slides") && v("slides") + (/\.pdf$/i.test(it.file.name) ? " pages" : " slides"),
+    pr ? "₹" + pr + (v("price") ? " (alag)" : "") : "₹ ?"].filter(Boolean).join(" · ") + (it.meta ? "" : " · ⏳ file padh rahe…");
 }
-async function saveZip() {
-  if (ZRUN) return;
+function drawZip() {
+  const opt = (list, val, ph) => `<option value="">${ph}</option>` + list.map(o => { const [x, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(x)}" ${x === val ? "selected" : ""}>${esc(l)}</option>`; }).join("");
+  $("#peZipList").innerHTML = ZQ.map((it, k) => { const v = key => zv(it, key) ?? "", open = k === ZOPEN;
+    return `<div class="zi${open ? " open" : ""}" data-zi="${k}"><button type="button" class="zh" data-zo="${k}"><span>${/\.pdf$/i.test(it.file.name) ? "📕" : "📊"}</span>
+      <span class="zt"><b>${esc(v("title") || nice(it.file.name))}</b><small>${esc(zipLine(it))}</small></span><span class="ze">${open ? "▴ Band" : "✏️ Edit"}</span></button>
+      ${open ? `<div class="zf"><label class="f">Naam<input type="text" data-zk="title" maxlength="120" value="${esc(v("title"))}"></label>
+        <label class="f">Description<textarea data-zk="desc" rows="2" maxlength="600">${esc(v("desc"))}</textarea></label>
+        <div class="g3"><label class="f">Daam (₹)<input type="number" min="1" data-zk="price" value="${esc(v("price"))}" placeholder="${esc($("#pePrice").value || "sabka daam")}"></label>
+          <label class="f">Asli daam (₹)<input type="number" min="0" data-zk="mrp" value="${esc(v("mrp"))}" placeholder="${esc($("#peMrp").value || "optional")}"></label>
+          <label class="f">${/\.pdf$/i.test(it.file.name) ? "Pages" : "Slides"}<input type="number" min="0" data-zk="slides" value="${esc(v("slides"))}"></label>
+          <label class="f">Class<select data-zk="cls">${opt(CLASSES, v("cls"), "— sabki class —")}</select></label>
+          <label class="f">Subject<select data-zk="subj">${opt(SUBJECTS, v("subj"), "— sabka subject —")}</select></label>
+          <label class="f">Language<select data-zk="lang">${opt(LANGS, v("lang"), "— sabki language —")}</select></label></div>
+        <small class="note">Daam khaali chhoda to neeche wala sabka daam lagega.</small></div>` : ""}</div>`; }).join("");
+  $$("#peZipList [data-zo]").forEach(b => b.onclick = () => { ZOPEN = ZOPEN === +b.dataset.zo ? -1 : +b.dataset.zo; drawZip(); });
+  $$("#peZipList [data-zk]").forEach(el => { const k = +el.closest("[data-zi]").dataset.zi, it = ZQ[k];
+    el.oninput = el.onchange = () => { it.ed[el.dataset.zk] = el.value; const h = el.closest("[data-zi]").querySelector(".zt");
+      h.querySelector("b").textContent = zv(it, "title") || nice(it.file.name); h.querySelector("small").textContent = zipLine(it); }; });
+}
+$("#pePrice").addEventListener("input", () => { if (ZQ) $$("#peZipList .zt small").forEach((el, k) => el.textContent = zipLine(ZQ[k])); });
+function saveZip() {
   const price = +$("#pePrice").value, mrp = +$("#peMrp").value || 0;
-  if (!(price >= 1)) return $("#peErr").textContent = "Daam likhein (kam se kam ₹1) — sab PPT par yahi lagega";
-  const common = JSON.parse(JSON.stringify({ cat: PE.cat, level: PE.level, board: PE.board, lang: PE.lang, theme: PE.theme, badge: PE.badge }));
-  const subj = $("#peSubj").value, show = $("#peShow").checked, anim = $("#peAnim").checked;
-  ZRUN = true; $("#peSave").disabled = true; $("#peErr").textContent = ""; $("#peFile").hidden = false;
-  let good = 0;
-  for (const it of ZQ) {
-    if (it.st.startsWith("✅")) { good++; continue; }
-    it.st = "⏫ Upload…"; drawZip();
-    PE = Object.assign({ id: 0, title: "", desc: "", slides: "", imgs: [], file: "", fileName: "", show: true }, JSON.parse(JSON.stringify(common)));
-    $("#peName").value = ""; $("#peDesc").value = ""; $("#peSlides").value = ""; $("#peSubj").value = subj; $("#peAnim").checked = anim; drawPeImgs();
-    try {
-      await uploadPptFile(it.file);
-      if (!PE.file) throw new Error("file upload nahi hui");
-      it.st = "🖼 Photo ban rahi…"; drawZip();
-      await PE.auto;
-      Object.assign(PE, { title: ($("#peName").value.trim() || it.file.name.replace(/\.\w+$/, "").replace(/[_-]+/g, " ")).slice(0, 120), desc: $("#peDesc").value.trim(),
-        price, mrp, slides: +$("#peSlides").value || 0, subject: $("#peSubj").value, show, anim: $("#peAnim").checked, refs: PE.imgs.filter(x => x.ref).map(x => x.ref) });
-      const r = await call("adminPptSave", pptPayload(PE));
-      if (!r.ok) throw new Error(r.error);
-      PP.unshift(r.ppt); good++; it.st = "✅ Live"; 
-    } catch (e) { it.st = "❌ " + e.message; }
-    drawZip();
-  }
-  ZRUN = false; $("#peSave").disabled = false; drawPpts();
-  if (good === ZQ.length) { ZQ = null; $("#pptModal").hidden = true; toast(`✓ ${good} PPT alag-alag website par aa gayi`); }
-  else { $("#peSave").textContent = "Baaki dobara try karein"; $("#peErr").textContent = `${good} / ${ZQ.length} ho gayi. ❌ wali dobara try karne ke liye button dabayein.`; }
+  const noPrice = ZQ.find(it => !(+zv(it, "price") >= 1) && !(price >= 1));
+  if (noPrice) return $("#peErr").textContent = `Daam likhein (kam se kam ₹1) — "${zv(noPrice, "title") || noPrice.file.name}" ka daam nahi hai`;
+  const base = JSON.parse(JSON.stringify({ id: 0, title: "", desc: "", price, mrp, cat: PE.cat, level: PE.level, subject: $("#peSubj").value, board: PE.board, lang: PE.lang,
+    theme: PE.theme, slides: 0, anim: $("#peAnim").checked, badge: PE.badge, refs: [], file: "", fileName: "", show: $("#peShow").checked }));
+  ZQ.forEach(it => { const v = k => zv(it, k), pe = JSON.parse(JSON.stringify(base));
+    Object.assign(pe, { title: (v("title") || "").trim(), desc: (v("desc") || "").trim(), slides: +v("slides") || 0, price: +v("price") || price,
+      mrp: v("mrp") !== "" && v("mrp") != null ? +v("mrp") || 0 : mrp, subject: v("subj") || base.subject, lang: v("lang") || base.lang, anim: base.anim || !!v("anim") });
+    if (v("cls")) pe.level = [v("cls")];
+    enqueue({ name: pe.title || nice(it.file.name), file: it.file, pe, auto: !it.meta }); });
+  toast(`✓ ${ZQ.length} PPT background mein upload ho rahi hain — aap aur add kar sakte hain`);
+  ZQ = null; $("#pptModal").hidden = true;
 }
 $("#peSave").onclick = async () => {
   if (ZQ) return saveZip();
-  if (PE.uploading || PE.imgs.some(x => x.busy)) return $("#peErr").textContent = "Upload ho raha hai — thoda rukiye";
+  if (PE.uploading || PE.imgs.some(x => x.busy)) return $("#peErr").textContent = "Photo / chapters taiyar ho rahe hain — thoda rukiye";
   Object.assign(PE, { title: $("#peName").value.trim(), desc: $("#peDesc").value.trim(), price: +$("#pePrice").value, mrp: +$("#peMrp").value || 0,
     slides: +$("#peSlides").value || 0, subject: $("#peSubj").value, show: $("#peShow").checked, anim: $("#peAnim").checked, refs: PE.imgs.map(x => x.ref) });
   if (PE.title.length < 3) return $("#peErr").textContent = isNote(PE) ? "Notes ka naam likhein" : "PPT ka naam likhein";
   if (!(PE.price >= 1)) return $("#peErr").textContent = "Daam likhein (kam se kam ₹1)";
-  if (!PE.file) return $("#peErr").textContent = isNote(PE) ? "Notes ki PDF upload karein" : "PPT / PDF file upload karein";
+  if (!PE.file && !PE.newFile) return $("#peErr").textContent = isNote(PE) ? "Notes ki PDF upload karein" : "PPT / PDF file upload karein";
+  if (PE.newFile) {   // file ke saath → background mein upload, modal turant band
+    enqueue({ name: PE.title, file: PE.newFile, pages: PE.pages, pe: JSON.parse(JSON.stringify(pptPayload(PE))) });
+    $("#pptModal").hidden = true; toast("✓ Background mein upload shuru — agli PPT add kar sakte hain"); return;
+  }
   $("#peSave").disabled = true; $("#peErr").textContent = "";
   const r = await call("adminPptSave", pptPayload(PE));
   $("#peSave").disabled = false;
