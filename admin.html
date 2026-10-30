@@ -1600,7 +1600,7 @@ async function pptView() {
   V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], KIND === "notes"
       ? `Yahan apne Notes ki A4 PDF upload karein — website ke "Study Notes" page par turant dikhenge. Customer pay karega aur PDF apne aap download hogi.`
       : `Yahan PPT ya PDF upload karein — website ke "Ready to Use PPTs" page par turant dikhegi. Customer pay karega aur file apne aap download hogi.`,
-      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>` : ""}${KIND === "notes" ? "" : `<button class="btn" id="addZip">📦 ZIP Upload</button>`}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
+      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "notes" ? "" : `<button class="btn" id="addZip">📦 ZIP Upload</button>`}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
   ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}
   <div class="stats">
     <div class="stat" style="--c:var(--accent)"><span class="ic">${ic(KIND === "notes" ? "i-book" : "i-upload")}</span><b id="pTot">${mine.length}</b><small id="pTotL">Total ${KIND === "notes" ? "Notes" : "PPTs"} · ${live} live</small></div>
@@ -1612,6 +1612,7 @@ async function pptView() {
   $("#pq").value = PQ; $("#pq").oninput = () => { PQ = $("#pq").value; drawPpts(); };
   $("#addPpt").onclick = () => editPpt(null);
   if ($("#addZip")) $("#addZip").onclick = () => { editPpt(null); $("#peZipIn").click(); };
+  $("#autoPv").onclick = () => { const l = PP.filter(p => isNote(p) === (KIND === "notes") && needPv(p)); l.forEach(pvJob); toast(`🖼 ${l.length} ki preview photo ban rahi hai`); drawPpts(); };
   $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
   drawPpts();
 }
@@ -1625,10 +1626,12 @@ function drawPpts() {
     <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
     <div class="body"><b>${esc(p.title)}</b>
       <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.filter(x => x !== NOTE_TAG).slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
-      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button></div>
+      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : ""}</div>
       <div class="cf" data-pcf="${i}"></div>
     </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.`}</div>`;
   $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
+  $$("[data-pa]").forEach(b => b.onclick = () => { pvJob(PP[+b.dataset.pa]); drawPpts(); });
+  const np = ml.filter(needPv).length; if ($("#autoPv")) { $("#autoPv").hidden = !np; $("#autoPv").textContent = `🖼 Auto Preview (${np})`; }
   $$("[data-pv]").forEach(b => b.onclick = async () => {
     const p = PP[+b.dataset.pv]; b.disabled = true;
     const r = await call("adminPptSave", Object.assign(pptPayload(p), { show: !p.show }));
@@ -1714,6 +1717,19 @@ async function uploadPptFile(file, pages) {
 }
 // file chunte hi pehli 8 slide / page ki photo "Preview images" mein apne aap (hata / badal sakte hain)
 const PV_AUTO = 8;
+// purani PPT / PDF jinki preview photo nahi hai: file Drive se laakar shuru ki 8 slides ki photo
+const needPv = p => !p.refs.length && p.file && /\.(pdf|pptx)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad");
+const pvJob = p => { const pe = JSON.parse(JSON.stringify(p)); enqueue({ name: p.title, pe, pv: p.id, msg: "Line mein (preview)…" }); };
+async function fetchFile(p, set) {
+  const parts = []; let start = 0, total = 1;
+  while (start < total) {
+    const r = await call("adminPptFile", { file: p.file, start, len: 8 * 1048576 });
+    if (!r.ok) throw new Error(/Unknown admin action/.test(r.error || "") ? "Apps Script ka naya version deploy karein" : r.error);
+    const b = Uint8Array.from(atob(r.data), c => c.charCodeAt(0)); if (!b.length) break;
+    parts.push(b); total = r.total; start += b.length; set(`File la rahe ${Math.min(100, Math.round(start / total * 100))}%`, Math.min(100, Math.round(start / total * 100)));
+  }
+  return new File(parts, p.fileName, { type: /\.pdf$/i.test(p.fileName) ? "application/pdf" : "application/vnd.openxmlformats-officedocument.presentationml.presentation" });
+}
 async function autoPreview(file, pe, pages) {
   const isPdf = /\.pdf$/i.test(file.name); if (!isPdf && !/\.pptx$/i.test(file.name)) return;
   const slots = Array.from({ length: PV_AUTO }, (_, i) => ({ busy: `${isPdf ? "Page" : "Slide"} ${i + 1}…`, auto: true }));
@@ -1880,8 +1896,10 @@ function pumpUQ() {
   }
 }
 async function runJob(j) {
-  const p = j.pe, f = j.file, set = (msg, prog) => { j.msg = msg; j.prog = prog; drawUQ(); };
+  const p = j.pe, set = (msg, prog) => { j.msg = msg; j.prog = prog; drawUQ(); };
+  let f = j.file;
   try {
+    if (!f && j.pv) f = j.file = await fetchFile(p, set);
     if (j.auto && !j.metaDone && /\.pptx$/i.test(f.name)) {   // ZIP wali PPT: naam, slides, class wagaira apne aap
       set("PPT padh rahe hain…", null);
       const m = await pptxMeta(f);
