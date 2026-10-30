@@ -1838,6 +1838,14 @@ function applyMeta(pe, m, file) {   // modal ke khaali khaane bharo
   if (m.lang) { pe.lang = m.lang; ED = pe; seg($("#peLang"), LANGS, pe.lang, "lang"); }
   if (m.subj && !$("#peSubj").value) $("#peSubj").value = m.subj;
 }
+// kuch PPTX ki [Content_Types].xml mein aise parts ka naam hota hai jo file mein hain hi nahi — preview library wahin ruk jaati thi
+async function cleanPptx(file) {
+  const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(file);
+  const ct = z.file("[Content_Types].xml"); if (!ct) return file.arrayBuffer();
+  const x = await ct.async("string"), y = x.replace(/<Override[^>]*PartName="\/([^"]+)"[^>]*\/>/g, (m, n) => z.files[n] ? m : "");
+  if (x === y) return file.arrayBuffer();
+  z.file("[Content_Types].xml", y); return z.generateAsync({ type: "arraybuffer", compression: "STORE" });
+}
 // PPTX ki saari slides ki photo (background job mein)
 async function pptxShots(file, count, tick, each) {
   const refs = [], host = document.createElement("div"); host.style.cssText = "position:fixed;left:-20000px;top:0;width:1280px;pointer-events:none";
@@ -1845,7 +1853,7 @@ async function pptxShots(file, count, tick, each) {
     const lib = await loadLib("https://cdn.jsdelivr.net/npm/pptx-preview@1.0.7/dist/pptx-preview.umd.js", "pptxPreview");
     const h2c = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js", "html2canvas");
     document.body.appendChild(host);
-    await lib.init(host, { width: 1280, height: 720, mode: "list" }).preview(await file.arrayBuffer());
+    await lib.init(host, { width: 1280, height: 720, mode: "list" }).preview(await cleanPptx(file));
     await new Promise(r => setTimeout(r, 600));
     const els = [...host.querySelectorAll(".pptx-preview-slide-wrapper")].slice(0, count || 99);
     for (let i = 0; i < els.length; i++) {
