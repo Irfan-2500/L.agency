@@ -208,6 +208,11 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .strip{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:4px}
 .strip button{flex:0 0 110px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:2px solid transparent;opacity:.65}
 .strip button.on{border-color:var(--violet);opacity:1}
+.strip button{position:relative}.strip button span{position:absolute;left:4px;bottom:3px;font-size:.62rem;font-weight:800;color:#fff;text-shadow:0 1px 3px #000}
+.strip button.lk img{filter:blur(3px);opacity:.45}.strip button.lk::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:1rem}
+.stage.lk #stageImg{filter:blur(6px);opacity:.4}
+.lk-cta{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;color:#fff;padding:16px;text-shadow:0 2px 10px rgba(0,0,0,.6);z-index:2}
+.lk-cta[hidden]{display:none}.lk-cta b{font-size:1.2rem}.lk-cta span{font-size:.85rem}
 .strip img{width:100%;height:100%;object-fit:cover}
 .m-info{display:grid;gap:10px;margin-top:16px}
 .m-info h3{font-size:1.35rem;padding-right:40px}
@@ -774,23 +779,29 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------- PREVIEW ---------- */
-let pv = { p:null, k:0 };
+/* Pehli 10 slide khuli; baaki sab dikhti hain par lock (halki blur). Lock wali par click = kharido */
+const FREE_N = 10;
+const pvSlots = (pics, n) => { const N = Math.max(n || 0, pics.length); if (!pics.length) return [];
+  return Array.from({ length:N }, (_, k) => ({ src:pics[k] || pics[k % Math.min(pics.length, FREE_N)], lock:k >= FREE_N || !pics[k] })); };
+let pv = { p:null, k:0, slots:[] };
 function openPreview(id){
   const p = PRODUCTS.find(x => x.id === id); if (!p) return;
-  pv = { p, k:0 };
   const imgs = p.previews && p.previews.length ? p.previews : (p.thumb ? [p.thumb] : []);
+  const slots = pvSlots(imgs, +p.slides || 0), N = slots.length;
+  pv = { p, k:0, slots };
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
   $("#previewBody").innerHTML = `
     <div class="stage${isNote(p) ? " a4" : ""}" id="stage" style="${imgs.length ? "" : thumbStyle(p)}">
       ${imgs.length ? `<img id="stageImg" src="${esc(imgs[0])}" alt="${esc(p.title)} slide 1">` : `<span class="gt" style="position:absolute;inset:auto 20px 20px;color:#fff;font:700 1.5rem 'Space Grotesk','Hind'">${esc(p.title)}</span>`}
-      ${imgs.length > 1 ? `<button class="s-nav s-prev" onclick="slide(-1)" aria-label="Previous slide">${icon("i-left")}</button><button class="s-nav s-next" onclick="slide(1)" aria-label="Next slide">${icon("i-right")}</button><span class="s-pos" id="spos">1 / ${imgs.length}</span>` : ""}
+      <div class="lk-cta" id="lkCta" hidden><b id="lkT"></b><span>Poori ${N} ${isNote(p) ? "pages" : "slides"} ke liye kharidein</span><button type="button" class="btn btn-gold btn-sm" onclick="hideModal('previewModal');buyNow(${p.id})">${icon("i-dl","width:15px")}Buy ${inr(p.price)}</button></div>
+      ${N > 1 ? `<button class="s-nav s-prev" onclick="slide(-1)" aria-label="Previous slide">${icon("i-left")}</button><button class="s-nav s-next" onclick="slide(1)" aria-label="Next slide">${icon("i-right")}</button><span class="s-pos" id="spos">1 / ${N}</span>` : ""}
     </div>
-    ${imgs.length > 1 ? `<div class="strip${isNote(p) ? " a4" : ""}">${imgs.map((u,k) => `<button class="${k ? "" : "on"}" onclick="slide(${k},true)" aria-label="Slide ${k+1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
+    ${N > 1 ? `<div class="strip${isNote(p) ? " a4" : ""}">${slots.map((x,k) => `<button class="${k ? "" : "on"}${x.lock ? " lk" : ""}" onclick="${x.lock ? `hideModal('previewModal');buyNow(${p.id})` : `slide(${k},true)`}" aria-label="${x.lock ? "Locked — buy to unlock" : "Slide " + (k+1)}"><img src="${esc(x.src)}" alt="" loading="lazy"><span>${k+1}</span></button>`).join("")}</div>` : ""}
     <div class="m-info">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
       <div class="tags">${(isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "ZIP file" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
-      ${imgs.length ? `<p style="font-size:.78rem;color:var(--dim)">${isNote(p) ? `Preview mein ${imgs.length} page dikhaye gaye hain.${p.slides ? ` Poore notes mein ${p.slides} pages hain.` : ""}` : `Preview mein ${imgs.length} slides dikhayi gayi hain.${p.slides ? ` Poori PPT mein ${p.slides} slides hain.` : ""}`}</p>` : ""}
+      ${N ? `<p style="font-size:.78rem;color:var(--dim)">🔒 ${slots.filter(x => !x.lock).length} ${isNote(p) ? "page" : "slides"} free preview · baaki ${slots.filter(x => x.lock).length} kharidne ke baad khulengi (kul ${N}).</p>` : ""}
       <div class="m-buy">
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
         <div class="grow">
@@ -802,10 +813,12 @@ function openPreview(id){
   showModal("previewModal");
 }
 function slide(d, abs){
-  const imgs = pv.p.previews && pv.p.previews.length ? pv.p.previews : []; if (imgs.length < 2) return;
-  pv.k = abs ? d : (pv.k + d + imgs.length) % imgs.length;
-  $("#stageImg").src = imgs[pv.k]; $("#stageImg").alt = `${pv.p.title} slide ${pv.k+1}`;
-  $("#spos").textContent = `${pv.k+1} / ${imgs.length}`;
+  const sl = pv.slots, N = sl.length; if (N < 2) return;
+  pv.k = (((abs ? d : pv.k + d) % N) + N) % N; const x = sl[pv.k];
+  $("#stageImg").src = x.src; $("#stageImg").alt = `${pv.p.title} slide ${pv.k+1}`;
+  $("#stage").classList.toggle("lk", x.lock); $("#lkCta").hidden = !x.lock;
+  if (x.lock) $("#lkT").textContent = `🔒 ${isNote(pv.p) ? "Page" : "Slide"} ${pv.k+1} locked`;
+  $("#spos").textContent = `${pv.k+1} / ${N}`;
   document.querySelectorAll(".strip button").forEach((b,k) => b.classList.toggle("on", k === pv.k));
 }
 
