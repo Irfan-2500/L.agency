@@ -503,6 +503,11 @@ label.f span{font-weight:500;color:var(--dim)}
   </div>
 </div>
 
+<style>#pptModal.zip [data-solo]{display:none}
+#peZipList{display:flex;flex-direction:column;gap:4px;margin-top:8px;max-height:220px;overflow:auto}
+#peZipList div{display:flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--line,#ddd);border-radius:8px;font-size:.85rem}
+#peZipList div b{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#peZipList div small{white-space:nowrap}</style>
 <!-- READY PPT EDITOR -->
 <div class="modal" id="pptModal" hidden role="dialog" aria-modal="true" aria-labelledby="peTitle">
   <div class="mbox">
@@ -512,16 +517,20 @@ label.f span{font-weight:500;color:var(--dim)}
       <label class="drop" id="peFile" for="peFileIn"></label>
       <div id="peBulk" hidden><div class="row" style="gap:8px;flex-wrap:wrap"><label class="btn sm" for="peDirIn">📁 Poora subject folder chunein</label><label class="btn sm" for="peMultiIn">📚 Kai chapter PDF / ZIP chunein</label></div>
         <p class="note" style="margin-top:6px">Folder ya ZIP ke saare chapter (Ch01, Ch02…) kram se jud kar <b>ek PDF</b> ban jayenge. Customer ko poora subject ek file mein milega. Naam, medium, chapter list aur pages apne aap bhar jayenge.</p></div>
+      <div id="peZip" hidden><label class="btn sm" for="peZipIn">📦 ZIP se kai PPT ek saath (har PPT alag)</label>
+        <p class="note" style="margin-top:6px">ZIP ki har PPT / PDF website par <b>alag card</b> banegi. Daam, class, board neeche ek baar bhariye, sab par lag jayega. Naam, slides, description aur photo har PPT se apne aap banenge.</p>
+        <div id="peZipList"></div></div>
+      <input type="file" id="peZipIn" accept=".zip,application/zip" hidden>
       <input type="file" id="peDirIn" webkitdirectory directory multiple hidden>
       <input type="file" id="peMultiIn" accept=".pdf,.zip,application/pdf,application/zip" multiple hidden>
       <input type="file" id="peFileIn" accept=".ppt,.pptx,.pdf,.zip,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/zip" hidden>
     </div>
-    <label class="f"><span id="peNameL">PPT ka naam</span><input type="text" id="peName" maxlength="120" placeholder="e.g. Class 10 Science — Light Reflection"></label>
-    <label class="f">Description <span id="peDescL">(chhota sa — kya kya hai is PPT mein)</span><textarea id="peDesc" rows="3" maxlength="600"></textarea></label>
+    <label class="f" data-solo><span id="peNameL">PPT ka naam</span><input type="text" id="peName" maxlength="120" placeholder="e.g. Class 10 Science — Light Reflection"></label>
+    <label class="f" data-solo>Description <span id="peDescL">(chhota sa — kya kya hai is PPT mein)</span><textarea id="peDesc" rows="3" maxlength="600"></textarea></label>
     <div class="grid2">
       <label class="f">Daam (₹)<input type="number" id="pePrice" min="1" step="1" placeholder="99"></label>
       <label class="f">Asli daam (₹) <span>katta hua dikhega · optional</span><input type="number" id="peMrp" min="0" step="1" placeholder="199"></label>
-      <label class="f"><span id="peSlidesL">Slides kitni hain</span><input type="number" id="peSlides" min="0" step="1" placeholder="25"></label>
+      <label class="f" data-solo><span id="peSlidesL">Slides kitni hain</span><input type="number" id="peSlides" min="0" step="1" placeholder="25"></label>
       <label class="f">Subject<select id="peSubj"></select></label>
     </div>
     <div style="display:flex;flex-direction:column;gap:6px" id="peCatW"><span class="phead">Category</span><div class="seg" id="peCat"></div></div>
@@ -1574,7 +1583,7 @@ async function pptView() {
   V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], KIND === "notes"
       ? `Yahan apne Notes ki A4 PDF upload karein — website ke "Study Notes" page par turant dikhenge. Customer pay karega aur PDF apne aap download hogi.`
       : `Yahan PPT ya PDF upload karein — website ke "Ready to Use PPTs" page par turant dikhegi. Customer pay karega aur file apne aap download hogi.`,
-      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>` : ""}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
+      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>` : ""}${KIND === "notes" ? "" : `<button class="btn" id="addZip">📦 ZIP Upload</button>`}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
   ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}
   <div class="stats">
     <div class="stat" style="--c:var(--accent)"><span class="ic">${ic(KIND === "notes" ? "i-book" : "i-upload")}</span><b id="pTot">${mine.length}</b><small id="pTotL">Total ${KIND === "notes" ? "Notes" : "PPTs"} · ${live} live</small></div>
@@ -1585,6 +1594,7 @@ async function pptView() {
   <div class="tgrid${KIND === "notes" ? " notes" : ""}" id="pgrid"></div>`);
   $("#pq").value = PQ; $("#pq").oninput = () => { PQ = $("#pq").value; drawPpts(); };
   $("#addPpt").onclick = () => editPpt(null);
+  if ($("#addZip")) $("#addZip").onclick = () => { editPpt(null); $("#peZipIn").click(); };
   $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
   drawPpts();
 }
@@ -1629,6 +1639,7 @@ function editPpt(p) {
   if (isNote(PE)) PE.cat = "notes";
   const N = isNote(PE);
   $("#peTitle").textContent = p ? (N ? "Edit Notes" : "Edit PPT") : (N ? "Add Notes (A4 PDF)" : "Add PPT / PDF");
+  ZQ = null; $("#pptModal").classList.remove("zip"); $("#peFile").hidden = false; $("#peZipList").innerHTML = ""; $("#peZip").hidden = N || !!p;
   $("#peA4").hidden = !N; $("#peBulk").hidden = !N; $("#peCatW").hidden = N; $("#peThemeW").hidden = N; $("#peAnimW").hidden = N;
   $("#peNameL").textContent = N ? "Notes ka naam" : "PPT ka naam";
   $("#peName").placeholder = N ? "e.g. Class 10 Science Ch 1 — Chemical Reactions Notes" : "e.g. Class 10 Science — Light Reflection";
@@ -1678,8 +1689,7 @@ async function uploadPptFile(file, pages) {
   if (!/\.(pptx?|pdf|zip)$/i.test(file.name)) return toast("Sirf PPT, PPTX, PDF ya ZIP file", true);
   if (PE.uploading) return;
   PE.uploading = true; drawPeFile(0);
-  if (/\.pdf$/i.test(file.name)) pdfPreview(file, PE, pages);
-  if (/\.pptx$/i.test(file.name)) pptxAuto(file, PE);
+  PE.auto = Promise.all([/\.pdf$/i.test(file.name) && pdfPreview(file, PE, pages), /\.pptx$/i.test(file.name) && pptxAuto(file, PE)]);
   try {
     const s = await call("adminPptStart", { name: file.name, size: file.size, mime: file.type || "application/octet-stream" });
     if (!s.ok) throw new Error(s.error);
@@ -1841,7 +1851,7 @@ async function bulkNotes(files) {
 }
 $("#peDirIn").onchange = e => { const f = [...e.target.files]; e.target.value = ""; if (f.length) bulkNotes(f); };
 $("#peMultiIn").onchange = e => { const f = [...e.target.files]; e.target.value = ""; if (f.length) bulkNotes(f); };
-function closePpt() { if (PE && (PE.uploading || PE.imgs.some(x => x.busy))) return toast("Upload ho raha hai — thoda rukiye", true); $("#pptModal").hidden = true; }
+function closePpt() { if (ZRUN) return toast("Saari PPT upload ho rahi hain — thoda rukiye", true); if (PE && (PE.uploading || PE.imgs.some(x => x.busy))) return toast("Upload ho raha hai — thoda rukiye", true); $("#pptModal").hidden = true; }
 $$("[data-pclose]").forEach(b => b.onclick = closePpt);
 $("#pptModal").addEventListener("click", e => { if (e.target.id === "pptModal") closePpt(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#pptModal").hidden) closePpt(); });
@@ -1853,7 +1863,58 @@ $("#peFileIn").onchange = e => { if (e.target.files[0]) uploadPptFile(e.target.f
   ["dragleave", "drop"].forEach(ev => el.addEventListener(ev, e => { e.preventDefault(); el.classList.remove("on"); }));
   el.addEventListener("drop", e => fn(e.dataTransfer.files));
 });
+// ZIP mein kai PPT → har PPT ka alag card (daam, class, board sab par ek jaisa)
+let ZQ = null, ZRUN = false;
+$("#peZipIn").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) zipPick(f); };
+async function zipPick(f) {
+  if (ZRUN) return;
+  $("#peZipList").innerHTML = `<div><b>📦 ZIP khol rahe hain…</b></div>`;
+  try {
+    const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(f);
+    const list = Object.values(z.files).filter(e => !e.dir && /\.(pptx?|pdf)$/i.test(e.name) && !/(^|\/)(__MACOSX|\.)/.test(e.name))
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
+    if (!list.length) { $("#peZipList").innerHTML = ""; return toast("Is ZIP mein koi PPT / PDF nahi mili", true); }
+    const mime = n => /\.pdf$/i.test(n) ? "application/pdf" : /\.pptx$/i.test(n) ? "application/vnd.openxmlformats-officedocument.presentationml.presentation" : "application/vnd.ms-powerpoint";
+    ZQ = await Promise.all(list.map(async e => { const n = e.name.split("/").pop(); return { file: new File([await e.async("blob")], n, { type: mime(n) }), st: "Ready" }; }));
+    $("#pptModal").classList.add("zip"); $("#peTitle").textContent = `ZIP: ${ZQ.length} PPT (har ek alag)`; $("#peSave").textContent = `Save sab ${ZQ.length} PPT`;
+    $("#peFile").hidden = true; drawZip();
+  } catch (e) { ZQ = null; $("#peZipList").innerHTML = ""; toast("ZIP nahi khuli: " + e.message, true); }
+}
+function drawZip() {
+  $("#peZipList").innerHTML = ZQ.map(x => `<div><span>${/\.pdf$/i.test(x.file.name) ? "📕" : "📊"}</span><b>${esc(x.file.name)}</b><small>${esc(x.st)}</small></div>`).join("");
+}
+async function saveZip() {
+  if (ZRUN) return;
+  const price = +$("#pePrice").value, mrp = +$("#peMrp").value || 0;
+  if (!(price >= 1)) return $("#peErr").textContent = "Daam likhein (kam se kam ₹1) — sab PPT par yahi lagega";
+  const common = JSON.parse(JSON.stringify({ cat: PE.cat, level: PE.level, board: PE.board, lang: PE.lang, theme: PE.theme, badge: PE.badge }));
+  const subj = $("#peSubj").value, show = $("#peShow").checked, anim = $("#peAnim").checked;
+  ZRUN = true; $("#peSave").disabled = true; $("#peErr").textContent = ""; $("#peFile").hidden = false;
+  let good = 0;
+  for (const it of ZQ) {
+    if (it.st.startsWith("✅")) { good++; continue; }
+    it.st = "⏫ Upload…"; drawZip();
+    PE = Object.assign({ id: 0, title: "", desc: "", slides: "", imgs: [], file: "", fileName: "", show: true }, JSON.parse(JSON.stringify(common)));
+    $("#peName").value = ""; $("#peDesc").value = ""; $("#peSlides").value = ""; $("#peSubj").value = subj; $("#peAnim").checked = anim; drawPeImgs();
+    try {
+      await uploadPptFile(it.file);
+      if (!PE.file) throw new Error("file upload nahi hui");
+      it.st = "🖼 Photo ban rahi…"; drawZip();
+      await PE.auto;
+      Object.assign(PE, { title: ($("#peName").value.trim() || it.file.name.replace(/\.\w+$/, "").replace(/[_-]+/g, " ")).slice(0, 120), desc: $("#peDesc").value.trim(),
+        price, mrp, slides: +$("#peSlides").value || 0, subject: $("#peSubj").value, show, anim: $("#peAnim").checked, refs: PE.imgs.filter(x => x.ref).map(x => x.ref) });
+      const r = await call("adminPptSave", pptPayload(PE));
+      if (!r.ok) throw new Error(r.error);
+      PP.unshift(r.ppt); good++; it.st = "✅ Live"; 
+    } catch (e) { it.st = "❌ " + e.message; }
+    drawZip();
+  }
+  ZRUN = false; $("#peSave").disabled = false; drawPpts();
+  if (good === ZQ.length) { ZQ = null; $("#pptModal").hidden = true; toast(`✓ ${good} PPT alag-alag website par aa gayi`); }
+  else { $("#peSave").textContent = "Baaki dobara try karein"; $("#peErr").textContent = `${good} / ${ZQ.length} ho gayi. ❌ wali dobara try karne ke liye button dabayein.`; }
+}
 $("#peSave").onclick = async () => {
+  if (ZQ) return saveZip();
   if (PE.uploading || PE.imgs.some(x => x.busy)) return $("#peErr").textContent = "Upload ho raha hai — thoda rukiye";
   Object.assign(PE, { title: $("#peName").value.trim(), desc: $("#peDesc").value.trim(), price: +$("#pePrice").value, mrp: +$("#peMrp").value || 0,
     slides: +$("#peSlides").value || 0, subject: $("#peSubj").value, show: $("#peShow").checked, anim: $("#peAnim").checked, refs: PE.imgs.map(x => x.ref) });
