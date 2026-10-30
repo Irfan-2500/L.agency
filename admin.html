@@ -1626,11 +1626,12 @@ function drawPpts() {
     <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
     <div class="body"><b>${esc(p.title)}</b>
       <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.filter(x => x !== NOTE_TAG).slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
-      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : ""}</div>
+      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : p.refs.length && /\.pptx$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm" data-pr="${i}" title="Shuru ki 8 slides ki photo dobara banayein">🔄 Photo dobara</button>` : ""}</div>
       <div class="cf" data-pcf="${i}"></div>
     </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.`}</div>`;
   $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
   $$("[data-pa]").forEach(b => b.onclick = () => { pvJob(PP[+b.dataset.pa]); drawPpts(); });
+  $$("[data-pr]").forEach(b => b.onclick = () => { pvJob(PP[+b.dataset.pr], true); drawPpts(); });
   const np = ml.filter(needPv).length; if ($("#autoPv")) { $("#autoPv").hidden = !np; $("#autoPv").textContent = `🖼 Auto Preview (${np})`; }
   $$("[data-pv]").forEach(b => b.onclick = async () => {
     const p = PP[+b.dataset.pv]; b.disabled = true;
@@ -1711,7 +1712,7 @@ async function uploadPptFile(file, pages) {
   const pe = PE; pe.newFile = file; pe.pages = pages; pe.fileName = file.name;
   if (!$("#peName").value.trim()) $("#peName").value = nice(file.name).slice(0, 120);
   drawPeFile();
-  if (!pe.imgs.length) autoPreview(file, pe, pages);
+  if (!pe.imgs.length && !/\.pptx$/i.test(file.name)) autoPreview(file, pe, pages);   // PPTX ki photo upload ke baad Google Slides se banti hai (theme sahi aata hai)
   if (/\.pdf$/i.test(file.name)) pdfMeta(file, pe);
   if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); if (m && PE === pe) applyMeta(pe, m, file); }
 }
@@ -1719,7 +1720,7 @@ async function uploadPptFile(file, pages) {
 const PV_AUTO = 8;
 // purani PPT / PDF jinki preview photo nahi hai: file Drive se laakar shuru ki 8 slides ki photo
 const needPv = p => !p.refs.length && p.file && /\.(pdf|pptx)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad");
-const pvJob = p => { const pe = JSON.parse(JSON.stringify(p)); enqueue({ name: p.title, pe, pv: p.id, msg: "Line mein (preview)…" }); };
+const pvJob = (p, again) => { const pe = JSON.parse(JSON.stringify(p)); if (again) pe.refs = []; enqueue({ name: p.title, pe, pv: p.id, msg: "Line mein (preview)…" }); };
 async function fetchFile(p, set) {
   const parts = []; let start = 0, total = 1;
   while (start < total) {
@@ -1907,6 +1908,11 @@ async function runJob(j) {
   const p = j.pe, set = (msg, prog) => { j.msg = msg; j.prog = prog; drawUQ(); };
   let f = j.file;
   try {
+    if (!f && j.pv && /\.pptx$/i.test(p.fileName)) {   // pehle Google Slides se (file laane ki zaroorat nahi)
+      set("Google Slides se photo ban rahi…", null);
+      const t = await call("adminPptThumbs", { file: p.file, n: PV_AUTO, name: p.fileName.replace(/\.\w+$/, "") });
+      if (t.ok && t.refs.length) { p.refs = t.refs; f = { name: p.fileName }; }
+    }
     if (!f && j.pv) f = j.file = await fetchFile(p, set);
     if (j.auto && !j.metaDone && /\.pptx$/i.test(f.name)) {   // ZIP wali PPT: naam, slides, class wagaira apne aap
       set("PPT padh rahe hain…", null);
@@ -1922,7 +1928,11 @@ async function runJob(j) {
     if (!p.refs.length && /\.(pdf|pptx)$/i.test(f.name)) {
       set("Photo ban rahi…", null);
       if (/\.pdf$/i.test(f.name)) { const r = await pdfShots(f, j.pages, t => set(t, null)); p.refs = r.refs; p.slides = p.slides || r.count; }
-      else p.refs = await pptxShots(f, PV_AUTO, t => set(t, null));
+      else {
+        set("Google Slides se photo ban rahi…", null);
+        const t = await call("adminPptThumbs", { file: p.file, n: PV_AUTO, name: f.name.replace(/\.\w+$/, "") });
+        p.refs = t.ok && t.refs.length ? t.refs : await pptxShots(f, PV_AUTO, t => set(t, null));
+      }
       keepJob(j);
     }
     set("Save ho raha hai…", null);
