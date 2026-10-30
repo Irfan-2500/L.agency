@@ -513,10 +513,17 @@ label.f span{font-weight:500;color:var(--dim)}
 #uq .tb{height:5px;border-radius:9px;background:rgba(127,127,127,.2);overflow:hidden}#uq .tb i{display:block;height:100%;background:#8b2cff}
 #uq p{margin:0;padding:6px 12px 10px;font-size:.75rem;opacity:.7}
 #pptModal.zip [data-solo]{display:none}
-#peZipList{display:flex;flex-direction:column;gap:4px;margin-top:8px;max-height:220px;overflow:auto}
-#peZipList div{display:flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--line,#ddd);border-radius:8px;font-size:.85rem}
-#peZipList div b{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#peZipList div small{white-space:nowrap}</style>
+#peZipList{display:flex;flex-direction:column;gap:5px;margin-top:8px;max-height:460px;overflow:auto}
+#peZipList .zi{border:1px solid var(--line,#ddd);border-radius:10px;font-size:.85rem}
+#peZipList .zi.open{border-color:var(--accent,#8b2cff);box-shadow:0 0 0 2px rgba(139,44,255,.15)}
+#peZipList .zh{display:flex;gap:9px;align-items:center;width:100%;padding:7px 10px;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+#peZipList .zt{flex:1;min-width:0;display:flex;flex-direction:column}
+#peZipList .zt b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#peZipList .zt small{opacity:.7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#peZipList .ze{font-size:.78rem;padding:3px 8px;border-radius:7px;border:1px solid var(--line,#ddd);white-space:nowrap}
+#peZipList .zf{display:flex;flex-direction:column;gap:8px;padding:4px 10px 12px}
+#peZipList .zf .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media(max-width:600px){#peZipList .zf .g3{grid-template-columns:1fr 1fr}}</style>
 <!-- READY PPT EDITOR -->
 <div class="modal" id="pptModal" hidden role="dialog" aria-modal="true" aria-labelledby="peTitle">
   <div class="mbox">
@@ -527,7 +534,7 @@ label.f span{font-weight:500;color:var(--dim)}
       <div id="peBulk" hidden><div class="row" style="gap:8px;flex-wrap:wrap"><label class="btn sm" for="peDirIn">📁 Poora subject folder chunein</label><label class="btn sm" for="peMultiIn">📚 Kai chapter PDF / ZIP chunein</label></div>
         <p class="note" style="margin-top:6px">Folder ya ZIP ke saare chapter (Ch01, Ch02…) kram se jud kar <b>ek PDF</b> ban jayenge. Customer ko poora subject ek file mein milega. Naam, medium, chapter list aur pages apne aap bhar jayenge.</p></div>
       <div id="peZip" hidden><label class="btn sm" for="peZipIn">📦 ZIP se kai PPT ek saath (har PPT alag)</label>
-        <p class="note" style="margin-top:6px">ZIP ki har PPT / PDF website par <b>alag card</b> banegi. Daam, class, board neeche ek baar bhariye, sab par lag jayega. Naam, slides, description aur photo har PPT se apne aap banenge.</p>
+        <p class="note" style="margin-top:6px">ZIP ki har PPT / PDF website par <b>alag card</b> banegi. Naam, class, subject, medium, slides aur description file se apne aap bharte hain. Kisi file ka daam ya detail alag rakhni ho to us file par click karein. Baaki sab par neeche wala daam / board lagega.</p>
         <div id="peZipList"></div></div>
       <input type="file" id="peZipIn" accept=".zip,application/zip" hidden>
       <input type="file" id="peDirIn" webkitdirectory directory multiple hidden>
@@ -1968,28 +1975,81 @@ $("#peFileIn").onchange = e => { if (e.target.files[0]) uploadPptFile(e.target.f
 // ZIP mein kai PPT → har PPT ka alag card (daam, class, board sab par ek jaisa)
 let ZQ = null;
 $("#peZipIn").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) zipPick(f); };
+// file ke naam se andaza: "CH-1_Chemical Reactions | Science | Class-10 EM.pptx"
+function fileGuess(name) {
+  const base = name.replace(/\.\w+$/, ""), parts = base.split(/\s*[|｜]\s*/).map(x => x.trim()).filter(Boolean), all = base.replace(/_+/g, " ");
+  const chRe = /^\s*(?:ch(?:apter)?|अध्याय|पाठ|unit|lesson)[\s._-]*0*(\d+)[\s._:-]*/i, ch = chRe.exec(parts[0] || "");
+  const t = (parts[0] || base).replace(chRe, "").replace(/_+/g, " ").replace(/\s+/g, " ").trim();
+  const cm = /(?:\bclass|\bstd|कक्षा)[\s._-]*(1[0-2]|[1-9])(?!\d)/i.exec(all), cls = cm ? "Class " + cm[1] : "";
+  const subj = SUBJECTS.find(x => new RegExp("\\b" + x.replace(/[^\w ]/g, "").replace(/ /g, "\\s*") + "\\b", "i").test(all)) || "";
+  const lang = /\b(EM|english\s*medium)\b/i.test(all) ? "English" : /\b(HM|hindi\s*medium)\b/i.test(all) ? "Hindi" : "";
+  const tail = [cls, subj].filter(Boolean).join(" ") + (ch ? ` Ch ${ch[1]}` : "");
+  return { title: (t + (t && tail.trim() ? " — " + tail.trim() : "")).slice(0, 120), cls, subj, lang, sure: parts.length > 1 || !!ch || !!cm };
+}
+const zv = (it, k) => k in it.ed ? it.ed[k] : it.auto[k];
+let ZOPEN = -1;
 async function zipPick(f) {
-  $("#peZipList").innerHTML = `<div><b>📦 ZIP khol rahe hain…</b></div>`;
+  $("#peZipList").innerHTML = `<div class="zi"><span class="zh"><b>📦 ZIP khol rahe hain…</b></span></div>`;
   try {
     const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(f);
     const list = Object.values(z.files).filter(e => !e.dir && /\.(pptx?|pdf)$/i.test(e.name) && !/(^|\/)(__MACOSX|\.)/.test(e.name))
       .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
     if (!list.length) { $("#peZipList").innerHTML = ""; return toast("Is ZIP mein koi PPT / PDF nahi mili", true); }
     const mime = n => /\.pdf$/i.test(n) ? "application/pdf" : /\.pptx$/i.test(n) ? "application/vnd.openxmlformats-officedocument.presentationml.presentation" : "application/vnd.ms-powerpoint";
-    ZQ = await Promise.all(list.map(async e => { const n = e.name.split("/").pop(); return { file: new File([await e.async("blob")], n, { type: mime(n) }), st: "Ready" }; }));
+    ZQ = await Promise.all(list.map(async e => { const n = e.name.split("/").pop(), g = fileGuess(n);
+      return { file: new File([await e.async("blob")], n, { type: mime(n) }), ed: {}, meta: false,
+        auto: { title: g.title || nice(n), desc: "", slides: "", cls: g.cls, subj: g.subj, lang: g.lang, price: "", mrp: "", anim: false } }; }));
+    ZOPEN = -1;
     $("#pptModal").classList.add("zip"); $("#peTitle").textContent = `ZIP: ${ZQ.length} PPT (har ek alag)`; $("#peSave").textContent = `Save sab ${ZQ.length} PPT`;
     $("#peFile").hidden = true; drawZip();
+    const zq = ZQ;
+    for (const it of zq) {   // andar ki slides padh kar baaki details
+      const n = it.file.name, g = fileGuess(n), a = it.auto;
+      try {
+        if (/\.pptx$/i.test(n)) { const m = await pptxMeta(it.file);
+          if (m) Object.assign(a, { title: g.sure && g.title ? g.title : m.title || a.title, desc: m.desc, slides: m.slides, cls: g.cls || m.cls, subj: g.subj || m.subj, lang: g.lang || m.lang, anim: m.anim }); }
+        else if (/\.pdf$/i.test(n)) { const doc = await (await loadPdfJs()).getDocument({ data: await it.file.arrayBuffer() }).promise; a.slides = doc.numPages; }
+      } catch (e) {}
+      it.meta = true; if (ZQ === zq) drawZip();
+    }
   } catch (e) { ZQ = null; $("#peZipList").innerHTML = ""; toast("ZIP nahi khuli: " + e.message, true); }
 }
-function drawZip() {
-  $("#peZipList").innerHTML = ZQ.map(x => `<div><span>${/\.pdf$/i.test(x.file.name) ? "📕" : "📊"}</span><b>${esc(x.file.name)}</b><small>${esc(x.st)}</small></div>`).join("");
+function zipLine(it) {
+  const v = k => zv(it, k), cp = $("#pePrice").value, pr = v("price") || cp;
+  return [v("subj"), v("cls"), v("lang") && (LANGS.find(l => l[0] === v("lang")) || [, v("lang")])[1], v("slides") && v("slides") + (/\.pdf$/i.test(it.file.name) ? " pages" : " slides"),
+    pr ? "₹" + pr + (v("price") ? " (alag)" : "") : "₹ ?"].filter(Boolean).join(" · ") + (it.meta ? "" : " · ⏳ file padh rahe…");
 }
+function drawZip() {
+  const opt = (list, val, ph) => `<option value="">${ph}</option>` + list.map(o => { const [x, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(x)}" ${x === val ? "selected" : ""}>${esc(l)}</option>`; }).join("");
+  $("#peZipList").innerHTML = ZQ.map((it, k) => { const v = key => zv(it, key) ?? "", open = k === ZOPEN;
+    return `<div class="zi${open ? " open" : ""}" data-zi="${k}"><button type="button" class="zh" data-zo="${k}"><span>${/\.pdf$/i.test(it.file.name) ? "📕" : "📊"}</span>
+      <span class="zt"><b>${esc(v("title") || nice(it.file.name))}</b><small>${esc(zipLine(it))}</small></span><span class="ze">${open ? "▴ Band" : "✏️ Edit"}</span></button>
+      ${open ? `<div class="zf"><label class="f">Naam<input type="text" data-zk="title" maxlength="120" value="${esc(v("title"))}"></label>
+        <label class="f">Description<textarea data-zk="desc" rows="2" maxlength="600">${esc(v("desc"))}</textarea></label>
+        <div class="g3"><label class="f">Daam (₹)<input type="number" min="1" data-zk="price" value="${esc(v("price"))}" placeholder="${esc($("#pePrice").value || "sabka daam")}"></label>
+          <label class="f">Asli daam (₹)<input type="number" min="0" data-zk="mrp" value="${esc(v("mrp"))}" placeholder="${esc($("#peMrp").value || "optional")}"></label>
+          <label class="f">${/\.pdf$/i.test(it.file.name) ? "Pages" : "Slides"}<input type="number" min="0" data-zk="slides" value="${esc(v("slides"))}"></label>
+          <label class="f">Class<select data-zk="cls">${opt(CLASSES, v("cls"), "— sabki class —")}</select></label>
+          <label class="f">Subject<select data-zk="subj">${opt(SUBJECTS, v("subj"), "— sabka subject —")}</select></label>
+          <label class="f">Language<select data-zk="lang">${opt(LANGS, v("lang"), "— sabki language —")}</select></label></div>
+        <small class="note">Daam khaali chhoda to neeche wala sabka daam lagega.</small></div>` : ""}</div>`; }).join("");
+  $$("#peZipList [data-zo]").forEach(b => b.onclick = () => { ZOPEN = ZOPEN === +b.dataset.zo ? -1 : +b.dataset.zo; drawZip(); });
+  $$("#peZipList [data-zk]").forEach(el => { const k = +el.closest("[data-zi]").dataset.zi, it = ZQ[k];
+    el.oninput = el.onchange = () => { it.ed[el.dataset.zk] = el.value; const h = el.closest("[data-zi]").querySelector(".zt");
+      h.querySelector("b").textContent = zv(it, "title") || nice(it.file.name); h.querySelector("small").textContent = zipLine(it); }; });
+}
+$("#pePrice").addEventListener("input", () => { if (ZQ) $$("#peZipList .zt small").forEach((el, k) => el.textContent = zipLine(ZQ[k])); });
 function saveZip() {
   const price = +$("#pePrice").value, mrp = +$("#peMrp").value || 0;
-  if (!(price >= 1)) return $("#peErr").textContent = "Daam likhein (kam se kam ₹1) — sab PPT par yahi lagega";
+  const noPrice = ZQ.find(it => !(+zv(it, "price") >= 1) && !(price >= 1));
+  if (noPrice) return $("#peErr").textContent = `Daam likhein (kam se kam ₹1) — "${zv(noPrice, "title") || noPrice.file.name}" ka daam nahi hai`;
   const base = JSON.parse(JSON.stringify({ id: 0, title: "", desc: "", price, mrp, cat: PE.cat, level: PE.level, subject: $("#peSubj").value, board: PE.board, lang: PE.lang,
     theme: PE.theme, slides: 0, anim: $("#peAnim").checked, badge: PE.badge, refs: [], file: "", fileName: "", show: $("#peShow").checked }));
-  ZQ.forEach(it => enqueue({ name: nice(it.file.name), file: it.file, pe: JSON.parse(JSON.stringify(base)), auto: true }));
+  ZQ.forEach(it => { const v = k => zv(it, k), pe = JSON.parse(JSON.stringify(base));
+    Object.assign(pe, { title: (v("title") || "").trim(), desc: (v("desc") || "").trim(), slides: +v("slides") || 0, price: +v("price") || price,
+      mrp: v("mrp") !== "" && v("mrp") != null ? +v("mrp") || 0 : mrp, subject: v("subj") || base.subject, lang: v("lang") || base.lang, anim: base.anim || !!v("anim") });
+    if (v("cls")) pe.level = [v("cls")];
+    enqueue({ name: pe.title || nice(it.file.name), file: it.file, pe, auto: !it.meta }); });
   toast(`✓ ${ZQ.length} PPT background mein upload ho rahi hain — aap aur add kar sakte hain`);
   ZQ = null; $("#pptModal").hidden = true;
 }
