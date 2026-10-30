@@ -2951,7 +2951,7 @@ function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
   let list = [];
   const SCR = String((window.LA_CONFIG || {}).orderUrl || "").trim();
   if (SCR) try { const j = await (await fetch(SCR + "?action=ppts", { cache:"no-store" })).json(); if (j.ok && j.products) list = j.products.map(p => ({ ...p, thumb:(p.previews || [])[0] || "" })); } catch(e) {}
-  if (!list.length && window.LA_CATALOG) list = LA_CATALOG.map(p => ({ ...p, thumb:`uploads/previews/demo-${p.slug}-1.webp` }));
+  if (!list.length && window.LA_CATALOG) list = LA_CATALOG.map(p => ({ ...p, thumb:`uploads/previews/demo-${p.slug}-1.webp`, previews:p.previews || [1, 2, 3, 4].map(n => `uploads/previews/demo-${p.slug}-${n}.webp`) }));
   if (!list.length) return;
   const isNt = p => p.cat === "notes" || (p.level || []).includes("Study Notes");
   const toLb = p => { const pics = (p.previews || []).filter(Boolean); if (!pics.length && p.thumb) pics.push(p.thumb);
