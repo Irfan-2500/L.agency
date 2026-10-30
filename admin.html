@@ -1626,7 +1626,7 @@ function drawPpts() {
     <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
     <div class="body"><b>${esc(p.title)}</b>
       <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.filter(x => x !== NOTE_TAG).slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
-      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : p.refs.length && /\.pptx$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm" data-pr="${i}" title="Shuru ki 8 slides ki photo dobara banayein">🔄 Photo dobara</button>` : ""}</div>
+      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : p.refs.length && /\.(pptx|pdf)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm" data-pr="${i}" title="Shuru ke 8 page / slides ki photo dobara banayein">🔄 Photo dobara</button>` : ""}</div>
       <div class="cf" data-pcf="${i}"></div>
     </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.`}</div>`;
   $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
@@ -2037,7 +2037,7 @@ async function bulkNotes(files) {
     $("#peSlides").value = out.getPageCount();
     pe.uploading = false;
     toast(`✓ ${list.length} chapters jud gaye (${out.getPageCount()} pages). Ab "Save" dabayein`);
-    uploadPptFile(new File([bytes], base + "_All_Chapters.pdf", { type: "application/pdf" }), starts.slice(0, 6));
+    uploadPptFile(new File([bytes], base + "_All_Chapters.pdf", { type: "application/pdf" }), starts.slice(0, 4).flatMap(n => [n, n + 1]));   // har chapter ka cover + andar ka page
   } catch (e) { pe.uploading = false; if (PE === pe) drawPeFile(); toast("Folder se Notes nahi bane: " + e.message, true); }
 }
 $("#peDirIn").onchange = e => { const f = [...e.target.files]; e.target.value = ""; if (f.length) bulkNotes(f); };
