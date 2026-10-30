@@ -1662,7 +1662,7 @@ function editPpt(p) {
   $("#peName").placeholder = N ? "e.g. Class 10 Science Ch 1 — Chemical Reactions Notes" : "e.g. Class 10 Science — Light Reflection";
   $("#peDescL").textContent = N ? "(chhota sa — kya kya hai in notes mein)" : "(chhota sa — kya kya hai is PPT mein)";
   $("#peSlidesL").textContent = N ? "Pages kitne hain" : "Slides kitni hain"; $("#peSlides").placeholder = N ? "14" : "25";
-  $("#peImgsL").textContent = N ? "2. Preview pages (PDF se apne aap bante hain · badal bhi sakte hain)" : "2. Preview images (PPTX chunte hi saari slides ki photo apne aap banti hai · ⭐ Featured badge wali PPT ki slides website par upar chalti hain)";
+  $("#peImgsL").textContent = N ? "2. Preview pages (PDF chunte hi pehle 8 page apne aap · hata ya badal sakte hain)" : "2. Preview images (PPT / PDF chunte hi pehli 8 slides ki photo apne aap lag jaati hai · hata ya badal sakte hain · ⭐ Featured badge wali PPT ki slides website par upar chalti hain)";
   $("#peFileIn").accept = N ? ".pdf,.zip,application/pdf,application/zip" : ".ppt,.pptx,.pdf,.zip,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/zip";
   $("#peSave").textContent = N ? "Save Notes" : "Save PPT";
   $("#peName").value = PE.title; $("#peDesc").value = PE.desc; $("#pePrice").value = PE.price; $("#peMrp").value = PE.mrp || ""; $("#peSlides").value = PE.slides || "";
@@ -1708,8 +1708,21 @@ async function uploadPptFile(file, pages) {
   const pe = PE; pe.newFile = file; pe.pages = pages; pe.fileName = file.name;
   if (!$("#peName").value.trim()) $("#peName").value = nice(file.name).slice(0, 120);
   drawPeFile();
+  if (!pe.imgs.length) autoPreview(file, pe, pages);
   if (/\.pdf$/i.test(file.name)) pdfMeta(file, pe);
   if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); if (m && PE === pe) applyMeta(pe, m, file); }
+}
+// file chunte hi pehli 8 slide / page ki photo "Preview images" mein apne aap (hata / badal sakte hain)
+const PV_AUTO = 8;
+async function autoPreview(file, pe, pages) {
+  const isPdf = /\.pdf$/i.test(file.name); if (!isPdf && !/\.pptx$/i.test(file.name)) return;
+  const slots = Array.from({ length: PV_AUTO }, (_, i) => ({ busy: `${isPdf ? "Page" : "Slide"} ${i + 1}…`, auto: true }));
+  pe.imgs.push(...slots); if (PE === pe) drawPeImgs();
+  let k = 0;
+  const each = r => { const sl = slots[k++]; if (sl && pe.imgs.includes(sl)) { Object.assign(sl, { ref: r.ref, url: r.url }); delete sl.busy; } if (PE === pe) drawPeImgs(); };
+  try { if (isPdf) await pdfShots(file, pages ? pages.slice(0, PV_AUTO) : null, () => {}, each); else await pptxShots(file, PV_AUTO, () => {}, each); } catch (e) {}
+  slots.filter(sl => sl.busy && pe.imgs.includes(sl)).forEach(sl => pe.imgs.splice(pe.imgs.indexOf(sl), 1));
+  if (PE === pe) drawPeImgs();
 }
 // badi file → Google Drive, 8 MB ke tukdon mein
 // refresh ke baad: jahan tak gaya tha wahin se (j.up = Drive session + kitna gaya)
@@ -1738,7 +1751,7 @@ async function shotUpload(c, name) {
   const blob = await new Promise((ok, no) => c.toBlob(b => b && b.type === "image/webp" ? ok(b) : c.toBlob(j => j ? ok(j) : no(new Error("convert")), "image/jpeg", .85), "image/webp", .82));
   const res = await call("adminImage", { name: name + (blob.type === "image/webp" ? ".webp" : ".jpg"), mime: blob.type, data: await b64(blob) });
   if (!res.ok) throw new Error(res.error);
-  return res.ref;
+  return res;
 }
 // PDF: pages ki ginti (aur Notes ke liye A4 check)
 let pdfLib = null;
@@ -1759,9 +1772,9 @@ async function pdfMeta(file, pe) {
   } catch (e) {}
 }
 // PDF ke kuch page ki preview photo (background job mein)
-async function pdfShots(file, pages, tick) {
+async function pdfShots(file, pages, tick, each) {
   const lib = await loadPdfJs(), doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise, refs = [];
-  const list = (pages || [1, 2, 3, 4]).filter(n => n <= doc.numPages);
+  const list = (pages || Array.from({ length: PV_AUTO }, (_, i) => i + 1)).filter(n => n <= doc.numPages);
   for (const n of list) {
     tick(`Page ${n} ki photo…`);
     try {
@@ -1769,7 +1782,7 @@ async function pdfShots(file, pages, tick) {
       c.width = Math.round(vp.width); c.height = Math.round(vp.height);
       const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
       await page.render({ canvasContext: g, viewport: vp }).promise;
-      refs.push(await shotUpload(c, file.name.replace(/\.\w+$/, "").slice(0, 60) + "-p" + n));
+      const r = await shotUpload(c, file.name.replace(/\.\w+$/, "").slice(0, 60) + "-p" + n); refs.push(r.ref); if (each) each(r);
     } catch (e) {}
   }
   return { refs, count: doc.numPages };
@@ -1810,7 +1823,7 @@ function applyMeta(pe, m, file) {   // modal ke khaali khaane bharo
   if (m.subj && !$("#peSubj").value) $("#peSubj").value = m.subj;
 }
 // PPTX ki saari slides ki photo (background job mein)
-async function pptxShots(file, count, tick) {
+async function pptxShots(file, count, tick, each) {
   const refs = [], host = document.createElement("div"); host.style.cssText = "position:fixed;left:-20000px;top:0;width:1280px;pointer-events:none";
   try {
     const lib = await loadLib("https://cdn.jsdelivr.net/npm/pptx-preview@1.0.7/dist/pptx-preview.umd.js", "pptxPreview");
@@ -1823,7 +1836,7 @@ async function pptxShots(file, count, tick) {
       tick(`Slide ${i + 1} / ${els.length} ki photo…`);
       try {
         const c = await h2c(els[i], { scale: 1100 / els[i].offsetWidth, backgroundColor: "#ffffff", useCORS: true, logging: false });
-        refs.push(await shotUpload(c, file.name.replace(/\.\w+$/, "").slice(0, 60) + "-s" + (i + 1)));
+        const r = await shotUpload(c, file.name.replace(/\.\w+$/, "").slice(0, 60) + "-s" + (i + 1)); refs.push(r.ref); if (each) each(r);
       } catch (e) {}
     }
   } catch (e) {}
@@ -1883,7 +1896,7 @@ async function runJob(j) {
     if (!p.refs.length && /\.(pdf|pptx)$/i.test(f.name)) {
       set("Photo ban rahi…", null);
       if (/\.pdf$/i.test(f.name)) { const r = await pdfShots(f, j.pages, t => set(t, null)); p.refs = r.refs; p.slides = p.slides || r.count; }
-      else p.refs = await pptxShots(f, p.slides, t => set(t, null));
+      else p.refs = await pptxShots(f, PV_AUTO, t => set(t, null));
       keepJob(j);
     }
     set("Save ho raha hai…", null);
@@ -1960,7 +1973,7 @@ async function bulkNotes(files) {
 }
 $("#peDirIn").onchange = e => { const f = [...e.target.files]; e.target.value = ""; if (f.length) bulkNotes(f); };
 $("#peMultiIn").onchange = e => { const f = [...e.target.files]; e.target.value = ""; if (f.length) bulkNotes(f); };
-function closePpt() { if (PE && (PE.uploading || PE.imgs.some(x => x.busy))) return toast("Photo / chapters taiyar ho rahe hain — thoda rukiye", true); $("#pptModal").hidden = true; }
+function closePpt() { if (PE && (PE.uploading || PE.imgs.some(x => x.busy && !x.auto))) return toast("Photo / chapters taiyar ho rahe hain — thoda rukiye", true); $("#pptModal").hidden = true; }
 $$("[data-pclose]").forEach(b => b.onclick = closePpt);
 $("#pptModal").addEventListener("click", e => { if (e.target.id === "pptModal") closePpt(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#pptModal").hidden) closePpt(); });
@@ -2055,9 +2068,10 @@ function saveZip() {
 }
 $("#peSave").onclick = async () => {
   if (ZQ) return saveZip();
-  if (PE.uploading || PE.imgs.some(x => x.busy)) return $("#peErr").textContent = "Photo / chapters taiyar ho rahe hain — thoda rukiye";
+  if (PE.uploading || PE.imgs.some(x => x.busy && !x.auto)) return $("#peErr").textContent = "Photo / chapters taiyar ho rahe hain — thoda rukiye";
+  const autoBusy = PE.imgs.some(x => x.busy && x.auto);   // auto photo abhi ban rahi → background job khud bana lega
   Object.assign(PE, { title: $("#peName").value.trim(), desc: $("#peDesc").value.trim(), price: +$("#pePrice").value, mrp: +$("#peMrp").value || 0,
-    slides: +$("#peSlides").value || 0, subject: $("#peSubj").value, show: $("#peShow").checked, anim: $("#peAnim").checked, refs: PE.imgs.map(x => x.ref) });
+    slides: +$("#peSlides").value || 0, subject: $("#peSubj").value, show: $("#peShow").checked, anim: $("#peAnim").checked, refs: PE.imgs.filter(x => x.ref && !(autoBusy && x.auto)).map(x => x.ref) });
   if (PE.title.length < 3) return $("#peErr").textContent = isNote(PE) ? "Notes ka naam likhein" : "PPT ka naam likhein";
   if (!(PE.price >= 1)) return $("#peErr").textContent = "Daam likhein (kam se kam ₹1)";
   if (!PE.file && !PE.newFile) return $("#peErr").textContent = isNote(PE) ? "Notes ki PDF upload karein" : "PPT / PDF file upload karein";

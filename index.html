@@ -1212,6 +1212,12 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 .rd-buy{margin-left:auto;width:36px;height:36px;display:grid;place-items:center;border-radius:10px;font-size:.78rem;font-weight:800;color:#1a1433;background:linear-gradient(135deg,#ffd166,#f59e0b);text-decoration:none;border:0;cursor:pointer;position:relative}
 @media(max-width:760px){.rd-price{gap:6px}.rd-price s{display:none}}
 .rd-price em{white-space:nowrap}
+.th-strip button.lk{position:relative;opacity:.55}.th-strip button.lk img{filter:blur(3px);opacity:.5}
+.th-strip button.lk::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:1.1rem}
+.lk-stage{position:relative;width:100%;height:100%}.lk-stage img{filter:blur(6px);opacity:.4;transform:scale(1.04)}
+.lk-cta{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;color:#fff;padding:16px;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.lk-cta b{font-size:clamp(1rem,4cqi,1.5rem)}.lk-cta span{font-size:.85rem;opacity:.9}
+.nt-row .th-pic{aspect-ratio:210/297}.nt-row .th-card{flex-basis:200px}
 .rd-lb{font-size:.95rem;margin-top:4px}.rd-lb b{font-size:1.3rem}.rd-lb .rd-buy{width:42px;height:42px}.rd-lb .rd-dl{margin-left:0}
 .rd-dl{margin-left:6px;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4)}
 .rd-buy.in{color:#fff;background:linear-gradient(135deg,#22c55e,#16a34a)}
@@ -1523,6 +1529,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
     <div class="th-q" id="thQ" hidden role="status"></div>
     <div class="th-grid" id="thGrid"></div>
     <div class="th-sec" id="rdSec" hidden><div class="th-sh"><h3 class="th-k12">📦 Ready to Use PPT <small id="rdN"></small></h3><a class="th-all" href="ready-ppts.html">View All <span>→</span></a></div><div class="th-row" id="rdRow"></div></div>
+    <div class="th-sec" id="ntSec" hidden><div class="th-sh"><h3 class="th-k12">📝 Study Notes <small id="ntN"></small></h3><a class="th-all" href="ready-ppts.html?type=notes">View All <span>→</span></a></div><div class="th-row nt-row" id="ntRow"></div></div>
     <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
   </div>
 </section>
@@ -2934,25 +2941,34 @@ function renderThemes(){
 }
 $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
 /* Ready to Use PPT: Ready PPTs page wali list (admin panel ki PPTs, warna built-in) ek line mein; click par theme jaisa popup */
-let RD_LIST = [];
+let RD_LIST = [], NT_LIST = [];
+/* Preview: pehli 8 slide khuli, baaki sab dikhti hain par lock (halki blur) — click par kharidne ka popup */
+const FREE_N = 8;
+const pvSlots = (pics, n) => { const N = Math.max(n || 0, pics.length); if (!pics.length) return [];
+  return Array.from({ length:N }, (_, k) => ({ src:pics[k] || pics[k % Math.min(pics.length, FREE_N)], lock:k >= FREE_N || !pics[k] })); };
+function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
 (async function readyRow(){
   let list = [];
   const SCR = String((window.LA_CONFIG || {}).orderUrl || "").trim();
   if (SCR) try { const j = await (await fetch(SCR + "?action=ppts", { cache:"no-store" })).json(); if (j.ok && j.products) list = j.products.map(p => ({ ...p, thumb:(p.previews || [])[0] || "" })); } catch(e) {}
-  if (!list.length && window.LA_CATALOG) list = LA_CATALOG.map(p => ({ ...p, thumb:`uploads/previews/demo-${p.slug}-1.webp` }));
+  if (!list.length && window.LA_CATALOG) list = LA_CATALOG.map(p => ({ ...p, thumb:`uploads/previews/demo-${p.slug}-1.webp`, previews:p.previews || [1, 2, 3, 4].map(n => `uploads/previews/demo-${p.slug}-${n}.webp`) }));
   if (!list.length) return;
-  $("#rdN").textContent = list.length;
-  RD_LIST = list.map(p => { const pics = (p.previews || []).filter(Boolean);
-    return { rd:true, id:+p.id, name:p.title, type:"Ready PPT", img:p.thumb, slides:pics.length ? pics : [p.thumb], price:p.price, mrp:p.mrp, lang:p.lang, subject:p.subject, level:p.level || [], n:+p.slides || 0 }; });
-  $("#rdRow").innerHTML = list.map((p, k) => { const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
-    return `<div class="th-card" role="button" tabindex="0" onclick="openRd(${k})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openRd(${k})}" aria-label="View ${esc(p.title)}">
+  const isNt = p => p.cat === "notes" || (p.level || []).includes("Study Notes");
+  const toLb = p => { const pics = (p.previews || []).filter(Boolean); if (!pics.length && p.thumb) pics.push(p.thumb);
+    return { rd:true, note:isNt(p), id:+p.id, name:p.title, type:isNt(p) ? "Study Notes" : "Ready PPT", img:p.thumb, slides:pics, slots:pvSlots(pics, +p.slides || 0), price:p.price, mrp:p.mrp, lang:p.lang, subject:p.subject, level:p.level || [], n:+p.slides || 0 }; };
+  const ppts = list.filter(p => !isNt(p)), notes = list.filter(isNt);
+  RD_LIST = ppts.map(toLb); NT_LIST = notes.map(toLb);
+  [["rd", ppts, "openRd"], ["nt", notes, "openNt"]].forEach(([pre, arr, fn]) => { if (!arr.length) return;
+  $("#" + pre + "N").textContent = arr.length;
+  $("#" + pre + "Row").innerHTML = arr.map((p, k) => { const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
+    return `<div class="th-card" role="button" tabindex="0" onclick="${fn}(${k})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${fn}(${k})}" aria-label="View ${esc(p.title)}">
       <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span></div>
       <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
         <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
         <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
-      ${p.slides ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${+p.slides} slides</span>` : ""}
+      ${p.slides ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${+p.slides} ${isNt(p) ? "pages" : "slides"}</span>` : ""}
     </div>`; }).join("");
-  $("#rdSec").hidden = false;
+  $("#" + pre + "Sec").hidden = false; });
 })();
 function rdCart(id){ toggleCart(id); document.querySelectorAll(`.rd-buy[data-rid="${id}"]`).forEach(b => b.classList.toggle("in", cart.includes(id))); }
 /* View All: Dark ya Light ki saari themes alag page par (phone ka Back button bhi kaam kare) */
@@ -3017,14 +3033,18 @@ let thIdx = 0, thSlide = 0;
 let lbTimer = null;
 function lbAuto(){
   clearInterval(lbTimer);
-  const n = LBL()[thIdx] && (LBL()[thIdx].slides || []).length;
-  if (reduceMotion || !n || n < 2) { $("#thStage")?.classList.remove("playing"); return; }
+  const n = LBL()[thIdx] && lbFree(LBL()[thIdx]);
+  const cur = LBL()[thIdx];
+  if (reduceMotion || !n || n < 2 || (cur && cur.rd && cur.slots[thSlide] && cur.slots[thSlide].lock)) { $("#thStage")?.classList.remove("playing"); return; }
   $("#thStage").classList.remove("playing"); void $("#thStage").offsetWidth; $("#thStage").classList.add("playing");
-  lbTimer = setInterval(() => { if (!$("#themeModal").classList.contains("on")) return clearInterval(lbTimer); showSlide(thSlide + 1, true); }, 3500);
+  lbTimer = setInterval(() => { if (!$("#themeModal").classList.contains("on")) return clearInterval(lbTimer); showSlide((thSlide + 1) % lbFree(LBL()[thIdx]), true); }, 3500);
 }
 function showSlide(k, auto){
-  const t = LBL()[thIdx], n = (t.slides || [t.img]).length; thSlide = (k + n) % n;
-  $("#thView").innerHTML = thPic(t, thSlide).replace(' loading="lazy"','');
+  const t = LBL()[thIdx], n = lbN(t); thSlide = (k + n) % n;
+  const sl = t.rd && t.slots[thSlide];
+  $("#thView").innerHTML = !t.rd ? thPic(t, thSlide).replace(' loading="lazy"','')
+    : sl.lock ? `<div class="lk-stage"><img src="${esc(sl.src)}" alt=""><div class="lk-cta"><b>🔒 ${t.note ? "Page" : "Slide"} ${thSlide + 1} locked</b><span>Poori ${t.n || n} ${t.note ? "pages" : "slides"} ke liye kharidein</span><button type="button" class="btn btn-primary btn-sm" onclick="rdBuy(${t.id})">${icon("i-dl","width:15px")} Buy ${inr(+t.price || 0)}</button></div></div>`
+    : `<img src="${esc(sl.src)}" alt="${esc(t.name)} — slide ${thSlide + 1}">`;
   $("#thView").firstElementChild?.classList.add("fade-in");
   if (!auto) lbAuto(); else { $("#thStage").classList.remove("playing"); void $("#thStage").offsetWidth; $("#thStage").classList.add("playing"); }
   document.querySelectorAll("#thStrip button").forEach((b,j) => b.classList.toggle("on", j === thSlide));
@@ -3045,22 +3065,26 @@ function countView(t){
 /* Lightbox ek hi hai: themes ya Ready to Use PPTs (lbList) dono isi mein khulte hain */
 let lbList = null; const LBL = () => lbList || thList;
 function openRd(k){ lbList = RD_LIST; openTheme(k, true); }
+function openNt(k){ lbList = NT_LIST; openTheme(k, true); }
+const lbN = t => t.rd ? t.slots.length : (t.slides || [t.img]).length;
+const lbFree = t => { if (!t.rd) return lbN(t); const i = t.slots.findIndex(x => x.lock); return i < 0 ? t.slots.length : i; };
 function openTheme(i, keep){
   if (!keep) lbList = null;
   const L = LBL(); thIdx = (i + L.length) % L.length; const t = L[thIdx], sl = t.slides || [t.img];
   if (!t.rd) countView(t);
-  $("#thStrip").innerHTML = sl.length > 1 ? sl.map((u,j) => `<button onclick="showSlide(${j})" aria-label="Slide ${j+1}"><img src="${esc(u)}" alt="" loading="lazy"><span>${j+1}</span></button>`).join("") : "";
+  $("#thStrip").innerHTML = t.rd ? (t.slots.length > 1 ? t.slots.map((x,j) => `<button class="${x.lock ? "lk" : ""}" onclick="${x.lock ? `rdBuy(${t.id})` : `showSlide(${j})`}" aria-label="${x.lock ? "Locked — buy to unlock" : "Slide " + (j+1)}"><img src="${esc(x.src)}" alt="" loading="lazy"><span>${j+1}</span></button>`).join("") : "")
+    : sl.length > 1 ? sl.map((u,j) => `<button onclick="showSlide(${j})" aria-label="Slide ${j+1}"><img src="${esc(u)}" alt="" loading="lazy"><span>${j+1}</span></button>`).join("") : "";
   $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span>${thSubjects(t).slice(0,3).map(x => `<span>📖 ${esc(x)}</span>`).join("")}${thClasses(t).length ? `<span>🎓 ${esc(thClasses(t).length > 2 ? thClasses(t)[0] + " – " + thClasses(t).slice(-1)[0] : thClasses(t).join(", "))}</span>` : ""}</div>
     <a class="btn btn-primary btn-sm" href="order.html?theme=${encodeURIComponent(t.name)}">${icon("i-sparkle","width:15px")} Order in This Theme</a>`;
   if (t.rd) { const off = t.mrp > t.price ? Math.round((1 - t.price / t.mrp) * 100) : 0;
-    $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags">${[t.lang && langLabel(t.lang), t.subject && "📖 " + t.subject, ...(t.level || []).filter(x => x !== "Study Notes").slice(0, 2).map(x => "🎓 " + x), t.n && t.n + " slides"].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div>
+    $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags">${[t.lang && langLabel(t.lang), t.subject && "📖 " + t.subject, ...(t.level || []).filter(x => x !== "Study Notes").slice(0, 2).map(x => "🎓 " + x), t.n && t.n + (t.note ? " pages" : " slides")].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div>
     <div class="rd-price rd-lb"><b>${inr(+t.price || 0)}</b>${off ? `<s>${inr(+t.mrp)}</s><em>${off}% OFF</em>` : ""}<button type="button" class="rd-buy${cart.includes(t.id) ? " in" : ""}" data-rid="${t.id}" onclick="rdCart(${t.id})" aria-label="Add to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${t.id}" aria-label="Buy and download" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div>`; }
   showSlide(0); showPopup("themeModal");
 }
 function stepTheme(d){ openTheme(thIdx + d, true); }
 // arrows: pehle is theme ki slides, last slide ke baad agli theme
 function stepSlide(d){
-  const n = (LBL()[thIdx].slides || [1]).length, k = thSlide + d;
+  const n = lbN(LBL()[thIdx]), k = thSlide + d;
   if (k >= 0 && k < n) showSlide(k); else openTheme(thIdx + d, true);
 }
 document.addEventListener("keydown", e => { if (!$("#themeModal").classList.contains("on")) return; if (e.key==="ArrowRight") stepSlide(1); if (e.key==="ArrowLeft") stepSlide(-1); });
