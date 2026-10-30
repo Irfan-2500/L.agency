@@ -825,7 +825,7 @@ const isMobile = () => matchMedia("(pointer:coarse)").matches;
 /* Razorpay laga hai: UTR wala tareeka band. Razorpay band ho to WhatsApp par order */
 const payMode = () => PAY ? "rzp" : (!API && CONFIG.demoPay && PRODUCTS === DEMO) ? "demo" : "wa";
 const upiOn = () => !!(CONFIG.upi && (/^[\w.-]{2,}@[a-z][a-z0-9.]+$/i.test(CONFIG.upi.id || "") || CONFIG.upi.qr));
-const upiLink = (scheme, total) => `${scheme}?` + new URLSearchParams({ pa:CONFIG.upi.id, pn:CONFIG.upi.name || "Lakshay Agency", am:total.toFixed(2), cu:"INR", tn:"Lakshay PPT" }).toString().replace(/\+/g,"%20").replace(/%40/g,"@");
+const upiLink = (scheme, total) => `${scheme}?` + new URLSearchParams({ pa:CONFIG.upi.id, pn:CONFIG.upi.name || "PPT Store", am:total.toFixed(2), cu:"INR", tn:"PPT Store" }).toString().replace(/\+/g,"%20").replace(/%40/g,"@");
 
 function openPay(ids){
   payIds = ids.filter(id => PRODUCTS.some(p => p.id === id)); if (!payIds.length) return;
@@ -837,21 +837,18 @@ function openPay(ids){
   $("#upiBox").hidden = m === "wa"; $("#payWa").hidden = m !== "wa"; $("#utrWrap").hidden = true; $("#payUtr").value = "";
   $("#upiBox").innerHTML = m === "wa" ? "" : VPAY ? `<h4>PhonePe / Google Pay / Paytm se <b class="js-amt">${inr(payTotal)}</b> pay karein</h4>
     <div class="apps">${APPS.map(a => `<button type="button" data-app="${a.id}">${a.ic}${a.name}</button>`).join("")}</div>
-    <button type="button" class="btn btn-gold pay-all" data-app="other">💳 Pay <span class="js-amt">${inr(payTotal)}</span> · Card / Netbanking</button>
-    ${hasId ? `<div class="or">ya hamara UPI QR scan karein</div>
-    <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg"></div>
+    <button type="button" class="btn btn-gold pay-all" data-app="other">💳 Pay <span class="js-amt">${inr(payTotal)}</span> · Card / Netbanking</button>` : `
+    ${m === "upi" ? `<div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg">${(!hasId && u.qr) ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""}</div>
       <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
-    <div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed <b class="js-amt">${inr(payTotal)}</b></div>` : ""}` : `
-    <div class="qr-box locked" id="qrBox"><div class="qr" id="qrImg">${(!hasId && u.qr) ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""}</div>
-      <button type="button" class="qr-lock" id="qrLock"><span>🔒 Name, Mobile aur Email bharein,<br>QR khul jayega</span></button></div>
-    ${m === "rzp" ? `<div class="live" id="qrLive" hidden>● Payment ka intezaar… pay hote hi download khulega</div>` : hasId ? `<div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed ${inr(payTotal)}</div>` : ""}
-    ${showApps ? `<div class="or">ya app se pay karein</div>
+    ${hasId ? `<div class="upi-id">UPI ID: <b>${esc(u.id)}</b> · amount fixed ${inr(payTotal)}</div>` : ""}
+    <div class="or">ya app se pay karein</div>` : ""}
+    ${showApps ? `
     <div class="apps">${APPS.map(a => `<button type="button" data-app="${a.id}">${a.ic}${a.name}</button>`).join("")}</div>` : ""}`;
   /* rzp: asli QR details ke baad banta hai, tab tak blur ke peeche ek namuna QR */
   if (VPAY && hasId) drawUpiQr();
-  if (!VPAY && (hasId || m === "rzp")) loadQR().then(() => { if (qrSt.orderId) return; const q = qrcode(0, "M"); q.addData(hasId ? upiLink("upi://pay", payTotal) : location.origin + "/ready-ppts.html"); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:"UPI QR code" }); })
+  if (!VPAY && m === "upi" && hasId) loadQR().then(() => { if (qrSt.orderId) return; const q = qrcode(0, "M"); q.addData(hasId ? upiLink("upi://pay", payTotal) : location.origin + "/ready-ppts.html"); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:"UPI QR code" }); })
     .catch(() => { $("#qrImg").innerHTML = u.qr ? `<img src="${esc(u.qr)}" alt="UPI QR code">` : ""; });
-  $("#payNote").textContent = { rzp: VPAY && hasId ? "🔒 Upar ke buttons (Razorpay) se pay karne par PPT turant yahin download hogi." : "🔒 Razorpay se safe payment. Amount fixed hai, payment hote hi PPT yahin download hogi.", demo:"",
+  $("#payNote").textContent = { rzp: VPAY ? "🔒 Upar ke buttons (Razorpay) se pay karne par PPT turant yahin download hogi." : "🔒 Razorpay se safe payment. Amount fixed hai, payment hote hi PPT yahin download hogi.", demo:"",
     upi: !API ? "Pay karke UTR (12 digit) daalein. Payment check hone ke baad hi PPT milegi." : CONFIG.upiInstant ? "UTR daalte hi PPT yahin download ho jayegi." : "Payment check hone ke baad download link Email par aayega aur My PPTs mein khulega (10–30 min).", wa:"Online payment jald shuru hoga. Abhi WhatsApp par order karein." }[m];
   $("#payMain").hidden = false; $("#payDone").hidden = true;
   try { const s = JSON.parse(localStorage.getItem("la_buyer") || "{}"); ["payName","payEmail","payPhone"].forEach(k => { if (s[k] && !$("#"+k).value) $("#"+k).value = s[k]; }); } catch(e) {}
@@ -899,7 +896,7 @@ document.addEventListener("click", e => { if (e.target.closest("#qrLock")) nudge
 let qrSt = { orderId:0, busy:false, timer:0 };
 const stopQr = () => clearTimeout(qrSt.timer);
 async function makeQr(){
-  if (payMode() !== "rzp" || VPAY || qrSt.orderId || qrSt.busy) return;
+  if (payMode() !== "rzp" || VPAY || !$("#qrImg") || qrSt.orderId || qrSt.busy) return;
   const d = buyer(true); if (!d) return;
   qrSt.busy = true; $("#qrImg").innerHTML = `<div class="qr-wait">QR ban raha hai…</div>`;
   const o = await post("api/qr.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
@@ -950,7 +947,7 @@ function loadRazorpay(){
   return new Promise((ok, no) => { if (window.Razorpay) return ok();
     const s = document.createElement("script"); s.src = "https://checkout.razorpay.com/v1/checkout.js"; s.onload = ok; s.onerror = () => no(new Error("Payment page load nahi hua. Internet check karein.")); document.head.appendChild(s); });
 }
-const appsBusy = (on, btn) => { document.querySelectorAll(".apps button").forEach(b => b.disabled = on); if (btn) btn.lastChild.textContent = on ? "Opening…" : APPS.find(a => a.id === btn.dataset.app).name; };
+const appsBusy = (on, btn) => { document.querySelectorAll(".apps button").forEach(b => b.disabled = on); if (btn) { if (on) btn.dataset.lbl = btn.lastChild.textContent; btn.lastChild.textContent = on ? " Opening…" : btn.dataset.lbl || APPS.find(a => a.id === btn.dataset.app).name; } };
 
 $("#upiBox").onclick = async e => {
   const btn = e.target.closest("[data-app]"); if (!btn) return;
@@ -968,7 +965,7 @@ $("#upiBox").onclick = async e => {
                  : await post("api/order.php", { ...d, items:JSON.stringify(payIds), website:$("#payHp").value });
   if (!o.ok) { appsBusy(false, btn); toast("⚠ " + o.error); return; }
   try { await loadRazorpay(); } catch(err) { appsBusy(false, btn); toast("⚠ " + err.message); return; }
-  const opts = { key:o.key, amount:o.amount, currency:"INR", name:o.name, order_id:o.rzpOrderId, prefill:o.prefill, theme:{ color:"#8b2cff" },
+  const opts = { key:o.key, amount:o.amount, currency:"INR", name:"PPT Store", image:location.origin + "/uploads/brand/logo-200.webp", order_id:o.rzpOrderId, prefill:o.prefill, theme:{ color:"#8b2cff" },
     description: payIds.length > 1 ? `${payIds.length} PPTs` : PRODUCTS.find(p => p.id === payIds[0]).title,
     modal:{ ondismiss:() => appsBusy(false, btn) },
     handler: async resp => {
