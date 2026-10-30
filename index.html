@@ -1212,6 +1212,7 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 .rd-buy{margin-left:auto;width:36px;height:36px;display:grid;place-items:center;border-radius:10px;font-size:.78rem;font-weight:800;color:#1a1433;background:linear-gradient(135deg,#ffd166,#f59e0b);text-decoration:none;border:0;cursor:pointer;position:relative}
 @media(max-width:760px){.rd-price{gap:6px}.rd-price s{display:none}}
 .rd-price em{white-space:nowrap}
+.rd-lb{font-size:.95rem;margin-top:4px}.rd-lb b{font-size:1.3rem}.rd-lb .rd-buy{width:42px;height:42px}.rd-lb .rd-dl{margin-left:0}
 .rd-dl{margin-left:6px;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4)}
 .rd-buy.in{color:#fff;background:linear-gradient(135deg,#22c55e,#16a34a)}
 .rd-buy.in::after{content:"✓";position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;display:grid;place-items:center;font-size:.6rem;color:#16a34a;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
@@ -2932,7 +2933,8 @@ function renderThemes(){
   $("#thMore").parentNode.style.display = "none";
 }
 $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
-/* Ready to Use PPT: Ready PPTs page wali list (admin panel ki PPTs, warna built-in) ek line mein */
+/* Ready to Use PPT: Ready PPTs page wali list (admin panel ki PPTs, warna built-in) ek line mein; click par theme jaisa popup */
+let RD_LIST = [];
 (async function readyRow(){
   let list = [];
   const SCR = String((window.LA_CONFIG || {}).orderUrl || "").trim();
@@ -2940,8 +2942,10 @@ $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
   if (!list.length && window.LA_CATALOG) list = LA_CATALOG.map(p => ({ ...p, thumb:`uploads/previews/demo-${p.slug}-1.webp` }));
   if (!list.length) return;
   $("#rdN").textContent = list.length;
-  $("#rdRow").innerHTML = list.map(p => { const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, u = "ready-ppts.html?q=" + encodeURIComponent(p.title).replace(/'/g, "%27");
-    return `<div class="th-card" role="link" tabindex="0" onclick="location.href='${u}'" onkeydown="if(event.key==='Enter')location.href='${u}'" aria-label="${esc(p.title)}">
+  RD_LIST = list.map(p => { const pics = (p.previews || []).filter(Boolean);
+    return { rd:true, id:+p.id, name:p.title, type:"Ready PPT", img:p.thumb, slides:pics.length ? pics : [p.thumb], price:p.price, mrp:p.mrp, lang:p.lang, subject:p.subject, level:p.level || [], n:+p.slides || 0 }; });
+  $("#rdRow").innerHTML = list.map((p, k) => { const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
+    return `<div class="th-card" role="button" tabindex="0" onclick="openRd(${k})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openRd(${k})}" aria-label="View ${esc(p.title)}">
       <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span></div>
       <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
         <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
@@ -3013,13 +3017,13 @@ let thIdx = 0, thSlide = 0;
 let lbTimer = null;
 function lbAuto(){
   clearInterval(lbTimer);
-  const n = thList[thIdx] && (thList[thIdx].slides || []).length;
+  const n = LBL()[thIdx] && (LBL()[thIdx].slides || []).length;
   if (reduceMotion || !n || n < 2) { $("#thStage")?.classList.remove("playing"); return; }
   $("#thStage").classList.remove("playing"); void $("#thStage").offsetWidth; $("#thStage").classList.add("playing");
   lbTimer = setInterval(() => { if (!$("#themeModal").classList.contains("on")) return clearInterval(lbTimer); showSlide(thSlide + 1, true); }, 3500);
 }
 function showSlide(k, auto){
-  const t = thList[thIdx], n = (t.slides || [t.img]).length; thSlide = (k + n) % n;
+  const t = LBL()[thIdx], n = (t.slides || [t.img]).length; thSlide = (k + n) % n;
   $("#thView").innerHTML = thPic(t, thSlide).replace(' loading="lazy"','');
   $("#thView").firstElementChild?.classList.add("fade-in");
   if (!auto) lbAuto(); else { $("#thStage").classList.remove("playing"); void $("#thStage").offsetWidth; $("#thStage").classList.add("playing"); }
@@ -3038,19 +3042,26 @@ function countView(t){
   document.querySelectorAll(`[data-vid="${CSS.escape(t.id)}"]`).forEach(el => { el.querySelector("em").textContent = fmtViews(t.views); el.title = t.views.toLocaleString("en-IN") + " views"; el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); });
   if (GOOGLE && GS_URL) gsCall({ action:"view", id:t.id }).then(r => { if (r.j && r.j.ok && r.j.views) { t.views = r.j.views; document.querySelectorAll(`[data-vid="${CSS.escape(t.id)}"] em`).forEach(e => e.textContent = fmtViews(t.views)); } });
 }
-function openTheme(i){
-  thIdx = (i + thList.length) % thList.length; const t = thList[thIdx], sl = t.slides || [t.img];
-  countView(t);
+/* Lightbox ek hi hai: themes ya Ready to Use PPTs (lbList) dono isi mein khulte hain */
+let lbList = null; const LBL = () => lbList || thList;
+function openRd(k){ lbList = RD_LIST; openTheme(k, true); }
+function openTheme(i, keep){
+  if (!keep) lbList = null;
+  const L = LBL(); thIdx = (i + L.length) % L.length; const t = L[thIdx], sl = t.slides || [t.img];
+  if (!t.rd) countView(t);
   $("#thStrip").innerHTML = sl.length > 1 ? sl.map((u,j) => `<button onclick="showSlide(${j})" aria-label="Slide ${j+1}"><img src="${esc(u)}" alt="" loading="lazy"><span>${j+1}</span></button>`).join("") : "";
   $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span>${thSubjects(t).slice(0,3).map(x => `<span>📖 ${esc(x)}</span>`).join("")}${thClasses(t).length ? `<span>🎓 ${esc(thClasses(t).length > 2 ? thClasses(t)[0] + " – " + thClasses(t).slice(-1)[0] : thClasses(t).join(", "))}</span>` : ""}</div>
     <a class="btn btn-primary btn-sm" href="order.html?theme=${encodeURIComponent(t.name)}">${icon("i-sparkle","width:15px")} Order in This Theme</a>`;
+  if (t.rd) { const off = t.mrp > t.price ? Math.round((1 - t.price / t.mrp) * 100) : 0;
+    $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags">${[t.lang && langLabel(t.lang), t.subject && "📖 " + t.subject, ...(t.level || []).filter(x => x !== "Study Notes").slice(0, 2).map(x => "🎓 " + x), t.n && t.n + " slides"].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div>
+    <div class="rd-price rd-lb"><b>${inr(+t.price || 0)}</b>${off ? `<s>${inr(+t.mrp)}</s><em>${off}% OFF</em>` : ""}<button type="button" class="rd-buy${cart.includes(t.id) ? " in" : ""}" data-rid="${t.id}" onclick="rdCart(${t.id})" aria-label="Add to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${t.id}" aria-label="Buy and download" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div>`; }
   showSlide(0); showPopup("themeModal");
 }
-function stepTheme(d){ openTheme(thIdx + d); }
+function stepTheme(d){ openTheme(thIdx + d, true); }
 // arrows: pehle is theme ki slides, last slide ke baad agli theme
 function stepSlide(d){
-  const n = (thList[thIdx].slides || [1]).length, k = thSlide + d;
-  if (k >= 0 && k < n) showSlide(k); else openTheme(thIdx + d);
+  const n = (LBL()[thIdx].slides || [1]).length, k = thSlide + d;
+  if (k >= 0 && k < n) showSlide(k); else openTheme(thIdx + d, true);
 }
 document.addEventListener("keydown", e => { if (!$("#themeModal").classList.contains("on")) return; if (e.key==="ArrowRight") stepSlide(1); if (e.key==="ArrowLeft") stepSlide(-1); });
 $("#themeModal").addEventListener("click", e => { if (e.target.id==="themeModal") hidePopup("themeModal"); });
