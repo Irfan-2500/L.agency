@@ -255,6 +255,7 @@ form{gap:10px;margin-top:12px}
   </header>
 
   <main class="card">
+    <button type="button" class="pk-x" id="pickedX" aria-label="Band karein, pichhle page par jaayein" title="Band karein">✕</button>
     <section id="orderView">
       <span class="badge"><svg class="i"><use href="#i-zap"/></svg>India's Fastest PPT Services</span>
       <h1><span class="hl">1 Hour.</span> Your PPT. <span class="rd">Ready!</span></h1>
@@ -262,7 +263,7 @@ form{gap:10px;margin-top:12px}
       <div style="margin:8px 0 2px"><button type="button" class="hv-btn"><i>▶</i>Order kaise karein? <small>Video dekhein</small></button></div>
 
       <form id="orderForm" novalidate>
-        <div class="picked" id="picked" hidden><img id="pickedImg" alt="" hidden><span>🎨 Selected theme: <b id="pickedName"></b> <a href="./#themes">Change</a></span><button type="button" class="pk-x" id="pickedX" aria-label="Theme hatao" title="Hatao">✕</button></div>
+        <div class="picked" id="picked" hidden><img id="pickedImg" alt="" hidden><span>🎨 Selected theme: <b id="pickedName"></b> <a href="./#themes">Change</a></span></div>
         <div class="row2">
         <div class="q" id="q-name">
           <label for="name">Name <b>*</b></label>
@@ -343,8 +344,10 @@ let type = "School / Class Education";   /* School pehle se chuna hua */
 let theme = "";
 try { theme = (new URLSearchParams(location.search).get("theme") || "").slice(0, 80); } catch (e) {}
 if (theme) { $("#picked").hidden = false; $("#pickedName").textContent = theme; }
-// ✕ dabaya to chuni hui theme hata do (order mein bhi nahi jaayegi)
-$("#pickedX").onclick = () => { theme = ""; $("#picked").hidden = true; try { history.replaceState(null, "", location.pathname); } catch (e) {} };
+// ✕ dabaya to jis page se aaye the wahi wapas khule (warna Home)
+$("#pickedX").onclick = () => {
+  let same = false; try { same = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+  if (same && history.length > 1) history.back(); else location.href = "index.html"; };
 // Theme / PPT ki photo bhi dikhao (sirf https ya apni uploads/ wali photo)
 try { const img = new URLSearchParams(location.search).get("img") || "";
   if (theme && img.length < 600 && /^(https:\/\/|uploads\/)/.test(img)) { const el = $("#pickedImg"); el.src = img; el.hidden = false;
