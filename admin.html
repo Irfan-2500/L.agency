@@ -302,6 +302,8 @@ label.f span{font-weight:500;color:var(--dim)}
 .wc-img{background:var(--bg2);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
 .wc-img .pic{position:relative;aspect-ratio:16/9;background:#000}
 .wc-img .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.wc-img .tr-pic{background:#fff}.wc-img .tr-pic img{object-fit:contain;padding:14px}
+.tr-add{min-height:150px;display:grid;place-items:center;border:2px dashed var(--line2,rgba(255,255,255,.2));background:none;color:var(--text);font:inherit;font-weight:700;cursor:pointer}
 .wc-img .pic .no{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.7);color:#fff;border-radius:7px;padding:1px 8px;font-size:.72rem;font-weight:700}
 .wc-img .pic .busy{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.6);color:#fff;font-weight:700;font-size:.85rem}
 .wc-img .row{padding:10px;gap:6px}
@@ -1223,6 +1225,7 @@ const UI_ITEMS = [
   ["Header (upar ki line)", [["nav_home", "Home button"], ["nav_shop", "Shop PPTs button"], ["nav_custom", "Custom PPT button"], ["nav_pricing", "Pricing button"], ["nav_more", "More Offerings menu"], ["nav_search", "Search box"], ["nav_theme", "Dark / Light / System switch"], ["nav_cart", "Cart (🛒) button"]]],
   ["Hero (sabse upar ka hissa)", [["hero_explore", "Explore Themes button"], ["hero_order", "PPT Order Now button"]]],
   ["Custom PPT section", [["cx_order", "PPT Order Now button"], ["cx_wa", "Ask on WhatsApp button"]]],
+  ["Home page", [["trust", "Trusted by (companies) section"]]],
   ["Har page par", [["wa_float", "WhatsApp ka gol button (neeche right)"]]],
   ["Footer", [["foot_admin", "🔐 Admin Panel link"], ["foot_more", "More Offerings column"], ["soc_linkedin", "LinkedIn icon"], ["soc_instagram", "Instagram icon"], ["soc_youtube", "YouTube icon"], ["soc_x", "X (Twitter) icon"]]]
 ];
@@ -1238,16 +1241,47 @@ async function site() {
     <div class="wc-imgs" id="wcImgs"></div>
     <input type="file" id="wcFile" accept="image/jpeg,image/png,image/webp" hidden>
     <p class="note" style="margin-top:10px">16:9 (PPT jaisi) photo sabse achhi lagti hai. Photo apne aap chhoti (fast) ho jaati hai.</p></div>
+  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>🤝 Trusted by — companies jinke saath kaam kiya</h3><span class="note">Home page par Reviews se pehle dikhega · 12 tak · khaali ho to section nahi dikhega</span></div>
+    <div class="wc-imgs tr-list" id="trList"></div>
+    <input type="file" id="trFile" accept="image/jpeg,image/png,image/webp" hidden>
+    <p class="note" style="margin-top:10px">Company ka logo daalein (PNG transparent sabse achha). Naam likhna optional hai — logo ke neeche dikhega.</p></div>
   <div class="card" style="margin-bottom:14px"><div class="ch"><h3>${ic("i-sliders", "color:var(--accent)")} Buttons &amp; options</h3><span class="note"><b>Dikhao</b> = website par dikhe · <b>Click chalu</b> = band karne par button dikhega par dabega nahi</span></div>
     <div class="wc-list" id="wcList"></div></div>
   <div class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--ok)")} Social media links</h3><span class="note">Footer ke icons in links par khulenge · khaali = "Jald aa raha hai"</span></div>
     <div class="grid2" id="wcSoc"></div></div>
   <div class="savebar"><span class="note" id="wcNote">Badlav karke Save dabayein.</span><span class="sp"></span><button class="btn" id="wcReset">Undo changes</button><button class="btn pri" id="wcSave">Save &amp; publish</button></div>`);
-  drawWcImgs(); drawWcList();
+  drawWcImgs(); drawWcList(); drawTrust();
   $("#wcSoc").innerHTML = SOCIALS.map(([k, l]) => `<label class="f">${l}<input type="text" inputmode="url" data-soc="${k}" placeholder="https://…" value="${esc(WS["social_" + k] || "")}"></label>`).join("");
   $$("#wcSoc [data-soc]").forEach(i => i.oninput = () => { WS["social_" + i.dataset.soc] = i.value.trim(); dirty(); });
   $("#wcReset").onclick = () => site();
   $("#wcSave").onclick = saveSite;
+}
+/* Trusted by: trustImg1..12 (logo) + trustName1..12 (naam). Bharay hue upar, khaali slot ek "+ Add" */
+let TRI = null;
+function trustList() { const l = []; for (let n = 1; n <= 12; n++) if (WS["trustImg" + n]) l.push([WS["trustImg" + n], String(WS["trustName" + n] || "").replace(/^'/, "")]); return l; }
+function setTrust(l) { for (let n = 1; n <= 12; n++) { const x = l[n - 1]; WS["trustImg" + n] = x ? x[0] : ""; WS["trustName" + n] = x ? x[1] : ""; } }
+function drawTrust() {
+  const l = trustList();
+  $("#trList").innerHTML = l.map(([r, nm], i) => `<div class="wc-img"><div class="pic tr-pic"><img src="${esc(refUrl(r))}" alt=""><span class="no">${i + 1}</span></div>
+      <div class="row" style="flex-direction:column;align-items:stretch;gap:6px"><input type="text" maxlength="60" data-tn="${i}" placeholder="Company ka naam (optional)" value="${esc(nm)}">
+      <div class="row" style="padding:0"><button class="btn sm" data-tm="${i}" data-d="-1" ${i ? "" : "disabled"} aria-label="Move left">←</button><button class="btn sm danger" data-tx="${i}">✕ Hatao</button><button class="btn sm" data-tm="${i}" data-d="1" ${i < l.length - 1 ? "" : "disabled"} aria-label="Move right">→</button></div></div></div>`).join("")
+    + (l.length < 12 ? `<button type="button" class="wc-img tr-add" id="trAdd">${TRI ? esc(TRI) : "+ Company logo add karein"}</button>` : "");
+  $$("#trList [data-tn]").forEach(x => x.oninput = () => { const l2 = trustList(); l2[+x.dataset.tn][1] = x.value.replace(/[<>|]/g, ""); setTrust(l2); dirty(); });
+  $$("#trList [data-tx]").forEach(b => b.onclick = () => { const l2 = trustList(); l2.splice(+b.dataset.tx, 1); setTrust(l2); drawTrust(); dirty(); });
+  $$("#trList [data-tm]").forEach(b => b.onclick = () => { const l2 = trustList(), k = +b.dataset.tm, j = k + +b.dataset.d; [l2[k], l2[j]] = [l2[j], l2[k]]; setTrust(l2); drawTrust(); dirty(); });
+  const add = $("#trAdd"); if (add) add.onclick = () => { if (!TRI) $("#trFile").click(); };
+  $("#trFile").onchange = async e => {
+    const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(f.type)) return toast("Sirf JPG, PNG, WEBP photo", true);
+    TRI = "Uploading…"; drawTrust();
+    try {
+      const blob = await shrink(f);
+      const r = await call("adminImage", { name: "trusted-" + Date.now() + (blob.type === "image/webp" ? ".webp" : blob.type === "image/png" ? ".png" : ".jpg"), mime: blob.type, data: await b64(blob) });
+      if (!r.ok) throw new Error(r.error);
+      const l2 = trustList(); l2.push([r.ref, f.name.replace(/\.\w+$/, "").replace(/[-_]+/g, " ").replace(/[<>|]/g, "").slice(0, 60)]); setTrust(l2);
+      TRI = null; drawTrust(); dirty(); toast("Logo upload ho gaya — naam check karke Save dabayein");
+    } catch (err) { TRI = null; drawTrust(); toast("Logo upload nahi hua: " + err.message, true); }
+  };
 }
 const dirty = () => { $("#wcNote").innerHTML = "<b style='color:var(--warn)'>● Unsaved changes</b> — Save dabayein"; };
 function drawWcImgs() {
@@ -1285,13 +1319,14 @@ function drawWcList() {
   });
 }
 async function saveSite() {
-  if (Object.keys(WSI).length) return toast("Photo upload ho rahi hai — thoda rukiye", true);
+  if (Object.keys(WSI).length || TRI) return toast("Photo upload ho rahi hai — thoda rukiye", true);
   const bad = SOCIALS.find(([k]) => WS["social_" + k] && !/^https:\/\/\S+$/.test(WS["social_" + k]));
   if (bad) return toast(bad[1] + " ka link https:// se shuru hona chahiye", true);
   const settings = {};
   UI_ITEMS.forEach(([, items]) => items.forEach(([id]) => settings["ui_" + id] = WS["ui_" + id] || "show"));
   [1, 2, 3, 4].forEach(n => settings["customImg" + n] = WS["customImg" + n] || "");
   SOCIALS.forEach(([k]) => settings["social_" + k] = WS["social_" + k] || "");
+  for (let n = 1; n <= 12; n++) { settings["trustImg" + n] = WS["trustImg" + n] || ""; settings["trustName" + n] = (WS["trustImg" + n] && WS["trustName" + n]) || ""; }
   const b = $("#wcSave"); b.disabled = true;
   const r = await call("adminUiSave", { settings });
   b.disabled = false;
