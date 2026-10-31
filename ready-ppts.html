@@ -495,7 +495,7 @@ async function postS(action, body){   /* Google Script (admin panel) */
 }
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem("la_cart")) || []; } catch(e) {}
-const st = { q:"", cat:"all", f:{}, sort:"popular", shown:CONFIG.perPage };
+const st = { q:"", cat:"all", f:{}, sort:"random", shown:CONFIG.perPage };
 /* PPTs ya Notes: admin panel mein category "Notes" wali PDF yahan "Notes" tab mein dikhti hai */
 let NOTES = /\/notes/.test(location.pathname) || new URLSearchParams(location.search).get("type") === "notes";
 /* Notes ki pehchaan: category "notes" (naya Google Script) ya class list mein "Study Notes" tag (purana Script bhi chalta rahe) */
@@ -604,7 +604,9 @@ const matchQ = p => { const q = st.q.trim().toLowerCase(); if (!q) return true;
 const matchF = (p, skip) => FILTERS.every(f => f.key === skip || (NOTES && f.ppt) || !st.f[f.key] || f.get(p).includes(st.f[f.key]));
 const MEDIUM = [["Hindi","Hindi Medium"],["English","English Medium"],["Both","Hindi + English"]];
 const matchC = p => st.cat === "all" || (st.cat.startsWith("m:") ? p.lang === st.cat.slice(2) : p.cat === st.cat || (st.cat === "anim" && p.anim));
-const SORTS = { popular:(a,b) => b.sales - a.sales || b.added - a.added, low:(a,b) => a.price - b.price, high:(a,b) => b.price - a.price, new:(a,b) => b.added - a.added };
+/* Har baar page khulne par PPTs naye random order mein (render dobara hone par order wahi rahe) */
+const RND = new Map(), rnd = p => RND.get(p.id) ?? (RND.set(p.id, Math.random()), RND.get(p.id));
+const SORTS = { random:(a,b) => rnd(a) - rnd(b), popular:(a,b) => b.sales - a.sales || b.added - a.added, low:(a,b) => a.price - b.price, high:(a,b) => b.price - a.price, new:(a,b) => b.added - a.added };
 
 function renderCats(){
   const V = VIEW(), used = NOTES ? MEDIUM.map(([v,t]) => ({ id:"m:" + v, name:`${t} (${V.filter(p => p.lang === v).length})` })).filter(c => !c.name.endsWith("(0)"))
@@ -627,7 +629,7 @@ function renderFilters(){
     if (vals.length < 2 && !cur) return "";
     return `<label class="fsel ${cur ? "on" : ""}"><span>${(NOTES && f.nl) || f.label}</span><select data-f="${f.key}"><option value="">All</option>${
       vals.map(v => `<option value="${esc(v)}" ${v === cur ? "selected" : ""}>${esc(v)} (${base.filter(p => f.get(p).includes(v)).length})</option>`).join("")}</select></label>`;
-  }).join("") + `<label class="fsel"><span>Sort by</span><select id="sort">${[["popular","Most Popular"],["low","Price: Low to High"],["high","Price: High to Low"],["new","Newest"]]
+  }).join("") + `<label class="fsel"><span>Sort by</span><select id="sort">${[["random","Random Mix"],["popular","Most Popular"],["low","Price: Low to High"],["high","Price: High to Low"],["new","Newest"]]
       .map(([v,t]) => `<option value="${v}" ${st.sort === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>`;
   const n = Object.values(st.f).filter(Boolean).length + (st.cat !== "all" ? 1 : 0);
   $("#fcount").textContent = n ? `(${n})` : "";
