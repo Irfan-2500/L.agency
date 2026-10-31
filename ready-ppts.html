@@ -90,7 +90,7 @@ html.light .kicker{color:#a16207;background:#fef9c3}
 .tk-run span{padding:6px 0}.tk-run span::after{content:"✦";margin:0 22px;color:var(--amber)}
 .ticker:hover .tk-run{animation-play-state:paused}
 @keyframes tk{to{transform:translateX(-50%)}}
-.perks{display:grid;grid-template-columns:repeat(2,minmax(0,max-content));gap:4px 18px;margin-top:6px;font-size:.78rem;color:var(--muted);font-weight:600}
+.perks{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:0 auto 16px;font-size:.85rem;color:var(--muted);font-weight:600}
 .perks span{display:inline-flex;align-items:center;gap:6px}
 .perks svg{color:var(--green);width:14px;height:14px}
 
@@ -375,12 +375,6 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
   <div class="h-row"><a href="index.html" class="h-back" id="hBack" aria-label="Back" title="Back"><svg class="i"><use href="#i-left"/></svg></a>
   <h1 id="hTitle">PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span></h1></div>
   <div class="ticker" role="marquee" aria-label="Updates"><b>Note</b><div class="tk-win"><div class="tk-run" id="hText"><span>Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.</span></div></div></div>
-  <div class="perks" id="hPerks">
-    <span><svg class="i"><use href="#i-check"/></svg>100% Editable .pptx</span>
-    <span><svg class="i"><use href="#i-check"/></svg>Instant Download</span>
-    <span><svg class="i"><use href="#i-check"/></svg>UPI Payment</span>
-    <span><svg class="i"><use href="#i-check"/></svg>High & Best Quality</span>
-  </div>
   <div class="kind" role="tablist" aria-label="Kya dekhna hai"><button type="button" role="tab" data-kind="ppt">📊 Ready PPTs</button><button type="button" role="tab" data-kind="notes">📝 PDF Study Notes</button></div>
 </section>
 <section class="samples" id="samples" hidden aria-label="Sample slides aur pages"><div class="s-track" id="sTrack"></div></section>
@@ -457,7 +451,14 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
   </div>
 </div>
 
-<footer style="text-align:center;padding:28px 16px 40px;font-size:.85rem;color:var(--muted)"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refund</a> · <a href="delivery.html">Delivery</a> · <a href="contact.html">Contact</a></footer>
+<footer style="text-align:center;padding:28px 16px 40px;font-size:.85rem;color:var(--muted)">
+  <div class="perks" id="hPerks">
+    <span><svg class="i"><use href="#i-check"/></svg>100% Editable .pptx</span>
+    <span><svg class="i"><use href="#i-check"/></svg>Instant Download</span>
+    <span><svg class="i"><use href="#i-check"/></svg>UPI Payment</span>
+    <span><svg class="i"><use href="#i-check"/></svg>High & Best Quality</span>
+  </div>
+  <div class="f-links"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refund</a> · <a href="delivery.html">Delivery</a> · <a href="contact.html">Contact</a></div></footer>
 <div class="toast" id="toast" role="status"></div>
 
 <script src="config.js"></script>
