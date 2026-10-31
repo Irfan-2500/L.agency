@@ -667,6 +667,7 @@ main,section,footer{position:relative;z-index:1}
 .th-tags{display:flex;flex-wrap:wrap;gap:5px}
 .th-tags span{font-size:.66rem;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--card2);color:var(--muted);border:1px solid var(--line)}
 .th-tags span.dark{color:#c4b5fd}.th-tags span.white{color:#fde68a}
+.th-pic .ppt-logo{position:absolute;top:10px;left:10px;z-index:3;width:30px;height:auto;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}
 .th-count{position:absolute;top:10px;right:10px;z-index:2;display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:8px;background:rgba(0,0,0,.72);color:#fff;font-size:.7rem;font-weight:700}
 .th-strip{display:flex;gap:8px;padding:12px 20px 0;overflow-x:auto}
 .th-strip:empty{display:none}
@@ -2969,7 +2970,7 @@ function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
   $("#" + pre + "N").textContent = arr.length;
   $("#" + pre + "Row").innerHTML = arr.map((p, k) => { const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
     return `<div class="th-card" role="button" tabindex="0" onclick="${fn}(${k})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${fn}(${k})}" aria-label="View ${esc(p.title)}">
-      <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span></div>
+      <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span>${pre === "rd" ? `<img class="ppt-logo" src="uploads/brand/ppt-logo.webp" alt="PPT" title="PowerPoint (.pptx) file" width="30" height="29">` : ""}</div>
       <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
         <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
         <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy rd-ed" href="${ordUrl(p.title, p.thumb)}" onclick="event.stopPropagation()" aria-label="Customize ${esc(p.title)}" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
