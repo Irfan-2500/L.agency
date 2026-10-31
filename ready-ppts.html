@@ -330,6 +330,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 </style>
 </head>
 <body>
+<script src="js/loader.js" data-wait></script>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
@@ -1077,7 +1078,7 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   if (!API && PRODUCTS === DEMO) try { const v = await (await fetch("api/pay-config", { cache:"no-store" })).json(); if (v.ok && v.payments) VPAY = PAY = true; } catch(e) {}
   if (!API && PRODUCTS === DEMO && CONFIG.demoPay) PRODUCTS.forEach((p,i) => p.sales = [128,64,97,41,23][i] || 0); /* preview ke sample numbers */
   const qs = new URLSearchParams(location.search), q = qs.get("q"); if (q) { st.q = q; $("#q").value = q; }
-  setKind(NOTES, true); render();
+  setKind(NOTES, true); render(); window.PSLoader && PSLoader.hide();
   /* homepage se "Buy / Checkout": seedha payment kholo */
   const pay = (qs.get("pay") || "").split(",").map(Number).filter(id => PRODUCTS.some(p => p.id === id));
   if (pay.length) { pay.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart(); history.replaceState(null, "", location.pathname + (NOTES ? "?type=notes" : "")); openPay(pay); }
