@@ -1219,6 +1219,7 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 .lk-cta b{font-size:clamp(1rem,4cqi,1.5rem)}.lk-cta span{font-size:.85rem;opacity:.9}
 .nt-row .th-pic{aspect-ratio:210/297}.nt-row .th-card{flex-basis:200px}
 .rd-lb{font-size:.95rem;margin-top:4px}.rd-lb b{font-size:1.3rem}.rd-lb .rd-buy{width:42px;height:42px}.rd-lb .rd-dl{margin-left:0}
+.rd-ed{color:#fff;background:linear-gradient(135deg,#ec4899,#f97316)}.rd-ed+.rd-buy{margin-left:6px}.rd-lb .rd-ed+.rd-buy{margin-left:0}
 .rd-dl{margin-left:6px;color:#fff;background:linear-gradient(135deg,#8b2cff,#06b6d4)}
 .rd-buy.in{color:#fff;background:linear-gradient(135deg,#22c55e,#16a34a)}
 .rd-buy.in::after{content:"✓";position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;display:grid;place-items:center;font-size:.6rem;color:#16a34a;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
@@ -1389,6 +1390,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
   <symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
   <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
   <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
   <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></symbol>
@@ -2965,7 +2967,7 @@ function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
       <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span></div>
       <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
         <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
-        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
+        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy rd-ed" href="order.html?theme=${encodeURIComponent(p.title)}" onclick="event.stopPropagation()" aria-label="Customize ${esc(p.title)}" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
       ${p.slides ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${+p.slides} ${isNt(p) ? "pages" : "slides"}</span>` : ""}
     </div>`; }).join("");
   $("#" + pre + "Sec").hidden = false; });
@@ -3078,7 +3080,7 @@ function openTheme(i, keep){
     <a class="btn btn-primary btn-sm" href="order.html?theme=${encodeURIComponent(t.name)}">${icon("i-sparkle","width:15px")} Order in This Theme</a>`;
   if (t.rd) { const off = t.mrp > t.price ? Math.round((1 - t.price / t.mrp) * 100) : 0;
     $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags">${[t.lang && langLabel(t.lang), t.subject && "📖 " + t.subject, ...(t.level || []).filter(x => x !== "Study Notes").slice(0, 2).map(x => "🎓 " + x), t.n && t.n + (t.note ? " pages" : " slides")].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div>
-    <div class="rd-price rd-lb"><b>${inr(+t.price || 0)}</b>${off ? `<s>${inr(+t.mrp)}</s><em>${off}% OFF</em>` : ""}<button type="button" class="rd-buy${cart.includes(t.id) ? " in" : ""}" data-rid="${t.id}" onclick="rdCart(${t.id})" aria-label="Add to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${t.id}" aria-label="Buy and download" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div>`; }
+    <div class="rd-price rd-lb"><b>${inr(+t.price || 0)}</b>${off ? `<s>${inr(+t.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy rd-ed" href="order.html?theme=${encodeURIComponent(t.name)}" aria-label="Customize" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(t.id) ? " in" : ""}" data-rid="${t.id}" onclick="rdCart(${t.id})" aria-label="Add to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${t.id}" aria-label="Buy and download" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div>`; }
   showSlide(0); showPopup("themeModal");
 }
 function stepTheme(d){ openTheme(thIdx + d, true); }
