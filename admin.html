@@ -1719,6 +1719,7 @@ function editPpt(p) {
   $("#peSave").textContent = N ? "Save Notes" : "Save PPT";
   $("#peName").value = PE.title; $("#peDesc").value = PE.desc; $("#pePrice").value = PE.price; $("#peMrp").value = PE.mrp || ""; $("#peSlides").value = PE.slides || "";
   $("#peShow").checked = PE.show; $("#peAnim").checked = PE.anim; $("#peErr").textContent = "";
+  ["#peName", "#peDesc", "#pePrice", "#peMrp"].forEach(sel => delete $(sel).dataset.auto);
   $("#peSubj").innerHTML = `<option value="">— Subject chunein —</option>` + SUBJECTS.map(s => `<option ${s === PE.subject ? "selected" : ""}>${esc(s)}</option>`).join("");
   const S = (el, opts, key) => { ED = PE; seg(el, opts, PE[key], key); };
   S($("#peCat"), PCATS, "cat"); S($("#peLang"), LANGS, "lang"); S($("#peTheme"), [["Dark", "🌙 Dark"], ["Light", "☀️ Light"]], "theme"); S($("#peBadge"), PBADGE, "badge");
@@ -1768,7 +1769,11 @@ async function uploadPptFile(file, pages) {
   if (isNote(PE) && !/\.pdf$/i.test(file.name)) return toast("Notes ke liye sirf PDF file", true);
   if (!/\.(pptx?|pdf|zip)$/i.test(file.name)) return toast("Sirf PPT, PPTX, PDF ya ZIP file", true);
   const pe = PE; pe.newFile = file; pe.pages = pages; pe.fileName = file.name;
-  if (!$("#peName").value.trim()) $("#peName").value = nice(file.name).slice(0, 120);
+  { const g = fileGuess(file.name), nm = $("#peName");   // file ke naam se turant: naam, class, subject, medium
+    if (!nm.value.trim() || nm.dataset.auto) { nm.value = (makeTitle(g.topic, g) || nice(file.name)).slice(0, 120); nm.dataset.auto = "1"; }
+    if (g.cls && !pe.level.length) { pe.level.push(g.cls); ED = pe; mseg($("#peCls"), CLASSES, "level"); }
+    if (g.lang) { pe.lang = g.lang; ED = pe; seg($("#peLang"), LANGS, pe.lang, "lang"); }
+    if (g.subj && !$("#peSubj").value) $("#peSubj").value = g.subj; }
   drawPeFile();
   if (!pe.imgs.length && !/\.pptx$/i.test(file.name)) autoPreview(file, pe, pages);   // PPTX ki photo upload ke baad Google Slides se banti hai (theme sahi aata hai)
   if (/\.pdf$/i.test(file.name)) pdfMeta(file, pe);
@@ -1841,7 +1846,7 @@ async function pdfMeta(file, pe) {
   try {
     const lib = await loadPdfJs(), doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise;
     if (PE !== pe) return;
-    if (!+$("#peSlides").value) $("#peSlides").value = doc.numPages;
+    if (!+$("#peSlides").value) { $("#peSlides").value = doc.numPages; autoPrice(); }
     const v0 = (await doc.getPage(1)).getViewport({ scale: 1 }), r = Math.max(v0.width, v0.height) / Math.min(v0.width, v0.height);
     if (isNote(pe) && Math.abs(r - 1.414) > .04) toast("⚠️ Ye PDF A4 size ki nahi lagti. Notes A4 (210 × 297 mm) mein ho to print achha aata hai.", true);
   } catch (e) {}
@@ -1866,8 +1871,9 @@ async function pdfShots(file, pages, tick, each) {
 const xmlText = x => [...x.matchAll(/<a:t(?:\s[^>]*)?>([^<]*)<\/a:t>/g)].map(m => m[1]).join(" ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/\s+/g, " ").trim();
 const slideTitle = x => {   // title placeholder, warna sabse bade font wala text
   const sps = x.match(/<p:sp>[\s\S]*?<\/p:sp>/g) || [], ph = sps.find(sp => /<p:ph[^>]*type="(?:title|ctrTitle)"/.test(sp) && xmlText(sp));
-  if (ph) return xmlText(ph).slice(0, 80);
-  const big = sps.map(sp => ({ t: xmlText(sp), sz: Math.max(0, ...[...sp.matchAll(/<a:rPr[^>]*\ssz="(\d+)"/g)].map(m => +m[1])) })).filter(o => o.t).sort((a, b) => b.sz - a.sz)[0];
+  const num = t => /^[\d.\s:)\-–]+$/.test(t);   // "1.1" jaisa sirf number title → asli heading doosre box mein
+  if (ph && !num(xmlText(ph))) return xmlText(ph).slice(0, 80);
+  const big = sps.map(sp => ({ t: xmlText(sp), sz: Math.max(0, ...[...sp.matchAll(/<a:rPr[^>]*\ssz="(\d+)"/g)].map(m => +m[1])) })).filter(o => o.t && !num(o.t) && o.t.length < 120).sort((a, b) => b.sz - a.sz)[0];
   return big ? big.t.slice(0, 80) : ""; };
 async function pptxMeta(file) {
   try {
@@ -1876,22 +1882,36 @@ async function pptxMeta(file) {
     if (!names.length) return null;
     const xml = await Promise.all(names.map(n => z.file(n).async("string")));
     const core = z.file("docProps/core.xml") ? await z.file("docProps/core.xml").async("string") : "";
-    const titles = xml.map(slideTitle), fromFile = nice(file.name);
+    const titles = xml.map(slideTitle), g = fileGuess(file.name);
     const docTitle = xmlText("<a:t>" + ((/<dc:title>([^<]*)<\/dc:title>/.exec(core) || [])[1] || "") + "</a:t>");
-    const title = (docTitle && !/^(PowerPoint Presentation|Presentation\d*)$/i.test(docTitle) ? docTitle : titles[0] || fromFile).slice(0, 120);
-    const list = [...new Set(titles.slice(1).filter(t => t && t.length > 2))];
-    const all = xml.map(xmlText).join(" "), head = title + " " + fromFile + " " + titles.slice(0, 2).join(" "), cls = /(?:\bClass|कक्षा)\s*[-:]?\s*(1[0-2]|[1-9])\b/i.exec(head + " " + all);
+    const all = xml.map(xmlText).join(" "), first = titles[0] || "";
+    // class / subject / medium: pehle file ka naam, phir pehli 2 slides, phir poori PPT
+    const head = first + " " + (titles[1] || "") + " " + xmlText(xml[0] || "");
+    const cls = g.cls || findCls(head) || findCls(all), subj = g.subj || findSubj(head) || findSubj(first + " " + docTitle);
     const hi = (all.match(/[ऀ-ॿ]/g) || []).length, en = (all.match(/[A-Za-z]/g) || []).length;
-    return { slides: names.length, title, desc: list.length ? (`${names.length} slides: ` + list.join(", ")).slice(0, 600) : "",
-      anim: xml.some(x => /<p:timing>[\s\S]*<p:anim|<p:transition[\s>]/.test(x)), cls: cls ? "Class " + cls[1] : "",
-      lang: hi + en > 40 ? (hi > en * 4 ? "Hindi" : en > hi * 4 ? "English" : "Both") : "",
-      subj: SUBJECTS.find(x => new RegExp("\\b" + x.replace(/[^\w ]/g, "").replace(/ /g, "\\s*") + "\\b", "i").test(head)) || "" };
+    const lang = g.lang || findLang(head) || (hi + en > 40 ? (hi > en * 4 ? "Hindi" : en > hi * 4 ? "English" : "Both") : "");
+    const gg = Object.assign({}, g, { cls, subj, lang });
+    const topic = (g.sure && g.topic) || (first && !GENERIC_TITLE.test(first) ? first : "") || (docTitle && !GENERIC_TITLE.test(docTitle) ? docTitle : "") || g.topic || nice(file.name);
+    const list = [...new Set(titles.slice(1).map(t => t.replace(/^[\d.\s:)\-–]+/, "").trim()).filter(t => t.length > 2 && !SKIP_TOPIC.test(t) && t !== topic))];
+    return { slides: names.length, title: makeTitle(topic, gg) || topic.slice(0, 120), desc: makeDesc(topic, gg, names.length, list),
+      anim: xml.some(x => /<p:timing>[\s\S]*<p:anim|<p:transition[\s>]/.test(x)), cls, lang, subj };
   } catch (e) { console.error(e); return null; }
 }
-function applyMeta(pe, m, file) {   // modal ke khaali khaane bharo
+// Daam apne aap: slides × ₹5, kata hua daam slides × ₹8. Aapne khud likha to wahi rahega.
+function autoPrice() {
+  if (!PE || isNote(PE) || ZQ) return;
+  const n = +$("#peSlides").value; if (!(n > 0)) return;
+  const pr = $("#pePrice"), mr = $("#peMrp");
+  if (!pr.value || pr.dataset.auto) { pr.value = n * PER_SLIDE; pr.dataset.auto = "1"; }
+  if (!mr.value || mr.dataset.auto) { mr.value = n * PER_SLIDE_MRP; mr.dataset.auto = "1"; }
+}
+["#peName", "#peDesc", "#pePrice", "#peMrp"].forEach(sel => $(sel).addEventListener("input", e => { if (e.isTrusted) delete $(sel).dataset.auto; }));
+$("#peSlides").addEventListener("input", () => autoPrice());
+function applyMeta(pe, m, file) {   // modal ke khaali khaane bharo (jo aapne khud likha wo nahi badalta)
   if (!+$("#peSlides").value) $("#peSlides").value = m.slides;
-  if (!$("#peName").value.trim() || $("#peName").value.trim() === nice(file.name)) $("#peName").value = m.title;
-  if (!$("#peDesc").value.trim() && m.desc) $("#peDesc").value = m.desc;
+  const nm = $("#peName"); if (!nm.value.trim() || nm.dataset.auto) { nm.value = m.title; nm.dataset.auto = "1"; }
+  const ds = $("#peDesc"); if ((!ds.value.trim() || ds.dataset.auto) && m.desc) { ds.value = m.desc; ds.dataset.auto = "1"; }
+  autoPrice();
   if (m.anim) $("#peAnim").checked = true;
   if (m.cls && !pe.level.length) { pe.level.push(m.cls); ED = pe; mseg($("#peCls"), CLASSES, "level"); }
   if (m.lang) { pe.lang = m.lang; ED = pe; seg($("#peLang"), LANGS, pe.lang, "lang"); }
@@ -2118,17 +2138,72 @@ $("#peFileIn").onchange = e => { if (e.target.files[0]) uploadPptFile(e.target.f
 // ZIP mein kai PPT → har PPT ka alag card (daam, class, board sab par ek jaisa)
 let ZQ = null;
 $("#peZipIn").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) zipPick(f); };
-// file ke naam se andaza: "CH-1_Chemical Reactions | Science | Class-10 EM.pptx"
-function fileGuess(name) {
-  const base = name.replace(/\.\w+$/, ""), parts = base.split(/\s*[|｜]\s*/).map(x => x.trim()).filter(Boolean), all = base.replace(/_+/g, " ");
-  const chRe = /^\s*(?:ch(?:apter)?|अध्याय|पाठ|unit|lesson)[\s._-]*0*(\d+)[\s._:-]*/i, ch = chRe.exec(parts[0] || "");
-  const t = (parts[0] || base).replace(chRe, "").replace(/_+/g, " ").replace(/\s+/g, " ").trim();
-  const cm = /(?:\bclass|\bstd|कक्षा)[\s._-]*(1[0-2]|[1-9])(?!\d)/i.exec(all), cls = cm ? "Class " + cm[1] : "";
-  const subj = SUBJECTS.find(x => new RegExp("\\b" + x.replace(/[^\w ]/g, "").replace(/ /g, "\\s*") + "\\b", "i").test(all)) || "";
-  const lang = /\b(EM|english\s*medium)\b/i.test(all) ? "English" : /\b(HM|hindi\s*medium)\b/i.test(all) ? "Hindi" : "";
-  const tail = [cls, subj].filter(Boolean).join(" ") + (ch ? ` Ch ${ch[1]}` : "");
-  return { title: (t + (t && tail.trim() ? " — " + tail.trim() : "")).slice(0, 120), cls, subj, lang, sure: parts.length > 1 || !!ch || !!cm };
+// file ke naam / slides ke text se andaza (Hindi + English):
+// "अध्याय-1 | रासायनिक अभिक्रियाएँ एवं समीकरण | विज्ञान | कक्षा 10वीं | हिंदी माध्यम.pptx" ya "CH-1_Chemical Reactions | Science | Class-10 EM.pptx"
+const PER_SLIDE = 5, PER_SLIDE_MRP = 8;   // daam apne aap: ₹5 / slide, kata hua ₹8 / slide (badal sakte hain)
+const HI_SUBJ = [["सामाजिक विज्ञान", "Social Science"], ["राजनीति विज्ञान", "Political Science"], ["राजनीतिक विज्ञान", "Political Science"], ["नागरिक शास्त्र", "Political Science"],
+  ["जीव विज्ञान", "Biology"], ["जीवविज्ञान", "Biology"], ["भौतिक विज्ञान", "Physics"], ["भौतिकी", "Physics"], ["रसायन विज्ञान", "Chemistry"], ["रसायन शास्त्र", "Chemistry"],
+  ["कंप्यूटर", "Computer Science"], ["कम्प्यूटर", "Computer Science"], ["पर्यावरण", "EVS"], ["सामान्य ज्ञान", "GK & Current Affairs"], ["तर्कशक्ति", "Reasoning / MAT"],
+  ["लेखाशास्त्र", "Accountancy"], ["व्यवसाय अध्ययन", "Business Studies"], ["शारीरिक शिक्षा", "Physical Education"], ["अर्थशास्त्र", "Economics"], ["इतिहास", "History"],
+  ["भूगोल", "Geography"], ["संस्कृत", "Sanskrit"], ["गणित", "Maths"], ["विज्ञान", "Science"], ["अंग्रेज़ी", "English"], ["अंग्रेजी", "English"], ["हिंदी", "Hindi"], ["हिन्दी", "Hindi"]];
+const EN_SUBJ = [["social science", "Social Science"], ["sst", "Social Science"], ["political science", "Political Science"], ["civics", "Political Science"], ["mathematics", "Maths"], ["math", "Maths"],
+  ["computer", "Computer Science"], ["evs", "EVS"], ["gk", "GK & Current Affairs"], ["general knowledge", "GK & Current Affairs"], ["reasoning", "Reasoning / MAT"],
+  ...SUBJECTS.map(x => [x.toLowerCase(), x])];
+const HI_SUBJ_NAME = Object.fromEntries(HI_SUBJ.map(([h, e]) => [e, h]).reverse());
+const devDigits = t => String(t || "").replace(/[०-९]/g, d => "०१२३४५६७८९".indexOf(d));
+const isHi = t => (String(t).match(/[ऀ-ॿ]/g) || []).length > (String(t).match(/[A-Za-z]/g) || []).length;
+const MED_RE = /(?:हिं?दी|हिन्दी|अंग्रे(?:ज़|ज)ी|english|hindi|bilingual|द्विभाषी)[\s._-]*(?:माध्यम|medium)?|\b(?:EM|HM)\b|माध्यम|medium/gi;
+function findSubj(t) {   // pehle "माध्यम / medium" hatao, warna "हिंदी माध्यम" Hindi subject ban jaata
+  t = String(t || "").replace(/(?:हिं?दी|हिन्दी|अंग्रे(?:ज़|ज)ी|english|hindi)[\s._-]*(?:माध्यम|medium)/gi, " ").replace(/\b(?:EM|HM)\b/g, " ");
+  for (const [h, e] of HI_SUBJ) if (t.includes(h)) return e;
+  const low = " " + t.toLowerCase().replace(/[^a-z& ]+/g, " ").replace(/\s+/g, " ") + " ";
+  for (const [k, e] of EN_SUBJ) if (low.includes(" " + k.replace(/[^a-z& ]+/g, " ").replace(/\s+/g, " ").trim() + " ")) return e;
+  return "";
 }
+function findLang(t) {
+  t = String(t || "");
+  if (/द्विभाषी|bilingual|hindi\s*(?:\+|&|and|aur)\s*english|english\s*(?:\+|&|and)\s*hindi/i.test(t)) return "Both";
+  if (/(?:हिं?दी|हिन्दी)[\s._-]*माध्यम|hindi[\s._-]*medium|\bHM\b/i.test(t)) return "Hindi";
+  if (/अंग्रे(?:ज़|ज)ी[\s._-]*माध्यम|english[\s._-]*medium|\bEM\b/i.test(t)) return "English";
+  return "";
+}
+const findCls = t => { const m = /(?:\bclass|\bstd|\bgrade|कक्षा)[\s._:-]*(1[0-2]|[1-9])(?!\d)/i.exec(devDigits(t)); return m ? "Class " + m[1] : ""; };
+const CH_RE = /^\s*(?:ch(?:apter)?|अध्याय|पाठ|unit|lesson|इकाई)[\s._:-]*0*(\d+)[\s._:-]*/i;
+function fileGuess(name) {
+  const base = devDigits(name.replace(/\.\w+$/, "")).replace(/\s*[\[(]\d+[\])]\s*$/, ""), all = base.replace(/_+/g, " ");
+  const parts = base.split(/\s*[|｜]\s*/).map(x => x.replace(/_+/g, " ").replace(/\s+/g, " ").trim()).filter(Boolean);
+  let ch = "", topic = "";
+  for (const p0 of parts) {
+    let p = p0; const c = CH_RE.exec(p); if (c) { ch = ch || c[1]; p = p.replace(CH_RE, "").trim(); }
+    if (!p) continue;
+    const rest = p.replace(MED_RE, " ").replace(/(?:\bclass|\bstd|\bgrade|कक्षा)[\s._:-]*\d+\s*(?:वीं|वी|th|st|nd|rd)?/gi, " ").replace(/\s+/g, " ").trim();
+    if (!rest || (findSubj(p) && rest.length <= 22 && findSubj(rest) && rest.split(" ").length <= 3)) continue;   // sirf class / subject / medium wala hissa
+    if (!topic) topic = rest;
+  }
+  if (!topic && parts.length <= 1) topic = all.replace(CH_RE, "").replace(MED_RE, " ").replace(/\s+/g, " ").trim();
+  const cls = findCls(all), subj = findSubj(all), lang = findLang(all);
+  return { topic, ch, cls, subj, lang, sure: parts.length > 1 || !!ch || !!cls };
+}
+// naam: "रासायनिक अभिक्रियाएँ एवं समीकरण — कक्षा 10 विज्ञान (अध्याय 1)" / "Chemical Reactions — Class 10 Science (Ch 1)"
+function makeTitle(topic, g) {
+  if (!topic) return "";
+  const hi = isHi(topic), n = (g.cls || "").replace("Class ", "");
+  const tail = hi ? [n && "कक्षा " + n, g.subj && (HI_SUBJ_NAME[g.subj] || g.subj)].filter(Boolean).join(" ") : [g.cls, g.subj].filter(Boolean).join(" ");
+  const ch = g.ch ? (hi ? ` (अध्याय ${g.ch})` : ` (Ch ${g.ch})`) : "";
+  return (topic + (tail ? " — " + tail : "") + ch).slice(0, 120);
+}
+// description: kis class / subject ka, kitni slides, kya kya topic
+function makeDesc(topic, g, slides, list) {
+  const hi = isHi(topic + " " + list.join(" ")), n = (g.cls || "").replace("Class ", ""), L = list.slice(0, 8);
+  if (hi) {
+    const who = [n && "कक्षा " + n, g.subj && (HI_SUBJ_NAME[g.subj] || g.subj)].filter(Boolean).join(" ") + (g.lang === "Hindi" ? " (हिंदी माध्यम)" : g.lang === "English" ? " (English Medium)" : "");
+    return [(who.trim() ? who.trim() + " – " : "") + (g.ch ? `अध्याय ${g.ch}: ` : "") + topic + "।", slides ? `${slides} आकर्षक, पूरी तरह editable स्लाइड्स।` : "", L.length ? "शामिल: " + L.join(", ") + "।" : ""].filter(Boolean).join(" ").slice(0, 600);
+  }
+  const who = [g.cls, g.subj].filter(Boolean).join(" ") + (g.lang === "Hindi" ? " (Hindi Medium)" : g.lang === "English" ? " (English Medium)" : g.lang === "Both" ? " (Hindi + English)" : "");
+  return [(who.trim() ? who.trim() + " – " : "") + (g.ch ? `Chapter ${g.ch}: ` : "") + topic + ".", slides ? `${slides} fully editable slides.` : "", L.length ? "Covers: " + L.join(", ") + "." : ""].filter(Boolean).join(" ").slice(0, 600);
+}
+const GENERIC_TITLE = /^(?:pptxgenjs presentation|powerpoint presentation|presentation\s*\d*|untitled.*|slide\s*\d*|microsoft powerpoint.*|title|click to add title|new presentation)$/i;
+const SKIP_TOPIC = /शाबाश|धन्यवाद|अध्याय पूर्ण|समाप्त|thank\s*you|the end|well done|questions?\??$|^अभ्यास$|^exercise$|^quiz$|^summary$|^सारांश$/i;
 const zv = (it, k) => k in it.ed ? it.ed[k] : it.auto[k];
 let ZOPEN = -1;
 async function zipPick(f) {
@@ -2141,7 +2216,7 @@ async function zipPick(f) {
     const mime = n => /\.pdf$/i.test(n) ? "application/pdf" : /\.pptx$/i.test(n) ? "application/vnd.openxmlformats-officedocument.presentationml.presentation" : "application/vnd.ms-powerpoint";
     ZQ = await Promise.all(list.map(async e => { const n = e.name.split("/").pop(), g = fileGuess(n);
       return { file: new File([await e.async("blob")], n, { type: mime(n) }), ed: {}, meta: false,
-        auto: { title: g.title || nice(n), desc: "", slides: "", cls: g.cls, subj: g.subj, lang: g.lang, price: "", mrp: "", anim: false } }; }));
+        auto: { title: makeTitle(g.topic, g) || nice(n), desc: "", slides: "", cls: g.cls, subj: g.subj, lang: g.lang, price: "", mrp: "", anim: false } }; }));
     ZOPEN = -1;
     $("#pptModal").classList.add("zip"); $("#peTitle").textContent = `ZIP: ${ZQ.length} PPT (har ek alag)`; $("#peSave").textContent = `Save sab ${ZQ.length} PPT`;
     $("#peFile").hidden = true; drawZip();
@@ -2150,17 +2225,20 @@ async function zipPick(f) {
       const n = it.file.name, g = fileGuess(n), a = it.auto;
       try {
         if (/\.pptx$/i.test(n)) { const m = await pptxMeta(it.file);
-          if (m) Object.assign(a, { title: g.sure && g.title ? g.title : m.title || a.title, desc: m.desc, slides: m.slides, cls: g.cls || m.cls, subj: g.subj || m.subj, lang: g.lang || m.lang, anim: m.anim }); }
+          if (m) Object.assign(a, { title: m.title || a.title, desc: m.desc, slides: m.slides, cls: m.cls, subj: m.subj, lang: m.lang, anim: m.anim }); }
         else if (/\.pdf$/i.test(n)) { const doc = await (await loadPdfJs()).getDocument({ data: await it.file.arrayBuffer() }).promise; a.slides = doc.numPages; }
+        if (+a.slides > 0 && !isNote(PE)) { a.price = String(a.slides * PER_SLIDE); a.mrp = String(a.slides * PER_SLIDE_MRP); }   // ₹5 / slide, kata hua ₹8 / slide
       } catch (e) {}
       it.meta = true; if (ZQ === zq) drawZip();
     }
   } catch (e) { ZQ = null; $("#peZipList").innerHTML = ""; toast("ZIP nahi khuli: " + e.message, true); }
 }
+// daam: is PPT ka khud likha > neeche wala sabka daam > apne aap (₹5 / ₹8 per slide)
+const zPrice = (it, k) => +it.ed[k] || +$(k === "price" ? "#pePrice" : "#peMrp").value || +it.auto[k] || 0;
 function zipLine(it) {
-  const v = k => zv(it, k), cp = $("#pePrice").value, pr = v("price") || cp;
+  const v = k => zv(it, k), pr = zPrice(it, "price");
   return [v("subj"), v("cls"), v("lang") && (LANGS.find(l => l[0] === v("lang")) || [, v("lang")])[1], v("slides") && v("slides") + (/\.pdf$/i.test(it.file.name) ? " pages" : " slides"),
-    pr ? "₹" + pr + (v("price") ? " (alag)" : "") : "₹ ?"].filter(Boolean).join(" · ") + (it.meta ? "" : " · ⏳ file padh rahe…");
+    pr ? "₹" + pr + (it.ed.price ? " (alag)" : !$("#pePrice").value && it.auto.price ? " (₹5/slide)" : "") : "₹ ?"].filter(Boolean).join(" · ") + (it.meta ? "" : " · ⏳ file padh rahe…");
 }
 function drawZip() {
   const opt = (list, val, ph) => `<option value="">${ph}</option>` + list.map(o => { const [x, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(x)}" ${x === val ? "selected" : ""}>${esc(l)}</option>`; }).join("");
@@ -2184,13 +2262,13 @@ function drawZip() {
 $("#pePrice").addEventListener("input", () => { if (ZQ) $$("#peZipList .zt small").forEach((el, k) => el.textContent = zipLine(ZQ[k])); });
 function saveZip() {
   const price = +$("#pePrice").value, mrp = +$("#peMrp").value || 0;
-  const noPrice = ZQ.find(it => !(+zv(it, "price") >= 1) && !(price >= 1));
+  const noPrice = ZQ.find(it => !(zPrice(it, "price") >= 1));
   if (noPrice) return $("#peErr").textContent = `Daam likhein (kam se kam ₹1) — "${zv(noPrice, "title") || noPrice.file.name}" ka daam nahi hai`;
   const base = JSON.parse(JSON.stringify({ id: 0, title: "", desc: "", price, mrp, cat: PE.cat, level: PE.level, subject: $("#peSubj").value, board: PE.board, lang: PE.lang,
     theme: PE.theme, slides: 0, anim: $("#peAnim").checked, badge: PE.badge, refs: [], file: "", fileName: "", show: $("#peShow").checked }));
   ZQ.forEach(it => { const v = k => zv(it, k), pe = JSON.parse(JSON.stringify(base));
-    Object.assign(pe, { title: (v("title") || "").trim(), desc: (v("desc") || "").trim(), slides: +v("slides") || 0, price: +v("price") || price,
-      mrp: v("mrp") !== "" && v("mrp") != null ? +v("mrp") || 0 : mrp, subject: v("subj") || base.subject, lang: v("lang") || base.lang, anim: base.anim || !!v("anim") });
+    Object.assign(pe, { title: (v("title") || "").trim(), desc: (v("desc") || "").trim(), slides: +v("slides") || 0, price: zPrice(it, "price"),
+      mrp: zPrice(it, "mrp"), subject: v("subj") || base.subject, lang: v("lang") || base.lang, anim: base.anim || !!v("anim") });
     if (v("cls")) pe.level = [v("cls")];
     enqueue({ name: pe.title || nice(it.file.name), file: it.file, pe, auto: !it.meta }); });
   toast(`✓ ${ZQ.length} PPT background mein upload ho rahi hain — aap aur add kar sakte hain`);
