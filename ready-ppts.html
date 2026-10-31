@@ -132,8 +132,8 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .card:hover{transform:translateY(-3px);border-color:var(--line2);box-shadow:var(--shadow)}
 .thumb{position:relative;aspect-ratio:16/9;background-size:cover;background-position:center;cursor:zoom-in;display:block;width:100%}
 .thumb .gt{position:absolute;inset:auto 14px 14px;font-family:'Space Grotesk','Hind';font-weight:700;color:#fff;font-size:1.1rem;text-shadow:0 2px 12px rgba(0,0,0,.4)}
-.ppt-logo{position:absolute;top:8px;right:8px;z-index:2;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.25)}.ppt-logo svg{width:26px;height:26px}
-@media(max-width:600px){.ppt-logo{top:6px;right:6px;width:26px;height:26px;border-radius:7px}.ppt-logo svg{width:20px;height:20px}}
+.ppt-logo{position:absolute;top:8px;right:8px;z-index:2;display:block;line-height:0;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}.ppt-logo img{width:30px;height:auto}
+@media(max-width:600px){.ppt-logo{top:6px;right:6px}.ppt-logo img{width:24px}}
 .ribbon{position:absolute;top:8px;left:8px;font-size:.56rem;font-weight:800;letter-spacing:.06em;line-height:1.4;padding:2px 6px;border-radius:5px;color:#fff}
 .r-best{background:linear-gradient(135deg,#f59e0b,#ef4444)} .r-new{background:linear-gradient(135deg,#22c55e,#06b6d4)} .r-feat{background:linear-gradient(135deg,#8b2cff,#ec4899)}
 .sl-badge{position:absolute;bottom:10px;right:10px;display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;padding:4px 8px;border-radius:8px;background:rgba(0,0,0,.62);color:#fff}
@@ -656,7 +656,7 @@ let qt; $("#q").oninput = e => { clearTimeout(qt); qt = setTimeout(() => { st.q 
 
 /* ---------- GRID ---------- */
 /* PPT card ke upar right corner mein PowerPoint file jaisa logo */
-const PPT_LOGO = `<span class="ppt-logo" title="PowerPoint (.pptx) file"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="5" width="20" height="22" rx="3" fill="#ff8f6b"/><circle cx="21" cy="16" r="5.5" fill="#fff" opacity=".9"/><path d="M21 16V10.5A5.5 5.5 0 0 1 26.5 16Z" fill="#c43e1c"/><rect x="3" y="9" width="14" height="14" rx="2.5" fill="#c43e1c"/><path d="M7.5 19.5v-7h3.1a2.3 2.3 0 0 1 0 4.6H7.5" fill="none" stroke="#fff" stroke-width="1.9" stroke-linejoin="round"/></svg></span>`;
+const PPT_LOGO = `<span class="ppt-logo" title="PowerPoint (.pptx) file"><img src="uploads/brand/ppt-logo.webp" alt="PPT" width="30" height="29"></span>`;
 const ribbon = b => ({ best:`<span class="ribbon r-best">BEST SELLER</span>`, new:`<span class="ribbon r-new">NEW</span>`, feat:`<span class="ribbon r-feat">FEATURED</span>` })[b] || "";
 /* Kitni baar biki: har purchase par Google Sheet mein +1 hota hai, yahan wahi number (0 bhi dikhe) */
 const soldTag = p => { const n = Math.max(0, +p.sales || 0);
