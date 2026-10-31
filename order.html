@@ -344,10 +344,10 @@ let type = "School / Class Education";   /* School pehle se chuna hua */
 let theme = "";
 try { theme = (new URLSearchParams(location.search).get("theme") || "").slice(0, 80); } catch (e) {}
 if (theme) { $("#picked").hidden = false; $("#pickedName").textContent = theme; }
-// ✕ dabaya to jis page se aaye the wahi wapas khule (warna Home)
+// ✕ = browser ka Back (ek step peeche). Peeche kuch na ho tabhi Home.
 $("#pickedX").onclick = () => {
-  let same = false; try { same = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
-  if (same && history.length > 1) history.back(); else location.href = "index.html"; };
+  if (history.length > 1) { history.back(); setTimeout(() => { location.href = "index.html"; }, 900); }
+  else location.href = "index.html"; };
 // Theme / PPT ki photo bhi dikhao (sirf https ya apni uploads/ wali photo)
 try { const img = new URLSearchParams(location.search).get("img") || "";
   if (theme && img.length < 600 && /^(https:\/\/|uploads\/)/.test(img)) { const el = $("#pickedImg"); el.src = img; el.hidden = false;
