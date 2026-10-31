@@ -295,7 +295,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
   .card h3{font-size:.9rem}
   .card p,.tags{display:none}
   .price b{font-size:1.1rem}
-  .acts{grid-template-columns:1fr 1fr}.acts>*{min-width:0}.acts .btn-gold{grid-column:1/-1}.acts .add{padding-inline:2px!important;font-size:.72rem!important;white-space:nowrap}
+  .acts{grid-template-columns:1fr 1fr}.acts>*{min-width:0}.acts .btn-gold{grid-column:1/-1}.acts .add .lbl{display:none}
   .acts .btn{padding:8px 6px;font-size:.78rem}
 }
 /* Phone: ek screen par 2 card, upar-neeche scroll */
@@ -686,7 +686,7 @@ function card(p){
       <div class="tags">${[langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, p.anim ? "Animated" : ""].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
       <div class="acts">
-        <button class="btn btn-ghost btn-sm add ${inCart ? "added" : ""}" onclick="toggleCart(${p.id})">${inCart ? "✓ In Cart" : "+ Add to Cart"}</button>
+        <button class="btn btn-ghost btn-sm add ${inCart ? "added" : ""}" onclick="toggleCart(${p.id})" aria-label="${inCart ? "In cart" : "Add to cart"}" title="${inCart ? "Cart mein hai" : "Add to Cart"}">${icon(inCart ? "i-check" : "i-bag","width:16px")}<span class="lbl">${inCart ? "In Cart" : "Add to Cart"}</span></button>
         <a class="btn btn-sm ed" href="order.html?theme=${encodeURIComponent(p.title)}${p.thumb ? "&img=" + encodeURIComponent(p.thumb) : ""}" title="Customize — kuch add ya change karwayein" aria-label="Customize ${esc(p.title)}">${icon("i-pen","width:15px")}<span>Custom</span></a>
         <button class="btn btn-gold btn-sm" onclick="buyNow(${p.id})">${icon("i-dl","width:15px")}Buy Now</button>
       </div>
