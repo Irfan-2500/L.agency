@@ -88,7 +88,7 @@ form{display:flex;flex-direction:column;gap:18px;margin-top:26px}
 .form-err{color:var(--red);font-size:.85rem;text-align:center;min-height:1em}
 .note{text-align:center;color:var(--dim);font-size:.76rem}
 .picked{padding:12px 14px;border-radius:12px;background:rgba(139,44,255,.14);border:1px solid rgba(192,132,252,.45);font-size:.9rem;font-weight:600}
-.picked{display:flex;align-items:center;gap:12px}.picked img{width:150px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;flex:none;box-shadow:0 6px 16px -6px rgba(0,0,0,.45);cursor:zoom-in}.picked img.big{position:fixed;inset:0;margin:auto;width:min(92vw,900px);height:auto;z-index:999;cursor:zoom-out;box-shadow:0 0 0 100vmax rgba(0,0,0,.7)}@media(max-width:480px){.picked img{width:110px}}
+.picked{display:flex;align-items:center;gap:12px;position:relative;padding-right:40px!important}.pk-x{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;border:0;display:grid;place-items:center;font-size:.8rem;line-height:1;cursor:pointer;color:var(--text,#fff);background:rgba(127,127,127,.18)}.pk-x:hover{background:#ef4444;color:#fff}.picked img{width:150px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;flex:none;box-shadow:0 6px 16px -6px rgba(0,0,0,.45);cursor:zoom-in}.picked img.big{position:fixed;inset:0;margin:auto;width:min(92vw,900px);height:auto;z-index:999;cursor:zoom-out;box-shadow:0 0 0 100vmax rgba(0,0,0,.7)}@media(max-width:480px){.picked img{width:110px}}
 .picked b{color:#fff}.picked a{margin-left:6px;color:#67e8f9;font-size:.82rem}
 .optl{color:var(--dim);font-weight:500}
 .q .drop{display:flex;margin:0;font-weight:400;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:22px 16px;border-radius:14px;cursor:pointer;
@@ -262,7 +262,7 @@ form{gap:10px;margin-top:12px}
       <div style="margin:8px 0 2px"><button type="button" class="hv-btn"><i>▶</i>Order kaise karein? <small>Video dekhein</small></button></div>
 
       <form id="orderForm" novalidate>
-        <div class="picked" id="picked" hidden><img id="pickedImg" alt="" hidden><span>🎨 Selected theme: <b id="pickedName"></b> <a href="./#themes">Change</a></span></div>
+        <div class="picked" id="picked" hidden><img id="pickedImg" alt="" hidden><span>🎨 Selected theme: <b id="pickedName"></b> <a href="./#themes">Change</a></span><button type="button" class="pk-x" id="pickedX" aria-label="Theme hatao" title="Hatao">✕</button></div>
         <div class="row2">
         <div class="q" id="q-name">
           <label for="name">Name <b>*</b></label>
@@ -343,6 +343,8 @@ let type = "School / Class Education";   /* School pehle se chuna hua */
 let theme = "";
 try { theme = (new URLSearchParams(location.search).get("theme") || "").slice(0, 80); } catch (e) {}
 if (theme) { $("#picked").hidden = false; $("#pickedName").textContent = theme; }
+// ✕ dabaya to chuni hui theme hata do (order mein bhi nahi jaayegi)
+$("#pickedX").onclick = () => { theme = ""; $("#picked").hidden = true; try { history.replaceState(null, "", location.pathname); } catch (e) {} };
 // Theme / PPT ki photo bhi dikhao (sirf https ya apni uploads/ wali photo)
 try { const img = new URLSearchParams(location.search).get("img") || "";
   if (theme && img.length < 600 && /^(https:\/\/|uploads\/)/.test(img)) { const el = $("#pickedImg"); el.src = img; el.hidden = false;
