@@ -1,16 +1,12 @@
 /* Content protection: right-click / drag / long-press save band, Ctrl+P par khaali page,
    Ctrl+S / Ctrl+U / DevTools keys band, PrintScreen / Snipping par photo chhup jaati hain,
-   preview slides par "pptstore.in" watermark. (Admin page par ye file nahi lagti.) */
+ (Admin page par ye file nahi lagti.) */
 (function () {
   var editable = function (el) { return el && el.closest && el.closest("input,textarea,select,[contenteditable=true]"); };
-  var wm = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="260" height="150"><text x="20" y="90" transform="rotate(-24 130 75)" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="#888" fill-opacity=".38">pptstore.in</text></svg>');
   var css = ""
     + "img,video,canvas{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none}"
     + "body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}"
     + "input,textarea,select,[contenteditable=true]{-webkit-user-select:text;user-select:text}"
-    // watermark: preview popup ki badi slide, chhoti strip aur card photo par
-    + ".stage::after,.strip button::after,.th-view::after,.th-strip button::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;background:url(\"data:image/svg+xml," + wm + "\") repeat}"
-    + ".strip button,.th-view{position:relative}"
     // PrintScreen / dusri window (Snipping tool) par photo dhundhli
     + "html.prot-hide img,html.prot-hide .stage,html.prot-hide .th-view{filter:blur(28px)!important;transition:none!important}"
     // Ctrl+P / print: poora page khaali (safed)
