@@ -646,9 +646,9 @@ let qt; $("#q").oninput = e => { clearTimeout(qt); qt = setTimeout(() => { st.q 
 
 /* ---------- GRID ---------- */
 const ribbon = b => ({ best:`<span class="ribbon r-best">BEST SELLER</span>`, new:`<span class="ribbon r-new">NEW</span>`, feat:`<span class="ribbon r-feat">FEATURED</span>` })[b] || "";
-const soldTag = p => p.sales > 0
-  ? `<span class="sold" title="${p.sales} customers ne ye PPT khareedi">🔥 <b>${p.sales.toLocaleString("en-IN")}</b> Sold</span>`
-  : `<span class="sold fresh">✨ New</span>`;
+/* Kitni baar biki: har purchase par Google Sheet mein +1 hota hai, yahan wahi number (0 bhi dikhe) */
+const soldTag = p => { const n = Math.max(0, +p.sales || 0);
+  return `<span class="sold" title="${n} customers ne ye PPT khareedi">🔥 <b>${n.toLocaleString("en-IN")}</b> Sold</span>`; };
 /* PPT card par saari slides baari-baari "fly" hokar har 5 second me badalti rehti hain */
 const WIPE = { i:{}, at:{} }, FLY_MS = 5000;
 function wipeTick(){
@@ -1079,7 +1079,6 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   } catch(e) {}
   if (!API && !PRODUCTS.length) PRODUCTS = DEMO;
   if (!API && PRODUCTS === DEMO) try { const v = await (await fetch("api/pay-config", { cache:"no-store" })).json(); if (v.ok && v.payments) VPAY = PAY = true; } catch(e) {}
-  if (!API && PRODUCTS === DEMO && CONFIG.demoPay) PRODUCTS.forEach((p,i) => p.sales = [128,64,97,41,23][i] || 0); /* preview ke sample numbers */
   const qs = new URLSearchParams(location.search), q = qs.get("q"); if (q) { st.q = q; $("#q").value = q; }
   setKind(NOTES, true); render(); window.PSLoader && PSLoader.hide();
   /* homepage se "Buy / Checkout": seedha payment kholo */
