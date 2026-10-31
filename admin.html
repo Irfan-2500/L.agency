@@ -1331,6 +1331,10 @@ async function saveSite() {
   const r = await call("adminUiSave", { settings });
   b.disabled = false;
   if (!r.ok) return toast(r.error, true);
+  // Purana Apps Script "Trusted by" logo chupchap chhod deta hai — pakdo aur batao
+  if (settings.trustImg1 && r.settings && !r.settings.trustImg1) {
+    $("#wcNote").innerHTML = "<b style='color:var(--bad)'>⚠ Trusted by logo save NAHI hue</b> — Apps Script mein 2 line jodkar New version deploy karein, phir dobara Save dabayein";
+    return toast("Trusted by logo save nahi hue: Apps Script update chahiye", true); }
   $("#wcNote").innerHTML = "<b style='color:var(--ok)'>✓ Saved</b> — website par 1 minute ke andar dikhega (page refresh karein)";
   toast("Website controls saved ✓");
 }
