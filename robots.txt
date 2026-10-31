@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /includes/
+Disallow: /demo/
+
+Sitemap: https://www.pptstore.in/sitemap.xml
