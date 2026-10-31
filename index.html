@@ -2948,6 +2948,8 @@ let RD_LIST = [], NT_LIST = [];
 const FREE_N = 8;
 const pvSlots = (pics, n) => { const N = Math.max(n || 0, pics.length); if (!pics.length) return [];
   return Array.from({ length:N }, (_, k) => ({ src:pics[k] || pics[k % Math.min(pics.length, FREE_N)], lock:k >= FREE_N || !pics[k] })); };
+/* Order form par chuni hui PPT / theme ka naam aur photo saath jaaye */
+const ordUrl = (name, img) => "order.html?theme=" + encodeURIComponent(name) + (img ? "&img=" + encodeURIComponent(img) : "");
 function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
 (async function readyRow(){
   let list = [];
@@ -2967,7 +2969,7 @@ function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
       <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span></div>
       <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
         <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
-        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy rd-ed" href="order.html?theme=${encodeURIComponent(p.title)}" onclick="event.stopPropagation()" aria-label="Customize ${esc(p.title)}" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
+        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy rd-ed" href="${ordUrl(p.title, p.thumb)}" onclick="event.stopPropagation()" aria-label="Customize ${esc(p.title)}" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
       ${p.slides ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${+p.slides} ${isNt(p) ? "pages" : "slides"}</span>` : ""}
     </div>`; }).join("");
   $("#" + pre + "Sec").hidden = false; });
@@ -3077,10 +3079,10 @@ function openTheme(i, keep){
   $("#thStrip").innerHTML = t.rd ? (t.slots.length > 1 ? t.slots.map((x,j) => `<button class="${x.lock ? "lk" : ""}" onclick="${x.lock ? `rdBuy(${t.id})` : `showSlide(${j})`}" aria-label="${x.lock ? "Locked — buy to unlock" : "Slide " + (j+1)}"><img src="${esc(x.src)}" alt="" loading="lazy"><span>${j+1}</span></button>`).join("") : "")
     : sl.length > 1 ? sl.map((u,j) => `<button onclick="showSlide(${j})" aria-label="Slide ${j+1}"><img src="${esc(u)}" alt="" loading="lazy"><span>${j+1}</span></button>`).join("") : "";
   $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span>${thSubjects(t).slice(0,3).map(x => `<span>📖 ${esc(x)}</span>`).join("")}${thClasses(t).length ? `<span>🎓 ${esc(thClasses(t).length > 2 ? thClasses(t)[0] + " – " + thClasses(t).slice(-1)[0] : thClasses(t).join(", "))}</span>` : ""}</div>
-    <a class="btn btn-primary btn-sm" href="order.html?theme=${encodeURIComponent(t.name)}">${icon("i-sparkle","width:15px")} Order in This Theme</a>`;
+    <a class="btn btn-primary btn-sm" href="${ordUrl(t.name, sl[0])}">${icon("i-sparkle","width:15px")} Order in This Theme</a>`;
   if (t.rd) { const off = t.mrp > t.price ? Math.round((1 - t.price / t.mrp) * 100) : 0;
     $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags">${[t.lang && langLabel(t.lang), t.subject && "📖 " + t.subject, ...(t.level || []).filter(x => x !== "Study Notes").slice(0, 2).map(x => "🎓 " + x), t.n && t.n + (t.note ? " pages" : " slides")].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div>
-    <div class="rd-price rd-lb"><b>${inr(+t.price || 0)}</b>${off ? `<s>${inr(+t.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy rd-ed" href="order.html?theme=${encodeURIComponent(t.name)}" aria-label="Customize" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(t.id) ? " in" : ""}" data-rid="${t.id}" onclick="rdCart(${t.id})" aria-label="Add to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${t.id}" aria-label="Buy and download" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div>`; }
+    <div class="rd-price rd-lb"><b>${inr(+t.price || 0)}</b>${off ? `<s>${inr(+t.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy rd-ed" href="${ordUrl(t.name, t.img)}" aria-label="Customize" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(t.id) ? " in" : ""}" data-rid="${t.id}" onclick="rdCart(${t.id})" aria-label="Add to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${t.id}" aria-label="Buy and download" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div>`; }
   showSlide(0); showPopup("themeModal");
 }
 function stepTheme(d){ openTheme(thIdx + d, true); }
