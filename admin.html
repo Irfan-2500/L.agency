@@ -1812,11 +1812,12 @@ async function sendFile(file, prog, j) {
     if (!s.ok) throw new Error(s.error);
     j.up = { session: s.session, start: 0 }; j.resumed = false; keepJob(j);
   }
-  const CH = 8 * 1048576; let tries = 0;
+  let CH = (sendFile.small ? 8 : 16) * 1048576, tries = 0;   // 16 MB ke tukde = kam chakkar = tez; problem aaye to 8 MB
   for (;;) {
     const start = j.up.start, part = file.slice(start, Math.min(file.size, start + CH));
     const r = await call("chunk", { session: j.up.session, start, total: file.size, data: await b64(part) });
     if (!r.ok) {
+      if (CH > 8 * 1048576) { CH = 8 * 1048576; sendFile.small = true; continue; }   // badi tukdi nahi chali → 8 MB
       if (j.resumed) { j.resumed = false; j.up = null; return sendFile(file, prog, j); }   // purana session nahi chala → shuru se
       if (r.stop || ++tries > 3) { j.up = null; keepJob(j); throw new Error(r.error); }
       continue;
@@ -1854,7 +1855,8 @@ async function pdfMeta(file, pe) {
 // PDF ke kuch page ki preview photo (background job mein)
 async function pdfShots(file, pages, tick, each) {
   const lib = await loadPdfJs(), doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise, refs = [];
-  const list = (pages || Array.from({ length: PV_AUTO }, (_, i) => i + 1)).filter(n => n <= doc.numPages);
+  const list = (pages || Array.from({ length: PV_AUTO }, (_, i) => i + 1)).filter(n => n <= doc.numPages), ups = [];
+  let chain = Promise.resolve();   // photo banate jao, upload peeche saath-saath (3 ek saath); kram wahi rahe
   for (const n of list) {
     tick(`Page ${n} ki photo…`);
     try {
@@ -1862,9 +1864,13 @@ async function pdfShots(file, pages, tick, each) {
       c.width = Math.round(vp.width); c.height = Math.round(vp.height);
       const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
       await page.render({ canvasContext: g, viewport: vp }).promise;
-      const r = await shotUpload(c, file.name.replace(/\.\w+$/, "").slice(0, 60) + "-p" + n); refs.push(r.ref); if (each) each(r);
+      const up = shotUpload(c, file.name.replace(/\.\w+$/, "").slice(0, 60) + "-p" + n).catch(() => null);
+      ups.push(up); chain = chain.then(() => up).then(r => { if (r && each) each(r); });
+      if (ups.length >= 3) await ups[ups.length - 3];
     } catch (e) {}
   }
+  const res = await Promise.all(ups); await chain;
+  res.forEach(r => { if (r) refs.push(r.ref); });
   return { refs, count: doc.numPages };
 }
 // PPTX se slides ki ginti, naam, description, animation, class, language, subject (sab browser mein hi)
@@ -2033,21 +2039,27 @@ async function runJob(j) {
         if (m.cls && !p.level.length) p.level = [m.cls]; if (m.lang) p.lang = m.lang; p.subject = p.subject || m.subj; }
     }
     j.metaDone = true; p.title = (p.title || nice(f.name)).slice(0, 120); j.name = p.title;
-    if (!p.file || p.fileName !== f.name) {
-      set(`Upload ${j.up ? Math.round(j.up.start / f.size * 100) : 0}%`, j.up ? Math.round(j.up.start / f.size * 100) : 0);
-      p.file = await sendFile(f, pc => set(`Upload ${pc}%`, pc), j); p.fileName = f.name; keepJob(j);
-    }
-    if (!slideRefs(p).length && /\.(pdf|pptx)$/i.test(f.name)) {
-      set("Photo ban rahi…", null);
-      const cr = cardRefs(p); let sh = [];
-      if (/\.pdf$/i.test(f.name)) { const r = await pdfShots(f, j.pages, t => set(t, null)); sh = r.refs; p.slides = p.slides || r.count; }
+    // file upload aur preview photo EK SAATH chalte hain (pehle ek ke baad ek → do guna time)
+    const needUp = !p.file || p.fileName !== f.name, needShots = !slideRefs(p).length && /\.(pdf|pptx)$/i.test(f.name);
+    let upTxt = "", shTxt = "", upPc = null;
+    const show = () => set([upTxt, shTxt].filter(Boolean).join(" · ") || "…", upPc);
+    const upTask = !needUp ? Promise.resolve() : (async () => {
+      upPc = j.up ? Math.round(j.up.start / f.size * 100) : 0; upTxt = `Upload ${upPc}%`; show();
+      p.file = await sendFile(f, pc => { upPc = pc; upTxt = `Upload ${pc}%`; show(); }, j); p.fileName = f.name; upTxt = ""; upPc = null; keepJob(j); show();
+    })();
+    const shTask = !needShots ? Promise.resolve() : (async () => {
+      const st = t => { shTxt = t; show(); }, cr = cardRefs(p); let sh = []; st("Photo ban rahi…");
+      if (/\.pdf$/i.test(f.name)) { const r = await pdfShots(f, j.pages, st); sh = r.refs; p.slides = p.slides || r.count; }
       else {
-        try { sh = await slidesShots(f, set); } catch (e) { console.error(e); }
-        if (!sh.length) sh = await pptxShots(f, PV_AUTO, t => set(t, null));
+        try { sh = await slidesShots(f, st); } catch (e) { console.error(e); }
+        if (!sh.length) sh = await pptxShots(f, PV_AUTO, st);
       }
-      p.refs = joinRefs(cr, sh);
-      keepJob(j);
-    }
+      p.refs = joinRefs(cr, sh); shTxt = "Photo ready ✓"; show();
+    })();
+    const [u1, u2] = await Promise.allSettled([upTask, shTask]);
+    if (u1.status === "rejected") throw u1.reason;
+    if (u2.status === "rejected") console.error(u2.reason);
+    if (needShots) keepJob(j);
     set("Save ho raha hai…", null);
     const r = await call("adminPptSave", pptPayload(p));
     if (!r.ok) throw new Error(r.error);
