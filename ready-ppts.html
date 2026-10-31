@@ -1061,6 +1061,9 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
 
 /* ---------- START ---------- */
 (async function boot(){
+  /* Pichhli baar ki PPT list turant dikhao (loader jaldi hate); nayi list peeche se aakar update ho jaayegi */
+  try { const c = !window.claude && JSON.parse(localStorage.getItem("la_ppts") || "null");
+    if (Array.isArray(c) && c.length) { PRODUCTS = c; setKind(NOTES, true); render(); window.PSLoader && PSLoader.hide(); } } catch(e) {}
   try {
     const r = await fetch("api/data.php", { headers:{ Accept:"application/json" }, cache:"no-store" });
     const j = await r.json();
@@ -1071,6 +1074,7 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
     const j = await (await fetch(SCRIPT + "?action=ppts", { cache:"no-store" })).json();
     if (j.ok && j.products && j.products.length) {
       PRODUCTS = j.products.map(p => ({ ...p, thumb:(p.previews || [])[0] || "", previews:p.previews || [], colors:["#4c1d95","#a855f7"] }));
+      try { localStorage.setItem("la_ppts", JSON.stringify(PRODUCTS)); } catch(e) {}
       SPAY = !!j.payments; VPAY = PAY = SPAY;
     }
   } catch(e) {}

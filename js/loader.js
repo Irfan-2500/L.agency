@@ -13,7 +13,7 @@
   var el = document.createElement("div"); el.id = "psLoad"; el.setAttribute("role", "status"); el.innerHTML = "<i></i><b>Loading…</b>";
   var put = function () { if (!el.parentNode) document.body.appendChild(el); };
   var timer;
-  var show = function () { put(); el.classList.add("on"); clearTimeout(timer); timer = setTimeout(hide, 15000); };
+  var show = function () { put(); el.classList.add("on"); clearTimeout(timer); timer = setTimeout(hide, 8000); };
   var hide = function () { clearTimeout(timer); el.classList.remove("on"); };
   window.PSLoader = { show: show, hide: hide };
   if (wait) { if (document.body) show(); else document.addEventListener("DOMContentLoaded", show); }
