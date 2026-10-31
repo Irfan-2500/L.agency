@@ -3,11 +3,11 @@
 (function () {
   var me = document.currentScript, wait = me && me.hasAttribute("data-wait");
   var st = document.createElement("style");
-  st.textContent = "#psLoad{position:fixed;inset:0;z-index:9998;display:grid;place-content:center;justify-items:center;gap:14px;background:rgba(10,6,24,.55);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}" +
+  st.textContent = "#psLoad{position:fixed;inset:0;z-index:9998;display:grid;place-content:center;justify-items:center;gap:14px;background:var(--bg,#0a0618);opacity:0;pointer-events:none;transition:opacity .2s}" +
     "#psLoad.on{opacity:1;pointer-events:auto}" +
     "#psLoad i{width:58px;height:58px;border-radius:50%;background:conic-gradient(#ff3d6e,#ff8a00,#ffd166,#22c55e,#06b6d4,#3b82f6,#8b2cff,#ff3d6e);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));animation:psSpin .8s linear infinite;filter:drop-shadow(0 0 10px rgba(139,44,255,.6))}" +
     "#psLoad b{font:600 .9rem system-ui,sans-serif;color:#fff;letter-spacing:.02em}" +
-    "html.light #psLoad{background:rgba(245,244,250,.6)}html.light #psLoad b{color:#1a1433}" +
+    "html.light #psLoad{background:var(--bg,#f5f4fa)}html.light #psLoad b{color:#1a1433}" +
     "@keyframes psSpin{to{transform:rotate(360deg)}}";
   document.head.appendChild(st);
   var el = document.createElement("div"); el.id = "psLoad"; el.setAttribute("role", "status"); el.innerHTML = "<i></i><b>Loading…</b>";
