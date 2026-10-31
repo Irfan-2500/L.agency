@@ -558,6 +558,12 @@ label.f span{font-weight:500;color:var(--dim)}
     </div>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Badge</span><div class="seg" id="peBadge"></div></div>
     <div style="display:flex;flex-direction:column;gap:8px">
+      <span class="phead">2. Card ki photo (website ke card par yahi dikhegi · 3 tak · na chunein to pehli slide)</span>
+      <div class="slides" id="peCard"></div>
+      <label class="drop" id="peCardDrop" for="peCardFiles"><b>+ Card ki photo chunein</b><br><small>JPG, PNG, WEBP · ya neeche kisi slide par ⭐ dabayein</small></label>
+      <input type="file" id="peCardFiles" accept="image/jpeg,image/png,image/webp" multiple hidden>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
       <span class="phead" id="peImgsL">2. Preview images (pehli image = card ki photo · optional)</span>
       <div class="slides" id="peImgs"></div>
       <label class="drop" id="peDrop" for="peFiles"><b>+ Add preview images</b><br><small>JPG, PNG, WEBP · slides ke screenshot · 12 tak</small></label>
@@ -1626,7 +1632,7 @@ function drawPpts() {
     <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
     <div class="body"><b>${esc(p.title)}</b>
       <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.filter(x => x !== NOTE_TAG).slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
-      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : p.refs.length && /\.(pptx|pdf)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm" data-pr="${i}" title="Shuru ke 8 page / slides ki photo dobara banayein">🔄 Photo dobara</button>` : ""}</div>
+      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : slideRefs(p).length && /\.(pptx|pdf)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm" data-pr="${i}" title="Shuru ke 8 page / slides ki photo dobara banayein">🔄 Photo dobara</button>` : ""}</div>
       <div class="cf" data-pcf="${i}"></div>
     </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.`}</div>`;
   $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
@@ -1651,12 +1657,19 @@ function drawPpts() {
     };
   });
 }
+/* refs = [card ki photo..., CARD_MARK, PPT ki slides...]. Mark na ho to sab slides (purani PPTs) */
+const CARD_MARK = "https://pptstore.in/#card-end";
+const splitRefs = (refs, urls) => { refs = refs || []; urls = urls || refs; const i = refs.indexOf(CARD_MARK), z = (a, b) => a.map((r, k) => ({ ref: r, url: b[k] || r }));
+  return i < 0 ? { card: [], slides: z(refs, urls) } : { card: z(refs.slice(0, i), urls.slice(0, i)), slides: z(refs.slice(i + 1), urls.slice(i + 1)) }; };
+const joinRefs = (card, slides) => card.length ? [...card, CARD_MARK, ...slides.slice(0, 11 - card.length)] : slides.slice(0, 12);   // Script 12 tak rakhta hai
+const slideRefs = p => splitRefs(p.refs).slides.map(x => x.ref), cardRefs = p => splitRefs(p.refs).card.map(x => x.ref);
 const pptPayload = p => ({ id: p.id, title: p.title, desc: p.desc, price: p.price, mrp: p.mrp, cat: p.cat,
   level: isNote(p) ? [...p.level.filter(x => x !== NOTE_TAG), NOTE_TAG] : p.level.filter(x => x !== NOTE_TAG), subject: p.subject, board: p.board, lang: p.lang,
   theme: p.theme, slides: p.slides, anim: p.anim, badge: p.badge, refs: p.refs, file: p.file, fileName: p.fileName, show: p.show });
 function editPpt(p) {
-  PE = p ? Object.assign(JSON.parse(JSON.stringify(p)), { imgs: p.refs.map((r, k) => ({ ref: r, url: p.previews[k] })) })
-         : { id: 0, title: "", desc: "", price: "", mrp: "", cat: KIND === "notes" ? "notes" : "edu", level: [], subject: "", board: [], lang: "English", theme: "Dark", slides: "", anim: false, badge: "", imgs: [], file: "", fileName: "", show: true };
+  const sp = p ? splitRefs(p.refs, p.previews) : null;
+  PE = p ? Object.assign(JSON.parse(JSON.stringify(p)), { imgs: sp.slides, card: sp.card })
+         : { card: [], id: 0, title: "", desc: "", price: "", mrp: "", cat: KIND === "notes" ? "notes" : "edu", level: [], subject: "", board: [], lang: "English", theme: "Dark", slides: "", anim: false, badge: "", imgs: [], file: "", fileName: "", show: true };
   if (isNote(PE)) PE.cat = "notes";
   const N = isNote(PE);
   $("#peTitle").textContent = p ? (N ? "Edit Notes" : "Edit PPT") : (N ? "Add Notes (A4 PDF)" : "Add PPT / PDF");
@@ -1666,7 +1679,7 @@ function editPpt(p) {
   $("#peName").placeholder = N ? "e.g. Class 10 Science Ch 1 — Chemical Reactions Notes" : "e.g. Class 10 Science — Light Reflection";
   $("#peDescL").textContent = N ? "(chhota sa — kya kya hai in notes mein)" : "(chhota sa — kya kya hai is PPT mein)";
   $("#peSlidesL").textContent = N ? "Pages kitne hain" : "Slides kitni hain"; $("#peSlides").placeholder = N ? "14" : "25";
-  $("#peImgsL").textContent = N ? "2. Preview pages (PDF chunte hi pehle 8 page apne aap · hata ya badal sakte hain)" : "2. Preview images (PPT / PDF chunte hi pehli 8 slides ki photo apne aap lag jaati hai · hata ya badal sakte hain · ⭐ Featured badge wali PPT ki slides website par upar chalti hain)";
+  $("#peImgsL").textContent = N ? "3. Preview pages (Preview dabane par dikhenge · PDF chunte hi pehle 8 page apne aap · hata ya badal sakte hain)" : "3. Preview slides (customer Preview dabaye to ye dikhengi · PPT / PDF chunte hi pehli 8 slides apne aap · pehli 8 khuli, baaki lock · ⭐ Featured badge wali PPT ki slides website par upar chalti hain)";
   $("#peFileIn").accept = N ? ".pdf,.zip,application/pdf,application/zip" : ".ppt,.pptx,.pdf,.zip,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint,application/zip";
   $("#peSave").textContent = N ? "Save Notes" : "Save PPT";
   $("#peName").value = PE.title; $("#peDesc").value = PE.desc; $("#pePrice").value = PE.price; $("#peMrp").value = PE.mrp || ""; $("#peSlides").value = PE.slides || "";
@@ -1684,22 +1697,32 @@ function drawPeFile(prog) {
     : isNote(PE) ? `<b>+ Notes ki PDF chunein</b><br><small>A4 size PDF · ye file customer ko payment ke baad milegi</small>`
     : `<b>+ PPT / PDF file chunein</b><br><small>PPTX, PPT, PDF ya ZIP · 1 GB tak · ye file customer ko payment ke baad milegi</small>`;
 }
+function drawPeCard() {
+  const c = PE.card;
+  $("#peCard").innerHTML = c.map((x, k) => x.busy ? `<div class="sl up">${esc(x.busy)}</div>`
+    : `<div class="sl"><img src="${esc(x.url)}" alt="Card photo ${k + 1}"><span class="no">⭐${c.length > 1 ? k + 1 : ""}</span><div class="ctr"><button type="button" data-cm="${k}" data-d="-1" ${k ? "" : "disabled"} aria-label="Move left">←</button><button type="button" data-cx="${k}" aria-label="Remove">✕</button><button type="button" data-cm="${k}" data-d="1" ${k < c.length - 1 ? "" : "disabled"} aria-label="Move right">→</button></div></div>`).join("");
+  $$("#peCard [data-cm]").forEach(b => b.onclick = () => { const k = +b.dataset.cm, j = k + +b.dataset.d; [c[k], c[j]] = [c[j], c[k]]; drawPeCard(); });
+  $$("#peCard [data-cx]").forEach(b => b.onclick = () => { c.splice(+b.dataset.cx, 1); drawPeCard(); drawPeImgs(); });
+  $("#peCardDrop").hidden = c.length >= 3;
+}
 function drawPeImgs() {
-  const s = PE.imgs;
+  const s = PE.imgs; drawPeCard();
   $("#peImgs").innerHTML = s.map((x, k) => x.busy ? `<div class="sl up">${esc(x.busy)}</div>`
-    : `<div class="sl"><img src="${esc(x.url)}" alt="Preview ${k + 1}"><span class="no">${k + 1}</span><div class="ctr"><button type="button" data-im="${k}" data-d="-1" ${k ? "" : "disabled"} aria-label="Move left">←</button><button type="button" data-ix="${k}" aria-label="Remove">✕</button><button type="button" data-im="${k}" data-d="1" ${k < s.length - 1 ? "" : "disabled"} aria-label="Move right">→</button></div></div>`).join("");
+    : `<div class="sl"><img src="${esc(x.url)}" alt="Preview ${k + 1}"><span class="no">${k + 1}</span><div class="ctr"><button type="button" data-im="${k}" data-d="-1" ${k ? "" : "disabled"} aria-label="Move left">←</button>${PE.card.length < 3 && !PE.card.some(c => c.ref === x.ref) ? `<button type="button" data-is="${k}" aria-label="Card ki photo banayein" title="Card ki photo banayein">⭐</button>` : ""}<button type="button" data-ix="${k}" aria-label="Remove">✕</button><button type="button" data-im="${k}" data-d="1" ${k < s.length - 1 ? "" : "disabled"} aria-label="Move right">→</button></div></div>`).join("");
   $$("#peImgs [data-im]").forEach(b => b.onclick = () => { const k = +b.dataset.im, j = k + +b.dataset.d; [s[k], s[j]] = [s[j], s[k]]; drawPeImgs(); });
   $$("#peImgs [data-ix]").forEach(b => b.onclick = () => { s.splice(+b.dataset.ix, 1); drawPeImgs(); });
+  $$("#peImgs [data-is]").forEach(b => b.onclick = () => { const x = s[+b.dataset.is]; if (PE.card.length < 3) PE.card.push({ ref: x.ref, url: x.url }); drawPeImgs(); });
 }
-async function addPeImgs(files) {
-  for (const f of [...files].filter(f => /^image\/(jpeg|png|webp)$/.test(f.type)).slice(0, 12 - PE.imgs.length)) {
-    const slot = { busy: "Uploading…" }; PE.imgs.push(slot); drawPeImgs();
+async function addPeImgs(files, toCard) {
+  const L = toCard ? PE.card : PE.imgs, max = toCard ? 3 : 12 - (PE.card.length ? PE.card.length + 1 : 0);
+  for (const f of [...files].filter(f => /^image\/(jpeg|png|webp)$/.test(f.type)).slice(0, Math.max(0, max - L.length))) {
+    const slot = { busy: "Uploading…" }; L.push(slot); drawPeImgs();
     try {
       const blob = await shrink(f);
       const r = await call("adminImage", { name: f.name.replace(/\.\w+$/, "") + (blob.type === "image/webp" ? ".webp" : ".jpg"), mime: blob.type, data: await b64(blob) });
       if (!r.ok) throw new Error(r.error);
       Object.assign(slot, { ref: r.ref, url: r.url }); delete slot.busy;
-    } catch (e) { PE.imgs.splice(PE.imgs.indexOf(slot), 1); toast(`"${f.name}" upload nahi hua: ${e.message}`, true); }
+    } catch (e) { L.splice(L.indexOf(slot), 1); toast(`"${f.name}" upload nahi hua: ${e.message}`, true); }
     drawPeImgs();
   }
 }
@@ -1719,8 +1742,8 @@ async function uploadPptFile(file, pages) {
 // file chunte hi pehli 8 slide / page ki photo "Preview images" mein apne aap (hata / badal sakte hain)
 const PV_AUTO = 8;
 // purani PPT / PDF jinki preview photo nahi hai: file Drive se laakar shuru ki 8 slides ki photo
-const needPv = p => !p.refs.length && p.file && /\.(pdf|pptx)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad");
-const pvJob = (p, again) => { const pe = JSON.parse(JSON.stringify(p)); if (again) pe.refs = []; enqueue({ name: p.title, pe, pv: p.id, msg: "Line mein (preview)…" }); };
+const needPv = p => !slideRefs(p).length && p.file && /\.(pdf|pptx)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad");
+const pvJob = (p, again) => { const pe = JSON.parse(JSON.stringify(p)); if (again) pe.refs = joinRefs(cardRefs(p), []); /* card ki photo rehne do, sirf slides nayi */ enqueue({ name: p.title, pe, pv: p.id, msg: "Line mein (preview)…" }); };
 async function fetchFile(p, set) {
   const parts = []; let start = 0, total = 1;
   while (start < total) {
@@ -1959,13 +1982,15 @@ async function runJob(j) {
       set(`Upload ${j.up ? Math.round(j.up.start / f.size * 100) : 0}%`, j.up ? Math.round(j.up.start / f.size * 100) : 0);
       p.file = await sendFile(f, pc => set(`Upload ${pc}%`, pc), j); p.fileName = f.name; keepJob(j);
     }
-    if (!p.refs.length && /\.(pdf|pptx)$/i.test(f.name)) {
+    if (!slideRefs(p).length && /\.(pdf|pptx)$/i.test(f.name)) {
       set("Photo ban rahi…", null);
-      if (/\.pdf$/i.test(f.name)) { const r = await pdfShots(f, j.pages, t => set(t, null)); p.refs = r.refs; p.slides = p.slides || r.count; }
+      const cr = cardRefs(p); let sh = [];
+      if (/\.pdf$/i.test(f.name)) { const r = await pdfShots(f, j.pages, t => set(t, null)); sh = r.refs; p.slides = p.slides || r.count; }
       else {
-        try { p.refs = await slidesShots(f, set); } catch (e) { console.error(e); }
-        if (!p.refs.length) p.refs = await pptxShots(f, PV_AUTO, t => set(t, null));
+        try { sh = await slidesShots(f, set); } catch (e) { console.error(e); }
+        if (!sh.length) sh = await pptxShots(f, PV_AUTO, t => set(t, null));
       }
+      p.refs = joinRefs(cr, sh);
       keepJob(j);
     }
     set("Save ho raha hai…", null);
@@ -2047,8 +2072,9 @@ $$("[data-pclose]").forEach(b => b.onclick = closePpt);
 $("#pptModal").addEventListener("click", e => { if (e.target.id === "pptModal") closePpt(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#pptModal").hidden) closePpt(); });
 $("#peFiles").onchange = e => { addPeImgs(e.target.files); e.target.value = ""; };
+$("#peCardFiles").onchange = e => { addPeImgs(e.target.files, true); e.target.value = ""; };
 $("#peFileIn").onchange = e => { if (e.target.files[0]) uploadPptFile(e.target.files[0]); e.target.value = ""; };
-[["#peDrop", f => addPeImgs(f)], ["#peFile", f => isNote(PE) && (f.length > 1 || /\.zip$/i.test((f[0] || {}).name || "")) ? bulkNotes(f) : f[0] && uploadPptFile(f[0])]].forEach(([sel, fn]) => {
+[["#peDrop", f => addPeImgs(f)], ["#peCardDrop", f => addPeImgs(f, true)], ["#peFile", f => isNote(PE) && (f.length > 1 || /\.zip$/i.test((f[0] || {}).name || "")) ? bulkNotes(f) : f[0] && uploadPptFile(f[0])]].forEach(([sel, fn]) => {
   const el = $(sel);
   ["dragenter", "dragover"].forEach(ev => el.addEventListener(ev, e => { e.preventDefault(); el.classList.add("on"); }));
   ["dragleave", "drop"].forEach(ev => el.addEventListener(ev, e => { e.preventDefault(); el.classList.remove("on"); }));
@@ -2137,10 +2163,10 @@ function saveZip() {
 }
 $("#peSave").onclick = async () => {
   if (ZQ) return saveZip();
-  if (PE.uploading || PE.imgs.some(x => x.busy && !x.auto)) return $("#peErr").textContent = "Photo / chapters taiyar ho rahe hain — thoda rukiye";
+  if (PE.uploading || PE.imgs.some(x => x.busy && !x.auto) || PE.card.some(x => x.busy)) return $("#peErr").textContent = "Photo / chapters taiyar ho rahe hain — thoda rukiye";
   const autoBusy = PE.imgs.some(x => x.busy && x.auto);   // auto photo abhi ban rahi → background job khud bana lega
   Object.assign(PE, { title: $("#peName").value.trim(), desc: $("#peDesc").value.trim(), price: +$("#pePrice").value, mrp: +$("#peMrp").value || 0,
-    slides: +$("#peSlides").value || 0, subject: $("#peSubj").value, show: $("#peShow").checked, anim: $("#peAnim").checked, refs: PE.imgs.filter(x => x.ref && !(autoBusy && x.auto)).map(x => x.ref) });
+    slides: +$("#peSlides").value || 0, subject: $("#peSubj").value, show: $("#peShow").checked, anim: $("#peAnim").checked, refs: joinRefs(PE.card.filter(x => x.ref).map(x => x.ref), PE.imgs.filter(x => x.ref && !(autoBusy && x.auto)).map(x => x.ref)) });
   if (PE.title.length < 3) return $("#peErr").textContent = isNote(PE) ? "Notes ka naam likhein" : "PPT ka naam likhein";
   if (!(PE.price >= 1)) return $("#peErr").textContent = "Daam likhein (kam se kam ₹1)";
   if (!PE.file && !PE.newFile) return $("#peErr").textContent = isNote(PE) ? "Notes ki PDF upload karein" : "PPT / PDF file upload karein";

@@ -473,6 +473,11 @@ const CONFIG = { whatsapp:"919711069435", perPage:12,
   /* Vercel / GitHub Pages par PHP nahi chalta: wahan demo checkout (asli server par kabhi nahi) */
   demoPay:/\.(vercel\.app|github\.io)$/.test(location.hostname) };
 /* Server na mile (jaise sirf HTML preview) tab ye 5 demo PPTs dikhti hain */
+/* Admin mein "Card ki photo" alag chuni ho to list mein CARD_MARK se pehle wo photo, baad mein PPT ki slides.
+   Card par aapki chuni photo, Preview mein PPT ki asli slides. */
+const CARD_MARK = "https://pptstore.in/#card-end";
+const splitPv = a => { a = (a || []).filter(Boolean); const i = a.indexOf(CARD_MARK); return i < 0 ? { card:[], slides:a } : { card:a.slice(0, i), slides:a.slice(i + 1) }; };
+const cardPics = p => arr(p.cards).length ? arr(p.cards) : arr(p.previews);   // card par ghoomne wali photo
 const DEMO = LA_CATALOG.map((p,i) => { const prev = [1,2,3,4].map(k => `uploads/previews/demo-${p.slug}-${k}.webp`); return { ...p, thumb:prev[0], previews:prev, sales:0, added:5-i }; });
 
 /* =========================================================
@@ -662,7 +667,7 @@ function wipeTick(){
     if (!WIPE.at[id]) { WIPE.at[id] = now - (k % 5) * 900; return; } // pehli baar: thoda aage-peeche taaki sab ek saath na badlein
     if (now - WIPE.at[id] < FLY_MS) return;
     const p = PRODUCTS.find(x => x.id === +id); if (!p) return;
-    const imgs = arr(p.previews), n = ((WIPE.i[p.id] || 0) + 1) % imgs.length;
+    const imgs = cardPics(p), n = ((WIPE.i[p.id] || 0) + 1) % imgs.length;
     WIPE.at[id] = now; WIPE.i[p.id] = n;
     const img = new Image(); img.onload = () => {
       const w = document.createElement("span"); w.className = "wipe"; w.style.backgroundImage = cssUrl(imgs[n]);
@@ -675,7 +680,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(() => {
 function card(p){
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, inCart = cart.includes(p.id);
   return `<article class="card">
-    <button class="thumb" style="${thumbStyle(p)}"${!isNote(p) && arr(p.previews).length > 1 ? ` data-wipe="${p.id}"` : ""} onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
+    <button class="thumb" style="${thumbStyle(p)}"${!isNote(p) && cardPics(p).length > 1 ? ` data-wipe="${p.id}"` : ""} onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
       ${ribbon(p.badge)}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
       <span class="peek">👁 Preview</span>
       ${isNote(p) ? `<span class="sl-badge">📄 A4 PDF${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
@@ -1076,7 +1081,8 @@ let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList
   if (!API && SCRIPT && !window.claude) try {
     const j = await (await fetch(SCRIPT + "?action=ppts", { cache:"no-store" })).json();
     if (j.ok && j.products && j.products.length) {
-      PRODUCTS = j.products.map(p => ({ ...p, thumb:(p.previews || [])[0] || "", previews:p.previews || [], colors:["#4c1d95","#a855f7"] }));
+      PRODUCTS = j.products.map(p => { const s = splitPv(p.previews);
+        return { ...p, thumb:s.card[0] || s.slides[0] || "", cards:s.card, previews:s.slides, colors:["#4c1d95","#a855f7"] }; });
       try { localStorage.setItem("la_ppts", JSON.stringify(PRODUCTS)); } catch(e) {}
       SPAY = !!j.payments; VPAY = PAY = SPAY;
     }
