@@ -1389,6 +1389,7 @@ html.light .hero-cta .btn-ghost{background:#fff;border-color:rgba(139,44,255,.35
 html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 @media(max-width:600px){.section-head h2::after{width:48px;height:3px;margin-top:10px}}
 </style>
+<script src="js/protect.js"></script>
 </head>
 <body>
 <div id="glowCursor"></div>
@@ -2970,7 +2971,7 @@ let RD_LIST = [], NT_LIST = [];
 /* Preview: pehli 8 slide khuli, baaki sab dikhti hain par lock (halki blur) — click par kharidne ka popup */
 const FREE_N = 8;
 const pvSlots = (pics, n) => { const N = Math.max(n || 0, pics.length); if (!pics.length) return [];
-  return Array.from({ length:N }, (_, k) => ({ src:pics[k] || pics[k % Math.min(pics.length, FREE_N)], lock:k >= FREE_N || !pics[k] })); };
+  return Array.from({ length:N }, (_, k) => (k < FREE_N && pics[k] ? { src:pics[k], lock:false } : { src:pics[k % Math.min(pics.length, FREE_N)], lock:true })); };   // locked slide par asli photo kabhi nahi (sirf free wali dhundhli)
 /* Admin ki "Card ki photo" CARD_MARK se pehle aati hai, PPT ki slides uske baad: card par photo, Preview mein slides */
 const CARD_MARK = "https://pptstore.in/#card-end";
 const splitPv = a => { a = (a || []).filter(Boolean); const i = a.indexOf(CARD_MARK); return i < 0 ? { card:[], slides:a } : { card:a.slice(0, i), slides:a.slice(i + 1) }; };

@@ -330,6 +330,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .theme-sw{display:none!important}
 @media(max-width:420px){.nav .my-btn{margin-left:auto}}
 </style>
+<script src="js/protect.js"></script>
 </head>
 <body>
 <script src="js/loader.js" data-wait></script>
@@ -798,7 +799,7 @@ document.addEventListener("keydown", e => {
 /* Pehli 8 slide khuli; baaki sab dikhti hain par lock (halki blur). Lock wali par click = kharido */
 const FREE_N = 8;
 const pvSlots = (pics, n) => { const N = Math.max(n || 0, pics.length); if (!pics.length) return [];
-  return Array.from({ length:N }, (_, k) => ({ src:pics[k] || pics[k % Math.min(pics.length, FREE_N)], lock:k >= FREE_N || !pics[k] })); };
+  return Array.from({ length:N }, (_, k) => (k < FREE_N && pics[k] ? { src:pics[k], lock:false } : { src:pics[k % Math.min(pics.length, FREE_N)], lock:true })); };   // locked slide par asli photo kabhi nahi (sirf free wali dhundhli)
 let pv = { p:null, k:0, slots:[] };
 function openPreview(id){
   const p = PRODUCTS.find(x => x.id === id); if (!p) return;
