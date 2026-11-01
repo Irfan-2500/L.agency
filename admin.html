@@ -538,7 +538,7 @@ label.f span{font-weight:500;color:var(--dim)}
       <label class="drop" id="peFile" for="peFileIn"></label>
       <div id="peBulk" hidden><div class="row" style="gap:8px;flex-wrap:wrap"><label class="btn sm" for="peDirIn">📁 Poora subject folder chunein</label><label class="btn sm" for="peMultiIn">📚 Kai chapter PDF / ZIP chunein</label></div>
         <p class="note" style="margin-top:6px">Folder ya ZIP ke saare chapter (Ch01, Ch02…) kram se jud kar <b>ek PDF</b> ban jayenge. Customer ko poora subject ek file mein milega. Naam, medium, chapter list aur pages apne aap bhar jayenge.</p></div>
-      <div id="peZip" hidden><label class="btn sm" for="peZipIn">📦 ZIP se kai PPT ek saath (har PPT alag)</label>
+      <div id="peZip" hidden><label class="btn sm" for="peZipIn">📦 ZIP ki har PPT ka alag card banana hai? Yahan se</label>
         <p class="note" style="margin-top:6px">ZIP ki har PPT / PDF website par <b>alag card</b> banegi. Naam, class, subject, medium, slides aur description file se apne aap bharte hain. Kisi file ka daam ya detail alag rakhni ho to us file par click karein. Baaki sab par neeche wala daam / board lagega.</p>
         <div id="peZipList"></div></div>
       <input type="file" id="peZipIn" accept=".zip,application/zip" hidden>
@@ -1766,10 +1766,11 @@ function editPpt(p) {
 }
 function drawPeFile(prog) {
   const f = PE.file, box = $("#peFile");
-  if (PE.newFile) box.innerHTML = `<div class="up done"><b>✅ ${esc(PE.newFile.name)}</b><small>Save dabate hi background mein upload hogi. Badalni ho to nayi file chunein.</small></div>`;
+  if (typeof prog === "string") { box.innerHTML = `<div class="up"><b>${esc(prog)}</b><small>Andar ki saari PPT gin rahe hain</small></div>`; return; }
+  if (PE.newFile) box.innerHTML = `<div class="up done"><b>✅ ${esc(PE.newFile.name)}</b><small>${PE.zipInfo && PE.newFile.name === PE.fileName && /\.zip$/i.test(PE.newFile.name) ? `📦 Bundle: ${PE.zipInfo.count} PPT, kul ${PE.zipInfo.slides} slides · customer ek payment mein poora ZIP download karega. ` : ""}Save dabate hi background mein upload hogi. Badalni ho to nayi file chunein.</small></div>`;
   else box.innerHTML = f ? `<div class="up done"><b>✅ ${esc(PE.fileName || "File")}</b><small>Upload ho gayi. Badalni ho to nayi file chunein.</small></div>`
     : isNote(PE) ? `<b>+ Notes ki PDF chunein</b><br><small>A4 size PDF · ye file customer ko payment ke baad milegi</small>`
-    : `<b>+ PPT / PDF file chunein</b><br><small>PPTX, PPT, PDF ya ZIP · 1 GB tak · ye file customer ko payment ke baad milegi</small>`;
+    : `<b>+ PPT / PDF file chunein</b><br><small>PPTX, PPT, PDF ya ZIP · 1 GB tak · ye file customer ko payment ke baad milegi<br>📦 ZIP daalein to wo ek bundle card banega: ek payment, saari PPT</small>`;
 }
 function drawPeCard() {
   const c = PE.card;
@@ -1816,6 +1817,45 @@ async function uploadPptFile(file, pages) {
   if (!pe.imgs.length && !/\.pptx$/i.test(file.name)) autoPreview(file, pe, pages);   // PPTX ki photo upload ke baad Google Slides se banti hai (theme sahi aata hai)
   if (/\.pdf$/i.test(file.name)) pdfMeta(file, pe);
   if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); if (m && PE === pe) applyMeta(pe, m, file); }
+  if (/\.zip$/i.test(file.name)) { drawPeFile("📦 ZIP padh rahe hain…"); const m = await zipMeta(file); if (PE !== pe) return;
+    if (!m) { pe.newFile = null; drawPeFile(); return toast("Is ZIP mein koi PPT / PDF nahi mili", true); }
+    pe.zipInfo = m; drawPeFile(); applyMeta(pe, m, file); }
+}
+// ZIP = ek bundle card: andar ki saari PPT / PDF ek saath bikti hain, payment ke baad poora ZIP download
+const zipEntries = z => Object.values(z.files).filter(e => !e.dir && /\.(pptx?|pdf)$/i.test(e.name) && !/(^|\/)(__MACOSX|\.)/.test(e.name))
+  .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
+const zipMime = n => /\.pdf$/i.test(n) ? "application/pdf" : /\.pptx$/i.test(n) ? "application/vnd.openxmlformats-officedocument.presentationml.presentation" : "application/vnd.ms-powerpoint";
+async function zipFirst(file) {   // preview photo ke liye ZIP ki pehli PPTX (warna PDF)
+  const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), list = zipEntries(await JSZip.loadAsync(file));
+  const e = list.find(x => /\.pptx$/i.test(x.name)) || list.find(x => /\.pdf$/i.test(x.name)); if (!e) return null;
+  const n = e.name.split("/").pop(); return new File([await e.async("blob")], n, { type: zipMime(n) });
+}
+async function zipMeta(file) {
+  try {
+    const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), list = zipEntries(await JSZip.loadAsync(file));
+    if (!list.length) return null;
+    const items = [];
+    for (const e of list) {
+      const n = e.name.split("/").pop(), f = new File([await e.async("blob")], n, { type: zipMime(n) }), g = fileGuess(n);
+      let m = null;
+      if (/\.pptx$/i.test(n)) m = await pptxMeta(f);
+      else if (/\.pdf$/i.test(n)) { try { const lib = await loadPdfJs(), d = await lib.getDocument({ data: await f.arrayBuffer() }).promise; m = { slides: d.numPages }; } catch (x) {} }
+      const nm = ((m && m.title ? m.title.split(" — ")[0] : "") || g.topic || nice(n)).replace(/^\d+[\s._)-]+/, "").trim();
+      items.push({ name: (nm || nice(n)).slice(0, 60), slides: (m && m.slides) || 0, cls: (m && m.cls) || g.cls, subj: (m && m.subj) || g.subj, lang: (m && m.lang) || g.lang, anim: m && m.anim });
+    }
+    const most = k => { const c = {}; items.forEach(it => { if (it[k]) c[it[k]] = (c[it[k]] || 0) + 1; }); return Object.keys(c).sort((a, b) => c[b] - c[a])[0] || ""; };
+    const zg = fileGuess(file.name), cls = zg.cls || most("cls"), subj = zg.subj || most("subj"), lang = zg.lang || most("lang");
+    const N = items.length, slides = items.reduce((t, it) => t + it.slides, 0), g = Object.assign({}, zg, { cls, subj, lang });
+    const topic = zg.topic || nice(file.name), hi = isHi(topic) || lang === "Hindi";
+    const base = nice(file.name).replace(/\s*\(\d+\)$/, ""), named = zg.cls || zg.subj;   // ZIP ke naam mein class/subject hai to wahi naam
+    const title = ((named ? base : (makeTitle(topic, g) || base)) + (/bundle|बंडल/i.test(base) ? ` (${N} PPT)` : hi ? ` (${N} PPT बंडल)` : ` (${N} PPT Bundle)`)).slice(0, 120);
+    const names = items.map((it, k) => `${k + 1}. ${it.name}`).join(hi ? "; " : "; ");
+    const who = [cls, subj].filter(Boolean).join(" ") + (lang === "Hindi" ? " (Hindi Medium)" : lang === "English" ? " (English Medium)" : lang === "Both" ? " (Hindi + English)" : "");
+    const desc = (hi
+      ? `${who.trim() ? who.trim() + " – " : ""}${N} PPT का पूरा बंडल${slides ? `, कुल ${slides} editable स्लाइड्स` : ""}। एक बार payment करें और सारी PPT एक ZIP में डाउनलोड करें। शामिल: ${names}`
+      : `${who.trim() ? who.trim() + " – " : ""}Complete bundle of ${N} PPTs${slides ? `, ${slides} editable slides in total` : ""}. Pay once and download all PPTs together in one ZIP. Includes: ${names}`).slice(0, 600);
+    return { title, desc, slides, cls, subj, lang, anim: items.some(it => it.anim), count: N };
+  } catch (e) { console.error(e); return null; }
 }
 // file chunte hi pehli 8 slide / page ki photo "Preview images" mein apne aap (hata / badal sakte hain)
 const PV_AUTO = 8;
@@ -2078,7 +2118,7 @@ async function runJob(j) {
     }
     j.metaDone = true; p.title = (p.title || nice(f.name)).slice(0, 120); j.name = p.title;
     // file upload aur preview photo EK SAATH chalte hain (pehle ek ke baad ek → do guna time)
-    const needUp = !p.file || p.fileName !== f.name, needShots = !slideRefs(p).length && /\.(pdf|pptx)$/i.test(f.name);
+    const needUp = !p.file || p.fileName !== f.name, needShots = !slideRefs(p).length && /\.(pdf|pptx|zip)$/i.test(f.name);
     let upTxt = "", shTxt = "", upPc = null;
     const show = () => set([upTxt, shTxt].filter(Boolean).join(" · ") || "…", upPc);
     const upTask = !needUp ? Promise.resolve() : (async () => {
@@ -2087,10 +2127,12 @@ async function runJob(j) {
     })();
     const shTask = !needShots ? Promise.resolve() : (async () => {
       const st = t => { shTxt = t; show(); }, cr = cardRefs(p); let sh = []; st("Photo ban rahi…");
-      if (/\.pdf$/i.test(f.name)) { const r = await pdfShots(f, j.pages, st); sh = r.refs; p.slides = p.slides || r.count; }
+      const sf = /\.zip$/i.test(f.name) ? await zipFirst(f).catch(() => null) : f;   // ZIP bundle: pehli PPT ki slides
+      if (!sf) {}
+      else if (/\.pdf$/i.test(sf.name)) { const r = await pdfShots(sf, sf === f ? j.pages : null, st); sh = r.refs; if (sf === f) p.slides = p.slides || r.count; }
       else {
-        try { sh = await slidesShots(f, st); } catch (e) { console.error(e); }
-        if (!sh.length) sh = await pptxShots(f, PV_AUTO, st);
+        try { sh = await slidesShots(sf, st); } catch (e) { console.error(e); }
+        if (!sh.length) sh = await pptxShots(sf, PV_AUTO, st);
       }
       p.refs = joinRefs(cr, sh); shTxt = "Photo ready ✓"; show();
     })();
