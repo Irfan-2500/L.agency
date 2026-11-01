@@ -560,10 +560,7 @@ function pptSlides(){
 }
 function drawSamples(){
   let list;
-  if (NOTES) {   // cover page (pehla page) nahi, PDF ke andar ke page: har notes se page 2, 3, 4… baari-baari
-    const ins = VIEW().map(p => (p.previews || []).slice(1, 5)).filter(x => x.length), own = [];
-    for (let k = 0; k < 4 && own.length < 12; k++) ins.forEach(x => { if (x[k] && own.length < 12) own.push(x[k]); });
-    list = own.length >= 4 ? own : [...own, ...SAMPLES.slice(1)].slice(0, 10); }
+  if (NOTES) list = SAMPLES.slice(1);   // sirf PDF ke andar ke pages (sample-2..8). Notes ki preview photos sab chapter covers hain, isliye wo yahan nahi
   else list = pptSlides();
   $("#samples").hidden = !list.length; $("#sTrack").classList.toggle("wide", !NOTES);
   $("#sTrack").innerHTML = [...list, ...list].map((u,k) => `<img src="${esc(u)}" alt="${k < list.length ? `Sample ${NOTES ? "page" : "slide"} ${k+1}` : ""}" loading="lazy" decoding="async" draggable="false">`).join("");
