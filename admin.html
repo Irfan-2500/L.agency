@@ -698,7 +698,7 @@ async function demoCall(a, d) {
       const daily = [...Array(30)].map((_, k) => { const v = Math.round(8 + 6 * Math.sin(k / 3) + k / 2); return { day: day(29 - k), visitors: v, visits: v * 2 }; });
       return ok({ today: 46, todayUnique: 23, week: 290, weekUnique: 141, month: 1180, monthUnique: 512, allTime: 3420, daily,
         pages: [["/", 520], ["/ready-ppts", 310], ["/order", 160], ["/account", 70], ["/about", 40]], sources: [["Direct", 610], ["WhatsApp", 280], ["Google", 190], ["Instagram", 70], ["YouTube", 30]],
-        states: [["Bihar", 410], ["Uttar Pradesh", 300], ["Delhi", 190], ["Jharkhand", 120], ["Maharashtra", 60]], cities: [["Patna", 280], ["Lucknow", 140], ["New Delhi", 120], ["Ranchi", 90], ["Gaya", 70]],
+        states: [["Bihar", 410], ["Uttar Pradesh", 300], ["Delhi", 190], ["Jharkhand", 120], ["US", 25], ["Maharashtra", 60], ["GB", 3], ["NP", 2]], cities: [["Patna", 280], ["Lucknow", 140], ["New Delhi", 120], ["Ranchi", 90], ["Gaya", 70]],
         devices: [["Mobile", 900], ["Computer", 250], ["Tablet", 30]], browsers: [["Chrome", 820], ["Safari", 160], ["Samsung Internet", 110], ["Edge", 60]], sheetUrl: "#" });
     }
     case "adminSales": return ok({ sales: D.sales.slice() });
@@ -1396,6 +1396,21 @@ function toplist(rows, total, col) {
   const mx = Math.max(1, ...rows.map(r => r[1]));
   return `<div class="toplist">${rows.map(([k, n]) => `<div><span class="tl" title="${esc(k)}">${esc(k)}</span><span class="tb"><i style="width:${n / mx * 100}%;background:${col || "var(--accent)"}"></i></span><b>${nf(n)}</b>${total ? `<small>${Math.round(n / total * 100)}%</small>` : ""}</div>`).join("")}</div>`;
 }
+// "State / Country" ki ek list: India ke state naam se aate hain, baaki desh 2 akshar ke code (US, GB…) se → do alag list
+function splitGeo(rows) {
+  let dn = null; try { dn = new Intl.DisplayNames(["en"], { type: "region" }); } catch (e) {}
+  const name = c => { try { return (dn && dn.of(c)) || c; } catch (e) { return c; } };
+  const states = [], cmap = {}; let india = 0;
+  (rows || []).forEach(([k, n]) => {
+    const c = String(k || "").trim();
+    if (/^[A-Z]{2}$/.test(c) && c !== "IN") cmap[c] = (cmap[c] || 0) + n;
+    else { india += n; if (c && c !== "IN" && !/^india$/i.test(c)) states.push([c, n]); }
+  });
+  const countries = Object.entries(cmap).map(([c, n]) => [name(c), n]);
+  if (india) countries.push(["India", india]);
+  countries.sort((a, b) => b[1] - a[1]);
+  return { states, countries };
+}
 const PAGE_NAMES = { "/": "Home", "/ready-ppts": "Ready to Use PPTs", "/order": "PPT Order", "/account": "My PPTs", "/about": "About", "/service": "Services", "/thank-you": "Thank you", "/track": "Track Order",
   "/privacy": "Privacy", "/terms": "Terms", "/refund": "Refund", "/delivery": "Delivery", "/contact": "Contact" };
 async function stats() {
@@ -1405,6 +1420,7 @@ async function stats() {
   const d = r.daily, mx = Math.max(1, ...d.map(x => x.visits));
   const dev = r.devices.reduce((s, x) => s + x[1], 0) || 1;
   const DEV_COL = { Mobile: "var(--accent)", Computer: "var(--cyan)", Tablet: "var(--warn)" };
+  const geo = splitGeo(r.states);
   V(head("Analytics", "Website par kitne log aaye, kahan se aaye aur kya dekha. (Har visitor ek baar gina jata hai, naam/number kabhi save nahi hota.)",
       `<a class="btn sm" href="${esc(r.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Sheet</a>`) + `
   <div class="stats">
@@ -1420,13 +1436,16 @@ async function stats() {
     <div class="card"><div class="ch"><h3>🔗 Log kahan se aaye</h3></div>${toplist(r.sources, r.month, "var(--cyan)")}</div>
   </div>
   <div class="dgrid">
-    <div class="card"><div class="ch"><h3>📍 State / Country</h3></div>${toplist(r.states, r.month, "var(--ok)")}</div>
-    <div class="card"><div class="ch"><h3>🏙️ City</h3></div>${toplist(r.cities, r.month, "var(--warn)")}</div>
+    <div class="card"><div class="ch"><h3>📍 State (India)</h3></div>${toplist(geo.states, r.month, "var(--ok)")}</div>
+    <div class="card"><div class="ch"><h3>🌍 Country</h3></div>${toplist(geo.countries, r.month, "var(--cyan)")}</div>
   </div>
   <div class="dgrid">
+    <div class="card"><div class="ch"><h3>🏙️ City</h3></div>${toplist(r.cities, r.month, "var(--warn)")}</div>
     <div class="card"><div class="ch"><h3>📱 Mobile ya Computer</h3></div>
       <div class="split">${r.devices.map(([k, n]) => `<i style="width:${n / dev * 100}%;background:${DEV_COL[k] || "var(--dim)"}" title="${esc(k)}: ${n}"></i>`).join("")}</div>
       <div class="legend">${r.devices.map(([k, n]) => `<div><i style="background:${DEV_COL[k] || "var(--dim)"}"></i>${esc(k)}<b>${Math.round(n / dev * 100)}%</b></div>`).join("") || `<p class="note">Abhi data nahi.</p>`}</div></div>
+  </div>
+  <div class="dgrid">
     <div class="card"><div class="ch"><h3>🌐 Browser</h3></div>${toplist(r.browsers, r.month, "var(--info)")}</div>
   </div>
   <p class="note" style="margin-top:6px">ℹ️ Male / female aur age koi website apne aap nahi jaan sakti (visitor batata hi nahi). Isliye ye yahan nahi dikhta.</p>`);
