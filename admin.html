@@ -719,6 +719,7 @@ async function demoCall(a, d) {
     case "adminSaleResend": return ok({ to: "r***@example.com" });
     case "adminPpts": return ok({ ppts: D.ppts.map(p => JSON.parse(JSON.stringify(p))), payments: D.pay.on, folderUrl: "#" });
     case "adminPptStart": return ok({ session: "demo" });
+    case "adminPptFile": { const t = btoa("demo file " + d.file); return ok(d.start ? { data: "", total: t.length } : { data: t, total: atob(t).length }); }
     case "chunk": return d.start + 8388608 >= d.total ? ok({ done: true, id: "demo-file-" + Date.now() }) : ok({ next: d.start + 8388608 });
     case "adminPptSave": {
       let p = D.ppts.find(x => x.id === d.id);
@@ -1679,7 +1680,7 @@ async function pptView() {
   V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], KIND === "notes"
       ? `Yahan apne Notes ki A4 PDF upload karein — website ke "Study Notes" page par turant dikhenge. Customer pay karega aur PDF apne aap download hogi.`
       : `Yahan PPT ya PDF upload karein — website ke "Ready to Use PPTs" page par turant dikhegi. Customer pay karega aur file apne aap download hogi.`,
-      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "notes" ? "" : `<button class="btn" id="addZip">📦 ZIP Upload</button>`}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
+      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "notes" ? "" : `<button class="btn" id="addPack">🎁 Full Package banao</button><button class="btn" id="addZip">📦 ZIP Upload</button>`}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
   ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}
   <div class="stats">
     <div class="stat" style="--c:var(--accent)"><span class="ic">${ic(KIND === "notes" ? "i-book" : "i-upload")}</span><b id="pTot">${mine.length}</b><small id="pTotL">Total ${KIND === "notes" ? "Notes" : "PPTs"} · ${live} live</small></div>
@@ -1691,6 +1692,7 @@ async function pptView() {
   $("#pq").value = PQ; $("#pq").oninput = () => { PQ = $("#pq").value; drawPpts(); };
   $("#addPpt").onclick = () => editPpt(null);
   if ($("#addZip")) $("#addZip").onclick = () => { editPpt(null); $("#peZipIn").click(); };
+  if ($("#addPack")) $("#addPack").onclick = packOpen;
   $("#autoPv").onclick = () => { const l = PP.filter(p => isNote(p) === (KIND === "notes") && needPv(p)); l.forEach(pvJob); toast(`🖼 ${l.length} ki preview photo ban rahi hai`); drawPpts(); };
   $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
   drawPpts();
@@ -1820,6 +1822,64 @@ async function uploadPptFile(file, pages) {
   if (/\.zip$/i.test(file.name)) { drawPeFile("📦 ZIP padh rahe hain…"); const m = await zipMeta(file); if (PE !== pe) return;
     if (!m) { pe.newFile = null; drawPeFile(); return toast("Is ZIP mein koi PPT / PDF nahi mili", true); }
     pe.zipInfo = m; drawPeFile(); applyMeta(pe, m, file); }
+}
+/* ---------- 🎁 Full Package: pehle se upload hui PPTs (jaise Class 9 Science ke saare chapter) ko ek card mein ----------
+   Browser har chapter ki file Drive se laata hai, ek ZIP banata hai aur wahi ZIP bundle card ki tarah save hota hai.
+   Customer ek payment karke poora ZIP (saare chapter) download karta hai. */
+function packOpen() {
+  const all = PP.filter(p => !isNote(p) && p.file && !/\.zip$/i.test(p.fileName || ""));
+  if (!all.length) return toast("Pehle kuch PPT upload karein, phir unka package banega", true);
+  const used = k => [...new Set(all.flatMap(p => k === "cls" ? p.level : [p.subject]).filter(Boolean))];
+  const cl = CLASSES.filter(c => used("cls").includes(c)), sb = SUBJECTS.filter(x => used("subj").includes(x)).concat(used("subj").filter(x => !SUBJECTS.includes(x)));
+  let box = $("#packModal"); if (box) box.remove();
+  box = document.createElement("div"); box.className = "modal"; box.id = "packModal"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+  box.innerHTML = `<div class="mbox"><div class="row"><h2>🎁 Full Package banao</h2><span class="sp"></span><button class="btn sm" data-x>✕ Close</button></div>
+    <p class="note">Class aur subject chunein. Us class-subject ki saari PPT neeche aa jayengi. Jo package mein nahi chahiye uska tick hata dein. Customer ek payment mein saare chapter (ek ZIP) download karega.</p>
+    <div class="row" style="gap:10px;flex-wrap:wrap"><label class="fl" style="flex:1;min-width:160px"><span class="phead">Class</span><select id="pkCls">${cl.map(c => `<option>${esc(c)}</option>`).join("")}</select></label>
+      <label class="fl" style="flex:1;min-width:160px"><span class="phead">Subject</span><select id="pkSub">${sb.map(c => `<option>${esc(c)}</option>`).join("")}</select></label></div>
+    <div id="pkList" style="display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow:auto"></div>
+    <p class="note" id="pkSum"></p>
+    <div class="row"><button class="btn pri" id="pkGo">🎁 Package banao</button><button class="btn" data-x>Cancel</button></div></div>`;
+  document.body.appendChild(box);
+  const close = () => box.remove(); box.querySelectorAll("[data-x]").forEach(b => b.onclick = close);
+  const pick = () => all.filter(p => p.level.includes($("#pkCls").value) && p.subject === $("#pkSub").value)
+    .sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: "base" }));
+  const sum = () => { const on = [...$$("#pkList input:checked")].map(i => all.find(p => p.id == i.value)), sl = on.reduce((t, p) => t + (+p.slides || 0), 0);
+    $("#pkSum").textContent = on.length ? `${on.length} chapter · kul ${sl} slides · daam apne aap ₹${sl * PER_SLIDE} (kata hua ₹${sl * PER_SLIDE_MRP}) — baad mein badal sakte hain` : "Koi chapter nahi chuna"; $("#pkGo").disabled = on.length < 2; };
+  const draw = () => { const l = pick();
+    $("#pkList").innerHTML = l.length ? l.map(p => `<label class="row" style="gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;cursor:pointer"><input type="checkbox" value="${p.id}" checked><span style="flex:1">${esc(p.title)}</span><small class="note">${p.slides ? p.slides + " slides" : ""}</small></label>`).join("")
+      : `<p class="note">Is class + subject ki koi PPT nahi mili.</p>`;
+    $$("#pkList input").forEach(i => i.onchange = sum); sum(); };
+  $("#pkCls").onchange = draw; $("#pkSub").onchange = draw;
+  { const top = all.reduce((m, p) => { const k = (p.level[0] || "") + "|" + p.subject; m[k] = (m[k] || 0) + 1; return m; }, {}), best = Object.keys(top).sort((a, b) => top[b] - top[a])[0];   // sabse zyada PPT wala class-subject pehle se chuna
+    if (best) { const [c, x] = best.split("|"); if (cl.includes(c)) $("#pkCls").value = c; if (sb.includes(x)) $("#pkSub").value = x; } }
+  draw();
+  $("#pkGo").onclick = async () => {
+    const on = [...$$("#pkList input:checked")].map(i => all.find(p => p.id == i.value)); if (on.length < 2) return;
+    const cls = $("#pkCls").value, sub = $("#pkSub").value, btn = $("#pkGo"); btn.disabled = true;
+    try {
+      const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = new JSZip(), dir = `${cls} ${sub} - Full Package`;
+      for (let k = 0; k < on.length; k++) {
+        const p = on[k], f = await fetchFile(p, t => { btn.textContent = `Chapter ${k + 1} / ${on.length}: ${t}`; });
+        z.file(`${dir}/${String(k + 1).padStart(2, "0")} ${f.name}`, f);
+      }
+      btn.textContent = "ZIP ban rahi…";
+      const blob = await z.generateAsync({ type: "blob", compression: "STORE" }), zip = new File([blob], dir.replace(/[\\/:*?"<>|]+/g, " ") + ".zip", { type: "application/zip" });
+      close(); editPpt(null);
+      const pe = PE; pe.level = [cls]; pe.subject = sub;
+      // preview: har chapter ki pehli slide (alag-alag chapter dikhenge), card par pehle chapter ki card photo
+      pe.imgs = on.map(p => splitRefs(p.refs, p.previews).slides[0]).filter(Boolean).slice(0, PV_AUTO).map(x => ({ ref: x.ref, url: x.url }));
+      pe.card = (splitRefs(on[0].refs, on[0].previews).card[0] ? [splitRefs(on[0].refs, on[0].previews).card[0]] : []);
+      ED = pe; mseg($("#peCls"), CLASSES, "level"); $("#peSubj").value = sub; drawPeImgs(); drawPeCard();
+      await uploadPptFile(zip);
+      if (PE === pe) { const hiT = on.some(p => isHi(p.title)), nm = $("#peName");
+        nm.value = (hiT ? `कक्षा ${cls.replace("Class ", "")} ${HI_SUBJ_NAME[sub] || sub} — Full Package (सभी ${on.length} अध्याय)` : `${cls} ${sub} — Full Package (All ${on.length} Chapters)`).slice(0, 120); nm.dataset.auto = "1";
+        const sl = +$("#peSlides").value || on.reduce((t, p) => t + (+p.slides || 0), 0), list = on.map((p, k) => `${k + 1}. ${p.title.split(" — ")[0]}`).join("; "), ds = $("#peDesc");
+        ds.value = (hiT ? `${cls} ${sub} के सभी ${on.length} अध्याय एक साथ${sl ? `, कुल ${sl} editable स्लाइड्स` : ""}। एक बार payment करें और पूरा package एक ZIP में डाउनलोड करें। शामिल: ${list}`
+          : `All ${on.length} chapters of ${cls} ${sub} in one package${sl ? `, ${sl} editable slides in total` : ""}. Pay once and download the full package in one ZIP. Includes: ${list}`).slice(0, 600); ds.dataset.auto = "1"; }
+      toast("🎁 Package ready — daam aur naam dekh kar Save dabayein");
+    } catch (e) { btn.disabled = false; btn.textContent = "🎁 Package banao"; toast("Package nahi bana: " + e.message, true); }
+  };
 }
 // ZIP = ek bundle card: andar ki saari PPT / PDF ek saath bikti hain, payment ke baad poora ZIP download
 const zipEntries = z => Object.values(z.files).filter(e => !e.dir && /\.(pptx?|pdf)$/i.test(e.name) && !/(^|\/)(__MACOSX|\.)/.test(e.name))
