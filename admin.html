@@ -1874,7 +1874,8 @@ function packOpen() {
       await uploadPptFile(zip);
       if (PE === pe) { const hiT = on.some(p => isHi(p.title)), nm = $("#peName");
         nm.value = (hiT ? `कक्षा ${cls.replace("Class ", "")} ${HI_SUBJ_NAME[sub] || sub} — Full Package (सभी ${on.length} अध्याय)` : `${cls} ${sub} — Full Package (All ${on.length} Chapters)`).slice(0, 120); nm.dataset.auto = "1";
-        const sl = +$("#peSlides").value || on.reduce((t, p) => t + (+p.slides || 0), 0), list = on.map((p, k) => `${k + 1}. ${p.title.split(" — ")[0]}`).join("; "), ds = $("#peDesc");
+        if (!+$("#peSlides").value) { $("#peSlides").value = on.reduce((t, p) => t + (+p.slides || 0), 0) || ""; autoPrice(); }   // ZIP se slides na gini ja sakein to chapters ki slides jodo
+        const sl = +$("#peSlides").value, list = on.map((p, k) => `${k + 1}. ${p.title.split(" — ")[0]}`).join("; "), ds = $("#peDesc");
         ds.value = (hiT ? `${cls} ${sub} के सभी ${on.length} अध्याय एक साथ${sl ? `, कुल ${sl} editable स्लाइड्स` : ""}। एक बार payment करें और पूरा package एक ZIP में डाउनलोड करें। शामिल: ${list}`
           : `All ${on.length} chapters of ${cls} ${sub} in one package${sl ? `, ${sl} editable slides in total` : ""}. Pay once and download the full package in one ZIP. Includes: ${list}`).slice(0, 600); ds.dataset.auto = "1"; }
       toast("🎁 Package ready — daam aur naam dekh kar Save dabayein");
