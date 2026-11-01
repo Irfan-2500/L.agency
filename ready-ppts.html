@@ -153,7 +153,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .ppt-logo{position:absolute;top:8px;right:8px;z-index:2;display:block;line-height:0;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}.ppt-logo img{width:30px;height:auto}
 @media(max-width:600px){.ppt-logo{top:6px;right:6px}.ppt-logo img{width:24px}}
 .ribbon{position:absolute;top:8px;left:8px;font-size:.56rem;font-weight:800;letter-spacing:.06em;line-height:1.4;padding:2px 6px;border-radius:5px;color:#fff}
-.r-best{background:linear-gradient(135deg,#f59e0b,#ef4444)} .r-new{background:linear-gradient(135deg,#22c55e,#06b6d4)} .r-feat{background:linear-gradient(135deg,#8b2cff,#ec4899)}
+.r-best{background:linear-gradient(135deg,#f59e0b,#ef4444)} .r-new{background:linear-gradient(135deg,#22c55e,#06b6d4)} .r-feat{background:linear-gradient(135deg,#8b2cff,#ec4899)}.r-pack{background:linear-gradient(135deg,#0ea5e9,#6366f1)}
 .sl-badge{position:absolute;bottom:10px;right:10px;display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;padding:4px 8px;border-radius:8px;background:rgba(0,0,0,.62);color:#fff}
 .sl-badge svg{width:13px;height:13px}
 .peek{position:absolute;top:10px;right:10px;font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:8px;background:rgba(0,0,0,.62);color:#fff;opacity:0;transition:.2s}
@@ -686,7 +686,7 @@ let qt; $("#q").oninput = e => { clearTimeout(qt); qt = setTimeout(() => { st.q 
 /* ---------- GRID ---------- */
 /* PPT card ke upar right corner mein PowerPoint file jaisa logo */
 const PPT_LOGO = `<span class="ppt-logo" title="PowerPoint (.pptx) file"><img src="uploads/brand/ppt-logo.webp" alt="PPT" width="30" height="29"></span>`;
-const ribbon = b => ({ best:`<span class="ribbon r-best">BEST SELLER</span>`, new:`<span class="ribbon r-new">NEW</span>`, feat:`<span class="ribbon r-feat">FEATURED</span>` })[b] || "";
+const ribbon = b => ({ best:`<span class="ribbon r-best">BEST SELLER</span>`, new:`<span class="ribbon r-new">NEW</span>`, feat:`<span class="ribbon r-feat">FEATURED</span>`, pack:`<span class="ribbon r-pack">🎁 PACKAGE</span>` })[b] || "";
 /* Kitni baar biki: har purchase par Google Sheet mein +1 hota hai, yahan wahi number (0 bhi dikhe) */
 const soldTag = p => { const n = Math.max(0, +p.sales || 0);
   return `<span class="sold" title="${n} customers ne ye PPT khareedi">🔥 <b>${n.toLocaleString("en-IN")}</b> Sold</span>`; };
@@ -714,7 +714,7 @@ function card(p){
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, inCart = cart.includes(p.id);
   return `<article class="card">
     <button class="thumb" style="${thumbStyle(p)}"${!isNote(p) && cardPics(p).length > 1 ? ` data-wipe="${p.id}"` : ""} onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
-      ${ribbon(p.badge)}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
+      ${ribbon(p.badge || (p.type === "zip" ? "pack" : ""))}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
       ${!isNote(p) && p.type !== "pdf" ? PPT_LOGO : ""}
       <span class="peek">👁 Preview</span>
       ${isNote(p) ? `<span class="sl-badge">📄 A4 PDF${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
@@ -845,7 +845,7 @@ function openPreview(id){
     <div class="m-info">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
-      <div class="tags">${(isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "ZIP file" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      <div class="tags">${(isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "📦 PPT Bundle (ZIP)" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       ${N ? `<p style="font-size:.78rem;color:var(--dim)">🔒 ${slots.filter(x => !x.lock).length} ${isNote(p) ? "page" : "slides"} free preview · baaki ${slots.filter(x => x.lock).length} kharidne ke baad khulengi (kul ${N}).</p>` : ""}
       <div class="m-buy">
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
