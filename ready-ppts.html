@@ -736,7 +736,7 @@ function render(){
   renderCats(); renderFilters();
   const V = VIEW(), w = W();
   const list = V.filter(p => matchC(p) && matchQ(p) && matchF(p)).sort(SORTS[st.sort]);
-  const show = list.slice(0, st.shown);
+  const show = list;   // saare cards ek saath, "Load more" button nahi
   $("#grid").classList.toggle("notes", NOTES);
   $("#resultTxt").textContent = V.length ? "K-12" : "";
   $("#grid").innerHTML = show.length ? show.map(card).join("")
