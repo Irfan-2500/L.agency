@@ -313,6 +313,9 @@ label.f span{font-weight:500;color:var(--dim)}
 .wc-row b{font-size:.9rem}
 .wc-row small{display:block;color:var(--dim);font-size:.76rem}
 .wc-row.is-hide{opacity:.6}
+.st-live{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:700;color:var(--muted);margin-right:6px;white-space:nowrap}
+.st-live .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:stPulse 1.6s infinite}
+@keyframes stPulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
 .sw{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer;user-select:none;white-space:nowrap}
 .sw input{position:absolute;opacity:0;pointer-events:none}
 .sw i{position:relative;width:38px;height:22px;border-radius:99px;background:var(--line2);transition:.2s;flex-shrink:0}
@@ -1413,16 +1416,30 @@ function splitGeo(rows) {
 }
 const PAGE_NAMES = { "/": "Home", "/ready-ppts": "Ready to Use PPTs", "/order": "PPT Order", "/account": "My PPTs", "/about": "About", "/service": "Services", "/thank-you": "Thank you", "/track": "Track Order",
   "/privacy": "Privacy", "/terms": "Terms", "/refund": "Refund", "/delivery": "Delivery", "/contact": "Contact" };
-async function stats() {
-  loading();
-  const r = await call("adminStats");
-  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Analytics", "") + NEW_SCRIPT) : fail(r.error);
+// Analytics live: khulte hi pichla data turant, phir naya; is page par rehte hue har 15 sec apne aap update
+let ST_LAST = null, ST_AT = 0, ST_BUSY = false;
+async function stats(silent) {
+  if (!silent) { if (ST_LAST) drawStats(ST_LAST, true); else loading(); }
+  if (ST_BUSY) return; ST_BUSY = true;   // pehle se data aa raha ho to wahi dikhega
+  let r; try { r = await call("adminStats"); } finally { ST_BUSY = false; }
+  if (tab !== "stats") return;
+  if (!r.ok) { if (silent || ST_LAST) return liveTag(false); return /Unknown admin action/i.test(r.error || "") ? V(head("Analytics", "") + NEW_SCRIPT) : fail(r.error); }
+  ST_LAST = r; ST_AT = Date.now(); drawStats(r);
+}
+function liveTag(busy) {
+  const el = $("#stLive"); if (!el) return;
+  el.innerHTML = busy ? `<i class="dot" style="background:var(--warn)"></i>Update ho raha…` : `<i class="dot"></i>Live · ${new Date(ST_AT).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+}
+setInterval(() => { if (tab === "stats" && !document.hidden) stats(true); }, 15000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden && tab === "stats" && Date.now() - ST_AT > 5000) stats(true); });
+function drawStats(r, stale) {
+  const y = window.scrollY;
   const d = r.daily, mx = Math.max(1, ...d.map(x => x.visits));
   const dev = r.devices.reduce((s, x) => s + x[1], 0) || 1;
   const DEV_COL = { Mobile: "var(--accent)", Computer: "var(--cyan)", Tablet: "var(--warn)" };
   const geo = splitGeo(r.states);
   V(head("Analytics", "Website par kitne log aaye, kahan se aaye aur kya dekha. (Har visitor ek baar gina jata hai, naam/number kabhi save nahi hota.)",
-      `<a class="btn sm" href="${esc(r.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Sheet</a>`) + `
+      `<span class="st-live" id="stLive"></span><a class="btn sm" href="${esc(r.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Sheet</a>`) + `
   <div class="stats">
     <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-eye")}</span><b>${nf(r.todayUnique)}</b><small>Aaj ke visitors · ${nf(r.today)} page views</small></div>
     <div class="stat" style="--c:var(--accent)"><span class="ic">${ic("i-chart")}</span><b>${nf(r.weekUnique)}</b><small>Last 7 days visitors · ${nf(r.week)} views</small></div>
@@ -1448,7 +1465,9 @@ async function stats() {
   <div class="dgrid">
     <div class="card"><div class="ch"><h3>🌐 Browser</h3></div>${toplist(r.browsers, r.month, "var(--info)")}</div>
   </div>
+  <p class="note" style="margin-top:6px">ℹ️ Ye page har 15 second mein apne aap update hota hai. Ek hi visitor 30 minute ke andar wahi page dobara khole to wo ek hi baar gina jata hai.</p>
   <p class="note" style="margin-top:6px">ℹ️ Male / female aur age koi website apne aap nahi jaan sakti (visitor batata hi nahi). Isliye ye yahan nahi dikhta.</p>`);
+  liveTag(stale); if (y) window.scrollTo(0, y);
 }
 
 /* ---------- Sales (Razorpay se biki Ready PPTs) ---------- */
