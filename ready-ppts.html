@@ -560,8 +560,9 @@ function pptSlides(){
 }
 function drawSamples(){
   let list;
-  if (NOTES) {   // cover page (pehla page) nahi, PDF ke andar ke page: har notes se page 2, 3, 4… baari-baari
-    const ins = VIEW().map(p => (p.previews || []).slice(1, 5)).filter(x => x.length), own = [];
+  if (NOTES) {   // cover page nahi, PDF ke andar ke page. "All Chapters" notes ki preview [cover, andar, cover, andar…] hoti hai,
+                 // isliye sirf 2nd, 4th, 6th, 8th photo (ek chapter wali PDF mein bhi ye andar ke page hi hain)
+    const ins = VIEW().map(p => (p.previews || []).filter((u, k) => k % 2 === 1).slice(0, 4)).filter(x => x.length), own = [];
     for (let k = 0; k < 4 && own.length < 12; k++) ins.forEach(x => { if (x[k] && own.length < 12) own.push(x[k]); });
     list = own.length >= 4 ? own : [...own, ...SAMPLES.slice(1)].slice(0, 10); }
   else list = pptSlides();
