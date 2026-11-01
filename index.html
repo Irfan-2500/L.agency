@@ -3056,7 +3056,7 @@ function openThPage(tone, push){
   if (push) history.pushState({ thPage: tone }, "", "#themes-" + tone);
 }
 function closeThPage(){ $("#thPage").classList.remove("on"); document.body.style.overflow = ""; }
-document.addEventListener("click", e => { const b = e.target.closest(".th-all"); if (b) openThPage(b.dataset.tone, true); });
+document.addEventListener("click", e => { const b = e.target.closest(".th-all[data-tone]"); if (b) openThPage(b.dataset.tone, true); });   // sirf theme wale buttons; Ready PPT / Notes ke "View All" link apne page par jaate hain
 $("#thpBack").onclick = () => { if (history.state && history.state.thPage) history.back(); else closeThPage(); };
 addEventListener("popstate", () => { if (history.state && history.state.thPage) openThPage(history.state.thPage); else closeThPage(); });
 /* Theme lines: dheere-dheere left chalein; chhoone / mouse rakhne par ruk jaayein, mouse se kheench bhi sakein */
