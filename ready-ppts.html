@@ -188,6 +188,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .kind button.on{color:#fff;background:var(--grad);box-shadow:0 0 14px rgba(139,44,255,.4)}
 .grid.notes{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 .grid.notes .thumb{aspect-ratio:210/297;background-position:top center}
+.grid.notes .thumb .wipe{background-position:top center}
 .thumb{overflow:hidden}
 .thumb .wipe{position:absolute;inset:0;background-size:cover;background-position:center;animation:fly .85s cubic-bezier(.2,.85,.25,1) forwards;pointer-events:none;box-shadow:-10px 0 24px -6px rgba(0,0,0,.45)}
 @keyframes fly{from{transform:translateX(105%) rotate(5deg) scale(.88);opacity:.3}70%{opacity:1}to{transform:none;opacity:1}}
@@ -713,7 +714,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(() => {
 function card(p){
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, inCart = cart.includes(p.id);
   return `<article class="card">
-    <button class="thumb" style="${thumbStyle(p)}"${!isNote(p) && cardPics(p).length > 1 ? ` data-wipe="${p.id}"` : ""} onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
+    <button class="thumb" style="${thumbStyle(p)}"${cardPics(p).length > 1 ? ` data-wipe="${p.id}"` : ""} onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
       ${ribbon(p.badge || (p.type === "zip" ? "pack" : ""))}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
       ${!isNote(p) && p.type !== "pdf" ? PPT_LOGO : ""}
       <span class="peek">👁 Preview</span>

@@ -2270,7 +2270,7 @@ async function bulkNotes(files) {
     $("#peSlides").value = out.getPageCount();
     pe.uploading = false;
     toast(`✓ ${list.length} chapters jud gaye (${out.getPageCount()} pages). Ab "Save" dabayein`);
-    uploadPptFile(new File([bytes], base + "_All_Chapters.pdf", { type: "application/pdf" }), starts.slice(0, 4).flatMap(n => [n, n + 1]));   // har chapter ka cover + andar ka page
+    uploadPptFile(new File([bytes], base + "_All_Chapters.pdf", { type: "application/pdf" }), null);   // cover + PDF ke shuru ke pages (kul 8), card par baari-baari dikhte hain
   } catch (e) { pe.uploading = false; if (PE === pe) drawPeFile(); toast("Folder se Notes nahi bane: " + e.message, true); }
 }
 $("#peDirIn").onchange = e => { const f = [...e.target.files]; e.target.value = ""; if (f.length) bulkNotes(f); };
