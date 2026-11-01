@@ -1245,7 +1245,8 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 .rd-price{display:flex;align-items:center;gap:8px;font-size:.8rem}
 .rd-price b{font-size:1.05rem;color:var(--text)}.rd-price s{color:var(--dim)}.rd-price em{font-style:normal;font-weight:800;color:#16a34a}
 .rd-buy{margin-left:auto;width:36px;height:36px;display:grid;place-items:center;border-radius:10px;font-size:.78rem;font-weight:800;color:#1a1433;background:linear-gradient(135deg,#ffd166,#f59e0b);text-decoration:none;border:0;cursor:pointer;position:relative}
-@media(max-width:760px){.rd-price{gap:6px}.rd-price s{display:none}}
+@media(max-width:760px){.rd-price{gap:6px}.rd-lb s{display:none}}
+.rd-acts{display:flex;gap:8px;margin-top:10px}.rd-acts .rd-buy{flex:1;width:auto;height:38px;margin:0!important;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.12)}   /* teeno button ek line mein barabar, saaf dikhein */
 .rd-price em{white-space:nowrap}
 .th-strip button.lk{position:relative;opacity:.55}.th-strip button.lk img{filter:blur(3px);opacity:.5}
 .th-strip button.lk::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:1.1rem}
@@ -1565,8 +1566,8 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
       <button type="button" id="thReset" hidden>↺ Reset</button>
     </div>
     <div class="th-q" id="thQ" hidden role="status"></div>
-    <div class="th-grid" id="thGrid"></div>
     <div class="th-sec" id="rdSec" hidden><div class="th-sh"><h3 class="th-k12">📦 Ready to Use PPT <small id="rdN"></small></h3><a class="th-all" href="ready-ppts.html">View All <span>→</span></a></div><div class="th-row" id="rdRow"></div></div>
+    <div class="th-grid" id="thGrid"></div>
     <div class="th-sec" id="ntSec" hidden><div class="th-sh"><h3 class="th-k12">📝 Study Notes <small id="ntN"></small></h3><a class="th-all" href="ready-ppts.html?type=notes">View All <span>→</span></a></div><div class="th-row nt-row" id="ntRow"></div></div>
     <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
   </div>
@@ -3041,7 +3042,7 @@ function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
       <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span>${pre === "rd" ? `<img class="ppt-logo" src="uploads/brand/ppt-logo.webp" alt="PPT" title="PowerPoint (.pptx) file" width="30" height="29">` : ""}</div>
       <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
         <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
-        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy rd-ed" href="${ordUrl(p.title, p.thumb)}" onclick="event.stopPropagation()" aria-label="Customize ${esc(p.title)}" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
+        <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}</div><div class="rd-acts"><a class="rd-buy rd-ed" href="${ordUrl(p.title, p.thumb)}" onclick="event.stopPropagation()" aria-label="Customize ${esc(p.title)}" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
       ${p.slides ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${+p.slides} ${isNt(p) ? "pages" : "slides"}</span>` : ""}
     </div>`; }).join("");
   $("#" + pre + "Sec").hidden = false; });
