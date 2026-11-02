@@ -1567,8 +1567,8 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
     </div>
     <div class="th-q" id="thQ" hidden role="status"></div>
     <div class="th-sec" id="rdSec" hidden><div class="th-sh"><h3 class="th-k12">📦 Ready to Use PPT <small id="rdN"></small></h3><a class="th-all" href="ready-ppts.html">View All <span>→</span></a></div><div class="th-row" id="rdRow"></div></div>
-    <div class="th-grid" id="thGrid"></div>
     <div class="th-sec" id="ntSec" hidden><div class="th-sh"><h3 class="th-k12">📝 Study Notes <small id="ntN"></small></h3><a class="th-all" href="ready-ppts.html?type=notes">View All <span>→</span></a></div><div class="th-row nt-row" id="ntRow"></div></div>
+    <div class="th-grid" id="thGrid"></div>
     <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
   </div>
 </section>
@@ -3006,8 +3006,8 @@ function renderThemes(){
       <div class="th-meta"><div class="th-name"><b>${esc(t.name)}</b><span class="th-views" data-vid="${esc(t.id)}" title="${(+t.views || 0).toLocaleString("en-IN")} views">${icon("i-eye","width:14px;height:14px")}<em>${fmtViews(t.views)}</em></span></div><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span></div></div>
       ${t.slides && t.slides.length > 1 ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${t.slides.length} slides</span>` : ""}
     </div>`;
-  const rows = [["🌙 Dark Theme", thList.map((t,i) => [t,i]).filter(x => x[0].tone !== "White")], ["☀️ Light Theme", thList.map((t,i) => [t,i]).filter(x => x[0].tone === "White")]].filter(r => r[1].length);
-  $("#thGrid").innerHTML = rows.length ? rows.map(([h, arr]) => `<div class="th-sec"><div class="th-sh"><h3 class="th-k12">${h} <small>${arr.length}</small></h3><button type="button" class="th-all" data-tone="${h.includes("Dark") ? "dark" : "light"}">View All <span>→</span></button></div><div class="th-row">${arr.map(([t,i]) => thCard(t,i)).join("")}</div></div>`).join("")
+  const all = thList.map((t,i) => [t,i]), rows = [["🎨 Theme Sample", [...all.filter(x => x[0].tone !== "White"), ...all.filter(x => x[0].tone === "White")]]].filter(r => r[1].length);   // Dark + Light ek hi line mein
+  $("#thGrid").innerHTML = rows.length ? rows.map(([h, arr]) => `<div class="th-sec"><div class="th-sh"><h3 class="th-k12">${h} <small>${arr.length}</small></h3><button type="button" class="th-all" data-tone="all">View All <span>→</span></button></div><div class="th-row">${arr.map(([t,i]) => thCard(t,i)).join("")}</div></div>`).join("")
     : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>${String(thState.q||"").trim() ? `No theme found for "${esc(thState.q.trim())}". Try another word — or <a href="#custom" class="js-custom" style="color:var(--cyan)">request a custom PPT</a>.` : "No theme matches these filters. Try another combination."}</p></div>`;
   $("#thMore").parentNode.style.display = "none";
 }
@@ -3050,8 +3050,8 @@ function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
 function rdCart(id){ toggleCart(id); document.querySelectorAll(`.rd-buy[data-rid="${id}"]`).forEach(b => b.classList.toggle("in", cart.includes(id))); }
 /* View All: Dark ya Light ki saari themes alag page par (phone ka Back button bhi kaam kare) */
 function openThPage(tone, push){
-  const arr = thList.map((t,i) => [t,i]).filter(x => (x[0].tone === "White") === (tone === "light"));
-  $("#thpTitle").innerHTML = `${tone === "light" ? "☀️ Light Theme" : "🌙 Dark Theme"}<small>${arr.length} themes</small>`;
+  const all = thList.map((t,i) => [t,i]), arr = tone === "all" ? [...all.filter(x => x[0].tone !== "White"), ...all.filter(x => x[0].tone === "White")] : all.filter(x => (x[0].tone === "White") === (tone === "light"));
+  $("#thpTitle").innerHTML = `${tone === "all" ? "🎨 Theme Sample" : tone === "light" ? "☀️ Light Theme" : "🌙 Dark Theme"}<small>${arr.length} themes</small>`;
   $("#thpGrid").innerHTML = arr.map(([t,i]) => thCard(t,i)).join("");
   $("#thPage").classList.add("on"); $("#thPage").scrollTop = 0; document.body.style.overflow = "hidden";
   if (push) history.pushState({ thPage: tone }, "", "#themes-" + tone);
