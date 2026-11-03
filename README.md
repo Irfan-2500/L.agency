@@ -1,4 +1,4 @@
-# Lakshay Agency — Dynamic Website (PHP + MySQL)
+# PPTSTORE — Dynamic Website (PHP + MySQL)
 
 ## 📁 Kya-kya hai
 | Cheez | Kahan |
