@@ -3394,7 +3394,7 @@ let opT=0;function open(i){if(cur===i)return;cur=i;opT=Date.now();(innerWidth<=7
  row.querySelectorAll(".cn-b").forEach(b=>b.setAttribute("aria-expanded",b.dataset.i==i));
  pan.style.setProperty("--c",c);
  pan.innerHTML=`<div class="cn-box${n==="State Books"?" cn-states":""}"><div class="cn-hd"><span class="cn-ic">${e}</span><div><h3>${esc(n)}<span class="ct">${it.length}</span></h3><p>${esc(d)}</p></div>
- <div class="cn-tools"><label class="cn-q"><svg class="i"><use href="#i-search"/></svg><input type="search" placeholder="${esc(n)} me dhoondhein…" aria-label="Search"></label><a class="cn-all" href="${url(n)}">View all</a><button type="button" class="cn-x" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div></div>
+ <div class="cn-tools"><label class="cn-q"><svg class="i"><use href="#i-search"/></svg><input type="search" placeholder="${esc(n)} me dhoondhein…" aria-label="Search"></label><a class="cn-all" href="${n==="State Books"?"state-books.html":url(n)}">View all</a><button type="button" class="cn-x" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div></div>
  <div class="cn-list">${list(i,"")}</div></div>`;
  pan.classList.add("open");dim.classList.add("open");
  const inp=pan.querySelector("input");inp.oninput=()=>pan.querySelector(".cn-list").innerHTML=list(i,inp.value);
