@@ -431,7 +431,8 @@ footer{border-top:1px solid var(--line);padding:64px 0 28px;background:var(--bg2
   .steps{grid-template-columns:1fr 1fr}.steps::before{display:none}
   .nav .search{display:none}
   .nav-links{position:fixed;top:72px;left:0;right:0;flex-direction:column;align-items:stretch;padding:16px;background:var(--bg2);border-bottom:1px solid var(--line);transform:translateY(-130%);transition:.3s}
-  .nav-links.open{transform:none}
+  .nav-links.open{transform:none;visibility:visible}
+  .nav-links{z-index:20;visibility:hidden;transition:transform .3s,visibility 0s .3s}.nav-links.open{transition:transform .3s,visibility 0s}   /* menu category bar ke upar */
   .menu-btn{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;border:1px solid var(--line2);margin-left:auto}
   .cart-btn{margin-left:0}
   .cta{padding:32px}
