@@ -7,6 +7,8 @@
 
    Previous Year paper ke liye saal bhi jodein, aur har set ka link "sets" me:
    "Bihar|Previous Year Questions|10|Hindi|Maths|2025": { sets: ["set1.pdf", "set2.pdf", "set3.pdf"] },
+   PPT ki 10 slide free dikhti hain, baaki lock. Shop wali PPT ka number (product id) "product" me likhein,
+   to lock par "Add to Cart" / "Buy Now" aayega:  { ppt: "file.pptx", product: 12 }
    Kisi set ki Word/PPT bhi ho to:  { pdf: "set1.pdf", word: "set1.docx", ppt: "set1.pptx" }
 */
 window.STATE_FILES = {

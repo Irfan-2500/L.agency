@@ -75,6 +75,27 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .ofin .dx-wrapper>section.dx{box-shadow:0 4px 18px rgba(15,23,42,.14);margin:0 auto 16px!important;max-width:100%}
 .ofin .pptx-preview-wrapper{height:auto!important;background:transparent!important;overflow:visible!important}
 .ofin .pptx-preview-slide-wrapper{box-shadow:0 4px 18px rgba(15,23,42,.14);margin:0 auto 16px!important;background:#fff}
+/* PPT: 10 slide free, baaki lock */
+.ofin .pptx-preview-slide-wrapper{position:relative}
+.sn{position:absolute;right:10px;bottom:10px;z-index:3;padding:3px 9px;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;font-size:.72rem;font-weight:800}
+.lk>*:not(.lko):not(.sn){filter:blur(14px) saturate(.7);opacity:.6}
+.lko{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(10,12,20,.38);color:#fff;text-align:center;padding:16px}
+.lko .lc{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.55);backdrop-filter:blur(6px)}
+.lko .lc svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.lko b{font-size:1rem}.lko small{font-size:.78rem;opacity:.85}
+.bb{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.bb button,.bb a{height:42px;padding:0 16px;display:inline-flex;align-items:center;gap:7px;border-radius:12px;font-weight:800;font-size:.86rem;border:0;cursor:pointer;font-family:inherit}
+.bb .ac{background:#fff;color:#16131f}
+.bb .ac.on{background:#dcfce7;color:#15803d}
+.bb .bn{background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;box-shadow:0 10px 20px -10px #c2410c}
+.bb .bn s{opacity:.7;font-weight:600;font-size:.76rem}
+.buybar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px;border-radius:16px;background:#16131f;color:#fff;box-shadow:0 20px 40px -14px rgba(0,0,0,.6);max-width:calc(100% - 24px)}
+.buybar .bt{font-size:.82rem;line-height:1.3}.buybar .bt b{display:block;font-size:.9rem}
+.buybar .bb .ac{background:rgba(255,255,255,.12);color:#fff}
+.buybar .bb .ac.on{background:#16a34a;color:#fff}
+.vtoast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);opacity:0;z-index:30;padding:10px 16px;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;font-size:.85rem;transition:.25s;pointer-events:none}
+.vtoast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (max-width:640px){.lko .bb,.lko small{display:none}.lko b{font-size:.85rem}.lko .lc{width:48px;height:48px}.lko .lc svg{width:22px;height:22px}.buybar{left:12px;right:12px;transform:none;bottom:10px;flex-direction:column;align-items:stretch;gap:8px;padding:10px}.buybar .bt{text-align:center}.buybar .bb{flex-wrap:nowrap}.buybar .bb>*{flex:1;justify-content:center;padding:0 8px}}
 .load{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:.85rem;pointer-events:none}
 @media (max-width:640px){
  .bar{flex-wrap:wrap;gap:8px;padding:8px 12px}
@@ -93,6 +114,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   <button class="xbtn" id="cls" type="button" title="Band karein" aria-label="Band karein"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
 </header>
 <main class="stage" id="stage"></main>
+<script src="catalog.js"></script>
 <script src="js/state-files.js"></script>
 <script>
 (function(){
@@ -209,6 +231,35 @@ async function getBlob(u){
 function addJs1(u){return new Promise((ok,no)=>{const x=document.createElement("script");x.src=u;x.onload=ok;x.onerror=no;document.head.appendChild(x);});}
 /* CDN na chale to apni copy (js/vendor/) se */
 function addJs(u){return addJs1(u).catch(()=>addJs1("js/vendor/"+u.split("/").pop()));}
+/* ---- PPT: pehli 10 slide free, baaki blur + lock + Buy ---- */
+const FREE=10;let LOCKED=false;
+function product(){const id=+rec.product||0;if(!id)return null;let list=[];try{list=JSON.parse(localStorage.getItem("la_ppts"))||[];}catch(_){}
+ return list.find(p=>p.id===id)||(window.LA_CATALOG||[]).find(p=>p.id===id)||{id};}
+function inCart(id){try{return (JSON.parse(localStorage.getItem("la_cart"))||[]).includes(id);}catch(_){return false;}}
+function vtoast(t){let el=$("vt");if(!el){el=document.createElement("div");el.id="vt";el.className="vtoast";document.body.appendChild(el);}el.textContent=t;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),1800);}
+function buyBtns(){const p=product();
+ if(!p)return `<a class="bn" href="index.html#custom">🛒 Poori PPT kharidein</a>`;
+ const pr=p.price?` ₹${p.price}${p.mrp>p.price?` <s>₹${p.mrp}</s>`:""}`:"";
+ return `<button type="button" class="ac${inCart(p.id)?" on":""}" data-act="cart">${inCart(p.id)?"✓ Cart me hai":"🛒 Add to Cart"}</button><a class="bn" href="ready-ppts.html?pay=${p.id}">⚡ Buy Now${pr}</a>`;}
+document.addEventListener("click",e=>{const b=e.target.closest('[data-act="cart"]');if(!b)return;const p=product();if(!p)return;
+ let c=[];try{c=JSON.parse(localStorage.getItem("la_cart"))||[];}catch(_){}
+ if(c.includes(p.id)){location.href="ready-ppts.html?cart=1";return;}
+ c.push(p.id);try{localStorage.setItem("la_cart",JSON.stringify(c));}catch(_){}
+ document.querySelectorAll('[data-act="cart"]').forEach(x=>{x.classList.add("on");x.textContent="✓ Cart me hai";});vtoast("✓ Cart me add ho gaya");});
+function lockSlides(oi){
+ const ws=[...oi.querySelectorAll(".pptx-preview-slide-wrapper")],N=ws.length;
+ ws.forEach((w,i)=>{const n=document.createElement("span");n.className="sn";n.textContent=`${i+1} / ${N}`;w.appendChild(n);});
+ if(N<=FREE)return;
+ LOCKED=true;
+ ws.slice(FREE).forEach((w,i)=>{w.classList.add("lk");w.setAttribute("aria-hidden","true");
+  const o=document.createElement("div");o.className="lko";
+  o.innerHTML=`<span class="lc"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>`+(i===0?`<b>Aage ki ${N-FREE} slide lock hain</b><small>Poori PPT dekhne aur download ke liye kharidein</small><div class="bb">${buyBtns()}</div>`:`<small>Slide ${FREE+i+1} · Locked</small>`);
+  w.appendChild(o);});
+ const bar=document.createElement("div");bar.className="buybar";
+ bar.innerHTML=`<div class="bt"><b>${FREE} slide free · ${N-FREE} locked 🔒</b>Poori ${N} slide ki PPT paayein</div><div class="bb">${buyBtns()}</div>`;
+ document.body.appendChild(bar);$("ow").style.paddingBottom="90px";
+ const d=$("dl");d.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span> Buy karke Download</span>`;
+}
 async function showOffice(v){
  const st=$("stage"),J="https://cdn.jsdelivr.net/npm/";
  st.innerHTML=`<div class="load">File khul rahi hai…</div><div class="ofw" id="ow"><div class="ofin" id="oi"></div></div>`;
@@ -227,6 +278,7 @@ async function showOffice(v){
    if(!window.pptxPreview)await addJs(J+"pptx-preview@1.0.7/dist/pptx-preview.umd.js");
    const w=Math.min(960,$("ow").clientWidth-24);
    await pptxPreview.init(oi,{width:w,height:Math.round(w*9/16),mode:"list"}).preview(buf);
+   lockSlides(oi);
   }
   st.querySelector(".load").remove();
  }catch(_){fail();}
@@ -241,6 +293,7 @@ if(raw){
  if(new URL(v.dl).origin===location.origin){a.removeAttribute("target");a.download=nm;}
  /* File ko blob bana ke seedha save — preview frame me bhi chalta hai */
  a.onclick=async e=>{
+  if(LOCKED&&P.f==="PPT"){e.preventDefault();const p=product();location.href=p?`ready-ppts.html?pay=${p.id}`:"index.html#custom";return;}
   e.preventDefault();const t=a.innerHTML;a.innerHTML="⏳<span> Download…</span>";
   try{const bl=await getBlob(v.dl);
    if(window.self!==window.top&&window.claude&&claude.use){const dw=await claude.use("downloads").catch(()=>null);if(dw){await dw.save({filename:nm,data:bl}).catch(()=>{});return;}}
