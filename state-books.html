@@ -57,7 +57,9 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
 .st{display:flex;align-items:center;gap:12px;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;transition:.18s;animation:up .35s ease-out both}
 @keyframes up{from{opacity:0;transform:translateY(8px)}}
 .st:hover{border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 16px 30px -22px var(--c);transform:translateY(-2px)}
-.ab{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:13px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.95rem;color:#fff;background:linear-gradient(135deg,var(--a1),var(--a2))}
+.ab{position:relative;width:50px;height:50px;flex:none;display:grid;place-items:center;border-radius:15px;font-size:1.6rem;background:radial-gradient(circle at 30% 25%,color-mix(in srgb,var(--a1) 30%,transparent),color-mix(in srgb,var(--a2) 12%,transparent));border:1px solid color-mix(in srgb,var(--a1) 40%,transparent);transition:transform .25s}
+.ab i{position:absolute;right:-6px;bottom:-5px;padding:1px 5px;border-radius:6px;font-style:normal;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.56rem;letter-spacing:.03em;color:#fff;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 2px 6px -2px var(--a2)}
+.st:hover .ab{transform:rotate(-6deg) scale(1.06)}
 .st div{flex:1;min-width:0}
 .st b{display:block;font-size:.98rem;font-weight:800}
 .st small{color:var(--muted);font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
@@ -69,7 +71,7 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
  h1{font-size:1.2rem}.hic{width:36px;height:36px;font-size:1.1rem}
  .bar{flex-wrap:wrap}.q{width:100%;margin-left:0;order:-1}
  .grid{grid-template-columns:1fr 1fr;gap:8px}
- .st{padding:10px;gap:8px}.ab{width:34px;height:34px;font-size:.78rem;border-radius:10px}
+ .st{padding:10px;gap:10px}.ab{width:40px;height:40px;font-size:1.25rem;border-radius:12px}.ab i{font-size:.5rem}
  .st b{font-size:.85rem}.st small{display:none}.go{display:none}
 }
 @media (prefers-reduced-motion:reduce){.st{animation:none}}
@@ -97,6 +99,7 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
 <script>
 (function(){
 const STATES=["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
+const IC={"Bihar":"🛕","UP":"🕌","Andhra Pradesh":"🌶️","Chhattisgarh":"🌳","West Bengal":"🐅","Gujarat":"🦁","Karnataka":"🐘","Kerala":"🌴","Madhya Pradesh":"🐆","Haryana":"🌾","Maharashtra":"🏛️","Punjab":"🌻","Rajasthan":"🐪","Tamilnadu":"🐚","Jharkhand":"⛏️","Telangana":"🏰","CISCE":"🎓","NIOS":"📚","Odisha":"☸️","Assam":"🍵","Jammu & Kashmir":"🏔️"};
 const PAL=[["#f97316","#c2410c"],["#8b2cff","#5b21b6"],["#0ea5e9","#0369a1"],["#16a34a","#15803d"],["#db2777","#9d174d"],["#ca8a04","#a16207"],["#0d9488","#0f766e"],["#4f46e5","#3730a3"]];
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 const ab=x=>{const w=x.replace("&","").split(/\s+/).filter(Boolean);return (w.length>1?w[0][0]+w[1][0]:x.slice(0,2)).toUpperCase();};
@@ -104,7 +107,7 @@ const g=document.getElementById("grid"),q=document.getElementById("q"),cnt=docum
 function render(){const k=q.value.trim().toLowerCase(),f=STATES.filter(x=>!k||x.toLowerCase().includes(k));
  cnt.innerHTML=`<b>${f.length}</b> state boards`;
  g.innerHTML=f.length?f.map((x,i)=>{const [a1,a2]=PAL[STATES.indexOf(x)%PAL.length];
-  return `<a class="st" href="state-board.html?s=${encodeURIComponent(x)}" style="--a1:${a1};--a2:${a2};animation-delay:${i*25}ms" data-ui="state_all"><span class="ab">${esc(ab(x))}</span><div><b>${esc(x)}</b><small>Syllabus · Books · PYQ · Papers</small></div><span class="go">›</span></a>`}).join("")
+  return `<a class="st" href="state-board.html?s=${encodeURIComponent(x)}" style="--a1:${a1};--a2:${a2};animation-delay:${i*25}ms" data-ui="state_all"><span class="ab">${IC[x]||"🏫"}<i>${esc(ab(x))}</i></span><div><b>${esc(x)}</b><small>Syllabus · Books · PYQ · Papers</small></div><span class="go">›</span></a>`}).join("")
   :`<div class="none">"${esc(q.value)}" naam ka board nahi mila.</div>`;}
 q.oninput=render;render();
 })();
