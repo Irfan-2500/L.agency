@@ -62,6 +62,12 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .tb .pgi input{width:42px;height:30px;text-align:center;border-radius:8px;border:1px solid var(--line2);background:var(--card2);color:var(--text);font:inherit;font-weight:800;outline:0}
 .tb .zv{min-width:52px;font-size:.78rem}
 @media (max-width:640px){.tb{bottom:10px;gap:0;padding:4px}.tb button{min-width:30px;height:32px;padding:0 5px;font-size:.8rem}.tb .hm{display:none}.tb .zv{min-width:44px}.lens{width:150px;height:150px}}
+.ofw{position:absolute;inset:0;overflow:auto;background:#e9ecf2;-webkit-overflow-scrolling:touch}
+.ofin{padding:14px 12px 40px;display:flex;flex-direction:column;align-items:center}
+.ofin .dx-wrapper{background:transparent!important;padding:0!important}
+.ofin .dx-wrapper>section.dx{box-shadow:0 4px 18px rgba(15,23,42,.14);margin:0 auto 16px!important;max-width:100%}
+.ofin .pptx-preview-wrapper{height:auto!important;background:transparent!important;overflow:visible!important}
+.ofin .pptx-preview-slide-wrapper{box-shadow:0 4px 18px rgba(15,23,42,.14);margin:0 auto 16px!important;background:#fff}
 .load{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:.85rem;pointer-events:none}
 @media (max-width:640px){
  .bar{flex-wrap:wrap;gap:8px;padding:8px 12px}
@@ -107,7 +113,7 @@ function viewUrl(u){
  if(g)return {view:`https://docs.google.com/${g[1]}/d/${g[2]}/preview`,dl:u};
  const abs=new URL(u,location.href).href;
  if(P.f==="PDF")return {view:abs,dl:abs,pdf:true};
- return {view:"https://view.officeapps.live.com/op/embed.aspx?src="+encodeURIComponent(abs),dl:abs};
+ return {view:"https://view.officeapps.live.com/op/embed.aspx?src="+encodeURIComponent(abs),dl:abs,office:abs};
 }
 /* PDF ko page par hi dikhana (phone par bhi chalta hai) + zoom, magnifier, page number */
 function showPdf(u){
@@ -184,9 +190,33 @@ async function viewer(doc){
  window.addEventListener("resize",()=>layout());
  upd();
 }
+/* Word / PPT ko page par hi dikhana (phone par bhi) — na chale to Office viewer */
+function addJs(u){return new Promise((ok,no)=>{const x=document.createElement("script");x.src=u;x.onload=ok;x.onerror=no;document.head.appendChild(x);});}
+async function showOffice(v){
+ const st=$("stage"),J="https://cdn.jsdelivr.net/npm/";
+ st.innerHTML=`<div class="load">File khul rahi hai…</div><div class="ofw" id="ow"><div class="ofin" id="oi"></div></div>`;
+ const fail=()=>{st.innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;};
+ try{
+  const r=await fetch(v.office);if(!r.ok)throw 0;const buf=await r.arrayBuffer(),oi=$("oi");
+  if(P.f==="Word"){
+   if(!window.JSZip)await addJs(J+"jszip@3.10.1/dist/jszip.min.js");
+   if(!window.docx)await addJs(J+"docx-preview@0.3.5/dist/docx-preview.min.js");
+   await docx.renderAsync(buf,oi,null,{className:"dx",inWrapper:true,ignoreLastRenderedPageBreak:true});
+   /* Phone par page ko screen ki chaudai me fit karna */
+   const fit=()=>{const w=oi.querySelector(".dx-wrapper"),sec=oi.querySelector("section.dx");if(!w||!sec)return;w.style.zoom=1;const z=Math.min(1,($("ow").clientWidth-24)/sec.offsetWidth);w.style.zoom=z;};
+   fit();window.addEventListener("resize",fit);
+  }else{
+   if(!window.pptxPreview)await addJs(J+"pptx-preview@1.0.7/dist/pptx-preview.umd.js");
+   const w=Math.min(960,$("ow").clientWidth-24);
+   await pptxPreview.init(oi,{width:w,height:Math.round(w*9/16),mode:"list"}).preview(buf);
+  }
+  st.querySelector(".load").remove();
+ }catch(_){fail();}
+}
 if(raw){
  const v=viewUrl(raw);
  if(v.pdf){showPdf(v.view);}
+ else if(v.office)showOffice(v);
  else $("stage").innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;
  const a=$("dl"),ext={PDF:"pdf",Word:"docx",PPT:"pptx"}[P.f]||"pdf",nm=`${P.s} ${P.t} Class ${P.c} ${P.sub} ${P.m}`.replace(/[^\w\- ]+/g,"").trim()+"."+ext;
  a.href=v.dl;a.hidden=false;
