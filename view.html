@@ -191,13 +191,21 @@ async function viewer(doc){
  upd();
 }
 /* Word / PPT ko page par hi dikhana (phone par bhi) — na chale to Office viewer */
-function addJs(u){return new Promise((ok,no)=>{const x=document.createElement("script");x.src=u;x.onload=ok;x.onerror=no;document.head.appendChild(x);});}
+/* File ka data lana — data: link ko seedha decode, baaki fetch */
+async function getBlob(u){
+ if(u.startsWith("data:")){const i=u.indexOf(","),mt=u.slice(5,i).split(";")[0],b=atob(u.slice(i+1)),a=new Uint8Array(b.length);for(let k=0;k<b.length;k++)a[k]=b.charCodeAt(k);return new Blob([a],{type:mt});}
+ const r=await fetch(u);if(!r.ok)throw 0;return r.blob();
+}
+function addJs1(u){return new Promise((ok,no)=>{const x=document.createElement("script");x.src=u;x.onload=ok;x.onerror=no;document.head.appendChild(x);});}
+/* CDN na chale to apni copy (js/vendor/) se */
+function addJs(u){return addJs1(u).catch(()=>addJs1("js/vendor/"+u.split("/").pop()));}
 async function showOffice(v){
  const st=$("stage"),J="https://cdn.jsdelivr.net/npm/";
  st.innerHTML=`<div class="load">File khul rahi hai…</div><div class="ofw" id="ow"><div class="ofin" id="oi"></div></div>`;
- const fail=()=>{st.innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;};
+ const fail=()=>{if(window.self!==window.top||v.office.startsWith("data:")){st.innerHTML=`<div class="empty"><div class="box"><div class="big">📄</div><h2>Yahan preview nahi khul paya</h2><p>File download karke dekh sakte hain.</p></div></div>`;return;}
+  st.innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;};
  try{
-  const r=await fetch(v.office);if(!r.ok)throw 0;const buf=await r.arrayBuffer(),oi=$("oi");
+  const buf=await (await getBlob(v.office)).arrayBuffer(),oi=$("oi");
   if(P.f==="Word"){
    if(!window.JSZip)await addJs(J+"jszip@3.10.1/dist/jszip.min.js");
    if(!window.docx)await addJs(J+"docx-preview@0.3.5/dist/docx-preview.min.js");
@@ -224,7 +232,7 @@ if(raw){
  /* File ko blob bana ke seedha save — preview frame me bhi chalta hai */
  a.onclick=async e=>{
   e.preventDefault();const t=a.innerHTML;a.innerHTML="⏳<span> Download…</span>";
-  try{const r=await fetch(v.dl);if(!r.ok)throw 0;const bl=await r.blob();
+  try{const bl=await getBlob(v.dl);
    if(window.self!==window.top&&window.claude&&claude.use){const dw=await claude.use("downloads").catch(()=>null);if(dw){await dw.save({filename:nm,data:bl}).catch(()=>{});return;}}
    const b=URL.createObjectURL(bl);
    const x=document.createElement("a");x.href=b;x.download=nm;document.body.appendChild(x);x.click();x.remove();setTimeout(()=>URL.revokeObjectURL(b),4e4);}
