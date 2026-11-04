@@ -117,8 +117,8 @@ function render(){
  const k=$("q").value.trim().toLowerCase(),list=chs.map((x,i)=>({...x,n:i+1})).filter(x=>!k||(x.name||"").toLowerCase().includes(k)||String(x.n)===k);
  $("cnt").innerHTML=chs.length?`<b>${list.length}</b> chapter${list.length===1?"":"s"}`:"";
  $("chs").innerHTML=!chs.length?`<div class="none" style="grid-column:1/-1"><div class="big">📂</div><b>Chapters jaldi aa rahe hain</b>${esc(P.sub)} ke ${esc(P.t)} abhi upload nahi hue hain.<br><a href="index.html#custom">Request karein →</a></div>`
-  :list.length?list.map(x=>{const f=Object.keys(FC).find(f=>x[f])||"pdf",fs=Object.keys(FC).filter(f=>x[f]);
-   return `<a class="chp"${NEWTAB} href="view.html?${new URLSearchParams({...P,f:FC[f][0],ch:x.n})}"><span class="no">${x.n}</span><div class="tx"><b>${esc(x.name||"Chapter "+x.n)}</b>${fs.length?`<div class="fm">${fs.map(f=>`<i style="background:${FC[f][1]}">${FC[f][0]}</i>`).join("")}</div>`:""}</div><span class="vw" aria-label="Dekhein">${eye}</span></a>`}).join("")
+  :list.length?list.map(x=>{const f=Object.keys(FC).find(f=>x[f])||"pdf";
+   return `<a class="chp"${NEWTAB} href="view.html?${new URLSearchParams({...P,f:FC[f][0],ch:x.n})}"><span class="no">${x.n}</span><div class="tx"><b>${esc(x.name||"Chapter "+x.n)}</b></div><span class="vw" aria-label="Dekhein">${eye}</span></a>`}).join("")
   :`<div class="none" style="grid-column:1/-1"><b>"${esc($("q").value)}" naam ka chapter nahi mila</b></div>`;
 }
 $("q").oninput=render;render();
