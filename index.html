@@ -867,17 +867,12 @@ html.light header{background:rgba(255,255,255,.82)}
 .cn-states .cn-list{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;align-items:start;max-height:min(64vh,520px)}
 .cn-st{border:1px solid var(--line2);border-radius:12px;padding:5px;background:var(--card);transition:.2s}
 .cn-st:hover{border-color:color-mix(in srgb,var(--c) 45%,transparent)}
-.cn-st.on{border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 8px 20px -12px var(--c)}
-.cn-sth{width:100%;display:flex;align-items:center;gap:8px;padding:8px 10px;border:0;border-radius:9px;cursor:pointer;font:inherit;font-weight:700;font-size:.9rem;color:var(--text);background:transparent;text-align:left;transition:background .18s}
-.cn-sth::before{content:"";width:8px;height:8px;flex:none;border-radius:50%;background:var(--c)}
+.cn-list .cn-sth{width:100%;display:flex;text-decoration:none;align-items:center;gap:8px;padding:8px 10px;border:0;border-radius:9px;cursor:pointer;font:inherit;font-weight:700;font-size:.9rem;color:var(--text);background:transparent;text-align:left;transition:background .18s}
+.cn-list .cn-sth::before{opacity:1;content:"";width:8px;height:8px;flex:none;border-radius:50%;background:var(--c)}
 .cn-sth span{flex:1}
 .cn-ar{width:22px;height:22px;flex:none;padding:4px;border-radius:7px;background:transparent;color:var(--c);stroke:var(--c);transition:transform .25s,background .18s}
-.cn-st.on .cn-ar{transform:rotate(180deg)}
-.cn-sth:hover,.cn-st.on .cn-sth{background:color-mix(in srgb,var(--c) 16%,transparent)}
-.cn-sth:hover .cn-ar,.cn-st.on .cn-ar{background:var(--c);color:#fff;stroke:#fff}
-.cn-sub{display:none}.cn-st.on .cn-sub{display:block;animation:cnIn .2s ease-out;padding-top:2px}
-.cn-list .cn-st a{padding:6px 8px;font-size:.82rem;color:var(--muted)}
-.cn-list .cn-st a:hover{color:var(--text)}
+.cn-list .cn-sth:hover{transform:none;background:color-mix(in srgb,var(--c) 16%,transparent)}
+.cn-sth:hover .cn-ar{transform:translateX(2px);background:var(--c);color:#fff;stroke:#fff}
 .cn-none{padding:24px 20px;color:var(--muted)}
 .cn-list a mark{background:color-mix(in srgb,var(--c) 30%,transparent);color:inherit;border-radius:3px}
 html.light .cn-box{box-shadow:0 30px 60px -24px rgba(60,40,140,.35)}
@@ -894,8 +889,7 @@ html.light .cn-box{box-shadow:0 30px 60px -24px rgba(60,40,140,.35)}
  .cn-list{grid-template-columns:1fr 1fr;max-height:55vh;padding:10px 12px 20px}
  .cn-list a{font-size:.82rem;padding:8px 6px}
  .cn-states .cn-list{grid-template-columns:1fr 1fr;gap:8px}
- .cn-list .cn-st a{font-size:.76rem;padding:6px 4px}
- .cn-sth{font-size:.82rem;padding:8px}
+ .cn-list .cn-sth{font-size:.82rem;padding:8px}
  .cn-dim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:110;display:none}
  .cn-dim.open{display:block}
 }
@@ -3393,7 +3387,7 @@ let cur=-1,tm,tc;const SUB=["Syllabus","Book & Answers","Previous Year Questions
 function list(i,q){const [n,,,,it]=CATS[i],k=q.trim().toLowerCase();
  const f=it.filter(x=>!k||x.toLowerCase().includes(k));
  if(!f.length)return `<div class="cn-none">Kuch nahi mila "${esc(q)}" ke liye.</div>`;
- if(n==="State Books")return f.map(x=>`<div class="cn-st${k&&f.length<=3?" on":""}"><button type="button" class="cn-sth" aria-expanded="${k&&f.length<=3}"><span>${esc(x)}</span><svg class="i cn-ar"><use href="#i-down"/></svg></button><div class="cn-sub">${SUB.map(t=>`<a href="${url(x+" "+t)}" data-ui="cat_item"><span>${esc(t)}</span></a>`).join("")}</div></div>`).join("");
+ if(n==="State Books")return f.map(x=>`<div class="cn-st"><a class="cn-sth" href="state-board.html?s=${encodeURIComponent(x)}" data-ui="cat_state"><span>${esc(x)}</span><svg class="i cn-ar"><use href="#i-right"/></svg></a></div>`).join("");
  return f.map(x=>{let h=esc(x);if(k){const j=x.toLowerCase().indexOf(k);h=esc(x.slice(0,j))+"<mark>"+esc(x.slice(j,j+k.length))+"</mark>"+esc(x.slice(j+k.length));}
   return `<a href="${url(n+" "+x)}" data-ui="cat_item"><span>${h}</span></a>`}).join("");}
 let opT=0;function open(i){if(cur===i)return;cur=i;opT=Date.now();(innerWidth<=720?document.body:nav).appendChild(pan);const [n,e,c,d,it]=CATS[i];
@@ -3404,8 +3398,7 @@ let opT=0;function open(i){if(cur===i)return;cur=i;opT=Date.now();(innerWidth<=7
  <div class="cn-list">${list(i,"")}</div></div>`;
  pan.classList.add("open");dim.classList.add("open");
  const inp=pan.querySelector("input");inp.oninput=()=>pan.querySelector(".cn-list").innerHTML=list(i,inp.value);
- pan.querySelector(".cn-x").onclick=close;
- pan.querySelector(".cn-list").onclick=ev=>{const h=ev.target.closest(".cn-sth");if(!h)return;const st=h.parentNode,on=!st.classList.contains("on");pan.querySelectorAll(".cn-st.on").forEach(o=>{if(o!==st){o.classList.remove("on");o.firstChild.setAttribute("aria-expanded",false)}});st.classList.toggle("on",on);h.setAttribute("aria-expanded",on);};}
+ pan.querySelector(".cn-x").onclick=close;}
 function close(){cur=-1;pan.classList.remove("open");dim.classList.remove("open");pan.innerHTML="";row.querySelectorAll(".cn-b").forEach(b=>b.setAttribute("aria-expanded","false"));}
 const hover={get matches(){return innerWidth>720}};
 row.addEventListener("click",ev=>{const b=ev.target.closest("button.cn-b");if(!b)return;const i=+b.dataset.i;if(cur===i&&Date.now()-opT<400)return;cur===i?close():open(i);});
