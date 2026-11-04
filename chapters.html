@@ -99,6 +99,8 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
   <div class="help"><span class="hi">💬</span><p>Kisi chapter ke notes chahiye jo yahan nahi hai?<small>Hume batayein, hum aapke liye bana denge.</small></p><a href="index.html#custom">Request karein →</a></div>
 </div>
 <script src="js/state-files.js"></script>
+<script src="config.js"></script>
+<script src="js/sb-data.js"></script>
 <script>
 (function(){
 const qs=new URLSearchParams(location.search),$=id=>document.getElementById(id);
@@ -110,7 +112,7 @@ $("bk").href=board;$("crSt").href=board;$("crSt").textContent=P.s;$("crT").textC
 $("ttl").textContent=`${P.sub} — ${P.t}`;
 $("hsub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium`;
 document.title=`${P.s} Board Class ${P.c} ${P.sub} ${P.t} — Chapter Wise — PPT Store`;
-const chs=(((window.STATE_FILES||{})[[P.s,P.t,P.c,P.m,P.sub].join("|")]||{}).chapters||[]);
+let chs=[];const load=()=>{chs=(((window.STATE_FILES||{})[[P.s,P.t,P.c,P.m,P.sub].join("|")]||{}).chapters||[]);};load();
 const FC={pdf:["PDF","#e5484d"],word:["Word","#2b6cde"],ppt:["PPT","#e8590c"]};
 const eye=`<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.2"/></svg>`;
 function render(){
@@ -121,7 +123,7 @@ function render(){
    return `<a class="chp"${NEWTAB} href="view.html?${new URLSearchParams({...P,f:FC[f][0],ch:x.n})}"><span class="no">${x.n}</span><div class="tx"><b>${esc(x.name||"Chapter "+x.n)}</b></div><span class="vw" aria-label="Dekhein">${eye}</span></a>`}).join("")
   :`<div class="none" style="grid-column:1/-1"><b>"${esc($("q").value)}" naam ka chapter nahi mila</b></div>`;
 }
-$("q").oninput=render;render();
+$("q").oninput=render;document.addEventListener("sbdata",()=>{load();render();});render();
 })();
 </script>
 </body>

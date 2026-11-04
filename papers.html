@@ -103,6 +103,8 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
   <div class="help"><span class="hi">💬</span><p>Kisi aur saal ya set ka paper chahiye?<small>Hume batayein, hum aapke liye la denge.</small></p><a href="index.html#custom">Request karein →</a></div>
 </div>
 <script src="js/state-files.js"></script>
+<script src="config.js"></script>
+<script src="js/sb-data.js"></script>
 <script>
 (function(){
 const qs=new URLSearchParams(location.search),$=id=>document.getElementById(id);
@@ -119,14 +121,15 @@ function render(){
  $("ttl").textContent=`${P.sub} — ${y} Question Paper`;
  document.title=`${P.s} Board Class ${P.c} ${P.sub} ${y} Question Paper — PPT Store`;
  $("yb").querySelectorAll("a").forEach(a=>a.setAttribute("aria-current",+a.dataset.y===y));
- const rec=(window.STATE_FILES||{})[[P.s,T,P.c,P.m,P.sub,y].join("|")]||{};sets=(rec.sets||[]).filter(Boolean);
+ const rec=(window.STATE_FILES||{})[[P.s,T,P.c,P.m,P.sub,y].join("|")]||{};sets=(rec.sets||[]).map((u,i)=>({u,i})).filter(({u})=>typeof u==="string"?u:u&&["pdf","word","ppt"].some(k=>u[k]));
  $("cnt").innerHTML=sets.length?`<b>${sets.length}</b> set · ${y}`:"";
- $("sets").innerHTML=sets.length?sets.map((u,i)=>`<a class="set"${NEWTAB} href="view.html?${new URLSearchParams({...P,t:T,f:"PDF",y,set:i+1})}"><div class="tx"><b>Set ${i+1}</b><small>${y} · ${["pdf","word","ppt"].filter(k=>typeof u==="string"?k==="pdf":u[k]).map(k=>({pdf:"PDF",word:"Word",ppt:"PPT"})[k]).join(" · ")}</small></div><span class="vw" title="Dekhein" aria-label="Dekhein"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.2"/></svg></span></a>`).join("")
+ $("sets").innerHTML=sets.length?sets.map(({u,i})=>`<a class="set"${NEWTAB} href="view.html?${new URLSearchParams({...P,t:T,f:"PDF",y,set:i+1})}"><div class="tx"><b>Set ${i+1}</b><small>${y} · ${["pdf","word","ppt"].filter(k=>typeof u==="string"?k==="pdf":u[k]).map(k=>({pdf:"PDF",word:"Word",ppt:"PPT"})[k]).join(" · ")}</small></div><span class="vw" title="Dekhein" aria-label="Dekhein"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.2"/></svg></span></a>`).join("")
   :`<div class="none" style="grid-column:1/-1"><div class="big">📂</div><b>${y} ke paper jaldi aa rahe hain</b>Is saal ke ${esc(P.sub)} ke question paper abhi upload nahi hue hain.<br><a href="index.html#custom">Request karein →</a></div>`;
  try{history.replaceState(null,"","?"+new URLSearchParams({...P,y}));}catch(_){}
 }
 /* Saal badalna — page reload ke bina, turant */
 $("yb").addEventListener("click",e=>{const a=e.target.closest("a[data-y]");if(!a)return;e.preventDefault();if(+a.dataset.y===y)return;y=+a.dataset.y;render();a.scrollIntoView({inline:"nearest",block:"nearest",behavior:"smooth"});});
+document.addEventListener("sbdata",render);
 render();
 {const cur=$("yb").querySelector('[aria-current="true"]');if(cur)cur.scrollIntoView({inline:"center",block:"nearest"});}
 })();

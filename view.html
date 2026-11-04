@@ -120,8 +120,10 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 <main class="stage" id="stage"></main>
 <script src="catalog.js"></script>
 <script src="js/state-files.js"></script>
+<script src="config.js"></script>
+<script src="js/sb-data.js"></script>
 <script>
-(function(){
+(async function(){
 const qs=new URLSearchParams(location.search);
 const P={s:qs.get("s")||"",t:qs.get("t")||"",c:qs.get("c")||"",m:qs.get("m")||"",sub:qs.get("sub")||"",f:(qs.get("f")||"PDF")};
 const FMT={PDF:["#e5484d","#ff6b6b","PDF","pdf"],Word:["#1d5bd0","#4f8ff7","W","word"],PPT:["#d9480f","#ff8a3d","P","ppt"]};
@@ -131,6 +133,10 @@ const $=id=>document.getElementById(id);
 /* Previous Year paper: saal + set */
 const Y=qs.get("y")||"",SET=+qs.get("set")||0;
 const key=[P.s,P.t,P.c,P.m,P.sub].join("|")+(Y?"|"+Y:"");
+/* Admin Panel wala data: pehli baar (browser me yaad na ho) to aane tak rukte hain */
+if(!(window.STATE_FILES||{})[key]&&window.SB_READY){$("stage").innerHTML=`<div class="load">File khul rahi hai…</div>`;await window.SB_READY;}
+const REC0=JSON.stringify((window.STATE_FILES||{})[key]||null);
+document.addEventListener("sbdata",()=>{if(JSON.stringify((window.STATE_FILES||{})[key]||null)!==REC0)location.reload();});
 let rec=(window.STATE_FILES||{})[key]||{};
 if(Y){P.t="Previous Year Questions";const one=(rec.sets||[])[SET-1]||"";rec=typeof one==="string"?{pdf:one}:one;}
 /* Chapter wise (Notes): ch = chapter number */
@@ -148,6 +154,7 @@ $("bk").href=BACK;
 $("cls").onclick=()=>{window.close();setTimeout(()=>{location.href=BACK},150);};
 /* Link ko dikhane layak banana */
 function viewUrl(u){
+ if(u.startsWith("drive:"))return P.f==="PDF"?{view:u,dl:u,pdf:true}:{view:u,dl:u,office:u};
  const d=/drive\.google\.com\/file\/d\/([^/?#]+)/.exec(u);
  if(d)return {view:`https://drive.google.com/file/d/${d[1]}/preview`,dl:`https://drive.google.com/uc?export=download&id=${d[1]}`};
  const g=/docs\.google\.com\/(document|presentation|spreadsheets)\/d\/([^/?#]+)/.exec(u);
@@ -173,10 +180,11 @@ function showPdf(u){
   <button type="button" id="mag" title="Magnifier" aria-pressed="false">🔍</button>
   <button type="button" class="hm" id="fs" title="Full screen">⛶</button>
  </div>`;
- const fail=()=>{st.innerHTML=`<iframe src="${esc(u)}" title="PDF"></iframe>`;};
+ const fail=()=>{st.innerHTML=u.startsWith("drive:")?NOPV:`<iframe src="${esc(u)}" title="PDF"></iframe>`;};
  const go=()=>{const lib=window.pdfjsLib;if(!lib)return fail();
   lib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-  lib.getDocument(u).promise.then(doc=>viewer(doc)).catch(fail);};
+  (u.startsWith("drive:")?getBlob(u).then(b=>b.arrayBuffer()).then(d=>({data:new Uint8Array(d)})):Promise.resolve(u))
+   .then(x=>lib.getDocument(x).promise).then(doc=>viewer(doc)).catch(fail);};
  if(window.pdfjsLib)return go();
  const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";sc.onload=go;sc.onerror=fail;document.head.appendChild(sc);
 }
@@ -233,7 +241,9 @@ async function viewer(doc){
 }
 /* Word / PPT ko page par hi dikhana (phone par bhi) — na chale to Office viewer */
 /* File ka data lana — data: link ko seedha decode, baaki fetch */
+const NOPV=`<div class="empty"><div class="box"><div class="big">📄</div><h2>Yahan preview nahi khul paya</h2><p>Page refresh karein, ya file download karke dekhein.</p></div></div>`;
 async function getBlob(u){
+ if(u.startsWith("drive:")){if(!window.SB_BLOB)throw 0;return window.SB_BLOB(u,p=>{const l=document.querySelector(".load");if(l)l.textContent=`File khul rahi hai… ${Math.round(p*100)}%`;});}
  if(u.startsWith("data:")){const i=u.indexOf(","),mt=u.slice(5,i).split(";")[0],b=atob(u.slice(i+1)),a=new Uint8Array(b.length);for(let k=0;k<b.length;k++)a[k]=b.charCodeAt(k);return new Blob([a],{type:mt});}
  const r=await fetch(u);if(!r.ok)throw 0;return r.blob();
 }
@@ -243,7 +253,13 @@ function addJs(u){return addJs1(u).catch(()=>addJs1("js/vendor/"+u.split("/").po
 /* ---- PPT: pehli 10 slide free, baaki blur + lock + Buy ---- */
 const FREE=10;let LOCKED=false;
 function product(){const id=+rec.product||0;if(!id)return null;let list=[];try{list=JSON.parse(localStorage.getItem("la_ppts"))||[];}catch(_){}
- return list.find(p=>p.id===id)||(window.LA_CATALOG||[]).find(p=>p.id===id)||{id};}
+ let pp=[];try{pp=JSON.parse(localStorage.getItem("la_pprice"))||[];}catch(_){}
+ return list.find(p=>p.id===id)||pp.find(p=>p.id===id)||(window.LA_CATALOG||[]).find(p=>p.id===id)||{id};}
+/* Admin wali PPT ka daam (shop page na khola ho tab bhi) */
+function loadPrice(){const p=product(),U=String((window.LA_CONFIG||{}).orderUrl||"").trim();if(!p||p.price||!U)return;
+ fetch(U+(U.includes("?")?"&":"?")+"action=ppts").then(r=>r.json()).then(j=>{if(!j.ok||!j.products)return;
+  try{localStorage.setItem("la_pprice",JSON.stringify(j.products.map(x=>({id:x.id,price:x.price,mrp:x.mrp,title:x.title}))));}catch(_){}
+  if(product().price)document.querySelectorAll(".bb").forEach(b=>b.innerHTML=buyBtns());}).catch(()=>{});}
 function inCart(id){try{return (JSON.parse(localStorage.getItem("la_cart"))||[]).includes(id);}catch(_){return false;}}
 function vtoast(t){let el=$("vt");if(!el){el=document.createElement("div");el.id="vt";el.className="vtoast";document.body.appendChild(el);}el.textContent=t;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),1800);}
 function buyBtns(){const p=product();
@@ -266,13 +282,13 @@ function lockSlides(oi){
   w.appendChild(o);});
  const bar=document.createElement("div");bar.className="buybar";
  bar.innerHTML=`<div class="bt"><b>${FREE} slide free · ${N-FREE} locked 🔒</b>Poori ${N} slide ki PPT paayein</div><div class="bb">${buyBtns()}</div>`;
- document.body.appendChild(bar);$("ow").style.paddingBottom="90px";
+ document.body.appendChild(bar);$("ow").style.paddingBottom="90px";loadPrice();
  const d=$("dl");d.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span> Buy karke Download</span>`;
 }
 async function showOffice(v){
  const st=$("stage"),J="https://cdn.jsdelivr.net/npm/";
  st.innerHTML=`<div class="load">File khul rahi hai…</div><div class="ofw" id="ow"><div class="ofin" id="oi"></div></div>`;
- const fail=()=>{if(window.self!==window.top||v.office.startsWith("data:")){st.innerHTML=`<div class="empty"><div class="box"><div class="big">📄</div><h2>Yahan preview nahi khul paya</h2><p>File download karke dekh sakte hain.</p></div></div>`;return;}
+ const fail=()=>{if(window.self!==window.top||/^(data|drive):/.test(v.office)){st.innerHTML=NOPV;return;}
   st.innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;};
  try{
   const buf=await (await getBlob(v.office)).arrayBuffer(),oi=$("oi");
@@ -299,7 +315,7 @@ if(raw){
  else $("stage").innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;
  const a=$("dl"),ext={PDF:"pdf",Word:"docx",PPT:"pptx"}[P.f]||"pdf",nm=(Y?`${P.s} Class ${P.c} ${P.sub} ${Y} Paper Set ${SET} ${P.m}`:CH?`${P.s} Class ${P.c} ${P.sub} ${P.t} Ch ${CH} ${CHN} ${P.m}`:`${P.s} ${P.t} Class ${P.c} ${P.sub} ${P.m}`).replace(/[^\w\- ]+/g,"").trim()+"."+ext;
  a.href=v.dl;a.hidden=false;
- if(new URL(v.dl).origin===location.origin){a.removeAttribute("target");a.download=nm;}
+ if(!v.dl.startsWith("drive:")&&new URL(v.dl).origin===location.origin){a.removeAttribute("target");a.download=nm;}
  /* File ko blob bana ke seedha save — preview frame me bhi chalta hai */
  a.onclick=async e=>{
   if(LOCKED&&P.f==="PPT"){e.preventDefault();const p=product();location.href=p?`ready-ppts.html?pay=${p.id}`:"index.html#custom";return;}
@@ -308,7 +324,7 @@ if(raw){
    if(window.self!==window.top&&window.claude&&claude.use){const dw=await claude.use("downloads").catch(()=>null);if(dw){await dw.save({filename:nm,data:bl}).catch(()=>{});return;}}
    const b=URL.createObjectURL(bl);
    const x=document.createElement("a");x.href=b;x.download=nm;document.body.appendChild(x);x.click();x.remove();setTimeout(()=>URL.revokeObjectURL(b),4e4);}
-  catch(_){if(window.self===window.top)window.open(v.dl,"_blank","noopener");else location.href=v.dl;}
+  catch(_){if(v.dl.startsWith("drive:"))vtoast("Download nahi hua — dobara try karein");else if(window.self===window.top)window.open(v.dl,"_blank","noopener");else location.href=v.dl;}
   finally{a.innerHTML=t;}
  };
 }else{
