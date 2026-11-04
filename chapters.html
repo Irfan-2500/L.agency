@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chapter Wise Notes — PPT Store</title>
+<meta name="description" content="State board ke har subject ke chapter wise notes — PDF, Word aur PPT me dekhein aur download karein." />
+<link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="96x96" href="/uploads/brand/icon-96.png">
+<script>
+(function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
+document.documentElement.classList.toggle("light",l);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Hind:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080c;--card:#0f121b;--card2:#151927;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);--text:#f4f5fb;--muted:#9aa1b8;--c:#f97316}
+html.light{--bg:#f6f5fb;--card:#fff;--card2:#f4f3fa;--line:rgba(20,16,40,.08);--line2:rgba(20,16,40,.14);--text:#16131f;--muted:#5d5873}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans','Hind',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;
+ background-image:radial-gradient(600px 300px at 10% -10%,rgba(249,115,22,.14),transparent),radial-gradient(500px 300px at 100% 0,rgba(139,44,255,.12),transparent)}
+a{color:inherit;text-decoration:none}
+button,select,input{font:inherit;color:inherit;border:0;background:none}
+button,select{cursor:pointer}
+.wrap{width:min(1180px,100% - 32px);margin:0 auto;padding:0 0 48px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+.brand{display:flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif;font-weight:700}
+.brand img{height:22px;width:auto}
+.back{font-size:.82rem;color:var(--muted);padding:6px 12px;border:1px solid var(--line2);border-radius:99px}
+.back:hover{color:var(--text);border-color:var(--c)}
+
+/* Hero banner */
+.hero{position:relative;overflow:hidden;border-radius:18px;padding:12px 20px;color:#fff;
+ background:linear-gradient(120deg,#f97316 0%,#e8590c 35%,#8b2cff 100%);box-shadow:0 24px 50px -24px rgba(232,89,12,.6)}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.12)}
+.hero::before{width:220px;height:220px;right:-60px;top:-90px}
+.hero::after{width:140px;height:140px;right:120px;bottom:-80px;background:rgba(255,255,255,.08)}
+.crumb{position:relative;font-size:.76rem;opacity:.85;display:flex;gap:6px;flex-wrap:wrap}
+.crumb a:hover{text-decoration:underline}
+.hrow{position:relative;display:flex;align-items:center;gap:12px;margin-top:6px}
+.hic{width:40px;height:40px;flex:none;display:grid;place-items:center;font-size:1.25rem;border-radius:12px;background:#fff;border:2px solid rgba(255,255,255,.55);box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
+.stsel{position:relative;margin-left:auto;display:flex;align-items:center;gap:6px;height:34px;padding:0 6px 0 12px;border-radius:12px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);font-size:.78rem;font-weight:700}
+.stsel select{height:32px;font-weight:800;outline:0;max-width:150px}
+.stsel select option{color:#16131f;background:#fff}
+.badges{position:relative;display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.bd{padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.2);font-size:.74rem;font-weight:700}
+
+
+/* Chapter search */
+.cq{display:flex;align-items:center;gap:8px;height:44px;margin:14px 0;padding:0 14px;border-radius:14px;background:var(--card);border:1px solid var(--line2)}
+.cq svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round}
+.cq input{flex:1;outline:0;font-size:.9rem}
+.lh{display:flex;align-items:center;justify-content:space-between;margin:0 2px 10px;font-size:.8rem;color:var(--muted)}
+.lh b{color:var(--text)}
+/* Chapter list */
+.chs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:10px}
+.chp{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:16px;transition:border-color .15s,box-shadow .15s,transform .15s}
+.chp:hover{border-color:color-mix(in srgb,var(--c) 50%,transparent);box-shadow:0 16px 30px -22px var(--c);transform:translateY(-1px)}
+.no{flex:none;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.05rem;color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent)}
+.chp .tx{flex:1;min-width:0}
+.chp b{display:block;font-size:.98rem;font-weight:800;line-height:1.3}
+.fm{display:flex;gap:5px;margin-top:4px}
+.fm i{font-style:normal;font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:6px;color:#fff}
+.vw{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#f97316,#c2410c);box-shadow:0 8px 16px -10px #c2410c;transition:transform .15s,filter .15s}
+.chp:hover .vw{transform:scale(1.06);filter:brightness(1.08)}
+.vw svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.none{padding:34px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line2);border-radius:16px}
+.none .big{font-size:2rem}.none b{display:block;color:var(--text);font-size:1rem;margin:4px 0}
+.none a{display:inline-block;margin-top:12px;padding:9px 14px;border-radius:11px;background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;font-weight:800;font-size:.82rem}
+.help{margin-top:22px;display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;background:var(--card);border:1px solid var(--line2)}
+.help .hi{font-size:1.6rem}.help p{flex:1;font-size:.88rem}.help small{display:block;color:var(--muted);font-size:.78rem}
+.help a{flex:none;padding:10px 16px;border-radius:12px;background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;font-weight:800;font-size:.84rem}
+.hsub{position:relative;font-size:.78rem;opacity:.9}
+@media (max-width:640px){
+ .hero{padding:12px 14px;border-radius:16px}h1{font-size:1.15rem}.hic{width:36px;height:36px;font-size:1.1rem}
+ .chp{gap:10px;padding:10px 12px}.no{width:38px;height:38px;font-size:.95rem}.chp b{font-size:.9rem}
+ .help{flex-wrap:wrap}.help a{width:100%;text-align:center}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="index.html"><img src="uploads/brand/logo.webp" alt="PPT Store logo" width="50" height="22">PPT Store</a>
+    <a class="back" id="bk" href="state-board.html">← Wapas</a>
+  </div>
+  <section class="hero">
+    <div class="crumb"><a href="index.html">Home</a>›<a href="state-books.html">State Books</a>›<a id="crSt" href="#"></a>›<span id="crT"></span></div>
+    <div class="hrow">
+      <span class="hic">🗒️</span>
+      <div><h1 id="ttl"></h1><div class="hsub" id="hsub"></div></div>
+    </div>
+  </section>
+  <label class="cq"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Chapter dhoondhein…" aria-label="Chapter search"></label>
+  <div class="lh"><span id="cnt"></span></div>
+  <div class="chs" id="chs"></div>
+  <div class="help"><span class="hi">💬</span><p>Kisi chapter ke notes chahiye jo yahan nahi hai?<small>Hume batayein, hum aapke liye bana denge.</small></p><a href="index.html#custom">Request karein →</a></div>
+</div>
+<script src="js/state-files.js"></script>
+<script src="config.js"></script>
+<script src="js/sb-data.js"></script>
+<script>
+(function(){
+const qs=new URLSearchParams(location.search),$=id=>document.getElementById(id);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+const P={s:qs.get("s")||"Bihar",t:qs.get("t")||"Notes",c:qs.get("c")||"10",m:qs.get("m")==="English"?"English":"Hindi",sub:qs.get("sub")||"English"};
+const NEWTAB=window.self===window.top?' target="_blank" rel="noopener"':"";
+const board="state-board.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m});
+$("bk").href=board;$("crSt").href=board;$("crSt").textContent=P.s;$("crT").textContent=P.t;
+$("ttl").textContent=`${P.sub} — ${P.t}`;
+$("hsub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium`;
+document.title=`${P.s} Board Class ${P.c} ${P.sub} ${P.t} — Chapter Wise — PPT Store`;
+let chs=[];const load=()=>{chs=(((window.STATE_FILES||{})[[P.s,P.t,P.c,P.m,P.sub].join("|")]||{}).chapters||[]);};load();
+const FC={pdf:["PDF","#e5484d"],word:["Word","#2b6cde"],ppt:["PPT","#e8590c"]};
+const eye=`<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.2"/></svg>`;
+function render(){
+ const k=$("q").value.trim().toLowerCase(),list=chs.map((x,i)=>({...x,n:i+1})).filter(x=>!k||(x.name||"").toLowerCase().includes(k)||String(x.n)===k);
+ $("cnt").innerHTML=chs.length?`<b>${list.length}</b> chapter${list.length===1?"":"s"}`:"";
+ $("chs").innerHTML=!chs.length?`<div class="none" style="grid-column:1/-1"><div class="big">📂</div><b>Chapters jaldi aa rahe hain</b>${esc(P.sub)} ke ${esc(P.t)} abhi upload nahi hue hain.<br><a href="index.html#custom">Request karein →</a></div>`
+  :list.length?list.map(x=>{const f=Object.keys(FC).find(f=>x[f])||"pdf";
+   return `<a class="chp"${NEWTAB} href="view.html?${new URLSearchParams({...P,f:FC[f][0],ch:x.n})}"><span class="no">${x.n}</span><div class="tx"><b>${esc(x.name||"Chapter "+x.n)}</b></div><span class="vw" aria-label="Dekhein">${eye}</span></a>`}).join("")
+  :`<div class="none" style="grid-column:1/-1"><b>"${esc($("q").value)}" naam ka chapter nahi mila</b></div>`;
+}
+$("q").oninput=render;document.addEventListener("sbdata",()=>{load();render();});render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>File Viewer — PPT Store</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<script>
+(function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
+document.documentElement.classList.toggle("light",l);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080c;--card:#0f121b;--card2:#151927;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);--text:#f4f5fb;--muted:#9aa1b8;--c:#f97316}
+html.light{--bg:#eeedf5;--card:#fff;--card2:#f4f3fa;--line:rgba(20,16,40,.08);--line2:rgba(20,16,40,.14);--text:#16131f;--muted:#5d5873}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line2)}
+.fi{width:30px;height:36px;flex:none}
+.tt{flex:1;min-width:0}
+.tt b{display:block;font-size:.98rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt small{display:block;color:var(--muted);font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fmt{display:flex;gap:4px;padding:4px;border-radius:14px;background:var(--card2);border:1px solid var(--line2)}
+.fmt a{height:42px;padding:0 16px;display:flex;align-items:center;gap:8px;border-radius:10px;font-size:.95rem;font-weight:800;color:var(--muted);transition:background .15s,color .15s,box-shadow .15s}
+.fmt a:hover{color:var(--text);background:color-mix(in srgb,var(--fc) 12%,transparent)}
+.fmt a i{width:22px;height:26px;flex:none;display:grid;place-items:center;border-radius:4px 8px 4px 4px;background:var(--fc);color:#fff;font-style:normal;font-size:.55rem;font-weight:900;box-shadow:0 3px 6px -2px var(--fc)}
+.fmt a[aria-current="true"]{background:var(--fc);color:#fff;box-shadow:0 10px 20px -10px var(--fc),inset 0 0 0 1px rgba(255,255,255,.25)}
+.fmt a[aria-current="true"] i{background:#fff;color:var(--fc);box-shadow:none}
+.dlb{height:44px;padding:0 20px;border:0;border-radius:12px;font-size:.92rem;color:#fff;background:linear-gradient(135deg,#22c55e,#15803d);box-shadow:0 10px 22px -10px #16a34a,inset 0 0 0 1px rgba(255,255,255,.2);animation:dlp 2.4s ease-in-out infinite;transition:transform .15s,filter .15s}
+.dlb:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.dlb svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+@keyframes dlp{0%,100%{box-shadow:0 10px 22px -10px #16a34a,0 0 0 0 rgba(34,197,94,.45)}50%{box-shadow:0 10px 22px -10px #16a34a,0 0 0 6px rgba(34,197,94,0)}}
+@media (prefers-reduced-motion:reduce){.dlb{animation:none}}
+.btn{height:36px;padding:0 14px;display:inline-flex;align-items:center;gap:6px;border-radius:10px;font-weight:800;font-size:.8rem;border:1px solid var(--line2)}
+.btn.pri{background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;border:0}
+.btn[hidden]{display:none}
+.xbtn{width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:12px;background:#ef4444;box-shadow:0 8px 18px -8px #ef4444;transition:.15s}
+.xbtn:hover{background:#dc2626;transform:scale(1.06)}
+.xbtn svg{width:24px;height:24px;stroke:#fff;stroke-width:3;stroke-linecap:round;fill:none}
+.stage{flex:1;position:relative;background:var(--bg)}
+.stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.empty{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center}
+.empty .box{max-width:420px}
+.empty .big{font-size:3rem}
+.empty h2{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;margin:8px 0 6px}
+.empty p{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+.empty .acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.pdfw{position:absolute;inset:0;overflow:auto;padding:16px 0 90px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.pg{position:relative;flex:none;background:#fff;border-radius:6px;box-shadow:0 10px 30px -14px rgba(0,0,0,.5);overflow:hidden}
+.pg canvas{display:block;width:100%;height:100%}
+.pg .pn{position:absolute;right:8px;bottom:8px;padding:2px 8px;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;font-size:.7rem;font-weight:700}
+.pdfw.mag .pg{cursor:none}
+.lens{position:fixed;z-index:20;width:190px;height:190px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--c),0 18px 40px -10px rgba(0,0,0,.6);pointer-events:none;overflow:hidden;display:none;background:#fff}
+.lens canvas{display:block}
+.tb{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:2px;padding:5px;border-radius:14px;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(12px);border:1px solid var(--line2);box-shadow:0 16px 36px -14px rgba(0,0,0,.55);white-space:nowrap}
+.tb button{min-width:34px;height:34px;padding:0 8px;border-radius:9px;font-weight:800;font-size:.85rem;display:grid;place-items:center}
+.tb button:hover{background:var(--card2)}
+.tb button[aria-pressed="true"]{background:var(--c);color:#fff}
+.tb button:disabled{opacity:.35;cursor:default;background:none}
+.tb .sep{width:1px;height:22px;background:var(--line2);margin:0 4px}
+.tb .pgi{display:flex;align-items:center;gap:4px;font-size:.8rem;font-weight:700;color:var(--muted);padding:0 4px}
+.tb .pgi input{width:42px;height:30px;text-align:center;border-radius:8px;border:1px solid var(--line2);background:var(--card2);color:var(--text);font:inherit;font-weight:800;outline:0}
+.tb .zv{min-width:52px;font-size:.78rem}
+@media (max-width:640px){.tb{bottom:10px;gap:0;padding:4px}.tb button{min-width:30px;height:32px;padding:0 5px;font-size:.8rem}.tb .hm{display:none}.tb .zv{min-width:44px}.lens{width:150px;height:150px}}
+.ofw{position:absolute;inset:0;overflow:auto;background:#e9ecf2;-webkit-overflow-scrolling:touch}
+.ofin{padding:14px 12px 40px;display:flex;flex-direction:column;align-items:center}
+.ofin .dx-wrapper{background:transparent!important;padding:0!important}
+.ofin .dx-wrapper>section.dx{box-shadow:0 4px 18px rgba(15,23,42,.14);margin:0 auto 16px!important;max-width:100%}
+.ofin .pptx-preview-wrapper{height:auto!important;background:transparent!important;overflow:visible!important}
+.ofin .pptx-preview-slide-wrapper{box-shadow:0 4px 18px rgba(15,23,42,.14);margin:0 auto 16px!important;background:#fff}
+/* PPT: 10 slide free, baaki lock */
+.ofin .pptx-preview-slide-wrapper{position:relative}
+.sn{position:absolute;right:10px;bottom:10px;z-index:3;padding:3px 9px;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;font-size:.72rem;font-weight:800}
+.lk>*:not(.lko):not(.sn){filter:blur(14px) saturate(.7);opacity:.6}
+.lko{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(10,12,20,.38);color:#fff;text-align:center;padding:16px}
+.lko .lc{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.55);backdrop-filter:blur(6px)}
+.lko .lc svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.lko b{font-size:1rem}.lko small{font-size:.78rem;opacity:.85}
+.bb{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.bb button,.bb a{height:42px;padding:0 16px;display:inline-flex;align-items:center;gap:7px;border-radius:12px;font-weight:800;font-size:.86rem;border:0;cursor:pointer;font-family:inherit}
+.bb .ac{background:#fff;color:#16131f}
+.bb .ac.on{background:#dcfce7;color:#15803d}
+.bb .bn{background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;box-shadow:0 10px 20px -10px #c2410c}
+.bb .bn s{opacity:.7;font-weight:600;font-size:.76rem}
+.buybar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px;border-radius:16px;background:#16131f;color:#fff;box-shadow:0 20px 40px -14px rgba(0,0,0,.6);max-width:calc(100% - 24px)}
+.buybar .bt{font-size:.82rem;line-height:1.3}.buybar .bt b{display:block;font-size:.9rem}
+.buybar .bb .ac{background:rgba(255,255,255,.12);color:#fff}
+.buybar .bb .ac.on{background:#16a34a;color:#fff}
+.vtoast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);opacity:0;z-index:30;padding:10px 16px;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;font-size:.85rem;transition:.25s;pointer-events:none}
+.vtoast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (max-width:640px){.lko .bb,.lko small{display:none}.lko b{font-size:.85rem}.lko .lc{width:48px;height:48px}.lko .lc svg{width:22px;height:22px}.buybar{left:12px;right:12px;transform:none;bottom:10px;flex-direction:column;align-items:stretch;gap:8px;padding:10px}.buybar .bt{text-align:center}.buybar .bb{flex-wrap:nowrap}.buybar .bb>*{flex:1;justify-content:center;padding:0 8px}}
+.bk{flex:none;width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:var(--card2);border:1px solid var(--line2);transition:background .15s,transform .15s}
+.bk:hover{background:var(--line2);transform:translateX(-2px)}
+.bk svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.load{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:.85rem;pointer-events:none}
+@media (max-width:640px){
+ .bar{flex-wrap:wrap;gap:8px;padding:8px 12px}
+ .tt{flex:1 1 calc(100% - 100px)}.bk{width:38px;height:38px}
+ .fmt{flex:1}.fmt a{flex:1;justify-content:center;padding:0 6px;height:40px;font-size:.88rem}
+ .btn{padding:0 10px}.btn span{display:none}.dlb{width:44px;padding:0;justify-content:center}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="bk" id="bk" href="state-board.html" title="Wapas" aria-label="Wapas jaayein"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></a>
+  <svg class="fi" id="fi" viewBox="0 0 34 40"></svg>
+  <div class="tt"><b id="ttl">File</b><small id="sub"></small></div>
+  <nav class="fmt" id="fmt"></nav>
+  <a class="btn dlb" id="dl" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16"/></svg><span> Download</span></a>
+  <button class="xbtn" id="cls" type="button" title="Band karein" aria-label="Band karein"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+</header>
+<main class="stage" id="stage"></main>
+<script src="catalog.js"></script>
+<script src="js/state-files.js"></script>
+<script src="config.js"></script>
+<script src="js/sb-data.js"></script>
+<script>
+(async function(){
+const qs=new URLSearchParams(location.search);
+const P={s:qs.get("s")||"",t:qs.get("t")||"",c:qs.get("c")||"",m:qs.get("m")||"",sub:qs.get("sub")||"",f:(qs.get("f")||"PDF")};
+const FMT={PDF:["#e5484d","#ff6b6b","PDF","pdf"],Word:["#1d5bd0","#4f8ff7","W","word"],PPT:["#d9480f","#ff8a3d","P","ppt"]};
+if(!FMT[P.f])P.f="PDF";
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+const $=id=>document.getElementById(id);
+/* Previous Year paper: saal + set */
+const Y=qs.get("y")||"",SET=+qs.get("set")||0;
+const key=[P.s,P.t,P.c,P.m,P.sub].join("|")+(Y?"|"+Y:"");
+/* Admin Panel wala data: pehli baar (browser me yaad na ho) to aane tak rukte hain */
+if(!(window.STATE_FILES||{})[key]&&window.SB_READY){$("stage").innerHTML=`<div class="load">File khul rahi hai…</div>`;await window.SB_READY;}
+const REC0=JSON.stringify((window.STATE_FILES||{})[key]||null);
+document.addEventListener("sbdata",()=>{if(JSON.stringify((window.STATE_FILES||{})[key]||null)!==REC0)location.reload();});
+let rec=(window.STATE_FILES||{})[key]||{};
+if(Y){P.t="Previous Year Questions";const one=(rec.sets||[])[SET-1]||"";rec=typeof one==="string"?{pdf:one}:one;}
+/* Chapter wise (Notes): ch = chapter number */
+const CH=Y?0:(+qs.get("ch")||0);let CHN="";
+if(CH){const one=(rec.chapters||[])[CH-1]||{};CHN=one.name||`Chapter ${CH}`;rec=one;}
+const raw=rec[FMT[P.f][3]]||"";
+const [c1,c2,l]=FMT[P.f];
+$("fi").innerHTML=`<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c2}"/><stop offset="1" stop-color="${c1}"/></linearGradient></defs><path d="M4 0h18l12 12v24a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="url(#g)"/><path d="M22 0v8a4 4 0 0 0 4 4h8z" fill="#fff" opacity=".5"/><text x="15" y="30" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-weight="800" font-size="${l.length>1?9:15}">${l}</text>`;
+$("ttl").textContent=Y?`${P.sub} — ${Y} Paper · Set ${SET}`:CH?`${P.sub} — Ch ${CH}: ${CHN}`:`${P.sub} — ${P.t}`;
+$("sub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium${CH?" · "+P.t:""} · ${P.f==="PPT"?"PowerPoint":P.f}`;
+document.title=`${P.sub} ${P.t} Class ${P.c} (${P.f}) — PPT Store`;
+$("fmt").innerHTML=Object.keys(FMT).map(k=>{const q=new URLSearchParams({...P,f:k,...(Y?{y:Y,set:SET}:{}),...(CH?{ch:CH}:{})});return `<a href="view.html?${q}" aria-current="${k===P.f}" style="--fc:${FMT[k][0]}"><i>${FMT[k][2]}</i>${k}</a>`}).join("");
+const BACK=Y?"papers.html?"+new URLSearchParams({s:P.s,c:P.c,m:P.m,sub:P.sub,y:Y}):CH?"chapters.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m,sub:P.sub}):"state-board.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m});
+$("bk").href=BACK;
+$("cls").onclick=()=>{window.close();setTimeout(()=>{location.href=BACK},150);};
+/* Link ko dikhane layak banana */
+function viewUrl(u){
+ if(u.startsWith("drive:"))return P.f==="PDF"?{view:u,dl:u,pdf:true}:{view:u,dl:u,office:u};
+ const d=/drive\.google\.com\/file\/d\/([^/?#]+)/.exec(u);
+ if(d)return {view:`https://drive.google.com/file/d/${d[1]}/preview`,dl:`https://drive.google.com/uc?export=download&id=${d[1]}`};
+ const g=/docs\.google\.com\/(document|presentation|spreadsheets)\/d\/([^/?#]+)/.exec(u);
+ if(g)return {view:`https://docs.google.com/${g[1]}/d/${g[2]}/preview`,dl:u};
+ const abs=new URL(u,location.href).href;
+ if(P.f==="PDF")return {view:abs,dl:abs,pdf:true};
+ return {view:"https://view.officeapps.live.com/op/embed.aspx?src="+encodeURIComponent(abs),dl:abs,office:abs};
+}
+/* PDF ko page par hi dikhana (phone par bhi chalta hai) + zoom, magnifier, page number */
+function showPdf(u){
+ const st=$("stage");
+ st.innerHTML=`<div class="load" id="ld">File khul rahi hai…</div><div class="pdfw" id="pw"></div><div class="lens" id="lens"><canvas></canvas></div>
+ <div class="tb" id="tb" hidden>
+  <button type="button" id="pPrev" title="Pichhla page">‹</button>
+  <span class="pgi"><input id="pNum" inputmode="numeric" aria-label="Page number" value="1"> / <span id="pTot">1</span></span>
+  <button type="button" id="pNext" title="Agla page">›</button>
+  <span class="sep"></span>
+  <button type="button" id="zOut" title="Zoom out">−</button>
+  <button type="button" class="zv" id="zVal" title="100% par laayein">100%</button>
+  <button type="button" id="zIn" title="Zoom in">+</button>
+  <button type="button" class="hm" id="zFit" title="Screen ki chaudai jitna">↔</button>
+  <span class="sep"></span>
+  <button type="button" id="mag" title="Magnifier" aria-pressed="false">🔍</button>
+  <button type="button" class="hm" id="fs" title="Full screen">⛶</button>
+ </div>`;
+ const fail=()=>{st.innerHTML=u.startsWith("drive:")?NOPV:`<iframe src="${esc(u)}" title="PDF"></iframe>`;};
+ const go=()=>{const lib=window.pdfjsLib;if(!lib)return fail();
+  lib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  (u.startsWith("drive:")?getBlob(u).then(b=>b.arrayBuffer()).then(d=>({data:new Uint8Array(d)})):Promise.resolve(u))
+   .then(x=>lib.getDocument(x).promise).then(doc=>viewer(doc)).catch(fail);};
+ if(window.pdfjsLib)return go();
+ const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";sc.onload=go;sc.onerror=fail;document.head.appendChild(sc);
+}
+async function viewer(doc){
+ const pw=$("pw"),N=doc.numPages,dpr=Math.min(window.devicePixelRatio||1,2),pages=[],base=[];
+ for(let i=1;i<=N;i++){const pg=await doc.getPage(i);pages.push(pg);base.push(pg.getViewport({scale:1}));}
+ const fitScale=()=>Math.min(900,pw.clientWidth-24)/base[0].width;
+ let zoom=fitScale(),cur=1;const done=new Map();
+ const ZMIN=.25,ZMAX=5;
+ const els=base.map((vp,i)=>{const d=document.createElement("div");d.className="pg";d.dataset.i=i;d.innerHTML=`<canvas></canvas><span class="pn">${i+1} / ${N}</span>`;pw.appendChild(d);return d;});
+ async function draw(i){const key=i+"@"+zoom;if(done.get(i)===key)return;done.set(i,key);
+  const vp=pages[i].getViewport({scale:zoom*dpr}),c=els[i].querySelector("canvas");
+  const t=document.createElement("canvas");t.width=vp.width;t.height=vp.height;
+  await pages[i].render({canvasContext:t.getContext("2d"),viewport:vp}).promise;
+  if(done.get(i)!==key)return;c.width=t.width;c.height=t.height;c.getContext("2d").drawImage(t,0,0);}
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)draw(+e.target.dataset.i);}),{root:pw,rootMargin:"600px 0px"});
+ function layout(){els.forEach((d,i)=>{d.style.width=base[i].width*zoom+"px";d.style.height=base[i].height*zoom+"px";});
+  $("zVal").textContent=Math.round(zoom*100)+"%";$("zOut").disabled=zoom<=ZMIN;$("zIn").disabled=zoom>=ZMAX;
+  els.forEach((d,i)=>{const r=d.getBoundingClientRect(),R=pw.getBoundingClientRect();if(r.bottom>R.top-600&&r.top<R.bottom+600)draw(i);});}
+ function setZoom(z){const old=zoom,top=pw.scrollTop/(pw.scrollHeight||1);zoom=Math.max(ZMIN,Math.min(ZMAX,z));if(zoom===old)return;layout();pw.scrollTop=top*pw.scrollHeight;}
+ els.forEach(d=>io.observe(d));layout();
+ const ld=$("ld");if(ld)ld.remove();$("tb").hidden=false;$("pTot").textContent=N;
+ /* Page number */
+ function upd(){$("pNum").value=cur;$("pPrev").disabled=cur<=1;$("pNext").disabled=cur>=N;}
+ pw.addEventListener("scroll",()=>{const mid=pw.getBoundingClientRect().top+pw.clientHeight/3;let best=1;
+  els.forEach((d,i)=>{if(d.getBoundingClientRect().top<=mid)best=i+1;});if(best!==cur){cur=best;upd();}},{passive:true});
+ const goTo=n=>{n=Math.max(1,Math.min(N,n|0));els[n-1].scrollIntoView({behavior:"smooth",block:"start"});cur=n;upd();};
+ $("pPrev").onclick=()=>goTo(cur-1);$("pNext").onclick=()=>goTo(cur+1);
+ $("pNum").onchange=e=>goTo(+e.target.value||1);$("pNum").onfocus=e=>e.target.select();
+ /* Zoom */
+ $("zIn").onclick=()=>setZoom(zoom*1.2);$("zOut").onclick=()=>setZoom(zoom/1.2);
+ $("zVal").onclick=()=>setZoom(1);$("zFit").onclick=()=>setZoom(fitScale());
+ pw.addEventListener("wheel",e=>{if(e.ctrlKey){e.preventDefault();setZoom(zoom*(e.deltaY<0?1.1:1/1.1));}},{passive:false});
+ document.addEventListener("keydown",e=>{if(e.target.tagName==="INPUT")return;
+  if(e.key==="+"||e.key==="=")setZoom(zoom*1.2);else if(e.key==="-")setZoom(zoom/1.2);
+  else if(e.key==="ArrowRight"||e.key==="PageDown")goTo(cur+1);else if(e.key==="ArrowLeft"||e.key==="PageUp")goTo(cur-1);});
+ /* Magnifier */
+ const lens=$("lens"),lc=lens.querySelector("canvas"),MZ=2.5;let magOn=false;
+ $("mag").onclick=()=>{magOn=!magOn;$("mag").setAttribute("aria-pressed",magOn);pw.classList.toggle("mag",magOn);if(!magOn)lens.style.display="none";};
+ function moveLens(x,y){const el=document.elementFromPoint(x,y),pg=el&&el.closest(".pg");if(!magOn||!pg){lens.style.display="none";return;}
+  const c=pg.querySelector("canvas"),r=c.getBoundingClientRect(),W=lens.clientWidth||190;
+  lens.style.display="block";lens.style.left=(x-W/2)+"px";lens.style.top=(y-W/2)+"px";
+  lc.width=W*dpr;lc.height=W*dpr;lc.style.width=W+"px";lc.style.height=W+"px";
+  const k=c.width/r.width,sw=W/MZ*k,sx=(x-r.left)*k-sw/2,sy=(y-r.top)*k-sw/2,g=lc.getContext("2d");
+  g.fillStyle="#fff";g.fillRect(0,0,lc.width,lc.height);g.drawImage(c,sx,sy,sw,sw,0,0,lc.width,lc.height);}
+ pw.addEventListener("mousemove",e=>moveLens(e.clientX,e.clientY));
+ pw.addEventListener("mouseleave",()=>{lens.style.display="none";});
+ pw.addEventListener("touchmove",e=>{if(!magOn)return;e.preventDefault();const t=e.touches[0];moveLens(t.clientX,t.clientY-90);},{passive:false});
+ pw.addEventListener("touchend",()=>{lens.style.display="none";});
+ /* Full screen */
+ $("fs").onclick=()=>{const d=document.documentElement;document.fullscreenElement?document.exitFullscreen():(d.requestFullscreen&&d.requestFullscreen());};
+ window.addEventListener("resize",()=>layout());
+ upd();
+}
+/* Word / PPT ko page par hi dikhana (phone par bhi) — na chale to Office viewer */
+/* File ka data lana — data: link ko seedha decode, baaki fetch */
+const NOPV=`<div class="empty"><div class="box"><div class="big">📄</div><h2>Yahan preview nahi khul paya</h2><p>Page refresh karein, ya file download karke dekhein.</p></div></div>`;
+async function getBlob(u){
+ if(u.startsWith("drive:")){if(!window.SB_BLOB)throw 0;return window.SB_BLOB(u,p=>{const l=document.querySelector(".load");if(l)l.textContent=`File khul rahi hai… ${Math.round(p*100)}%`;});}
+ if(u.startsWith("data:")){const i=u.indexOf(","),mt=u.slice(5,i).split(";")[0],b=atob(u.slice(i+1)),a=new Uint8Array(b.length);for(let k=0;k<b.length;k++)a[k]=b.charCodeAt(k);return new Blob([a],{type:mt});}
+ const r=await fetch(u);if(!r.ok)throw 0;return r.blob();
+}
+function addJs1(u){return new Promise((ok,no)=>{const x=document.createElement("script");x.src=u;x.onload=ok;x.onerror=no;document.head.appendChild(x);});}
+/* CDN na chale to apni copy (js/vendor/) se */
+function addJs(u){return addJs1(u).catch(()=>addJs1("js/vendor/"+u.split("/").pop()));}
+/* ---- PPT: pehli 10 slide free, baaki blur + lock + Buy ---- */
+const FREE=10;let LOCKED=false;
+function product(){const id=+rec.product||0;if(!id)return null;let list=[];try{list=JSON.parse(localStorage.getItem("la_ppts"))||[];}catch(_){}
+ let pp=[];try{pp=JSON.parse(localStorage.getItem("la_pprice"))||[];}catch(_){}
+ return list.find(p=>p.id===id)||pp.find(p=>p.id===id)||(window.LA_CATALOG||[]).find(p=>p.id===id)||{id};}
+/* Admin wali PPT ka daam (shop page na khola ho tab bhi) */
+function loadPrice(){const p=product(),U=String((window.LA_CONFIG||{}).orderUrl||"").trim();if(!p||p.price||!U)return;
+ fetch(U+(U.includes("?")?"&":"?")+"action=ppts").then(r=>r.json()).then(j=>{if(!j.ok||!j.products)return;
+  try{localStorage.setItem("la_pprice",JSON.stringify(j.products.map(x=>({id:x.id,price:x.price,mrp:x.mrp,title:x.title}))));}catch(_){}
+  if(product().price)document.querySelectorAll(".bb").forEach(b=>b.innerHTML=buyBtns());}).catch(()=>{});}
+function inCart(id){try{return (JSON.parse(localStorage.getItem("la_cart"))||[]).includes(id);}catch(_){return false;}}
+function vtoast(t){let el=$("vt");if(!el){el=document.createElement("div");el.id="vt";el.className="vtoast";document.body.appendChild(el);}el.textContent=t;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),1800);}
+function buyBtns(){const p=product();
+ if(!p)return `<a class="bn" href="index.html#custom">🛒 Poori PPT kharidein</a>`;
+ const pr=p.price?` ₹${p.price}${p.mrp>p.price?` <s>₹${p.mrp}</s>`:""}`:"";
+ return `<button type="button" class="ac${inCart(p.id)?" on":""}" data-act="cart">${inCart(p.id)?"✓ Cart me hai":"🛒 Add to Cart"}</button><a class="bn" href="ready-ppts.html?pay=${p.id}">⚡ Buy Now${pr}</a>`;}
+document.addEventListener("click",e=>{const b=e.target.closest('[data-act="cart"]');if(!b)return;const p=product();if(!p)return;
+ let c=[];try{c=JSON.parse(localStorage.getItem("la_cart"))||[];}catch(_){}
+ if(c.includes(p.id)){location.href="ready-ppts.html?cart=1";return;}
+ c.push(p.id);try{localStorage.setItem("la_cart",JSON.stringify(c));}catch(_){}
+ document.querySelectorAll('[data-act="cart"]').forEach(x=>{x.classList.add("on");x.textContent="✓ Cart me hai";});vtoast("✓ Cart me add ho gaya");});
+function lockSlides(oi){
+ const ws=[...oi.querySelectorAll(".pptx-preview-slide-wrapper")],N=ws.length;
+ ws.forEach((w,i)=>{const n=document.createElement("span");n.className="sn";n.textContent=`${i+1} / ${N}`;w.appendChild(n);});
+ if(N<=FREE)return;
+ LOCKED=true;
+ ws.slice(FREE).forEach((w,i)=>{w.classList.add("lk");w.setAttribute("aria-hidden","true");
+  const o=document.createElement("div");o.className="lko";
+  o.innerHTML=`<span class="lc"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>`+(i===0?`<b>Aage ki ${N-FREE} slide lock hain</b><small>Poori PPT dekhne aur download ke liye kharidein</small><div class="bb">${buyBtns()}</div>`:`<small>Slide ${FREE+i+1} · Locked</small>`);
+  w.appendChild(o);});
+ const bar=document.createElement("div");bar.className="buybar";
+ bar.innerHTML=`<div class="bt"><b>${FREE} slide free · ${N-FREE} locked 🔒</b>Poori ${N} slide ki PPT paayein</div><div class="bb">${buyBtns()}</div>`;
+ document.body.appendChild(bar);$("ow").style.paddingBottom="90px";loadPrice();
+ const d=$("dl");d.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span> Buy karke Download</span>`;
+}
+async function showOffice(v){
+ const st=$("stage"),J="https://cdn.jsdelivr.net/npm/";
+ st.innerHTML=`<div class="load">File khul rahi hai…</div><div class="ofw" id="ow"><div class="ofin" id="oi"></div></div>`;
+ const fail=()=>{if(window.self!==window.top||/^(data|drive):/.test(v.office)){st.innerHTML=NOPV;return;}
+  st.innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;};
+ try{
+  const buf=await (await getBlob(v.office)).arrayBuffer(),oi=$("oi");
+  if(P.f==="Word"){
+   if(!window.JSZip)await addJs(J+"jszip@3.10.1/dist/jszip.min.js");
+   if(!window.docx)await addJs(J+"docx-preview@0.3.5/dist/docx-preview.min.js");
+   await docx.renderAsync(buf,oi,null,{className:"dx",inWrapper:true,ignoreLastRenderedPageBreak:true});
+   /* Phone par page ko screen ki chaudai me fit karna */
+   const fit=()=>{const w=oi.querySelector(".dx-wrapper"),sec=oi.querySelector("section.dx");if(!w||!sec)return;w.style.zoom=1;const z=Math.min(1,($("ow").clientWidth-24)/sec.offsetWidth);w.style.zoom=z;};
+   fit();window.addEventListener("resize",fit);
+  }else{
+   if(!window.pptxPreview)await addJs(J+"pptx-preview@1.0.7/dist/pptx-preview.umd.js");
+   const w=Math.min(960,$("ow").clientWidth-24);
+   await pptxPreview.init(oi,{width:w,height:Math.round(w*9/16),mode:"list"}).preview(buf);
+   lockSlides(oi);
+  }
+  st.querySelector(".load").remove();
+ }catch(_){fail();}
+}
+if(raw){
+ const v=viewUrl(raw);
+ if(v.pdf){showPdf(v.view);}
+ else if(v.office)showOffice(v);
+ else $("stage").innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;
+ const a=$("dl"),ext={PDF:"pdf",Word:"docx",PPT:"pptx"}[P.f]||"pdf",nm=(Y?`${P.s} Class ${P.c} ${P.sub} ${Y} Paper Set ${SET} ${P.m}`:CH?`${P.s} Class ${P.c} ${P.sub} ${P.t} Ch ${CH} ${CHN} ${P.m}`:`${P.s} ${P.t} Class ${P.c} ${P.sub} ${P.m}`).replace(/[^\w\- ]+/g,"").trim()+"."+ext;
+ a.href=v.dl;a.hidden=false;
+ if(!v.dl.startsWith("drive:")&&new URL(v.dl).origin===location.origin){a.removeAttribute("target");a.download=nm;}
+ /* File ko blob bana ke seedha save — preview frame me bhi chalta hai */
+ a.onclick=async e=>{
+  if(LOCKED&&P.f==="PPT"){e.preventDefault();const p=product();location.href=p?`ready-ppts.html?pay=${p.id}`:"index.html#custom";return;}
+  e.preventDefault();const t=a.innerHTML;a.innerHTML="⏳<span> Download…</span>";
+  try{const bl=await getBlob(v.dl);
+   if(window.self!==window.top&&window.claude&&claude.use){const dw=await claude.use("downloads").catch(()=>null);if(dw){await dw.save({filename:nm,data:bl}).catch(()=>{});return;}}
+   const b=URL.createObjectURL(bl);
+   const x=document.createElement("a");x.href=b;x.download=nm;document.body.appendChild(x);x.click();x.remove();setTimeout(()=>URL.revokeObjectURL(b),4e4);}
+  catch(_){if(v.dl.startsWith("drive:"))vtoast("Download nahi hua — dobara try karein");else if(window.self===window.top)window.open(v.dl,"_blank","noopener");else location.href=v.dl;}
+  finally{a.innerHTML=t;}
+ };
+}else{
+ const shop="ready-ppts.html?q="+encodeURIComponent(`${P.s} ${P.t} Class ${P.c} ${P.sub} ${P.m} ${P.f}`);
+ $("stage").innerHTML=`<div class="empty"><div class="box"><div class="big">📂</div><h2>Yeh file jaldi aa rahi hai</h2><p>${esc(P.sub)} (${esc(P.t)}, Class ${esc(P.c)}, ${esc(P.m)}) ki ${esc(P.f)} file abhi upload nahi hui hai.</p><div class="acts"><a class="btn pri" href="index.html#custom">Custom banwayein →</a><a class="btn" href="${shop}">Shop me dhoondhein</a></div></div></div>`;
+}
+})();
+</script>
+</body>
+</html>
