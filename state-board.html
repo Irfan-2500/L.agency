@@ -31,18 +31,18 @@ button,select{cursor:pointer}
 .back:hover{color:var(--text);border-color:var(--c)}
 
 /* Hero banner */
-.hero{position:relative;overflow:hidden;border-radius:22px;padding:22px 24px;color:#fff;
+.hero{position:relative;overflow:hidden;border-radius:18px;padding:12px 20px;color:#fff;
  background:linear-gradient(120deg,#f97316 0%,#e8590c 35%,#8b2cff 100%);box-shadow:0 24px 50px -24px rgba(232,89,12,.6)}
 .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.12)}
 .hero::before{width:220px;height:220px;right:-60px;top:-90px}
 .hero::after{width:140px;height:140px;right:120px;bottom:-80px;background:rgba(255,255,255,.08)}
 .crumb{position:relative;font-size:.76rem;opacity:.85;display:flex;gap:6px;flex-wrap:wrap}
 .crumb a:hover{text-decoration:underline}
-.hrow{position:relative;display:flex;align-items:center;gap:14px;margin-top:10px}
-.hic{width:54px;height:54px;flex:none;display:grid;place-items:center;font-size:1.7rem;border-radius:16px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px)}
-h1{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;line-height:1.15}
-.stsel{position:relative;margin-left:auto;display:flex;align-items:center;gap:6px;height:38px;padding:0 6px 0 12px;border-radius:12px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);font-size:.78rem;font-weight:700}
-.stsel select{height:36px;font-weight:800;outline:0;max-width:150px}
+.hrow{position:relative;display:flex;align-items:center;gap:12px;margin-top:6px}
+.hic{width:40px;height:40px;flex:none;display:grid;place-items:center;font-size:1.25rem;border-radius:12px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px)}
+h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
+.stsel{position:relative;margin-left:auto;display:flex;align-items:center;gap:6px;height:34px;padding:0 6px 0 12px;border-radius:12px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);font-size:.78rem;font-weight:700}
+.stsel select{height:32px;font-weight:800;outline:0;max-width:150px}
 .stsel select option{color:#16131f;background:#fff}
 .badges{position:relative;display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
 .bd{padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.2);font-size:.74rem;font-weight:700}
@@ -96,8 +96,8 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;line-height:1.15}
 .help a{flex:none;padding:10px 16px;border-radius:12px;background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;font-weight:800;font-size:.84rem;box-shadow:0 10px 20px -12px #c2410c}
 
 @media (max-width:640px){
- .hero{padding:18px 16px;border-radius:18px}
- h1{font-size:1.3rem}.hic{width:46px;height:46px;font-size:1.4rem}
+ .hero{padding:12px 14px;border-radius:16px}
+ h1{font-size:1.2rem}.hic{width:36px;height:36px;font-size:1.1rem}
  .hrow{flex-wrap:wrap}.stsel{margin-left:0;width:100%}.stsel select{flex:1;max-width:none}
  .row2{flex-wrap:wrap}.cls{flex-basis:100%}.q{flex:1;width:auto}
  .lh .legend{display:none}
@@ -134,7 +134,6 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;line-height:1.15}
       <div><h1 id="ttl">State Board</h1></div>
       <label class="stsel">State <select id="stSel" aria-label="State badlein"></select></label>
     </div>
-    <div class="badges" id="bdg"></div>
   </section>
 
   <div class="flt">
@@ -180,7 +179,6 @@ function render(){
  document.querySelectorAll("#med button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===s.m));
  $("stSel").value=s.st;$("crSt").textContent=s.st;
  $("ttl").textContent=s.st+" Board";
- $("bdg").innerHTML=[s.t,"Class "+s.c,s.m+" Medium","Session "+YEAR].map(x=>`<span class="bd">${esc(x)}</span>`).join("");
  const all=SUBJ(s.c),k=s.q.trim().toLowerCase(),subs=all.filter(x=>!k||x.toLowerCase().includes(k));
  $("cnt").innerHTML=`<b>${subs.length}</b> subjects · Class ${s.c}`;
  $("list").innerHTML=subs.length?subs.map((x,i)=>{const [e,c]=SI[x]||["📘","#f97316"];
