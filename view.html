@@ -194,7 +194,9 @@ if(raw){
  /* File ko blob bana ke seedha save — preview frame me bhi chalta hai */
  a.onclick=async e=>{
   e.preventDefault();const t=a.innerHTML;a.innerHTML="⏳<span> Download…</span>";
-  try{const r=await fetch(v.dl);if(!r.ok)throw 0;const b=URL.createObjectURL(await r.blob());
+  try{const r=await fetch(v.dl);if(!r.ok)throw 0;const bl=await r.blob();
+   if(window.self!==window.top&&window.claude&&claude.use){const dw=await claude.use("downloads").catch(()=>null);if(dw){await dw.save({filename:nm,data:bl}).catch(()=>{});return;}}
+   const b=URL.createObjectURL(bl);
    const x=document.createElement("a");x.href=b;x.download=nm;document.body.appendChild(x);x.click();x.remove();setTimeout(()=>URL.revokeObjectURL(b),4e4);}
   catch(_){if(window.self===window.top)window.open(v.dl,"_blank","noopener");else location.href=v.dl;}
   finally{a.innerHTML=t;}
