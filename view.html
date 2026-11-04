@@ -188,7 +188,17 @@ if(raw){
  const v=viewUrl(raw);
  if(v.pdf){showPdf(v.view);}
  else $("stage").innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;
- $("dl").href=v.dl;$("dl").hidden=false;
+ const a=$("dl"),ext={PDF:"pdf",Word:"docx",PPT:"pptx"}[P.f]||"pdf",nm=`${P.s} ${P.t} Class ${P.c} ${P.sub} ${P.m}`.replace(/[^\w\- ]+/g,"").trim()+"."+ext;
+ a.href=v.dl;a.hidden=false;
+ if(new URL(v.dl).origin===location.origin){a.removeAttribute("target");a.download=nm;}
+ /* File ko blob bana ke seedha save — preview frame me bhi chalta hai */
+ a.onclick=async e=>{
+  e.preventDefault();const t=a.innerHTML;a.innerHTML="⏳<span> Download…</span>";
+  try{const r=await fetch(v.dl);if(!r.ok)throw 0;const b=URL.createObjectURL(await r.blob());
+   const x=document.createElement("a");x.href=b;x.download=nm;document.body.appendChild(x);x.click();x.remove();setTimeout(()=>URL.revokeObjectURL(b),4e4);}
+  catch(_){if(window.self===window.top)window.open(v.dl,"_blank","noopener");else location.href=v.dl;}
+  finally{a.innerHTML=t;}
+ };
 }else{
  const shop="ready-ppts.html?q="+encodeURIComponent(`${P.s} ${P.t} Class ${P.c} ${P.sub} ${P.m} ${P.f}`);
  $("stage").innerHTML=`<div class="empty"><div class="box"><div class="big">📂</div><h2>Yeh file jaldi aa rahi hai</h2><p>${esc(P.sub)} (${esc(P.t)}, Class ${esc(P.c)}, ${esc(P.m)}) ki ${esc(P.f)} file abhi upload nahi hui hai.</p><div class="acts"><a class="btn pri" href="index.html#custom">Custom banwayein →</a><a class="btn" href="${shop}">Shop me dhoondhein</a></div></div></div>`;
