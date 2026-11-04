@@ -865,14 +865,16 @@ html.light header{background:rgba(255,255,255,.82)}
 .cn-list a:hover{background:color-mix(in srgb,var(--c) 13%,transparent);transform:translateX(3px)}
 .cn-list a:hover::before{opacity:1;transform:scale(1.4)}
 .cn-states .cn-list{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;align-items:start;max-height:min(64vh,520px)}
-.cn-st{border:1px solid var(--line2);border-radius:12px;padding:5px;background:color-mix(in srgb,var(--c) 5%,var(--card));transition:.2s}
+.cn-st{border:1px solid var(--line2);border-radius:12px;padding:5px;background:var(--card);transition:.2s}
+.cn-st:hover{border-color:color-mix(in srgb,var(--c) 45%,transparent)}
 .cn-st.on{border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 8px 20px -12px var(--c)}
-.cn-sth{width:100%;display:flex;align-items:center;gap:8px;padding:8px 10px;border:0;border-radius:9px;cursor:pointer;font:inherit;font-weight:700;font-size:.9rem;color:var(--text);background:color-mix(in srgb,var(--c) 14%,transparent);text-align:left}
+.cn-sth{width:100%;display:flex;align-items:center;gap:8px;padding:8px 10px;border:0;border-radius:9px;cursor:pointer;font:inherit;font-weight:700;font-size:.9rem;color:var(--text);background:transparent;text-align:left;transition:background .18s}
 .cn-sth::before{content:"";width:8px;height:8px;flex:none;border-radius:50%;background:var(--c)}
 .cn-sth span{flex:1}
-.cn-ar{width:22px;height:22px;flex:none;padding:4px;border-radius:7px;background:var(--c);color:#fff;stroke:#fff;transition:transform .25s}
+.cn-ar{width:22px;height:22px;flex:none;padding:4px;border-radius:7px;background:transparent;color:var(--c);stroke:var(--c);transition:transform .25s,background .18s}
 .cn-st.on .cn-ar{transform:rotate(180deg)}
-.cn-sth:hover{background:color-mix(in srgb,var(--c) 22%,transparent)}
+.cn-sth:hover,.cn-st.on .cn-sth{background:color-mix(in srgb,var(--c) 16%,transparent)}
+.cn-sth:hover .cn-ar,.cn-st.on .cn-ar{background:var(--c);color:#fff;stroke:#fff}
 .cn-sub{display:none}.cn-st.on .cn-sub{display:block;animation:cnIn .2s ease-out;padding-top:2px}
 .cn-list .cn-st a{padding:6px 8px;font-size:.82rem;color:var(--muted)}
 .cn-list .cn-st a:hover{color:var(--text)}
