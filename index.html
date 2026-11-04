@@ -840,6 +840,12 @@ html.light header{background:rgba(255,255,255,.82)}
 .catnav{position:relative;border-top:1px solid var(--line)}
 .cn-row{display:flex;gap:6px;justify-content:safe center;overflow-x:auto;scrollbar-width:none;padding:8px 0;-webkit-overflow-scrolling:touch}
 .cn-row::-webkit-scrollbar{display:none}
+.cn-row{touch-action:pan-x pan-y;overscroll-behavior-x:contain;scroll-behavior:smooth}
+.cn-ar2{position:absolute;top:1px;bottom:0;z-index:3;width:44px;border:0;padding:0;display:flex;align-items:center;cursor:pointer;color:var(--text);opacity:1;transition:opacity .2s}
+.cn-ar2 span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:1px solid var(--line2);box-shadow:0 4px 12px -4px rgba(0,0,0,.35);font-size:1.1rem;font-weight:800;line-height:1}
+.cn-ar2.l{left:0;justify-content:flex-start;background:linear-gradient(90deg,var(--bg) 55%,transparent)}
+.cn-ar2.r{right:0;justify-content:flex-end;background:linear-gradient(270deg,var(--bg) 55%,transparent)}
+.cn-ar2[hidden]{display:none}
 .cn-b{flex:none;display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:99px;border:1px solid var(--line2);background:var(--card);color:var(--text);font-family:inherit;font-weight:600;font-size:.8rem;line-height:1.2;text-decoration:none;cursor:pointer;transition:.18s;white-space:nowrap}
 .cn-b .e{font-size:.9rem}
 .cn-b .cv{width:10px;height:10px;transition:transform .2s;opacity:.6}
@@ -3410,6 +3416,13 @@ const hover={get matches(){return innerWidth>720}};
 row.addEventListener("click",ev=>{const b=ev.target.closest("button.cn-b");if(!b)return;const i=+b.dataset.i;if(cur===i&&Date.now()-opT<400)return;cur===i?close():open(i);});
 row.addEventListener("pointerover",ev=>{if(ev.pointerType!=="mouse"||!hover.matches)return;const b=ev.target.closest("button.cn-b");clearTimeout(tm);if(b)tm=setTimeout(()=>open(+b.dataset.i),120);});
 const nav=document.getElementById("catNav");
+/* Phone par category line: < > arrow se bhi aage-peeche */
+const arL=document.createElement("button"),arR=document.createElement("button");
+arL.type=arR.type="button";arL.className="cn-ar2 l";arR.className="cn-ar2 r";arL.setAttribute("aria-label","Pichhli categories");arR.setAttribute("aria-label","Aur categories");
+arL.innerHTML="<span>‹</span>";arR.innerHTML="<span>›</span>";nav.appendChild(arL);nav.appendChild(arR);
+const arUp=()=>{const m=row.scrollWidth-row.clientWidth;arL.hidden=row.scrollLeft<=4;arR.hidden=m<=4||row.scrollLeft>=m-4;};
+arL.onclick=()=>row.scrollBy({left:-row.clientWidth*.7,behavior:"smooth"});arR.onclick=()=>row.scrollBy({left:row.clientWidth*.7,behavior:"smooth"});
+row.addEventListener("scroll",arUp,{passive:true});addEventListener("resize",arUp);arUp();
 nav.addEventListener("pointerleave",ev=>{if(ev.pointerType!=="mouse"||!hover.matches)return;clearTimeout(tm);tc=setTimeout(()=>{if(!pan.contains(document.activeElement))close()},250);});
 nav.addEventListener("pointerenter",()=>clearTimeout(tc));
 document.body.appendChild(dim);dim.onclick=close;
