@@ -3046,7 +3046,9 @@ function swipeCard(track){
   dots.forEach((d,j) => d.classList.toggle("on", j === k % n));
   if (k === n) setTimeout(() => { track.style.transition = "none"; track.style.transform = "translateX(0)"; track.dataset.k = 0; }, 750);
 }
-if (!reduceMotion) setInterval(() => {
+/* Cards apne aap nahi chalte (AUTO_MOVE = false); user khud khiska sakta hai */
+const AUTO_MOVE = false;
+if (AUTO_MOVE && !reduceMotion) setInterval(() => {
   if (document.hidden || $("#themeModal").classList.contains("on")) return;
   swipeTick++;
   document.querySelectorAll("#thGrid .th-track").forEach((tr,i) => {
@@ -3140,7 +3142,7 @@ addEventListener("popstate", () => { if (history.state && history.state.thPage) 
   let T = 0;
   (function tick(t){
     const dt = T ? Math.min(t - T, 100) : 0; T = t;
-    if (!document.hidden && !reduceMotion) document.querySelectorAll("#thGrid .th-row, #rdRow").forEach(r => {
+    if (AUTO_MOVE && !document.hidden && !reduceMotion) document.querySelectorAll("#thGrid .th-row, #rdRow").forEach(r => {
       const o = st(r); if (Date.now() < o.pause || r.matches(":hover") || r.scrollWidth <= r.clientWidth + 2) return;
       const b = r.getBoundingClientRect(); if (b.bottom < 0 || b.top > innerHeight) return;
       if (Math.abs(o.x - r.scrollLeft) > 2) o.x = r.scrollLeft;
