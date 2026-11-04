@@ -96,10 +96,13 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .vtoast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);opacity:0;z-index:30;padding:10px 16px;border-radius:12px;background:#16a34a;color:#fff;font-weight:800;font-size:.85rem;transition:.25s;pointer-events:none}
 .vtoast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 @media (max-width:640px){.lko .bb,.lko small{display:none}.lko b{font-size:.85rem}.lko .lc{width:48px;height:48px}.lko .lc svg{width:22px;height:22px}.buybar{left:12px;right:12px;transform:none;bottom:10px;flex-direction:column;align-items:stretch;gap:8px;padding:10px}.buybar .bt{text-align:center}.buybar .bb{flex-wrap:nowrap}.buybar .bb>*{flex:1;justify-content:center;padding:0 8px}}
+.bk{flex:none;width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:var(--card2);border:1px solid var(--line2);transition:background .15s,transform .15s}
+.bk:hover{background:var(--line2);transform:translateX(-2px)}
+.bk svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
 .load{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:.85rem;pointer-events:none}
 @media (max-width:640px){
  .bar{flex-wrap:wrap;gap:8px;padding:8px 12px}
- .tt{flex-basis:calc(100% - 42px)}
+ .tt{flex:1 1 calc(100% - 100px)}.bk{width:38px;height:38px}
  .fmt{flex:1}.fmt a{flex:1;justify-content:center;padding:0 6px;height:40px;font-size:.88rem}
  .btn{padding:0 10px}.btn span{display:none}.dlb{width:44px;padding:0;justify-content:center}
 }
@@ -107,6 +110,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 </head>
 <body>
 <header class="bar">
+  <a class="bk" id="bk" href="state-board.html" title="Wapas" aria-label="Wapas jaayein"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></a>
   <svg class="fi" id="fi" viewBox="0 0 34 40"></svg>
   <div class="tt"><b id="ttl">File</b><small id="sub"></small></div>
   <nav class="fmt" id="fmt"></nav>
@@ -136,7 +140,9 @@ $("ttl").textContent=Y?`${P.sub} — ${Y} Paper · Set ${SET}`:`${P.sub} — ${P
 $("sub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium · ${P.f==="PPT"?"PowerPoint":P.f}`;
 document.title=`${P.sub} ${P.t} Class ${P.c} (${P.f}) — PPT Store`;
 $("fmt").innerHTML=Object.keys(FMT).map(k=>{const q=new URLSearchParams({...P,f:k,...(Y?{y:Y,set:SET}:{})});return `<a href="view.html?${q}" aria-current="${k===P.f}" style="--fc:${FMT[k][0]}"><i>${FMT[k][2]}</i>${k}</a>`}).join("");
-$("cls").onclick=()=>{window.close();setTimeout(()=>{location.href=Y?"papers.html?"+new URLSearchParams({s:P.s,c:P.c,m:P.m,sub:P.sub,y:Y}):"state-board.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m})},150);};
+const BACK=Y?"papers.html?"+new URLSearchParams({s:P.s,c:P.c,m:P.m,sub:P.sub,y:Y}):"state-board.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m});
+$("bk").href=BACK;
+$("cls").onclick=()=>{window.close();setTimeout(()=>{location.href=BACK},150);};
 /* Link ko dikhane layak banana */
 function viewUrl(u){
  const d=/drive\.google\.com\/file\/d\/([^/?#]+)/.exec(u);
