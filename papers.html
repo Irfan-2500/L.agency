@@ -64,8 +64,10 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
 .set .tx{flex:1;min-width:0}
 .set b{display:block;font-size:1rem;font-weight:800;white-space:nowrap}
 .set small{color:var(--muted);font-size:.74rem}
-.vw{flex:none;display:flex;align-items:center;gap:6px;height:38px;padding:0 16px;border-radius:11px;font-size:.84rem;font-weight:800;background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;box-shadow:0 8px 16px -10px #c2410c;transition:filter .15s}
-.set:hover .vw{filter:brightness(1.08)}
+.vw{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;box-shadow:0 8px 16px -10px #c2410c;transition:filter .15s}
+.set:hover .vw{filter:brightness(1.08);transform:scale(1.06)}
+.vw{transition:transform .15s,filter .15s}
+.vw svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .none{padding:34px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line2);border-radius:16px}
 .none .big{font-size:2rem}.none b{display:block;color:var(--text);font-size:1rem;margin:4px 0}
 .none a{display:inline-block;margin-top:12px;padding:9px 14px;border-radius:11px;background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;font-weight:800;font-size:.82rem}
@@ -119,7 +121,7 @@ function render(){
  $("yb").querySelectorAll("a").forEach(a=>a.setAttribute("aria-current",+a.dataset.y===y));
  const rec=(window.STATE_FILES||{})[[P.s,T,P.c,P.m,P.sub,y].join("|")]||{};sets=(rec.sets||[]).filter(Boolean);
  $("cnt").innerHTML=sets.length?`<b>${sets.length}</b> set · ${y}`:"";
- $("sets").innerHTML=sets.length?sets.map((u,i)=>`<a class="set"${NEWTAB} href="view.html?${new URLSearchParams({...P,t:T,f:"PDF",y,set:i+1})}"><div class="tx"><b>Set ${i+1}</b><small>${y} · ${["pdf","word","ppt"].filter(k=>typeof u==="string"?k==="pdf":u[k]).map(k=>({pdf:"PDF",word:"Word",ppt:"PPT"})[k]).join(" · ")}</small></div><span class="vw">👁 Dekhein</span></a>`).join("")
+ $("sets").innerHTML=sets.length?sets.map((u,i)=>`<a class="set"${NEWTAB} href="view.html?${new URLSearchParams({...P,t:T,f:"PDF",y,set:i+1})}"><div class="tx"><b>Set ${i+1}</b><small>${y} · ${["pdf","word","ppt"].filter(k=>typeof u==="string"?k==="pdf":u[k]).map(k=>({pdf:"PDF",word:"Word",ppt:"PPT"})[k]).join(" · ")}</small></div><span class="vw" title="Dekhein" aria-label="Dekhein"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.2"/></svg></span></a>`).join("")
   :`<div class="none" style="grid-column:1/-1"><div class="big">📂</div><b>${y} ke paper jaldi aa rahe hain</b>Is saal ke ${esc(P.sub)} ke question paper abhi upload nahi hue hain.<br><a href="index.html#custom">Request karein →</a></div>`;
  try{history.replaceState(null,"","?"+new URLSearchParams({...P,y}));}catch(_){}
 }

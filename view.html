@@ -33,6 +33,11 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .fmt a i{width:22px;height:26px;flex:none;display:grid;place-items:center;border-radius:4px 8px 4px 4px;background:var(--fc);color:#fff;font-style:normal;font-size:.55rem;font-weight:900;box-shadow:0 3px 6px -2px var(--fc)}
 .fmt a[aria-current="true"]{background:var(--fc);color:#fff;box-shadow:0 10px 20px -10px var(--fc),inset 0 0 0 1px rgba(255,255,255,.25)}
 .fmt a[aria-current="true"] i{background:#fff;color:var(--fc);box-shadow:none}
+.dlb{height:44px;padding:0 20px;border:0;border-radius:12px;font-size:.92rem;color:#fff;background:linear-gradient(135deg,#22c55e,#15803d);box-shadow:0 10px 22px -10px #16a34a,inset 0 0 0 1px rgba(255,255,255,.2);animation:dlp 2.4s ease-in-out infinite;transition:transform .15s,filter .15s}
+.dlb:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.dlb svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+@keyframes dlp{0%,100%{box-shadow:0 10px 22px -10px #16a34a,0 0 0 0 rgba(34,197,94,.45)}50%{box-shadow:0 10px 22px -10px #16a34a,0 0 0 6px rgba(34,197,94,0)}}
+@media (prefers-reduced-motion:reduce){.dlb{animation:none}}
 .btn{height:36px;padding:0 14px;display:inline-flex;align-items:center;gap:6px;border-radius:10px;font-weight:800;font-size:.8rem;border:1px solid var(--line2)}
 .btn.pri{background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;border:0}
 .btn[hidden]{display:none}
@@ -75,7 +80,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
  .bar{flex-wrap:wrap;gap:8px;padding:8px 12px}
  .tt{flex-basis:calc(100% - 42px)}
  .fmt{flex:1}.fmt a{flex:1;justify-content:center;padding:0 6px;height:40px;font-size:.88rem}
- .btn{padding:0 10px}.btn span{display:none}
+ .btn{padding:0 10px}.btn span{display:none}.dlb{width:44px;padding:0;justify-content:center}
 }
 </style>
 </head>
@@ -84,7 +89,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   <svg class="fi" id="fi" viewBox="0 0 34 40"></svg>
   <div class="tt"><b id="ttl">File</b><small id="sub"></small></div>
   <nav class="fmt" id="fmt"></nav>
-  <a class="btn" id="dl" target="_blank" rel="noopener" hidden>⬇<span> Download</span></a>
+  <a class="btn dlb" id="dl" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16"/></svg><span> Download</span></a>
   <button class="xbtn" id="cls" type="button" title="Band karein" aria-label="Band karein"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
 </header>
 <main class="stage" id="stage"></main>
