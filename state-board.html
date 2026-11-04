@@ -163,6 +163,7 @@ const SUBJ=c=>c<=5?["English","Hindi","Maths","EVS","Computer","General Knowledg
  :c<=8?["English","Hindi","Sanskrit","Maths","Science","Social Science","Computer"]
  :c<=10?["English","Hindi","Sanskrit","Maths","Science","Social Science"]
  :["English","Hindi","Physics","Chemistry","Maths","Biology","Accountancy","Business Studies","Economics","History","Political Science","Geography","Computer Science"];
+const NEWTAB=window.self===window.top?' target="_blank" rel="noopener"':"";
 const FMT=[["PDF","gP","PDF"],["Word","gW","W"],["PPT","gT","P"]];
 const qs=new URLSearchParams(location.search);
 const s={st:STATES.includes(qs.get("s"))?qs.get("s"):"Bihar",t:TYPES.some(x=>x[0]===qs.get("t"))?qs.get("t"):TYPES[0][0],
@@ -184,7 +185,7 @@ function render(){
  const all=SUBJ(s.c),k=s.q.trim().toLowerCase(),subs=all.filter(x=>!k||x.toLowerCase().includes(k));
  $("cnt").innerHTML=`<b>${subs.length}</b> subjects · Class ${s.c}`;
  $("list").innerHTML=subs.length?subs.map((x,i)=>{const [e,c]=SI[x]||["📘","#f97316"];
-  return `<div class="it" style="--sc:${c};animation-delay:${i*35}ms"><span class="si">${e}</span><div class="nm"><b>${esc(x)} <span>- ${YEAR}</span></b><small>${esc(s.t)} · Class ${s.c} · ${s.m} Medium</small></div><div class="fs">${FMT.map(f=>`<a class="f" target="_blank" rel="noopener" href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m,sub:x,f:f[0]})}" title="${esc(x)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`}).join("")
+  return `<div class="it" style="--sc:${c};animation-delay:${i*35}ms"><span class="si">${e}</span><div class="nm"><b>${esc(x)} <span>- ${YEAR}</span></b><small>${esc(s.t)} · Class ${s.c} · ${s.m} Medium</small></div><div class="fs">${FMT.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m,sub:x,f:f[0]})}" title="${esc(x)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`}).join("")
   :`<div class="none">"${esc(s.q)}" naam ka subject nahi mila.</div>`;
  document.title=`${s.st} Board ${s.t} Class ${s.c} — PPT Store`;
  history.replaceState(null,"","?"+new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m}));

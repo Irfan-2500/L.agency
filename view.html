@@ -42,6 +42,8 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .empty h2{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;margin:8px 0 6px}
 .empty p{color:var(--muted);font-size:.9rem;margin-bottom:16px}
 .empty .acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.pdfw{position:absolute;inset:0;overflow:auto;padding:16px 0;display:flex;flex-direction:column;align-items:center;gap:12px}
+.pdfw canvas{max-width:min(900px,100% - 24px);height:auto!important;background:#fff;border-radius:6px;box-shadow:0 10px 30px -14px rgba(0,0,0,.5)}
 .load{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:.85rem;pointer-events:none}
 @media (max-width:640px){
  .bar{flex-wrap:wrap;gap:8px;padding:8px 12px}
@@ -86,12 +88,27 @@ function viewUrl(u){
  const g=/docs\.google\.com\/(document|presentation|spreadsheets)\/d\/([^/?#]+)/.exec(u);
  if(g)return {view:`https://docs.google.com/${g[1]}/d/${g[2]}/preview`,dl:u};
  const abs=new URL(u,location.href).href;
- if(P.f==="PDF")return {view:abs,dl:abs};
+ if(P.f==="PDF")return {view:abs,dl:abs,pdf:true};
  return {view:"https://view.officeapps.live.com/op/embed.aspx?src="+encodeURIComponent(abs),dl:abs};
+}
+/* PDF ko page par hi dikhana (phone par bhi chalta hai) */
+function showPdf(u){
+ const st=$("stage");st.innerHTML=`<div class="load" id="ld">File khul rahi hai…</div><div class="pdfw" id="pw"></div>`;
+ const fail=()=>{st.innerHTML=`<iframe src="${esc(u)}" title="PDF"></iframe>`;};
+ const go=()=>{const lib=window.pdfjsLib;if(!lib)return fail();
+  lib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  lib.getDocument(u).promise.then(async doc=>{const pw=$("pw"),dpr=Math.min(window.devicePixelRatio||1,2);
+   for(let i=1;i<=doc.numPages;i++){const pg=await doc.getPage(i),w=Math.min(900,pw.clientWidth-24),vp0=pg.getViewport({scale:1}),sc=w/vp0.width,vp=pg.getViewport({scale:sc*dpr});
+    const c=document.createElement("canvas");c.width=vp.width;c.height=vp.height;c.style.width=(vp.width/dpr)+"px";pw.appendChild(c);
+    await pg.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;if(i===1){const l=$("ld");if(l)l.remove();}}
+  }).catch(fail);};
+ if(window.pdfjsLib)return go();
+ const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";sc.onload=go;sc.onerror=fail;document.head.appendChild(sc);
 }
 if(raw){
  const v=viewUrl(raw);
- $("stage").innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;
+ if(v.pdf){showPdf(v.view);}
+ else $("stage").innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;
  $("dl").href=v.dl;$("dl").hidden=false;
 }else{
  const shop="ready-ppts.html?q="+encodeURIComponent(`${P.s} ${P.t} Class ${P.c} ${P.sub} ${P.m} ${P.f}`);
