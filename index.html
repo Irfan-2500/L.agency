@@ -864,6 +864,13 @@ html.light header{background:rgba(255,255,255,.82)}
 .cn-list a::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:var(--c);opacity:.55;transition:.15s}
 .cn-list a:hover{background:color-mix(in srgb,var(--c) 13%,transparent);transform:translateX(3px)}
 .cn-list a:hover::before{opacity:1;transform:scale(1.4)}
+.cn-states .cn-list{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;max-height:min(64vh,520px)}
+.cn-st{border:1px solid var(--line2);border-radius:12px;padding:6px;background:color-mix(in srgb,var(--c) 5%,var(--card))}
+.cn-list .cn-st a{padding:6px 8px;font-size:.82rem;color:var(--muted)}
+.cn-list .cn-st a:hover{color:var(--text)}
+.cn-list .cn-st a.cn-sth{font-weight:700;font-size:.92rem;color:var(--text);background:color-mix(in srgb,var(--c) 14%,transparent);margin-bottom:2px}
+.cn-list .cn-st a.cn-sth::before{width:8px;height:8px;opacity:1}
+.cn-list .cn-st a.cn-sth:hover{transform:none}
 .cn-none{padding:24px 20px;color:var(--muted)}
 .cn-list a mark{background:color-mix(in srgb,var(--c) 30%,transparent);color:inherit;border-radius:3px}
 html.light .cn-box{box-shadow:0 30px 60px -24px rgba(60,40,140,.35)}
@@ -879,6 +886,8 @@ html.light .cn-box{box-shadow:0 30px 60px -24px rgba(60,40,140,.35)}
  .cn-q{flex:1}.cn-q input{width:100%}
  .cn-list{grid-template-columns:1fr 1fr;max-height:55vh;padding:10px 12px 20px}
  .cn-list a{font-size:.82rem;padding:8px 6px}
+ .cn-states .cn-list{grid-template-columns:1fr 1fr;gap:8px}
+ .cn-list .cn-st a{font-size:.76rem;padding:6px 4px}
  .cn-dim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:110;display:none}
  .cn-dim.open{display:block}
 }
@@ -3372,16 +3381,17 @@ const url=q=>"ready-ppts.html?q="+encodeURIComponent(q);
 row.innerHTML=CATS.map(([n,e,c,d,it],i)=>it.length
  ?`<button type="button" class="cn-b" style="--c:${c}" data-i="${i}" aria-expanded="false" aria-haspopup="true"><span class="e">${e}</span>${esc(n)}</button>`
  :`<a class="cn-b" style="--c:${c}" href="${url(n)}" data-ui="cat_${esc(n)}"><span class="e">${e}</span>${esc(n)}</a>`).join("");
-let cur=-1,tm,tc;
+let cur=-1,tm,tc;const SUB=["Syllabus","Book & Answers","Previous Year Questions","Practice Questions","Model Paper"];
 function list(i,q){const [n,,,,it]=CATS[i],k=q.trim().toLowerCase();
  const f=it.filter(x=>!k||x.toLowerCase().includes(k));
  if(!f.length)return `<div class="cn-none">Kuch nahi mila "${esc(q)}" ke liye.</div>`;
+ if(n==="State Books")return f.map(x=>`<div class="cn-st"><a class="cn-sth" href="${url(x+" Board")}" data-ui="cat_item"><span>${esc(x)}</span></a>${SUB.map(t=>`<a href="${url(x+" "+t)}" data-ui="cat_item"><span>${esc(t)}</span></a>`).join("")}</div>`).join("");
  return f.map(x=>{let h=esc(x);if(k){const j=x.toLowerCase().indexOf(k);h=esc(x.slice(0,j))+"<mark>"+esc(x.slice(j,j+k.length))+"</mark>"+esc(x.slice(j+k.length));}
   return `<a href="${url(n+" "+x)}" data-ui="cat_item"><span>${h}</span></a>`}).join("");}
 let opT=0;function open(i){if(cur===i)return;cur=i;opT=Date.now();(innerWidth<=720?document.body:nav).appendChild(pan);const [n,e,c,d,it]=CATS[i];
  row.querySelectorAll(".cn-b").forEach(b=>b.setAttribute("aria-expanded",b.dataset.i==i));
  pan.style.setProperty("--c",c);
- pan.innerHTML=`<div class="cn-box"><div class="cn-hd"><span class="cn-ic">${e}</span><div><h3>${esc(n)}<span class="ct">${it.length}</span></h3><p>${esc(d)}</p></div>
+ pan.innerHTML=`<div class="cn-box${n==="State Books"?" cn-states":""}"><div class="cn-hd"><span class="cn-ic">${e}</span><div><h3>${esc(n)}<span class="ct">${it.length}</span></h3><p>${esc(d)}</p></div>
  <div class="cn-tools"><label class="cn-q"><svg class="i"><use href="#i-search"/></svg><input type="search" placeholder="${esc(n)} me dhoondhein…" aria-label="Search"></label><a class="cn-all" href="${url(n)}">View all</a><button type="button" class="cn-x" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div></div>
  <div class="cn-list">${list(i,"")}</div></div>`;
  pan.classList.add("open");dim.classList.add("open");
