@@ -80,7 +80,7 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
 .nm b{display:block;font-size:1rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nm b span{color:var(--muted);font-weight:600}
 .nm small{color:var(--muted);font-size:.75rem}
-.fs{display:flex;gap:6px;flex:none;padding:5px;border-radius:13px;background:var(--card2);border:1px solid var(--line)}
+.fs{display:flex;gap:6px;flex:none}
 .f{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;width:48px;padding:4px 0;border-radius:9px;transition:.15s}
 .f:hover{background:var(--card);transform:translateY(-2px);box-shadow:0 8px 16px -10px rgba(0,0,0,.4)}
 .f svg{width:30px;height:36px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.2))}
@@ -104,7 +104,7 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
  .it{gap:10px;padding:10px}
  .si{width:36px;height:36px;font-size:1.05rem;border-radius:10px}
  .nm b{font-size:.88rem;white-space:normal}.nm b span{display:block;font-size:.74rem}.nm small{display:none}
- .fs{gap:2px;padding:3px}.f{width:36px}.f svg{width:24px;height:29px}.f em{font-size:.5rem}
+ .fs{gap:2px}.f{width:36px}.f svg{width:24px;height:29px}.f em{font-size:.5rem}
  .help{flex-wrap:wrap}.help a{width:100%;text-align:center}
 }
 @media (min-width:1000px){.list{display:grid;grid-template-columns:1fr 1fr;gap:12px}.q{width:220px}}
@@ -155,7 +155,6 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
 const STATES=["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
 const IC={"Bihar":"🛕","UP":"🕌","Andhra Pradesh":"🌶️","Chhattisgarh":"🌳","West Bengal":"🐅","Gujarat":"🦁","Karnataka":"🐘","Kerala":"🌴","Madhya Pradesh":"🐆","Haryana":"🌾","Maharashtra":"🏛️","Punjab":"🌻","Rajasthan":"🐪","Tamilnadu":"🐚","Jharkhand":"⛏️","Telangana":"🏰","CISCE":"🎓","NIOS":"📚","Odisha":"☸️","Assam":"🍵","Jammu & Kashmir":"🏔️"};
 const TYPES=[["Syllabus","📋"],["Book & Answers","📖"],["Previous Year Questions","🗂️"],["Practice Questions","✍️"],["Model Paper","📝"]];
-const YEAR="2026-27";
 const SI={"English":["🔤","#2563eb"],"Hindi":["🅷","#dc2626"],"Sanskrit":["🕉️","#b45309"],"Maths":["➗","#7c3aed"],"EVS":["🌱","#16a34a"],"Computer":["💻","#0891b2"],"General Knowledge":["🌍","#0d9488"],
  "Science":["🔬","#0ea5e9"],"Social Science":["🏛️","#a16207"],"Physics":["⚛️","#4f46e5"],"Chemistry":["⚗️","#db2777"],"Biology":["🧬","#16a34a"],"Accountancy":["🧾","#475569"],
  "Business Studies":["💼","#9333ea"],"Economics":["📈","#059669"],"History":["🏺","#b45309"],"Political Science":["⚖️","#be123c"],"Geography":["🗺️","#0d9488"],"Computer Science":["💻","#0891b2"]};
@@ -185,7 +184,7 @@ function render(){
  const all=SUBJ(s.c),k=s.q.trim().toLowerCase(),subs=all.filter(x=>!k||x.toLowerCase().includes(k));
  $("cnt").innerHTML=`<b>${subs.length}</b> subjects · Class ${s.c}`;
  $("list").innerHTML=subs.length?subs.map((x,i)=>{const [e,c]=SI[x]||["📘","#f97316"];
-  return `<div class="it" style="--sc:${c};animation-delay:${i*35}ms"><span class="si">${e}</span><div class="nm"><b>${esc(x)} <span>- ${YEAR}</span></b><small>${esc(s.t)} · Class ${s.c} · ${s.m} Medium</small></div><div class="fs">${FMT.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m,sub:x,f:f[0]})}" title="${esc(x)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`}).join("")
+  return `<div class="it" style="--sc:${c};animation-delay:${i*35}ms"><span class="si">${e}</span><div class="nm"><b>${esc(x)}</b></div><div class="fs">${FMT.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m,sub:x,f:f[0]})}" title="${esc(x)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`}).join("")
   :`<div class="none">"${esc(s.q)}" naam ka subject nahi mila.</div>`;
  document.title=`${s.st} Board ${s.t} Class ${s.c} — PPT Store`;
  history.replaceState(null,"","?"+new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m}));
