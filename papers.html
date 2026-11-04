@@ -119,7 +119,7 @@ function render(){
  $("yb").querySelectorAll("a").forEach(a=>a.setAttribute("aria-current",+a.dataset.y===y));
  const rec=(window.STATE_FILES||{})[[P.s,T,P.c,P.m,P.sub,y].join("|")]||{};sets=(rec.sets||[]).filter(Boolean);
  $("cnt").innerHTML=sets.length?`<b>${sets.length}</b> set · ${y}`:"";
- $("sets").innerHTML=sets.length?sets.map((u,i)=>`<a class="set"${NEWTAB} href="view.html?${new URLSearchParams({...P,t:T,f:"PDF",y,set:i+1})}"><div class="tx"><b>Set ${i+1}</b><small>${y} Question Paper</small></div><span class="vw">👁 Dekhein</span></a>`).join("")
+ $("sets").innerHTML=sets.length?sets.map((u,i)=>`<a class="set"${NEWTAB} href="view.html?${new URLSearchParams({...P,t:T,f:"PDF",y,set:i+1})}"><div class="tx"><b>Set ${i+1}</b><small>${y} · ${["pdf","word","ppt"].filter(k=>typeof u==="string"?k==="pdf":u[k]).map(k=>({pdf:"PDF",word:"Word",ppt:"PPT"})[k]).join(" · ")}</small></div><span class="vw">👁 Dekhein</span></a>`).join("")
   :`<div class="none" style="grid-column:1/-1"><div class="big">📂</div><b>${y} ke paper jaldi aa rahe hain</b>Is saal ke ${esc(P.sub)} ke question paper abhi upload nahi hue hain.<br><a href="index.html#custom">Request karein →</a></div>`;
  try{history.replaceState(null,"","?"+new URLSearchParams({...P,y}));}catch(_){}
 }
