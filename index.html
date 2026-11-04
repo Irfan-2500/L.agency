@@ -151,6 +151,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,8,12,.75);backdrop-fil
 /* Hero slider (live slide mockups — images ki zarurat nahi) */
 /* --- Digital Smart Board frame --- */
 .board-wrap{position:relative;display:flex;flex-direction:column;align-items:center}
+@media(max-width:767px){.board-wrap{display:none!important}}   /* Smart board sirf tablet / laptop / desktop par */
 .showcase{position:relative;width:100%;padding:18px 18px 0;border-radius:18px;
   background:linear-gradient(180deg,#22252f,#111319 60%,#0b0c10);
   border:1px solid #30343f;
@@ -430,7 +431,8 @@ footer{border-top:1px solid var(--line);padding:64px 0 28px;background:var(--bg2
   .steps{grid-template-columns:1fr 1fr}.steps::before{display:none}
   .nav .search{display:none}
   .nav-links{position:fixed;top:72px;left:0;right:0;flex-direction:column;align-items:stretch;padding:16px;background:var(--bg2);border-bottom:1px solid var(--line);transform:translateY(-130%);transition:.3s}
-  .nav-links.open{transform:none}
+  .nav-links.open{transform:none;visibility:visible}
+  .nav-links{z-index:20;visibility:hidden;transition:transform .3s,visibility 0s .3s}.nav-links.open{transition:transform .3s,visibility 0s}   /* menu category bar ke upar */
   .menu-btn{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;border:1px solid var(--line2);margin-left:auto}
   .cart-btn{margin-left:0}
   .cta{padding:32px}
@@ -838,6 +840,8 @@ html.light header{background:rgba(255,255,255,.82)}
 .catnav{position:relative;border-top:1px solid var(--line)}
 .cn-row{display:flex;gap:6px;justify-content:safe center;overflow-x:auto;scrollbar-width:none;padding:8px 0;-webkit-overflow-scrolling:touch}
 .cn-row::-webkit-scrollbar{display:none}
+.cn-row{touch-action:pan-y;overscroll-behavior-x:contain;cursor:grab;user-select:none;-webkit-user-select:none}
+.cn-row.drag{cursor:grabbing}.cn-row.drag .cn-b{pointer-events:none}
 .cn-b{flex:none;display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:99px;border:1px solid var(--line2);background:var(--card);color:var(--text);font-family:inherit;font-weight:600;font-size:.8rem;line-height:1.2;text-decoration:none;cursor:pointer;transition:.18s;white-space:nowrap}
 .cn-b .e{font-size:.9rem}
 .cn-b .cv{width:10px;height:10px;transition:transform .2s;opacity:.6}
@@ -1623,9 +1627,9 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 </section>
 
 <!-- ================= PPT THEMES ================= -->
+<style>#thBar,#thFt{display:none!important}</style>
 <section class="section" id="themes" style="padding-top:10px">
   <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Our Designs</span><h2>Choose Your <span class="grad-text">PPT Theme</span></h2><p>Pick a design you like. We'll make your PPT in it.</p></div>
     <div class="th-tools reveal">
       <label class="th-search"><svg class="i"><use href="#i-search"/></svg><input id="thSearch" type="search" placeholder="Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" aria-label="Search themes"></label>
       <button type="button" class="th-ft" id="thFt" aria-expanded="false"><svg class="i"><use href="#i-sliders"/></svg>Filters <span id="thFc"></span></button>
@@ -1763,11 +1767,6 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
           <div><span>Branch</span><b>Bhangel, Noida</b></div>
         </div>
       </div>
-    </div>
-    <div class="pay-confirm reveal">
-      <span class="ic"><svg class="i" style="width:22px;height:22px"><use href="#i-check"/></svg></span>
-      <div><h3>Payment Confirmation</h3><p>After completing your payment, please save your <b>Transaction ID or UTR number</b> for future reference, and share the screenshot with us on WhatsApp.</p></div>
-      <a class="btn btn-wa wa-link" data-msg="Hi PPT Store! I have made the payment. My Transaction ID / UTR is: "><svg class="i"><use href="#i-msg"/></svg> Share Payment Proof</a>
     </div>
   </div>
 </section>
@@ -3413,6 +3412,17 @@ const hover={get matches(){return innerWidth>720}};
 row.addEventListener("click",ev=>{const b=ev.target.closest("button.cn-b");if(!b)return;const i=+b.dataset.i;if(cur===i&&Date.now()-opT<400)return;cur===i?close():open(i);});
 row.addEventListener("pointerover",ev=>{if(ev.pointerType!=="mouse"||!hover.matches)return;const b=ev.target.closest("button.cn-b");clearTimeout(tm);if(b)tm=setTimeout(()=>open(+b.dataset.i),120);});
 const nav=document.getElementById("catNav");
+/* Category line ko ungli / mouse se pakad kar khiskana */
+{let sx=0,sl=0,id=null,moved=false,vx=0,lt=0,lx=0,raf=0;
+ row.addEventListener("pointerdown",e=>{if(e.button>0)return;cancelAnimationFrame(raf);id=e.pointerId;sx=lx=e.clientX;sl=row.scrollLeft;moved=false;vx=0;lt=performance.now();});
+ row.addEventListener("pointermove",e=>{if(e.pointerId!==id)return;const dx=e.clientX-sx;
+  if(!moved&&Math.abs(dx)>6){moved=true;row.classList.add("drag");try{row.setPointerCapture(id);}catch(_){}}
+  if(moved){row.scrollLeft=sl-dx;const t=performance.now();vx=(e.clientX-lx)/Math.max(1,t-lt);lx=e.clientX;lt=t;}});
+ const end=e=>{if(e.pointerId!==id)return;id=null;row.classList.remove("drag");
+  if(moved){let v=-vx*16;const step=()=>{if(Math.abs(v)<.5)return;row.scrollLeft+=v;v*=.92;raf=requestAnimationFrame(step);};step();}};
+ row.addEventListener("pointerup",end);row.addEventListener("pointercancel",end);
+ row.addEventListener("click",e=>{if(moved){e.preventDefault();e.stopImmediatePropagation();moved=false;}},true);
+ row.addEventListener("dragstart",e=>e.preventDefault());}
 nav.addEventListener("pointerleave",ev=>{if(ev.pointerType!=="mouse"||!hover.matches)return;clearTimeout(tm);tc=setTimeout(()=>{if(!pan.contains(document.activeElement))close()},250);});
 nav.addEventListener("pointerenter",()=>clearTimeout(tc));
 document.body.appendChild(dim);dim.onclick=close;
