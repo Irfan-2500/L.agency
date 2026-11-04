@@ -133,14 +133,17 @@ const Y=qs.get("y")||"",SET=+qs.get("set")||0;
 const key=[P.s,P.t,P.c,P.m,P.sub].join("|")+(Y?"|"+Y:"");
 let rec=(window.STATE_FILES||{})[key]||{};
 if(Y){P.t="Previous Year Questions";const one=(rec.sets||[])[SET-1]||"";rec=typeof one==="string"?{pdf:one}:one;}
+/* Chapter wise (Notes): ch = chapter number */
+const CH=Y?0:(+qs.get("ch")||0);let CHN="";
+if(CH){const one=(rec.chapters||[])[CH-1]||{};CHN=one.name||`Chapter ${CH}`;rec=one;}
 const raw=rec[FMT[P.f][3]]||"";
 const [c1,c2,l]=FMT[P.f];
 $("fi").innerHTML=`<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c2}"/><stop offset="1" stop-color="${c1}"/></linearGradient></defs><path d="M4 0h18l12 12v24a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="url(#g)"/><path d="M22 0v8a4 4 0 0 0 4 4h8z" fill="#fff" opacity=".5"/><text x="15" y="30" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-weight="800" font-size="${l.length>1?9:15}">${l}</text>`;
-$("ttl").textContent=Y?`${P.sub} — ${Y} Paper · Set ${SET}`:`${P.sub} — ${P.t}`;
-$("sub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium · ${P.f==="PPT"?"PowerPoint":P.f}`;
+$("ttl").textContent=Y?`${P.sub} — ${Y} Paper · Set ${SET}`:CH?`${P.sub} — Ch ${CH}: ${CHN}`:`${P.sub} — ${P.t}`;
+$("sub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium${CH?" · "+P.t:""} · ${P.f==="PPT"?"PowerPoint":P.f}`;
 document.title=`${P.sub} ${P.t} Class ${P.c} (${P.f}) — PPT Store`;
-$("fmt").innerHTML=Object.keys(FMT).map(k=>{const q=new URLSearchParams({...P,f:k,...(Y?{y:Y,set:SET}:{})});return `<a href="view.html?${q}" aria-current="${k===P.f}" style="--fc:${FMT[k][0]}"><i>${FMT[k][2]}</i>${k}</a>`}).join("");
-const BACK=Y?"papers.html?"+new URLSearchParams({s:P.s,c:P.c,m:P.m,sub:P.sub,y:Y}):"state-board.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m});
+$("fmt").innerHTML=Object.keys(FMT).map(k=>{const q=new URLSearchParams({...P,f:k,...(Y?{y:Y,set:SET}:{}),...(CH?{ch:CH}:{})});return `<a href="view.html?${q}" aria-current="${k===P.f}" style="--fc:${FMT[k][0]}"><i>${FMT[k][2]}</i>${k}</a>`}).join("");
+const BACK=Y?"papers.html?"+new URLSearchParams({s:P.s,c:P.c,m:P.m,sub:P.sub,y:Y}):CH?"chapters.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m,sub:P.sub}):"state-board.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m});
 $("bk").href=BACK;
 $("cls").onclick=()=>{window.close();setTimeout(()=>{location.href=BACK},150);};
 /* Link ko dikhane layak banana */
@@ -294,7 +297,7 @@ if(raw){
  if(v.pdf){showPdf(v.view);}
  else if(v.office)showOffice(v);
  else $("stage").innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;
- const a=$("dl"),ext={PDF:"pdf",Word:"docx",PPT:"pptx"}[P.f]||"pdf",nm=(Y?`${P.s} Class ${P.c} ${P.sub} ${Y} Paper Set ${SET} ${P.m}`:`${P.s} ${P.t} Class ${P.c} ${P.sub} ${P.m}`).replace(/[^\w\- ]+/g,"").trim()+"."+ext;
+ const a=$("dl"),ext={PDF:"pdf",Word:"docx",PPT:"pptx"}[P.f]||"pdf",nm=(Y?`${P.s} Class ${P.c} ${P.sub} ${Y} Paper Set ${SET} ${P.m}`:CH?`${P.s} Class ${P.c} ${P.sub} ${P.t} Ch ${CH} ${CHN} ${P.m}`:`${P.s} ${P.t} Class ${P.c} ${P.sub} ${P.m}`).replace(/[^\w\- ]+/g,"").trim()+"."+ext;
  a.href=v.dl;a.hidden=false;
  if(new URL(v.dl).origin===location.origin){a.removeAttribute("target");a.download=nm;}
  /* File ko blob bana ke seedha save — preview frame me bhi chalta hai */
