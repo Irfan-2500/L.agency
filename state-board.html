@@ -21,113 +21,180 @@ html.light{--bg:#f6f5fb;--card:#fff;--card2:#f4f3fa;--line:rgba(20,16,40,.08);--
 body{font-family:'Plus Jakarta Sans','Hind',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;
  background-image:radial-gradient(600px 300px at 10% -10%,rgba(249,115,22,.14),transparent),radial-gradient(500px 300px at 100% 0,rgba(139,44,255,.12),transparent)}
 a{color:inherit;text-decoration:none}
-button,select{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
-.wrap{max-width:900px;margin:0 auto;padding:0 16px 40px}
+button,select,input{font:inherit;color:inherit;border:0;background:none}
+button,select{cursor:pointer}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px 48px}
 .top{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
 .brand{display:flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif;font-weight:700}
 .brand img{height:22px;width:auto}
 .back{font-size:.82rem;color:var(--muted);padding:6px 12px;border:1px solid var(--line2);border-radius:99px}
 .back:hover{color:var(--text);border-color:var(--c)}
-h1{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;line-height:1.2;margin:6px 0 2px}
-.sub{color:var(--muted);font-size:.85rem}
-/* Filter: chhota, ek jagah */
-.flt{position:sticky;top:0;z-index:5;margin:14px 0 16px;padding:10px;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(12px);border:1px solid var(--line2);border-radius:16px;display:flex;flex-direction:column;gap:8px}
-.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:none;padding:7px 13px;border-radius:10px;font-weight:700;font-size:.82rem;color:var(--muted);border:1px solid transparent;white-space:nowrap}
-.tab:hover{color:var(--text);border-color:var(--line2)}
+
+/* Hero banner */
+.hero{position:relative;overflow:hidden;border-radius:22px;padding:22px 24px;color:#fff;
+ background:linear-gradient(120deg,#f97316 0%,#e8590c 35%,#8b2cff 100%);box-shadow:0 24px 50px -24px rgba(232,89,12,.6)}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.12)}
+.hero::before{width:220px;height:220px;right:-60px;top:-90px}
+.hero::after{width:140px;height:140px;right:120px;bottom:-80px;background:rgba(255,255,255,.08)}
+.crumb{position:relative;font-size:.76rem;opacity:.85;display:flex;gap:6px;flex-wrap:wrap}
+.crumb a:hover{text-decoration:underline}
+.hrow{position:relative;display:flex;align-items:center;gap:14px;margin-top:10px}
+.hic{width:54px;height:54px;flex:none;display:grid;place-items:center;font-size:1.7rem;border-radius:16px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px)}
+h1{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;line-height:1.15}
+.stsel{position:relative;margin-left:auto;display:flex;align-items:center;gap:6px;height:38px;padding:0 6px 0 12px;border-radius:12px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);font-size:.78rem;font-weight:700}
+.stsel select{height:36px;font-weight:800;outline:0;max-width:150px}
+.stsel select option{color:#16131f;background:#fff}
+.badges{position:relative;display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.bd{padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.2);font-size:.74rem;font-weight:700}
+
+/* Filter (chhota) */
+.flt{position:sticky;top:8px;z-index:5;margin:14px 0 16px;padding:8px;background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(14px);border:1px solid var(--line2);border-radius:16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 14px 30px -24px rgba(0,0,0,.6)}
+.tabs,.cls{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar,.cls::-webkit-scrollbar{display:none}
+.tab{flex:none;display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;font-weight:700;font-size:.8rem;color:var(--muted);white-space:nowrap;transition:.15s}
+.tab:hover{color:var(--text);background:var(--card2)}
 .tab[aria-pressed="true"]{background:var(--c);color:#fff;box-shadow:0 6px 14px -8px var(--c)}
 .row2{display:flex;gap:8px;align-items:center}
-.sel{display:flex;align-items:center;gap:6px;height:36px;padding:0 4px 0 12px;border:1px solid var(--line2);border-radius:10px;background:var(--card2);font-size:.82rem;font-weight:700}
-.sel span{color:var(--muted);font-weight:600}
-.sel select{height:34px;padding:0 6px;font-weight:800;outline:0;background:transparent}
-.sel select option{background:var(--card);color:var(--text)}
-.seg{display:flex;padding:3px;border:1px solid var(--line2);border-radius:10px;background:var(--card2)}
-.seg button{height:28px;padding:0 12px;border-radius:7px;font-size:.8rem;font-weight:700;color:var(--muted)}
+.cls{flex:1;min-width:0;padding:3px;border-radius:10px;background:var(--card2);border:1px solid var(--line)}
+.cl{flex:none;min-width:34px;height:28px;padding:0 6px;border-radius:7px;font-size:.78rem;font-weight:800;color:var(--muted)}
+.cl:hover{color:var(--text)}
+.cl[aria-pressed="true"]{background:var(--text);color:var(--bg)}
+.seg{flex:none;display:flex;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--card2)}
+.seg button{height:28px;padding:0 11px;border-radius:7px;font-size:.78rem;font-weight:700;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--text);color:var(--bg)}
-.cnt{margin-left:auto;font-size:.78rem;color:var(--muted);white-space:nowrap}
-/* Subject list */
+.q{flex:none;display:flex;align-items:center;gap:6px;height:36px;padding:0 10px;border-radius:10px;background:var(--card2);border:1px solid var(--line);width:170px}
+.q svg{width:15px;height:15px;flex:none;stroke:var(--muted)}
+.q input{width:100%;outline:0;font-size:.8rem}
+
+/* List */
+.lh{display:flex;align-items:center;justify-content:space-between;margin:0 2px 10px;font-size:.8rem;color:var(--muted)}
+.lh b{color:var(--text)}
+.legend{display:flex;gap:10px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
 .list{display:flex;flex-direction:column;gap:10px}
-.it{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;position:relative;overflow:hidden;transition:.18s}
-.it::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(#f97316,#8b2cff)}
-.it:hover{border-color:var(--line2);transform:translateY(-1px);box-shadow:0 14px 30px -20px rgba(0,0,0,.5)}
-.no{width:32px;height:32px;flex:none;display:grid;place-items:center;border-radius:9px;background:var(--card2);border:1px solid var(--line);font-weight:800;font-size:.85rem;color:var(--muted)}
+.it{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:16px;transition:.18s;animation:up .35s ease-out both}
+@keyframes up{from{opacity:0;transform:translateY(8px)}}
+.it:hover{border-color:color-mix(in srgb,var(--sc) 50%,transparent);box-shadow:0 16px 30px -22px var(--sc);transform:translateY(-1px)}
+.si{width:44px;height:44px;flex:none;display:grid;place-items:center;font-size:1.3rem;border-radius:13px;background:color-mix(in srgb,var(--sc) 16%,transparent);border:1px solid color-mix(in srgb,var(--sc) 35%,transparent)}
 .nm{flex:1;min-width:0}
-.nm b{display:block;font-size:.98rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nm small{color:var(--muted);font-size:.76rem}
-.fs{display:flex;gap:8px;flex:none}
-.f{display:flex;flex-direction:column;align-items:center;gap:3px;width:46px;transition:transform .15s}
-.f:hover{transform:translateY(-3px)}
-.f svg{width:34px;height:40px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.18))}
-.f em{font-style:normal;font-size:.62rem;font-weight:800;letter-spacing:.04em;color:var(--muted)}
+.nm b{display:block;font-size:1rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nm b span{color:var(--muted);font-weight:600}
+.nm small{color:var(--muted);font-size:.75rem}
+.fs{display:flex;gap:6px;flex:none;padding:5px;border-radius:13px;background:var(--card2);border:1px solid var(--line)}
+.f{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;width:48px;padding:4px 0;border-radius:9px;transition:.15s}
+.f:hover{background:var(--card);transform:translateY(-2px);box-shadow:0 8px 16px -10px rgba(0,0,0,.4)}
+.f svg{width:30px;height:36px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.2))}
+.f em{font-style:normal;font-size:.58rem;font-weight:800;letter-spacing:.05em;color:var(--muted)}
 .f:hover em{color:var(--text)}
-@media (max-width:560px){
- h1{font-size:1.25rem}
- .it{gap:10px;padding:10px 10px 10px 14px}
- .no{width:26px;height:26px;font-size:.75rem}
- .nm b{font-size:.88rem;white-space:normal}.nm small{display:none}
- .fs{gap:4px}.f{width:36px}.f svg{width:28px;height:33px}.f em{font-size:.55rem}
- .cnt{display:none}
+.none{padding:30px;text-align:center;color:var(--muted);border:1px dashed var(--line2);border-radius:16px}
+
+/* Help */
+.help{margin-top:22px;display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;background:var(--card);border:1px solid var(--line2)}
+.help .hi{font-size:1.6rem}
+.help p{flex:1;font-size:.88rem}
+.help small{display:block;color:var(--muted);font-size:.78rem}
+.help a{flex:none;padding:10px 16px;border-radius:12px;background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;font-weight:800;font-size:.84rem;box-shadow:0 10px 20px -12px #c2410c}
+
+@media (max-width:640px){
+ .hero{padding:18px 16px;border-radius:18px}
+ h1{font-size:1.3rem}.hic{width:46px;height:46px;font-size:1.4rem}
+ .hrow{flex-wrap:wrap}.stsel{margin-left:0;width:100%}.stsel select{flex:1;max-width:none}
+ .row2{flex-wrap:wrap}.cls{flex-basis:100%}.q{flex:1;width:auto}
+ .lh .legend{display:none}
+ .it{gap:10px;padding:10px}
+ .si{width:36px;height:36px;font-size:1.05rem;border-radius:10px}
+ .nm b{font-size:.88rem;white-space:normal}.nm b span{display:block;font-size:.74rem}.nm small{display:none}
+ .fs{gap:2px;padding:3px}.f{width:36px}.f svg{width:24px;height:29px}.f em{font-size:.5rem}
+ .help{flex-wrap:wrap}.help a{width:100%;text-align:center}
 }
+@media (prefers-reduced-motion:reduce){.it{animation:none}}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="doc" viewBox="0 0 34 40"><path d="M4 0h18l12 12v24a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="currentColor"/><path d="M22 0v8a4 4 0 0 0 4 4h8z" fill="#fff" opacity=".45"/></symbol>
+  <defs>
+    <linearGradient id="gP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b6b"/><stop offset="1" stop-color="#d62f35"/></linearGradient>
+    <linearGradient id="gW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8ff7"/><stop offset="1" stop-color="#1d5bd0"/></linearGradient>
+    <linearGradient id="gT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a3d"/><stop offset="1" stop-color="#d9480f"/></linearGradient>
+  </defs>
+  <symbol id="fold" viewBox="0 0 34 40"><path d="M22 0v8a4 4 0 0 0 4 4h8z" fill="#fff" opacity=".5"/></symbol>
+  <symbol id="srch" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke-width="2" stroke-linecap="round"/></symbol>
 </svg>
 <div class="wrap">
   <div class="top">
     <a class="brand" href="index.html"><img src="uploads/brand/logo.webp" alt="PPT Store logo" width="50" height="22">PPT Store</a>
     <a class="back" href="index.html">← Home</a>
   </div>
-  <h1 id="ttl">State Board</h1>
-  <p class="sub" id="sub"></p>
+
+  <section class="hero">
+    <div class="crumb"><a href="index.html">Home</a>›<span>State Books</span>›<b id="crSt"></b></div>
+    <div class="hrow">
+      <span class="hic">🗺️</span>
+      <div><h1 id="ttl">State Board</h1></div>
+      <label class="stsel">State <select id="stSel" aria-label="State badlein"></select></label>
+    </div>
+    <div class="badges" id="bdg"></div>
+  </section>
 
   <div class="flt">
     <div class="tabs" id="tabs"></div>
     <div class="row2">
-      <label class="sel"><span>Class</span><select id="cls" aria-label="Class"></select></label>
-      <div class="seg" id="med"><button type="button" data-v="Hindi">Hindi</button><button type="button" data-v="English">English</button></div>
-      <span class="cnt" id="cnt"></span>
+      <div class="cls" id="cls" aria-label="Class"></div>
+      <div class="seg" id="med"><button type="button" data-v="Hindi">हिंदी</button><button type="button" data-v="English">English</button></div>
+      <label class="q"><svg><use href="#srch"/></svg><input id="q" type="search" placeholder="Subject dhoondhein…" aria-label="Subject search"></label>
     </div>
   </div>
 
+  <div class="lh"><span id="cnt"></span><span class="legend"><span><i style="background:#e5484d"></i>PDF</span><span><i style="background:#2b6cde"></i>Word</span><span><i style="background:#e8590c"></i>PowerPoint</span></span></div>
   <div class="list" id="list"></div>
+
+  <div class="help"><span class="hi">💬</span><p>Aapko jo chahiye woh nahi mila?<small>Apne syllabus ki custom PPT ya notes 1 ghante me banwayein.</small></p><a href="index.html#custom">Custom Order →</a></div>
 </div>
 <script>
 (function(){
 const STATES=["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
-const TYPES=["Syllabus","Book & Answers","Previous Year Questions","Practice Questions","Model Paper"];
+const TYPES=[["Syllabus","📋"],["Book & Answers","📖"],["Previous Year Questions","🗂️"],["Practice Questions","✍️"],["Model Paper","📝"]];
 const YEAR="2026-27";
+const SI={"English":["🔤","#2563eb"],"Hindi":["🅷","#dc2626"],"Sanskrit":["🕉️","#b45309"],"Maths":["➗","#7c3aed"],"EVS":["🌱","#16a34a"],"Computer":["💻","#0891b2"],"General Knowledge":["🌍","#0d9488"],
+ "Science":["🔬","#0ea5e9"],"Social Science":["🏛️","#a16207"],"Physics":["⚛️","#4f46e5"],"Chemistry":["⚗️","#db2777"],"Biology":["🧬","#16a34a"],"Accountancy":["🧾","#475569"],
+ "Business Studies":["💼","#9333ea"],"Economics":["📈","#059669"],"History":["🏺","#b45309"],"Political Science":["⚖️","#be123c"],"Geography":["🗺️","#0d9488"],"Computer Science":["💻","#0891b2"]};
 const SUBJ=c=>c<=5?["English","Hindi","Maths","EVS","Computer","General Knowledge"]
  :c<=8?["English","Hindi","Sanskrit","Maths","Science","Social Science","Computer"]
  :c<=10?["English","Hindi","Sanskrit","Maths","Science","Social Science"]
  :["English","Hindi","Physics","Chemistry","Maths","Biology","Accountancy","Business Studies","Economics","History","Political Science","Geography","Computer Science"];
-const FMT=[["PDF","#e5484d","PDF"],["Word","#2b6cde","W"],["PPT","#e8590c","P"]];
+const FMT=[["PDF","gP","PDF"],["Word","gW","W"],["PPT","gT","P"]];
 const qs=new URLSearchParams(location.search);
-const st=STATES.includes(qs.get("s"))?qs.get("s"):"Bihar";
-const s={t:TYPES.includes(qs.get("t"))?qs.get("t"):TYPES[0],c:+qs.get("c")>=1&&+qs.get("c")<=12?+qs.get("c"):10,m:qs.get("m")==="English"?"English":"Hindi"};
+const s={st:STATES.includes(qs.get("s"))?qs.get("s"):"Bihar",t:TYPES.some(x=>x[0]===qs.get("t"))?qs.get("t"):TYPES[0][0],
+ c:+qs.get("c")>=1&&+qs.get("c")<=12?+qs.get("c"):10,m:qs.get("m")==="English"?"English":"Hindi",q:""};
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 const $=id=>document.getElementById(id);
-$("ttl").textContent=st+" Board";
-$("tabs").innerHTML=TYPES.map(t=>`<button type="button" class="tab" data-v="${esc(t)}">${esc(t)}</button>`).join("");
-$("cls").innerHTML=Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1}th</option>`).join("").replace(">1th<",">1st<").replace(">2th<",">2nd<").replace(">3th<",">3rd<");
-const icon=([k,col,l])=>`<svg viewBox="0 0 34 40" style="color:${col}"><use href="#doc"/><text x="15" y="30" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-weight="800" font-size="${l.length>1?9:15}">${l}</text></svg>`;
+const ord=n=>n+(n==1?"st":n==2?"nd":n==3?"rd":"th");
+$("stSel").innerHTML=STATES.map(x=>`<option>${esc(x)}</option>`).join("");
+$("tabs").innerHTML=TYPES.map(([t,e])=>`<button type="button" class="tab" data-v="${esc(t)}"><span>${e}</span>${esc(t)}</button>`).join("");
+$("cls").innerHTML=Array.from({length:12},(_,i)=>`<button type="button" class="cl" data-v="${i+1}">${ord(i+1)}</button>`).join("");
+const icon=([k,g,l])=>`<svg viewBox="0 0 34 40"><path d="M4 0h18l12 12v24a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="url(#${g})"/><use href="#fold"/><text x="15" y="30" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-weight="800" font-size="${l.length>1?9:15}">${l}</text></svg>`;
 function render(){
  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===s.t));
+ document.querySelectorAll(".cl").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.v===s.c));
  document.querySelectorAll("#med button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===s.m));
- $("cls").value=s.c;
- const subs=SUBJ(s.c);
- $("sub").textContent=`${s.t} · Class ${s.c} · ${s.m} Medium`;
- $("cnt").textContent=subs.length+" subjects";
- $("list").innerHTML=subs.map((x,i)=>`<div class="it"><span class="no">${i+1}</span><div class="nm"><b>${esc(x)} - ${YEAR}</b><small>${esc(s.t)} · Class ${s.c} · ${s.m}</small></div><div class="fs">${FMT.map(f=>`<a class="f" href="ready-ppts.html?q=${encodeURIComponent(`${st} ${s.t} Class ${s.c} ${x} ${s.m} ${f[0]}`)}" title="${esc(x)} — ${f[0]}">${icon(f)}<em>${f[0]==="PPT"?"PPT":f[0].toUpperCase()}</em></a>`).join("")}</div></div>`).join("");
- document.title=`${st} Board ${s.t} Class ${s.c} — PPT Store`;
- history.replaceState(null,"","?"+new URLSearchParams({s:st,t:s.t,c:s.c,m:s.m}));
+ $("stSel").value=s.st;$("crSt").textContent=s.st;
+ $("ttl").textContent=s.st+" Board";
+ $("bdg").innerHTML=[s.t,"Class "+s.c,s.m+" Medium","Session "+YEAR].map(x=>`<span class="bd">${esc(x)}</span>`).join("");
+ const all=SUBJ(s.c),k=s.q.trim().toLowerCase(),subs=all.filter(x=>!k||x.toLowerCase().includes(k));
+ $("cnt").innerHTML=`<b>${subs.length}</b> subjects · Class ${s.c}`;
+ $("list").innerHTML=subs.length?subs.map((x,i)=>{const [e,c]=SI[x]||["📘","#f97316"];
+  return `<div class="it" style="--sc:${c};animation-delay:${i*35}ms"><span class="si">${e}</span><div class="nm"><b>${esc(x)} <span>- ${YEAR}</span></b><small>${esc(s.t)} · Class ${s.c} · ${s.m} Medium</small></div><div class="fs">${FMT.map(f=>`<a class="f" href="ready-ppts.html?q=${encodeURIComponent(`${s.st} ${s.t} Class ${s.c} ${x} ${s.m} ${f[0]}`)}" title="${esc(x)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`}).join("")
+  :`<div class="none">"${esc(s.q)}" naam ka subject nahi mila.</div>`;
+ document.title=`${s.st} Board ${s.t} Class ${s.c} — PPT Store`;
+ history.replaceState(null,"","?"+new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m}));
 }
 $("tabs").onclick=e=>{const b=e.target.closest(".tab");if(b){s.t=b.dataset.v;render();}};
+$("cls").onclick=e=>{const b=e.target.closest(".cl");if(b){s.c=+b.dataset.v;render();}};
 $("med").onclick=e=>{const b=e.target.closest("button");if(b){s.m=b.dataset.v;render();}};
-$("cls").onchange=e=>{s.c=+e.target.value;render();};
+$("stSel").onchange=e=>{s.st=e.target.value;render();};
+$("q").oninput=e=>{s.q=e.target.value;render();};
 render();
+const a=document.querySelector('.cl[aria-pressed="true"]');if(a)a.scrollIntoView({inline:"center",block:"nearest"});
 })();
 </script>
 </body>
