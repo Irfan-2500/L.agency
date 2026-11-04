@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>File Viewer — PPT Store</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<script>
+(function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
+document.documentElement.classList.toggle("light",l);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080c;--card:#0f121b;--card2:#151927;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);--text:#f4f5fb;--muted:#9aa1b8;--c:#f97316}
+html.light{--bg:#eeedf5;--card:#fff;--card2:#f4f3fa;--line:rgba(20,16,40,.08);--line2:rgba(20,16,40,.14);--text:#16131f;--muted:#5d5873}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line2)}
+.fi{width:30px;height:36px;flex:none}
+.tt{flex:1;min-width:0}
+.tt b{display:block;font-size:.98rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt small{display:block;color:var(--muted);font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fmt{display:flex;padding:3px;border-radius:10px;background:var(--card2);border:1px solid var(--line)}
+.fmt a{height:30px;padding:0 12px;display:flex;align-items:center;gap:6px;border-radius:7px;font-size:.78rem;font-weight:800;color:var(--muted)}
+.fmt a i{width:8px;height:8px;border-radius:2px}
+.fmt a[aria-current="true"]{background:var(--text);color:var(--bg)}
+.btn{height:36px;padding:0 14px;display:inline-flex;align-items:center;gap:6px;border-radius:10px;font-weight:800;font-size:.8rem;border:1px solid var(--line2)}
+.btn.pri{background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;border:0}
+.btn[hidden]{display:none}
+.stage{flex:1;position:relative;background:var(--bg)}
+.stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.empty{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center}
+.empty .box{max-width:420px}
+.empty .big{font-size:3rem}
+.empty h2{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;margin:8px 0 6px}
+.empty p{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+.empty .acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.load{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:.85rem;pointer-events:none}
+@media (max-width:640px){
+ .bar{flex-wrap:wrap;gap:8px;padding:8px 12px}
+ .tt{flex-basis:calc(100% - 42px)}
+ .fmt{flex:1}.fmt a{flex:1;justify-content:center;padding:0 6px}
+ .btn{padding:0 10px}.btn span{display:none}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <svg class="fi" id="fi" viewBox="0 0 34 40"></svg>
+  <div class="tt"><b id="ttl">File</b><small id="sub"></small></div>
+  <nav class="fmt" id="fmt"></nav>
+  <a class="btn" id="dl" target="_blank" rel="noopener" hidden>⬇<span> Download</span></a>
+  <button class="btn" id="cls" type="button">✕<span> Band karein</span></button>
+</header>
+<main class="stage" id="stage"></main>
+<script src="js/state-files.js"></script>
+<script>
+(function(){
+const qs=new URLSearchParams(location.search);
+const P={s:qs.get("s")||"",t:qs.get("t")||"",c:qs.get("c")||"",m:qs.get("m")||"",sub:qs.get("sub")||"",f:(qs.get("f")||"PDF")};
+const FMT={PDF:["#e5484d","#ff6b6b","PDF","pdf"],Word:["#1d5bd0","#4f8ff7","W","word"],PPT:["#d9480f","#ff8a3d","P","ppt"]};
+if(!FMT[P.f])P.f="PDF";
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+const $=id=>document.getElementById(id);
+const key=[P.s,P.t,P.c,P.m,P.sub].join("|");
+const rec=(window.STATE_FILES||{})[key]||{};
+const raw=rec[FMT[P.f][3]]||"";
+const [c1,c2,l]=FMT[P.f];
+$("fi").innerHTML=`<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c2}"/><stop offset="1" stop-color="${c1}"/></linearGradient></defs><path d="M4 0h18l12 12v24a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="url(#g)"/><path d="M22 0v8a4 4 0 0 0 4 4h8z" fill="#fff" opacity=".5"/><text x="15" y="30" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-weight="800" font-size="${l.length>1?9:15}">${l}</text>`;
+$("ttl").textContent=`${P.sub} — ${P.t}`;
+$("sub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium · ${P.f==="PPT"?"PowerPoint":P.f}`;
+document.title=`${P.sub} ${P.t} Class ${P.c} (${P.f}) — PPT Store`;
+$("fmt").innerHTML=Object.keys(FMT).map(k=>{const q=new URLSearchParams({...P,f:k});return `<a href="?${q}" aria-current="${k===P.f}"><i style="background:${FMT[k][0]}"></i>${k}</a>`}).join("");
+$("cls").onclick=()=>{window.close();setTimeout(()=>{location.href="state-board.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m})},150);};
+/* Link ko dikhane layak banana */
+function viewUrl(u){
+ const d=/drive\.google\.com\/file\/d\/([^/?#]+)/.exec(u);
+ if(d)return {view:`https://drive.google.com/file/d/${d[1]}/preview`,dl:`https://drive.google.com/uc?export=download&id=${d[1]}`};
+ const g=/docs\.google\.com\/(document|presentation|spreadsheets)\/d\/([^/?#]+)/.exec(u);
+ if(g)return {view:`https://docs.google.com/${g[1]}/d/${g[2]}/preview`,dl:u};
+ const abs=new URL(u,location.href).href;
+ if(P.f==="PDF")return {view:abs,dl:abs};
+ return {view:"https://view.officeapps.live.com/op/embed.aspx?src="+encodeURIComponent(abs),dl:abs};
+}
+if(raw){
+ const v=viewUrl(raw);
+ $("stage").innerHTML=`<div class="load">File khul rahi hai…</div><iframe src="${esc(v.view)}" title="${esc(P.sub)} ${esc(P.f)}" allow="fullscreen"></iframe>`;
+ $("dl").href=v.dl;$("dl").hidden=false;
+}else{
+ const shop="ready-ppts.html?q="+encodeURIComponent(`${P.s} ${P.t} Class ${P.c} ${P.sub} ${P.m} ${P.f}`);
+ $("stage").innerHTML=`<div class="empty"><div class="box"><div class="big">📂</div><h2>Yeh file jaldi aa rahi hai</h2><p>${esc(P.sub)} (${esc(P.t)}, Class ${esc(P.c)}, ${esc(P.m)}) ki ${esc(P.f)} file abhi upload nahi hui hai.</p><div class="acts"><a class="btn pri" href="index.html#custom">Custom banwayein →</a><a class="btn" href="${shop}">Shop me dhoondhein</a></div></div></div>`;
+}
+})();
+</script>
+</body>
+</html>
