@@ -56,13 +56,16 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
 .tab[aria-pressed="true"]{background:var(--c);color:#fff;box-shadow:0 6px 14px -8px var(--c)}
 .row2{display:flex;gap:8px;align-items:center}
 /* Class: group me gol number */
-.cls{flex:1;min-width:0;gap:6px;align-items:stretch;padding:0}
-.cg{flex:none;display:flex;flex-direction:column;gap:4px;padding:6px 8px 7px;border-radius:12px;background:var(--card2);border:1px solid var(--line)}
-.cg>span{font-size:.6rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-left:2px}
-.cg>div{display:flex;gap:5px}
-.cl{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:.92rem;font-weight:800;color:var(--text);background:var(--card);border:1.5px solid var(--line2);transition:transform .15s,border-color .15s,background .15s}
-.cl:hover{border-color:var(--c);transform:translateY(-1px)}
-.cl[aria-pressed="true"]{background:linear-gradient(135deg,#f97316,#c2410c);border-color:transparent;color:#fff;box-shadow:0 6px 14px -6px #c2410c,0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent)}
+.cls{flex:1;min-width:0;max-width:580px;display:grid;grid-template-columns:5fr 3fr 2fr 2fr;gap:4px;padding:4px;overflow:visible;border-radius:14px;background:var(--card2);border:1px solid var(--line2)}
+.cg{--g:#f97316;min-width:0;display:flex;flex-direction:column;gap:3px;padding:4px 3px 3px;border-radius:10px;background:color-mix(in srgb,var(--g) 7%,transparent)}
+.cg:nth-child(1){--g:#16a34a}.cg:nth-child(2){--g:#2563eb}.cg:nth-child(3){--g:#f97316}.cg:nth-child(4){--g:#9333ea}
+.cg>span{display:block;text-align:center;font-size:.58rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--g);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.cg>span i{font-style:normal}
+.cg>div{display:flex;gap:3px}
+.cl{flex:1;min-width:0;height:34px;border-radius:9px;display:grid;place-items:center;font-size:.9rem;font-weight:800;color:var(--text);background:var(--card);border:1px solid var(--line);transition:transform .15s,border-color .15s,background .15s;-webkit-tap-highlight-color:transparent}
+.cl:hover{border-color:var(--g);color:var(--g)}
+.cl[aria-pressed="true"]{background:linear-gradient(135deg,#f97316,#c2410c);border-color:transparent;color:#fff;transform:translateY(-1px);box-shadow:0 6px 14px -6px #c2410c}
+@media (max-width:640px){.cls{gap:3px;padding:3px}.cg{padding:3px 2px 2px}.cg>div{gap:2px}.cl{height:32px;font-size:.82rem;border-radius:7px}.cg>span{font-size:.5rem;letter-spacing:.03em}.cg>span i{display:none}}
 .seg{flex:none;display:flex;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--card2)}
 .seg button{height:28px;padding:0 11px;border-radius:7px;font-size:.78rem;font-weight:700;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--text);color:var(--bg)}
@@ -153,7 +156,7 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
   <div class="flt">
     <div class="tabs" id="tabs" data-drag></div>
     <div class="row2">
-      <div class="cls" id="cls" aria-label="Class" data-drag></div>
+      <div class="cls" id="cls" aria-label="Class"></div>
       <div class="seg" id="med"><button type="button" data-v="Hindi">हिंदी</button><button type="button" data-v="English">English</button></div>
       <label class="q"><svg><use href="#srch"/></svg><input id="q" type="search" placeholder="Subject dhoondhein…" aria-label="Subject search"></label>
     </div>
@@ -194,7 +197,7 @@ const ord=n=>n+(n==1?"st":n==2?"nd":n==3?"rd":"th");
 $("stSel").innerHTML=STATES.map(x=>`<option>${esc(x)}</option>`).join("");
 $("tabs").innerHTML=TYPES.map(([t,e])=>`<button type="button" class="tab" data-v="${esc(t)}"><span>${e}</span>${esc(t)}</button>`).join("");
 const CG=[["Primary",1,5],["Middle",6,8],["High School",9,10],["Senior",11,12]];
-$("cls").innerHTML=CG.map(([n,a,z])=>`<div class="cg"><span>${n}</span><div>${Array.from({length:z-a+1},(_,i)=>`<button type="button" class="cl" data-v="${a+i}" title="Class ${a+i}" aria-label="Class ${a+i}">${a+i}</button>`).join("")}</div></div>`).join("");
+$("cls").innerHTML=CG.map(([n,a,z])=>`<div class="cg"><span>${n.replace(" School","<i> School</i>")}</span><div>${Array.from({length:z-a+1},(_,i)=>`<button type="button" class="cl" data-v="${a+i}" title="Class ${a+i}" aria-label="Class ${a+i}">${a+i}</button>`).join("")}</div></div>`).join("");
 const icon=([k,g,l])=>`<svg viewBox="0 0 34 40"><path d="M4 0h18l12 12v24a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="url(#${g})"/><use href="#fold"/><text x="15" y="30" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-weight="800" font-size="${l.length>1?9:15}">${l}</text></svg>`;
 function render(){
  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===s.t));
