@@ -61,15 +61,11 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
 .set{display:flex;align-items:center;gap:12px;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;transition:border-color .15s,box-shadow .15s,transform .15s}
 @keyframes up{from{opacity:0;transform:translateY(8px)}}
 .set:hover{border-color:rgba(229,72,77,.45);box-shadow:0 16px 30px -22px #e5484d;transform:translateY(-1px)}
-.set svg{width:34px;height:40px;flex:none;filter:drop-shadow(0 3px 5px rgba(0,0,0,.2))}
 .set .tx{flex:1;min-width:0}
 .set b{display:block;font-size:1rem;font-weight:800;white-space:nowrap}
 .set small{color:var(--muted);font-size:.74rem}
-.acts{display:flex;gap:6px;flex:none}
-.acts a{display:flex;align-items:center;gap:5px;height:34px;padding:0 11px;border-radius:10px;font-size:.78rem;font-weight:800;border:1px solid var(--line2)}
-.acts a:hover{border-color:var(--text)}
-.acts a.dl{background:linear-gradient(135deg,#ff6b6b,#d62f35);color:#fff;border:0;box-shadow:0 8px 16px -10px #d62f35}
-.acts a.dl:hover{filter:brightness(1.08)}
+.vw{flex:none;display:flex;align-items:center;gap:6px;height:38px;padding:0 16px;border-radius:11px;font-size:.84rem;font-weight:800;background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;box-shadow:0 8px 16px -10px #c2410c;transition:filter .15s}
+.set:hover .vw{filter:brightness(1.08)}
 .none{padding:34px 20px;text-align:center;color:var(--muted);border:1px dashed var(--line2);border-radius:16px}
 .none .big{font-size:2rem}.none b{display:block;color:var(--text);font-size:1rem;margin:4px 0}
 .none a{display:inline-block;margin-top:12px;padding:9px 14px;border-radius:11px;background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;font-weight:800;font-size:.82rem}
@@ -79,7 +75,7 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
 .hsub{position:relative;font-size:.78rem;opacity:.9}
 @media (max-width:640px){
  .hero{padding:12px 14px;border-radius:16px}h1{font-size:1.15rem}.hic{width:36px;height:36px;font-size:1.1rem}
- .set{padding:12px}.acts a{padding:0 9px}.acts a span{display:none}
+ .set{padding:12px 14px}
  .help{flex-wrap:wrap}.help a{width:100%;text-align:center}
 }
 @media (prefers-reduced-motion:reduce){.set{animation:none}}
@@ -117,15 +113,13 @@ const board="state-board.html?"+new URLSearchParams({s:P.s,t:T,c:P.c,m:P.m});
 $("bk").href=board;$("crSt").href=board;$("crSt").textContent=P.s;
 $("hsub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium`;
 $("yb").innerHTML=YEARS.map(v=>`<a href="?${new URLSearchParams({...P,y:v})}" data-y="${v}">${v}</a>`).join("");
-const ic=`<svg viewBox="0 0 34 40"><path d="M4 0h18l12 12v24a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="url(#gP)"/><path d="M22 0v8a4 4 0 0 0 4 4h8z" fill="#fff" opacity=".5"/><text x="15" y="30" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-weight="800" font-size="9">PDF</text></svg>`;
-const fname=n=>`${P.s} Class ${P.c} ${P.sub} ${y} Paper Set ${n} ${P.m}`.replace(/[^\w\- ]+/g,"").trim()+".pdf";
 function render(){
  $("ttl").textContent=`${P.sub} — ${y} Question Paper`;
  document.title=`${P.s} Board Class ${P.c} ${P.sub} ${y} Question Paper — PPT Store`;
  $("yb").querySelectorAll("a").forEach(a=>a.setAttribute("aria-current",+a.dataset.y===y));
  const rec=(window.STATE_FILES||{})[[P.s,T,P.c,P.m,P.sub,y].join("|")]||{};sets=(rec.sets||[]).filter(Boolean);
  $("cnt").innerHTML=sets.length?`<b>${sets.length}</b> set · ${y}`:"";
- $("sets").innerHTML=sets.length?sets.map((u,i)=>`<div class="set">${ic}<div class="tx"><b>Set ${i+1}</b><small>${y} · PDF</small></div><div class="acts"><a${NEWTAB} href="view.html?${new URLSearchParams({...P,t:T,f:"PDF",y,set:i+1})}" title="Dekhein">👁<span> Dekhein</span></a><a class="dl" href="${esc(u)}" data-i="${i}" title="PDF download">⬇<span> PDF</span></a></div></div>`).join("")
+ $("sets").innerHTML=sets.length?sets.map((u,i)=>`<a class="set"${NEWTAB} href="view.html?${new URLSearchParams({...P,t:T,f:"PDF",y,set:i+1})}"><div class="tx"><b>Set ${i+1}</b><small>${y} Question Paper</small></div><span class="vw">👁 Dekhein</span></a>`).join("")
   :`<div class="none" style="grid-column:1/-1"><div class="big">📂</div><b>${y} ke paper jaldi aa rahe hain</b>Is saal ke ${esc(P.sub)} ke question paper abhi upload nahi hue hain.<br><a href="index.html#custom">Request karein →</a></div>`;
  try{history.replaceState(null,"","?"+new URLSearchParams({...P,y}));}catch(_){}
 }
@@ -133,19 +127,6 @@ function render(){
 $("yb").addEventListener("click",e=>{const a=e.target.closest("a[data-y]");if(!a)return;e.preventDefault();if(+a.dataset.y===y)return;y=+a.dataset.y;render();a.scrollIntoView({inline:"nearest",block:"nearest",behavior:"smooth"});});
 render();
 {const cur=$("yb").querySelector('[aria-current="true"]');if(cur)cur.scrollIntoView({inline:"center",block:"nearest"});}
-/* Download: file seedha save */
-async function getBlob(u){
- if(u.startsWith("data:")){const i=u.indexOf(","),mt=u.slice(5,i).split(";")[0],b=atob(u.slice(i+1)),a=new Uint8Array(b.length);for(let k=0;k<b.length;k++)a[k]=b.charCodeAt(k);return new Blob([a],{type:mt});}
- const r=await fetch(u);if(!r.ok)throw 0;return r.blob();
-}
-$("sets").addEventListener("click",async e=>{const a=e.target.closest("a.dl");if(!a)return;e.preventDefault();
- const u=sets[+a.dataset.i],abs=u.startsWith("data:")?u:new URL(u,location.href).href,nm=fname(+a.dataset.i+1),t=a.innerHTML;a.innerHTML="⏳<span> …</span>";
- try{const bl=await getBlob(abs);
-  if(window.self!==window.top&&window.claude&&claude.use){const dw=await claude.use("downloads").catch(()=>null);if(dw){await dw.save({filename:nm,data:bl}).catch(()=>{});return;}}
-  const b=URL.createObjectURL(bl),x=document.createElement("a");x.href=b;x.download=nm;document.body.appendChild(x);x.click();x.remove();setTimeout(()=>URL.revokeObjectURL(b),4e4);}
- catch(_){if(window.self===window.top)window.open(abs,"_blank","noopener");else location.href=abs;}
- finally{a.innerHTML=t;}
-});
 })();
 </script>
 </body>
