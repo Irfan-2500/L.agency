@@ -2311,7 +2311,7 @@ const SB_SUBJ = c => c <= 5 ? ["English","Hindi","Maths","EVS","Computer","Gener
   : c <= 8 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science","Computer"]
   : c <= 10 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science"]
   : ["English","Hindi","Physics","Chemistry","Maths","Biology","Accountancy","Business Studies","Economics","History","Political Science","Geography","Computer Science"];
-const SB_PYQ = "Previous Year Questions", SB_CHT = ["Notes", "Chapter-wise PYQ"];
+const SB_PYQ = "Previous Year Questions", SB_CPYQ = "Chapter-wise PYQ", SB_CHT = ["Notes", SB_CPYQ];
 const SB_F = [["pdf", "PDF", ".pdf", "#e5484d"], ["word", "Word", ".doc,.docx", "#2b6cde"], ["ppt", "PPT", ".ppt,.pptx", "#e8590c"]];
 let SB = {}, SBP = [], SBR = null, SBDIRTY = false, SBQ = "", SBFOLDER = "#";
 const SBUP = {};   // upload chal raha: "path|k" → %
@@ -2348,7 +2348,8 @@ async function stateBooks() {
     <div class="grid2 sbsel">
       ${cfSel()}
       <label class="f">State / Board<select id="sbS">${opt(sbStates(), SBS.s)}</select></label>
-      <label class="f">Category<select id="sbT">${opt(SB_T, SBS.t)}</select></label>
+      <label class="f">Category<select id="sbT">${opt(SB_T.filter(x => x !== SB_CPYQ), SBS.t === SB_CPYQ ? SB_PYQ : SBS.t)}</select></label>
+      <label class="f" id="sbPmW">PYQ kaise<select id="sbPm"><option value="year">📅 Year-wise</option><option value="ch">📑 Chapter-wise</option></select></label>
       <label class="f">Class<select id="sbC">${opt([1,2,3,4,5,6,7,8,9,10,11,12], SBS.c)}</select></label>
       <label class="f">Medium<select id="sbM">${opt(["Hindi", "English"], SBS.m)}</select></label>
       <label class="f">Subject<select id="sbSub"></select></label>
@@ -2373,7 +2374,7 @@ async function stateBooks() {
     f($(id).value); sbLoad();
   };
   cfBindSel(() => { if (sbBusy()) { toast("Upload chal raha hai — khatam hone dein", true); return false; } return !SBDIRTY || confirm("Badlav save nahi hue. Chhod dein?"); });
-  sel("#sbS", v => SBS.s = v); sel("#sbT", v => SBS.t = v); sel("#sbM", v => SBS.m = v); sel("#sbY", v => SBS.y = +v); sel("#sbSub", v => SBS.sub = v);
+  sel("#sbS", v => SBS.s = v); sel("#sbT", v => SBS.t = v === SB_PYQ && $("#sbPm").value === "ch" ? SB_CPYQ : v); sel("#sbPm", v => SBS.t = v === "ch" ? SB_CPYQ : SB_PYQ); sel("#sbM", v => SBS.m = v); sel("#sbY", v => SBS.y = +v); sel("#sbSub", v => SBS.sub = v);
   sel("#sbC", v => { SBS.c = +v; if (!SB_SUBJ(SBS.c).includes(SBS.sub)) SBS.sub = SB_SUBJ(SBS.c)[0]; });
   $("#sbQ").value = SBQ; $("#sbQ").oninput = () => { SBQ = $("#sbQ").value; sbList(); };
   $("#sbSave").onclick = () => sbSave();
@@ -2389,7 +2390,7 @@ async function stateBooks() {
   sbLoad(); sbList();
 }
 function sbFillSel() {
-  $("#sbS").value = SBS.s; $("#sbT").value = SBS.t; $("#sbC").value = SBS.c; $("#sbM").value = SBS.m; $("#sbY").value = SBS.y;
+  $("#sbS").value = SBS.s; $("#sbT").value = SBS.t === SB_CPYQ ? SB_PYQ : SBS.t; $("#sbPm").value = SBS.t === SB_CPYQ ? "ch" : "year"; $("#sbPmW").hidden = SBS.t !== SB_PYQ && SBS.t !== SB_CPYQ; $("#sbC").value = SBS.c; $("#sbM").value = SBS.m; $("#sbY").value = SBS.y;
   $("#sbSub").innerHTML = SB_SUBJ(SBS.c).map(x => `<option${x === SBS.sub ? " selected" : ""}>${esc(x)}</option>`).join("");
   $("#sbYw").hidden = SBS.t !== SB_PYQ;
 }
