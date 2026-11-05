@@ -663,6 +663,21 @@ body.noscroll{overflow:hidden}
 .mnbulk summary{cursor:pointer;color:var(--dim);font-size:.82rem}
 .mnbulk textarea{margin-top:8px;width:100%}
 @media(max-width:560px){.mnir{flex-wrap:wrap}.mnir .nm{flex:1 1 calc(100% - 30px)}.mnir .lk{flex:1 1 100%;margin-left:30px}}
+.sbz .note code{font-size:.78rem;padding:1px 5px;border-radius:5px;background:var(--hover)}
+.sbzl{overflow:auto;max-height:520px;border:1px solid var(--line);border-radius:12px}
+.sbzt{width:100%;border-collapse:collapse;font-size:.8rem}
+.sbzt th{position:sticky;top:0;background:var(--card2);text-align:left;padding:8px 6px;font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:.03em;z-index:1;white-space:nowrap}
+.sbzt td{padding:5px 6px;border-top:1px solid var(--line);vertical-align:middle}
+.sbzt select,.sbzt input[type=number]{padding:5px 6px;font-size:.78rem;min-width:76px;max-width:170px}
+.sbzt input[type=number]{width:58px}
+.sbzt td.miss select,.sbzt td.miss input{border-color:#f59e0b;background:color-mix(in srgb,#f59e0b 12%,transparent)}
+.sbzt .fn{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sbzt .fx{display:inline-grid;place-items:center;min-width:26px;height:20px;padding:0 4px;margin-right:6px;border-radius:5px;color:#fff;font-size:.62rem;font-weight:800;background:#e5484d}
+.sbzt .fx-word{background:#2b6cde}.sbzt .fx-ppt{background:#e8590c}
+.sbzt tr.ok td{background:color-mix(in srgb,var(--ok) 8%,transparent)}
+.sbzt tr.bad td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
+.sbzt .zs{white-space:nowrap}
+.pill.warn{background:color-mix(in srgb,#f59e0b 20%,transparent);color:#b45309}
 @media(max-width:1100px){.mngrid{grid-template-columns:1fr}.mnside{position:static;max-height:none}.mnlist{max-height:300px}}
 @media(max-width:900px){.topbar{padding:10px 16px}.content{padding:18px 16px 70px}.dgrid{grid-template-columns:1fr}}
 @media(max-width:560px){
@@ -2291,12 +2306,12 @@ const PBADGE = [["", "Koi nahi"], ["best", "🔥 Best Seller"], ["feat", "⭐ Fe
 /* ---------- State Books: website ke State Board pages (Syllabus, Previous Year, Notes…) ki files ---------- */
 const SB_ST = ["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
 const sbStates = () => { const st = (MENU_L || []).find(c => c.k === "states"), l = st ? st.it.map(x => catnavSplit(x)[0]) : []; return l.length ? l : SB_ST; };
-const SB_T = ["Syllabus", "Previous Year Questions", "Model Paper", "Notes", "Practice Questions", "Book & Answers"];
+const SB_T = ["Syllabus", "Previous Year Questions", "Chapter-wise PYQ", "Model Paper", "Notes", "Practice Questions", "Book & Answers"];
 const SB_SUBJ = c => c <= 5 ? ["English","Hindi","Maths","EVS","Computer","General Knowledge"]
   : c <= 8 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science","Computer"]
   : c <= 10 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science"]
   : ["English","Hindi","Physics","Chemistry","Maths","Biology","Accountancy","Business Studies","Economics","History","Political Science","Geography","Computer Science"];
-const SB_PYQ = "Previous Year Questions", SB_CHT = ["Notes"];
+const SB_PYQ = "Previous Year Questions", SB_CPYQ = "Chapter-wise PYQ", SB_CHT = ["Notes", SB_CPYQ];
 const SB_F = [["pdf", "PDF", ".pdf", "#e5484d"], ["word", "Word", ".doc,.docx", "#2b6cde"], ["ppt", "PPT", ".ppt,.pptx", "#e8590c"]];
 let SB = {}, SBP = [], SBR = null, SBDIRTY = false, SBQ = "", SBFOLDER = "#";
 const SBUP = {};   // upload chal raha: "path|k" → %
@@ -2329,17 +2344,19 @@ async function stateBooks() {
   const opt = (l, v) => l.map(x => `<option${String(x) === String(v) ? " selected" : ""}>${esc(x)}</option>`).join("");
   V(head(TITLES.cfiles, `Home page ki category line (State Books, NCERT, CBSE, JEE…) ke har item ki files. <b>State Books</b>: syllabus, previous year papers (year + set), chapter-wise notes, model papers — PDF, Word, PPT.`,
     `<a class="btn sm" href="${esc(SBFOLDER)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a><a class="btn sm" href="state-board.html" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>`) + `
-  <div class="card"><div class="ch"><h3>1️⃣ Kahan lagani hai?</h3></div>
+  <div class="card"><div class="ch"><h3>1️⃣ Kahan lagani hai?</h3><span class="sp"></span><button class="btn pri sm" id="sbZipB">📦 ZIP se ek saath upload</button></div>
     <div class="grid2 sbsel">
       ${cfSel()}
       <label class="f">State / Board<select id="sbS">${opt(sbStates(), SBS.s)}</select></label>
-      <label class="f">Category<select id="sbT">${opt(SB_T, SBS.t)}</select></label>
+      <label class="f">Category<select id="sbT">${opt(SB_T.filter(x => x !== SB_CPYQ), SBS.t === SB_CPYQ ? SB_PYQ : SBS.t)}</select></label>
+      <label class="f" id="sbPmW">PYQ kaise<select id="sbPm"><option value="year">📅 Year-wise</option><option value="ch">📑 Chapter-wise</option></select></label>
       <label class="f">Class<select id="sbC">${opt([1,2,3,4,5,6,7,8,9,10,11,12], SBS.c)}</select></label>
       <label class="f">Medium<select id="sbM">${opt(["Hindi", "English"], SBS.m)}</select></label>
       <label class="f">Subject<select id="sbSub"></select></label>
       <label class="f" id="sbYw">Saal (Year)<select id="sbY">${opt(sbYears(), SBS.y)}</select></label>
     </div>
   </div>
+  <div class="card sbz" id="sbZ" hidden style="margin-top:14px"></div>
   <div class="card" style="margin-top:14px"><div class="ch"><h3 id="sbEdT">2️⃣ Files</h3><a class="btn sm note" id="sbOpen" target="_blank" rel="noopener">${ic("i-ext")} View on site</a></div>
     <div id="sbEd"></div>
     <div class="row" style="margin-top:16px"><button class="btn pri" id="sbSave">💾 Save karein</button><button class="btn danger" id="sbDel">🗑 Ye entry hatayein</button><span class="note" id="sbNote"></span></div>
@@ -2348,14 +2365,16 @@ async function stateBooks() {
     <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="sbQ" placeholder="Search: state, class, subject, category…" aria-label="Search"></label></div>
     <div class="sblist" id="sbList"></div>
   </div>
-  <input type="file" id="sbFile" hidden>`);
+  <input type="file" id="sbFile" hidden><input type="file" id="sbZipIn" hidden multiple accept=".zip,.pdf,.doc,.docx,.ppt,.pptx">`);
+  $("#sbZipB").onclick = () => sbzOpen();
+  $("#sbZipIn").onchange = () => sbzRead([...$("#sbZipIn").files]);
   const sel = (id, f) => $(id).onchange = () => {
     if (sbBusy()) { toast("Upload chal raha hai — khatam hone dein", true); return sbFillSel(); }
     if (SBDIRTY && !confirm("Badlav save nahi hue. Chhod dein?")) return sbFillSel();
     f($(id).value); sbLoad();
   };
   cfBindSel(() => { if (sbBusy()) { toast("Upload chal raha hai — khatam hone dein", true); return false; } return !SBDIRTY || confirm("Badlav save nahi hue. Chhod dein?"); });
-  sel("#sbS", v => SBS.s = v); sel("#sbT", v => SBS.t = v); sel("#sbM", v => SBS.m = v); sel("#sbY", v => SBS.y = +v); sel("#sbSub", v => SBS.sub = v);
+  sel("#sbS", v => SBS.s = v); sel("#sbT", v => SBS.t = v === SB_PYQ && $("#sbPm").value === "ch" ? SB_CPYQ : v); sel("#sbPm", v => SBS.t = v === "ch" ? SB_CPYQ : SB_PYQ); sel("#sbM", v => SBS.m = v); sel("#sbY", v => SBS.y = +v); sel("#sbSub", v => SBS.sub = v);
   sel("#sbC", v => { SBS.c = +v; if (!SB_SUBJ(SBS.c).includes(SBS.sub)) SBS.sub = SB_SUBJ(SBS.c)[0]; });
   $("#sbQ").value = SBQ; $("#sbQ").oninput = () => { SBQ = $("#sbQ").value; sbList(); };
   $("#sbSave").onclick = () => sbSave();
@@ -2371,7 +2390,7 @@ async function stateBooks() {
   sbLoad(); sbList();
 }
 function sbFillSel() {
-  $("#sbS").value = SBS.s; $("#sbT").value = SBS.t; $("#sbC").value = SBS.c; $("#sbM").value = SBS.m; $("#sbY").value = SBS.y;
+  $("#sbS").value = SBS.s; $("#sbT").value = SBS.t === SB_CPYQ ? SB_PYQ : SBS.t; $("#sbPm").value = SBS.t === SB_CPYQ ? "ch" : "year"; $("#sbPmW").hidden = SBS.t !== SB_PYQ && SBS.t !== SB_CPYQ; $("#sbC").value = SBS.c; $("#sbM").value = SBS.m; $("#sbY").value = SBS.y;
   $("#sbSub").innerHTML = SB_SUBJ(SBS.c).map(x => `<option${x === SBS.sub ? " selected" : ""}>${esc(x)}</option>`).join("");
   $("#sbYw").hidden = SBS.t !== SB_PYQ;
 }
@@ -2432,6 +2451,169 @@ function sbInput(e) {
   const t = e.target;
   if (t.dataset.nm) { sbObj(t.dataset.nm).name = t.value; sbDirty(); }
   else if (t.dataset.pr != null) { const o = sbObj(t.dataset.pr); if (t.value) o.product = +t.value; else delete o.product; sbDirty(); }
+}
+/* ---------- State Books: ZIP / kai files ek saath — file ke naam se sahi jagah ---------- */
+let SBZ = null;   // { rows:[...], busy }
+const SBZ_EXT = { pdf: "pdf", doc: "word", docx: "word", ppt: "ppt", pptx: "ppt" };
+const SBZ_MIME = { pdf: "application/pdf", doc: "application/msword", docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", ppt: "application/vnd.ms-powerpoint", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation" };
+const SBZ_ROMAN = { i: 1, ii: 2, iii: 3, iv: 4, v: 5, vi: 6, vii: 7, viii: 8, ix: 9, x: 10, xi: 11, xii: 12 };
+const SBZ_SUBJ = [["social science", "Social Science"], ["sst", "Social Science"], ["s st", "Social Science"], ["samajik vigyan", "Social Science"], ["political science", "Political Science"], ["pol sci", "Political Science"], ["polity", "Political Science"],
+  ["computer science", "Computer Science"], ["business studies", "Business Studies"], ["business study", "Business Studies"], ["general knowledge", "General Knowledge"], ["gk", "General Knowledge"],
+  ["mathematics", "Maths"], ["maths", "Maths"], ["math", "Maths"], ["ganit", "Maths"], ["science", "Science"], ["vigyan", "Science"], ["physics", "Physics"], ["chemistry", "Chemistry"], ["biology", "Biology"], ["bio", "Biology"],
+  ["accountancy", "Accountancy"], ["accounts", "Accountancy"], ["economics", "Economics"], ["arthshastra", "Economics"], ["history", "History"], ["itihas", "History"], ["geography", "Geography"], ["bhugol", "Geography"],
+  ["computer", "Computer"], ["evs", "EVS"], ["environmental", "EVS"], ["sanskrit", "Sanskrit"], ["english", "English"], ["angrezi", "English"], ["hindi", "Hindi"]];
+function sbzParse(path) {
+  const base = path.split("/").pop().replace(/\.[^.]+$/, ""), ext = (path.split(".").pop() || "").toLowerCase();
+  let t = " " + path.replace(/\.[^.]+$/, "").toLowerCase().replace(/&/g, " and ").replace(/[_\-.+()\[\]{},/\\|]+/g, " ").replace(/\s+/g, " ") + " ";
+  const has = re => re.test(t), cut = re => { t = t.replace(re, " "); };
+  const r = { path, file: base, fmt: SBZ_EXT[ext] || "", s: "", t: "", c: 0, m: "", sub: "", y: 0, set: 0, ch: 0, chn: "" };
+  // state
+  const al = { "uttar pradesh": "UP", "up board": "UP", "tamil nadu": "Tamilnadu", "jammu and kashmir": "Jammu & Kashmir", "jammu kashmir": "Jammu & Kashmir", "j and k": "Jammu & Kashmir", "bseb": "Bihar", "mp board": "Madhya Pradesh", "cg board": "Chhattisgarh", "wb board": "West Bengal", "icse": "CISCE", "isc": "CISCE" };
+  const sts = sbStates(), cand = [...sts.map(x => [x.toLowerCase().replace(/&/g, "and"), x]), ...Object.entries(al).filter(([, v]) => sts.includes(v))].sort((a, b) => b[0].length - a[0].length);
+  for (const [k, v] of cand) { const re = new RegExp("\\s" + k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s"); if (re.test(t)) { r.s = v; cut(re); break; } }
+  // medium
+  const md = t.match(/\s(hindi|english)\s(medium|med|mdm)\s/) || t.match(/\s(hm|em)\s/);
+  if (md) { r.m = /^(hindi|hm)$/.test(md[1]) ? "Hindi" : "English"; cut(new RegExp("\\s" + md[0].trim() + "\\s")); }
+  // category
+  const TY = [[/\s(model|sample|modal)\s(question\s)?(paper|set)s?\s|\smodel\s/, "Model Paper"], [/\s(pyq|pyqs|previous\syears?|prev\syears?|question\spapers?|board\spapers?|old\spapers?|purane\sprashn)\s/, SB_PYQ],
+    [/\s(practice|mcqs?|worksheets?|abhyas)\s/, "Practice Questions"], [/\s(books?|answers?|solutions?|hal)\s/, "Book & Answers"], [/\s(notes?)\s/, "Notes"], [/\s(syllabus|pathyakram)\s/, "Syllabus"]];
+  const cw = /\s(chapter\s?wise|chapterwise|ch\s?wise|adhyay\s?wise)\s/;
+  for (const [re, v] of TY) if (has(re) && SB_T.includes(v)) { r.t = v; cut(re); break; }
+  if (has(cw)) { cut(cw); if (!r.t || r.t === SB_PYQ) r.t = "Chapter-wise PYQ"; }
+  // year (pehle, taaki class ke number se na takraye)
+  const yy = t.match(/\s(20[0-4]\d)\s/); if (yy) { r.y = +yy[1]; cut(new RegExp("\\s" + yy[1] + "\\s")); }
+  // set
+  const st = t.match(/\sset\s?(\d{1,2}|[a-e])\s/); if (st) { r.set = /\d/.test(st[1]) ? +st[1] : "abcde".indexOf(st[1]) + 1; cut(new RegExp("\\s" + st[0].trim() + "\\s")); }
+  // chapter
+  const chm = base.match(/(?:^|[\s_\-.])(?:ch|chap|chapter|path|adhyay)[\s_\-.]*(\d{1,2})(?:[\s_\-.:]+(.*))?$/i);
+  if (chm && r.t === SB_PYQ) r.t = "Chapter-wise PYQ";
+  if (chm) { r.ch = +chm[1]; r.chn = (chm[2] || "").replace(/[_]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120); cut(/\s(ch|chap|chapter|path|adhyay)\s?\d{1,2}\s/); }
+  // class
+  const cm = t.match(/\s(?:class|cls|std|kaksha|grade)\s?(\d{1,2}|xii|xi|x|ix|viii|vii|vi|v|iv|iii|ii|i)\s/) || t.match(/\s(\d{1,2})(?:st|nd|rd|th)\s/);
+  if (cm) { const v = /\d/.test(cm[1]) ? +cm[1] : SBZ_ROMAN[cm[1]]; if (v >= 1 && v <= 12) { r.c = v; cut(new RegExp("\\s" + cm[0].trim() + "\\s")); } }
+  // subject (class ke hisaab se list)
+  for (const [k, v] of SBZ_SUBJ) if (new RegExp("\\s" + k + "\\s").test(t)) { r.sub = v; break; }
+  return r;
+}
+function sbzFill(r) {   // jo naam me nahi mila → upar ke dropdown se
+  r.miss = [];
+  if (!r.s) { r.s = SBS.s; r.miss.push("State"); }
+  if (!r.t) { r.t = SBS.t; r.miss.push("Category"); }
+  if (!r.c) { r.c = SBS.c; r.miss.push("Class"); }
+  if (!r.m) { r.m = SBS.m; r.miss.push("Medium"); }
+  const L = SB_SUBJ(r.c); if (!L.includes(r.sub)) { r.miss.push("Subject"); r.sub = L.includes(SBS.sub) ? SBS.sub : L[0]; }
+  if (r.t === SB_PYQ && !r.y) { r.y = SBS.y; r.miss.push("Year"); }
+  return r;
+}
+const sbzKey = r => [r.s, r.t, r.c, r.m, r.sub].join("|") + (r.t === SB_PYQ ? "|" + r.y : "");
+function sbzOpen() {
+  if (sbBusy() || (SBZ && SBZ.busy)) return toast("Upload chal raha hai — khatam hone dein", true);
+  SBZ = { rows: [], busy: false }; $("#sbZ").hidden = false; sbzDraw(); $("#sbZ").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+async function sbzRead(files) {
+  if (!files.length) return;
+  const out = [];
+  $("#sbZList").innerHTML = `<div class="empty" style="padding:18px">⏳ Files padh raha hoon…</div>`;
+  try {
+    for (const f of files) {
+      if (/\.zip$/i.test(f.name)) {
+        const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(f);
+        Object.values(z.files).filter(e => !e.dir && SBZ_EXT[(e.name.split(".").pop() || "").toLowerCase()] && !/(^|\/)(__MACOSX|\.)/.test(e.name))
+          .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }))
+          .forEach(e => out.push({ entry: e, name: e.name }));
+      } else if (SBZ_EXT[(f.name.split(".").pop() || "").toLowerCase()]) out.push({ blob: f, name: f.name });
+    }
+  } catch (e) { toast("ZIP nahi khul paya: " + (e.message || e), true); }
+  out.forEach(o => SBZ.rows.push(Object.assign(sbzFill(sbzParse(o.name)), { entry: o.entry, blob: o.blob, st: "", on: true })));
+  // set number na ho to: same jagah + same format me kram se 1, 2, 3…
+  const nx = {};
+  SBZ.rows.forEach(r => { if (r.t !== SB_PYQ || r.set) return; const k = sbzKey(r) + "|" + r.fmt; nx[k] = (nx[k] || 0) + 1; r.set = nx[k]; r.miss.push("Set"); });
+  const nc = {};
+  SBZ.rows.forEach(r => { if (sbKind(r.t) !== "chapters" || r.ch) return; const k = sbzKey(r) + "|" + r.fmt; nc[k] = (nc[k] || 0) + 1; r.ch = nc[k]; r.chn = r.chn || r.file; });
+  $("#sbZipIn").value = "";
+  if (!out.length) toast("Isme PDF / Word / PPT file nahi mili", true);
+  sbzDraw();
+}
+function sbzDraw() {
+  const box = $("#sbZ"); if (!box || !SBZ) return;
+  const rows = SBZ.rows, on = rows.filter(r => r.on && !r.st), done = rows.filter(r => r.st === "ok").length;
+  const opt = (l, v) => l.map(x => `<option${String(x) === String(v) ? " selected" : ""}>${esc(x)}</option>`).join("");
+  box.innerHTML = `<div class="ch"><h3>📦 ZIP / kai files ek saath</h3><span class="sp"></span><button class="btn sm" id="sbzX" ${SBZ.busy ? "disabled" : ""}>✕ Band karein</button></div>
+    <p class="note">PDF ZIP, Word ZIP, PPT ZIP — teeno chalegi. File ke <b>naam</b> se State, Category, Class, Medium, Subject, Year, Set / Chapter pehchana jaata hai. Example: <code>Bihar Class 10 Hindi Medium Maths PYQ 2024 Set 1.pdf</code>. Jo naam me nahi mila (<span class="pill warn">peela</span>) wo upar ke dropdown se liya — neeche badal sakte hain.</p>
+    <div class="row" style="margin:12px 0"><button class="btn" id="sbzPick" ${SBZ.busy ? "disabled" : ""}>${ic("i-upload")} ZIP ya files chunein</button>
+      ${rows.length ? `<span class="note">${rows.length} files · ${done} upload ho gayi</span>` : ""}</div>
+    <div class="sbzl" id="sbZList">${rows.length ? `<table class="sbzt"><thead><tr><th><input type="checkbox" id="sbzAll" aria-label="Sab chunein" ${rows.every(r => r.on) ? "checked" : ""}></th><th>File</th><th>State</th><th>Category</th><th>Class</th><th>Medium</th><th>Subject</th><th>Year</th><th>Set / Ch</th><th>Status</th></tr></thead><tbody>${rows.map((r, i) => {
+      const w = f => r.miss.includes(f) ? " class=\"miss\"" : "", dis = SBZ.busy || r.st === "ok" ? " disabled" : "";
+      return `<tr class="${r.st === "ok" ? "ok" : r.st === "bad" ? "bad" : ""}"><td><input type="checkbox" data-zon="${i}" ${r.on ? "checked" : ""}${dis} aria-label="Upload ${esc(r.file)}"></td>
+        <td class="fn"><span class="fx fx-${r.fmt}">${r.fmt === "word" ? "W" : r.fmt === "ppt" ? "P" : "PDF"}</span>${esc(r.path.split("/").pop())}</td>
+        <td${w("State")}><select data-z="${i}|s"${dis}>${opt(sbStates(), r.s)}</select></td>
+        <td${w("Category")}><select data-z="${i}|t"${dis}>${opt(SB_T, r.t)}</select></td>
+        <td${w("Class")}><select data-z="${i}|c"${dis}>${opt([1,2,3,4,5,6,7,8,9,10,11,12], r.c)}</select></td>
+        <td${w("Medium")}><select data-z="${i}|m"${dis}>${opt(["Hindi", "English"], r.m)}</select></td>
+        <td${w("Subject")}><select data-z="${i}|sub"${dis}>${opt(SB_SUBJ(r.c), r.sub)}</select></td>
+        <td${w("Year")}>${r.t === SB_PYQ ? `<select data-z="${i}|y"${dis}>${opt(sbYears(), r.y)}</select>` : "—"}</td>
+        <td${w("Set")}>${r.t === SB_PYQ ? `<input type="number" min="1" max="20" data-z="${i}|set" value="${r.set}"${dis} aria-label="Set">` : sbKind(r.t) === "chapters" ? `<input type="number" min="1" max="80" data-z="${i}|ch" value="${r.ch}"${dis} aria-label="Chapter number" title="${esc(r.chn)}">` : "—"}</td>
+        <td class="zs">${r.st === "ok" ? "✅" : r.st === "bad" ? `❌ ${esc(r.err || "")}` : r.st === "up" ? `⏳ ${r.pc || 0}%` : r.miss.length ? `<span class="pill warn" title="Naam me nahi mila: ${esc(r.miss.join(", "))}">check</span>` : `<span class="pill ok">✓</span>`}</td></tr>`; }).join("")}</tbody></table>`
+      : `<div class="empty" style="padding:18px">ZIP ya files chunein — yahan list dikhegi.</div>`}</div>
+    ${rows.length ? `<div class="row" style="margin-top:14px"><button class="btn pri" id="sbzGo" ${SBZ.busy || !on.length ? "disabled" : ""}>⬆ ${SBZ.busy ? "Upload ho raha hai…" : `${on.length} file upload karein`}</button><span class="note">Pehle se lagi file usi jagah par ho to nayi se badal jayegi.</span></div>` : ""}`;
+  $("#sbzX").onclick = () => { SBZ = null; box.hidden = true; box.innerHTML = ""; };
+  $("#sbzPick").onclick = () => $("#sbZipIn").click();
+  if ($("#sbzGo")) $("#sbzGo").onclick = sbzGo;
+  if ($("#sbzAll")) $("#sbzAll").onchange = e => { rows.forEach(r => { if (r.st !== "ok") r.on = e.target.checked; }); sbzDraw(); };
+  $$("#sbZ [data-zon]").forEach(el => el.onchange = () => { rows[+el.dataset.zon].on = el.checked; sbzDraw(); });
+  $$("#sbZ [data-z]").forEach(el => el.onchange = () => {
+    const [i, f] = el.dataset.z.split("|"), r = rows[+i], v = el.value;
+    r[f] = ["c", "y", "set", "ch"].includes(f) ? Math.max(1, +v || 1) : v;
+    r.miss = r.miss.filter(x => x !== ({ s: "State", t: "Category", c: "Class", m: "Medium", sub: "Subject", y: "Year", set: "Set" })[f]);
+    if (f === "c" && !SB_SUBJ(r.c).includes(r.sub)) { r.sub = SB_SUBJ(r.c)[0]; r.miss.push("Subject"); }
+    if (f === "t" && r.t === SB_PYQ && !r.y) r.y = SBS.y;
+    if (f === "t" && r.t === SB_PYQ && !r.set) r.set = 1;
+    if (f === "t" && sbKind(r.t) === "chapters" && !r.ch) { r.ch = 1; r.chn = r.chn || r.file; }
+    sbzDraw();
+  });
+}
+async function sbzGo() {
+  const list = SBZ.rows.filter(r => r.on && r.st !== "ok");
+  if (!list.length) return;
+  SBZ.busy = true; sbzDraw();
+  const live = () => { const b = $("#sbzGo"); if (b) b.textContent = `⏳ ${SBZ.rows.filter(r => r.st === "ok").length} / ${SBZ.rows.filter(r => r.on).length} upload…`; };
+  const keys = {};
+  let next = 0;
+  const one = async () => {
+    for (;;) {
+      const r = list[next++]; if (!r) return;
+      r.st = "up"; r.pc = 0; sbzDraw();
+      try {
+        const ext = (r.path.split(".").pop() || "").toLowerCase();
+        const blob = r.blob || new File([await r.entry.async("blob")], r.path.split("/").pop(), { type: SBZ_MIME[ext] });
+        if (blob.size > 200 * 1048576) throw new Error("200 MB se badi");
+        const file = blob instanceof File ? blob : new File([blob], r.path.split("/").pop(), { type: SBZ_MIME[ext] });
+        const id = await sbSend(file, pc => { r.pc = pc; const c = $$("#sbZ .zs")[SBZ.rows.indexOf(r)]; if (c) c.textContent = `⏳ ${pc}%`; });
+        r.id = "drive:" + id; r.st = "done";
+        (keys[sbzKey(r)] = keys[sbzKey(r)] || []).push(r);
+      } catch (e) { r.st = "bad"; r.err = e.message || String(e); }
+      live();
+    }
+  };
+  await Promise.all([one(), one()]);
+  // har jagah (key) ka record ek baar save
+  let saved = 0, bad = 0;
+  for (const [key, rs] of Object.entries(keys)) {
+    const kind = sbKind(rs[0].t), rec = sbNorm(SB[key], kind);
+    rs.forEach(r => {
+      if (kind === "one") rec[r.fmt] = r.id;
+      else if (kind === "sets") { while (rec.sets.length < r.set) rec.sets.push({}); rec.sets[r.set - 1][r.fmt] = r.id; }
+      else { while (rec.chapters.length < r.ch) rec.chapters.push({ name: "" }); const c = rec.chapters[r.ch - 1]; c[r.fmt] = r.id; if (!String(c.name || "").trim()) c.name = (r.chn || "Chapter " + r.ch).slice(0, 120); }
+    });
+    if (kind === "chapters") rec.chapters.forEach((c, i) => { if (!String(c.name || "").trim()) c.name = "Chapter " + (i + 1); });
+    const res = await call("adminSbSave", { key, rec });
+    if (res.ok) { SB[key] = res.rec || rec; saved++; rs.forEach(r => r.st = "ok"); }
+    else { bad++; rs.forEach(r => { r.st = "bad"; r.err = res.error; }); }
+  }
+  SBZ.busy = false; sbzDraw(); sbList();
+  if (!sbBusy() && !SBDIRTY) sbLoad();
+  const ok = SBZ.rows.filter(r => r.st === "ok").length, fail = SBZ.rows.filter(r => r.st === "bad").length;
+  toast(fail ? `✓ ${ok} file lag gayi · ❌ ${fail} nahi hui — list dekhein` : `✓ ${ok} file ${saved} jagah par lag gayi — website par live`, !!fail);
 }
 async function sbSend(file, prog) {
   const s = await call("adminSbStart", { name: file.name, size: file.size, mime: file.type || "application/octet-stream" });
