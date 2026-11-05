@@ -848,7 +848,9 @@ body.noscroll{overflow:hidden}
 #uq .uqi+.uqi{border-top:1px solid var(--line,#eee)}#uq .uqi b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #uq .uqi small{opacity:.75}#uq .uqi.bad small{color:var(--bad,#e11d48);opacity:1}#uq .uqi.ok small{color:var(--ok,#16a34a);opacity:1}
 #uq .uqi button{align-self:flex-start;border:1px solid var(--line,#ddd);background:none;color:inherit;border-radius:7px;padding:2px 8px;font:inherit;cursor:pointer}
-#uq .tb{height:5px;border-radius:9px;background:rgba(127,127,127,.2);overflow:hidden}#uq .tb i{display:block;height:100%;background:#8b2cff}
+#uq .tb{position:relative;height:14px;border-radius:9px;background:rgba(127,127,127,.18);overflow:hidden}#uq .tb i{display:block;height:100%;background:linear-gradient(90deg,#16a34a,#22c55e);transition:width .3s}
+#uq .tb em{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-size:.68rem;font-weight:800;color:#0b3d1c}
+#uq .uqall{height:4px;background:rgba(127,127,127,.18)}#uq .uqall i{display:block;height:100%;background:#22c55e;transition:width .3s}
 #uq p{margin:0;padding:6px 12px 10px;font-size:.75rem;opacity:.7}
 #pptModal.zip [data-solo]{display:none}
 #peZipList{display:flex;flex-direction:column;gap:5px;margin-top:8px;max-height:460px;overflow:auto}
@@ -2367,13 +2369,13 @@ async function stateBooks() {
   </div>
   <input type="file" id="sbFile" hidden><input type="file" id="sbZipIn" hidden multiple accept=".zip,.pdf,.doc,.docx,.ppt,.pptx">`);
   $("#sbZipB").onclick = () => sbzOpen();
+  if (SBZ && (SBZ.busy || SBZ.rows.length)) { $("#sbZ").hidden = false; sbzDraw(); }
   $("#sbZipIn").onchange = () => sbzRead([...$("#sbZipIn").files]);
   const sel = (id, f) => $(id).onchange = () => {
-    if (sbBusy()) { toast("Upload chal raha hai — khatam hone dein", true); return sbFillSel(); }
     if (SBDIRTY && !confirm("Badlav save nahi hue. Chhod dein?")) return sbFillSel();
     f($(id).value); sbLoad();
   };
-  cfBindSel(() => { if (sbBusy()) { toast("Upload chal raha hai — khatam hone dein", true); return false; } return !SBDIRTY || confirm("Badlav save nahi hue. Chhod dein?"); });
+  cfBindSel(() => !SBDIRTY || confirm("Badlav save nahi hue. Chhod dein?"));
   sel("#sbS", v => SBS.s = v); sel("#sbT", v => SBS.t = v === SB_PYQ && $("#sbPm").value === "ch" ? SB_CPYQ : v); sel("#sbPm", v => SBS.t = v === "ch" ? SB_CPYQ : SB_PYQ); sel("#sbM", v => SBS.m = v); sel("#sbY", v => SBS.y = +v); sel("#sbSub", v => SBS.sub = v);
   sel("#sbC", v => { SBS.c = +v; if (!SB_SUBJ(SBS.c).includes(SBS.sub)) SBS.sub = SB_SUBJ(SBS.c)[0]; });
   $("#sbQ").value = SBQ; $("#sbQ").oninput = () => { SBQ = $("#sbQ").value; sbList(); };
@@ -2383,7 +2385,6 @@ async function stateBooks() {
   $("#sbEd").addEventListener("input", sbInput);
   $("#sbEd").addEventListener("change", sbInput);
   $("#sbList").onclick = e => { const b = e.target.closest("[data-k]"); if (!b) return;
-    if (sbBusy()) return toast("Upload chal raha hai — khatam hone dein", true);
     if (SBDIRTY && !confirm("Badlav save nahi hue. Chhod dein?")) return;
     const p = b.dataset.k.split("|"); Object.assign(SBS, { s: p[0], t: p[1], c: +p[2], m: p[3], sub: p[4], y: +p[5] || SBS.y }); sbLoad(); window.scrollTo({ top: 0, behavior: "smooth" }); };
   $("#sbFile").onchange = sbPicked;
@@ -2406,7 +2407,7 @@ function sbSiteUrl() {
 }
 function sbObj(path) { return path === "" ? SBR : path[0] === "s" ? SBR.sets[+path.slice(1)] : SBR.chapters[+path.slice(1)]; }
 function sbSlots(o, path) {
-  return `<div class="sbfs">${SB_F.map(([k, l, , c]) => { const up = SBUP[path + "|" + k];
+  return `<div class="sbfs">${SB_F.map(([k, l, , c]) => { const up = SBUP[sbKey() + "#" + path + "|" + k];
     return `<div class="sbf${o[k] ? " on" : ""}" style="--fc:${c}"><i>${l === "Word" ? "W" : l === "PPT" ? "P" : "PDF"}</i>${up != null
       ? `<span class="st" data-pg="${path}|${k}">⏳ Upload ${up}%</span>`
       : o[k] ? `<span class="st">✓ ${l} lagi hai</span><button type="button" class="btn sm" data-up="${path}|${k}">Badlein</button><button type="button" class="btn sm danger" data-rm="${path}|${k}" aria-label="${l} hatayein">✕</button>`
@@ -2507,7 +2508,7 @@ function sbzFill(r) {   // jo naam me nahi mila → upar ke dropdown se
 }
 const sbzKey = r => [r.s, r.t, r.c, r.m, r.sub].join("|") + (r.t === SB_PYQ ? "|" + r.y : "");
 function sbzOpen() {
-  if (sbBusy() || (SBZ && SBZ.busy)) return toast("Upload chal raha hai — khatam hone dein", true);
+  if (SBZ && SBZ.busy) { $("#sbZ").hidden = false; sbzDraw(); return toast("Pichhli ZIP abhi upload ho rahi hai — neeche dekhein", true); }
   SBZ = { rows: [], busy: false }; $("#sbZ").hidden = false; sbzDraw(); $("#sbZ").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 async function sbzRead(files) {
@@ -2576,26 +2577,15 @@ async function sbzGo() {
   const list = SBZ.rows.filter(r => r.on && r.st !== "ok");
   if (!list.length) return;
   SBZ.busy = true; sbzDraw();
-  const live = () => { const b = $("#sbzGo"); if (b) b.textContent = `⏳ ${SBZ.rows.filter(r => r.st === "ok").length} / ${SBZ.rows.filter(r => r.on).length} upload…`; };
-  const keys = {};
-  let next = 0;
-  const one = async () => {
-    for (;;) {
-      const r = list[next++]; if (!r) return;
-      r.st = "up"; r.pc = 0; sbzDraw();
-      try {
-        const ext = (r.path.split(".").pop() || "").toLowerCase();
-        const blob = r.blob || new File([await r.entry.async("blob")], r.path.split("/").pop(), { type: SBZ_MIME[ext] });
-        if (blob.size > 200 * 1048576) throw new Error("200 MB se badi");
-        const file = blob instanceof File ? blob : new File([blob], r.path.split("/").pop(), { type: SBZ_MIME[ext] });
-        const id = await sbSend(file, pc => { r.pc = pc; const c = $$("#sbZ .zs")[SBZ.rows.indexOf(r)]; if (c) c.textContent = `⏳ ${pc}%`; });
-        r.id = "drive:" + id; r.st = "done";
-        (keys[sbzKey(r)] = keys[sbzKey(r)] || []).push(r);
-      } catch (e) { r.st = "bad"; r.err = e.message || String(e); }
-      live();
-    }
-  };
-  await Promise.all([one(), one()]);
+  const Z = SBZ, keys = {};
+  await Promise.all(list.map(r => { r.st = "up"; r.pc = 0;
+    return enqueueTask(r.path.split("/").pop(), async prog => {
+      const ext = (r.path.split(".").pop() || "").toLowerCase(), name = r.path.split("/").pop();
+      const file = r.blob || new File([await r.entry.async("blob")], name, { type: SBZ_MIME[ext] });
+      if (file.size > 200 * 1048576) throw new Error("200 MB se badi");
+      return sbSend(file, pc => { r.pc = pc; prog(pc); const c = $$("#sbZ .zs")[Z.rows.indexOf(r)]; if (c && SBZ === Z) c.textContent = `⏳ ${pc}%`; });
+    }).then(res => { if (res.ok) { r.id = "drive:" + res.v; r.st = "done"; (keys[sbzKey(r)] = keys[sbzKey(r)] || []).push(r); } else { r.st = "bad"; r.err = res.error; } if (SBZ === Z) sbzDraw(); });
+  }));
   // har jagah (key) ka record ek baar save
   let saved = 0, bad = 0;
   for (const [key, rs] of Object.entries(keys)) {
@@ -2610,9 +2600,10 @@ async function sbzGo() {
     if (res.ok) { SB[key] = res.rec || rec; saved++; rs.forEach(r => r.st = "ok"); }
     else { bad++; rs.forEach(r => { r.st = "bad"; r.err = res.error; }); }
   }
-  SBZ.busy = false; sbzDraw(); sbList();
-  if (!sbBusy() && !SBDIRTY) sbLoad();
-  const ok = SBZ.rows.filter(r => r.st === "ok").length, fail = SBZ.rows.filter(r => r.st === "bad").length;
+  Z.busy = false;
+  if ($("#sbZ") && SBZ === Z) sbzDraw(); if ($("#sbList")) sbList();
+  if ($("#sbEd") && !sbBusy() && !SBDIRTY) sbLoad();
+  const ok = Z.rows.filter(r => r.st === "ok").length, fail = Z.rows.filter(r => r.st === "bad").length;
   toast(fail ? `✓ ${ok} file lag gayi · ❌ ${fail} nahi hui — list dekhein` : `✓ ${ok} file ${saved} jagah par lag gayi — website par live`, !!fail);
 }
 async function sbSend(file, prog) {
@@ -2633,14 +2624,20 @@ async function sbPicked() {
   const [p, k] = slot.split("|"), ext = (file.name.split(".").pop() || "").toLowerCase();
   if (!SB_F.find(f => f[0] === k)[2].split(",").includes("." + ext)) return toast(`Ye ${SB_F.find(f => f[0] === k)[1]} file nahi hai`, true);
   if (file.size > 200 * 1048576) return toast("File 200 MB se badi hai", true);
-  const o = sbObj(p), key = sbKey();
-  SBUP[slot] = 0; sbDraw();
-  try {
-    const id = await sbSend(file, pc => { SBUP[slot] = pc; const el = $(`#sbEd [data-pg="${slot}"]`); if (el) el.textContent = `⏳ Upload ${pc}%`; });
-    o[k] = "drive:" + id;
-    delete SBUP[slot];
-    if (sbKey() === key) { sbDraw(); await sbSave(true); }
-  } catch (err) { delete SBUP[slot]; sbDraw(); toast("Upload nahi hua: " + (err.message || err), true); }
+  const o = sbObj(p), key = sbKey(), kind = sbKind(SBS.t), label = `${SBS.s} · Class ${SBS.c} · ${SBS.sub} — ${SBS.t}${kind === "sets" ? " " + SBS.y : ""}`;
+  const uk = key + "#" + slot; SBUP[uk] = 0; sbDraw();
+  const r = await enqueueTask(`${file.name} (${label})`, prog => sbSend(file, pc => { SBUP[uk] = pc; prog(pc); const el = sbKey() === key && $(`#sbEd [data-pg="${slot}"]`); if (el) el.textContent = `⏳ Upload ${pc}%`; }));
+  delete SBUP[uk];
+  if (!r.ok) { if ($("#sbEd")) sbDraw(); return toast("Upload nahi hua: " + r.error, true); }
+  const ref = "drive:" + r.v;
+  if ($("#sbEd") && sbKey() === key && sbObj(p)) { sbObj(p)[k] = ref; sbDraw(); return sbSave(true); }
+  // user doosre page / doosri jagah chala gaya → seedha us jagah ka record update
+  const rec = sbNorm(SB[key], kind), t = p === "" ? rec : p[0] === "s" ? (rec.sets[+p.slice(1)] = rec.sets[+p.slice(1)] || {}) : (rec.chapters[+p.slice(1)] = rec.chapters[+p.slice(1)] || { name: "Chapter " + (+p.slice(1) + 1) });
+  t[k] = ref;
+  const sv = await call("adminSbSave", { key, rec });
+  if (!sv.ok) return toast("File upload hui par save nahi hui: " + sv.error, true);
+  SB[key] = sv.rec || rec; if ($("#sbList")) sbList();
+  toast(`✓ ${file.name} lag gayi (${label})`);
 }
 async function sbSave(auto) {
   if (sbBusy() && !auto) return toast("Upload chal raha hai — khatam hone dein", true);
@@ -3171,6 +3168,17 @@ function enqueue(job) {
   const j = Object.assign({ st: "wait", msg: "Line mein…", prog: null, key: Date.now() + "-" + Math.random().toString(36).slice(2, 8) }, job);
   UQ.push(j); UDB.put("files", j.file, j.key); keepJob(j); UQOPEN = true; drawUQ(); pumpUQ();
 }
+/* koi bhi upload kaam (State Books file, ZIP ki file) isi line me — section badlein to bhi chalta rahe */
+function enqueueTask(name, task) {
+  return new Promise(done => { UQ.push({ st: "wait", msg: "Line mein…", prog: null, key: "t" + Date.now() + "-" + Math.random().toString(36).slice(2, 8), name, task, done }); UQOPEN = true; drawUQ(); pumpUQ(); });
+}
+async function runTask(j) {
+  try {
+    const v = await j.task(pc => { j.prog = pc; j.msg = `Upload ${pc}%`; drawUQ(); });
+    j.st = "ok"; j.msg = "✅ Upload ho gaya"; j.prog = 100; j.done({ ok: true, v });
+  } catch (e) { j.st = "bad"; j.msg = "❌ " + (e.message || e); j.prog = null; j.done({ ok: false, error: e.message || String(e) }); }
+}
+window.addEventListener("beforeunload", e => { if (UQ.some(j => j.st === "wait" || j.st === "run") || sbBusy()) { e.preventDefault(); e.returnValue = ""; } });
 let UQRESUMED = false;
 async function resumeUQ() {
   if (UQRESUMED) return; UQRESUMED = true;
@@ -3187,7 +3195,7 @@ function pumpUQ() {
   while (UQRUN < 2) {
     const j = UQ.find(x => x.st === "wait"); if (!j) break;
     j.st = "run"; UQRUN++;
-    runJob(j).finally(() => { UQRUN--; drawUQ(); pumpUQ(); });
+    (j.task ? runTask(j) : runJob(j)).finally(() => { UQRUN--; drawUQ(); pumpUQ(); });
   }
 }
 async function runJob(j) {
@@ -3239,9 +3247,11 @@ function drawUQ() {
   if (!UQ.length) { if (box) box.remove(); return; }
   if (!box) { box = document.createElement("div"); box.id = "uq"; document.body.appendChild(box); }
   const done = UQ.filter(j => j.st === "ok").length, busy = UQ.some(j => j.st === "wait" || j.st === "run");
-  box.innerHTML = `<div class="uqh"><b>${busy ? "⏫" : "✅"} Upload ${done} / ${UQ.length}</b><span class="sp"></span>${busy ? "" : `<button type="button" data-uqx>Clear</button>`}<button type="button" data-uqt>${UQOPEN ? "▾" : "▴"}</button></div>`
-    + (UQOPEN ? `<div class="uql">${UQ.map((j, k) => `<div class="uqi ${j.st}"><b>${esc(j.name)}</b><small>${esc(j.msg)}</small>${j.prog != null ? `<span class="tb"><i style="width:${j.prog}%"></i></span>` : ""}${j.st === "bad" ? `<button type="button" data-uqr="${k}">↻ Dobara</button>` : ""}</div>`).join("")}</div>`
-      + (busy ? `<p>Aap doosre page dekh sakte hain aur nayi PPT add kar sakte hain. Page refresh / band ho jaye to admin dobara kholte hi upload wahin se chalu ho jayega.</p>` : "") : "");
+  const tot = Math.round(UQ.reduce((a, j) => a + (j.st === "ok" ? 100 : j.st === "bad" ? 100 : j.prog || 0), 0) / UQ.length);
+  box.innerHTML = `<div class="uqh"><b>${busy ? "⏫" : "✅"} Upload ${done} / ${UQ.length} · ${tot}%</b><span class="sp"></span>${busy ? "" : `<button type="button" data-uqx>Clear</button>`}<button type="button" data-uqt>${UQOPEN ? "▾" : "▴"}</button></div>`
+    + (UQOPEN ? `<div class="uql">${UQ.map((j, k) => `<div class="uqi ${j.st}"><b>${esc(j.name)}</b><small>${esc(j.msg)}</small>${j.prog != null || j.st === "run" ? `<span class="tb" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${j.prog || 0}"><i style="width:${j.prog || 0}%"></i><em>${j.prog || 0}%</em></span>` : ""}${j.st === "bad" && !j.task ? `<button type="button" data-uqr="${k}">↻ Dobara</button>` : ""}</div>`).join("")}</div>`
+      + `<div class="uqall"><i style="width:${tot}%"></i></div>`
+      + (busy ? `<p>Upload peeche chalta rahega — admin me kahin bhi jaa sakte hain ya doosri window khol sakte hain. Bas ye tab band na karein.</p>` : "") : "");
   box.querySelector("[data-uqt]").onclick = () => { UQOPEN = !UQOPEN; drawUQ(); };
   const x = box.querySelector("[data-uqx]"); if (x) x.onclick = () => { UQ.forEach(dropJob); UQ.length = 0; drawUQ(); };
   box.querySelectorAll("[data-uqr]").forEach(b => b.onclick = () => { const j = UQ[+b.dataset.uqr]; j.st = "wait"; j.msg = "Line mein…"; drawUQ(); pumpUQ(); });
