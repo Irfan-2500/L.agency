@@ -2487,7 +2487,7 @@ function openPreview(id){
     <div class="m-info">
       ${ribbon(p.badge).replace('class="ribbon','style="position:static;display:inline-block;margin-bottom:8px" class="ribbon')}
       <h3 style="font-size:1.4rem">${esc(p.title)}</h3><p>${esc(p.desc)}</p>
-      <div class="m-specs"><span>${p.slides} Slides</span><span>${langTxt(p)}</span><span>${p.theme} Theme</span><span>${arr(p.board).join(", ")}</span><span>${levelTxt(p)||"Other"}</span><span>16:9 HD</span><span>PPTX</span><span>Google Slides ✓</span><span>Keynote ✓</span><span>Editable Icons & Charts</span></div>
+      <div class="m-specs"><span>${p.slides} Slides</span><span>${langTxt(p)}</span><span>${p.theme} Theme</span><span>${arr(p.board).filter(x=>String(x)[0]!=="#").join(", ")}</span><span>${levelTxt(p)||"Other"}</span><span>16:9 HD</span><span>PPTX</span><span>Google Slides ✓</span><span>Keynote ✓</span><span>Editable Icons & Charts</span></div>
       <div class="m-buy">
         <div class="price" style="border:0;margin:0;padding:0"><b>${inr(p.price)}</b><s>${inr(p.mrp)}</s><em style="margin-left:6px">Save ${off}%</em></div>
         <div style="display:flex;gap:8px;margin-left:auto;flex-wrap:wrap">
@@ -3407,7 +3407,7 @@ function list(i,q){const [n,,,,it,kind]=CATS[i],k=q.trim().toLowerCase();
  if(!f.length)return `<div class="cn-none">Kuch nahi mila "${esc(q)}" ke liye.</div>`;
  if(kind==="states")return f.map(([x,lk])=>`<div class="cn-st"><a class="cn-sth" href="${esc(lk||"state-board.html?s="+encodeURIComponent(x))}" data-ui="cat_state"><span>${esc(x)}</span><svg class="i cn-ar"><use href="#i-right"/></svg></a></div>`).join("");
  return f.map(([x,lk])=>{let h=esc(x);if(k){const j=x.toLowerCase().indexOf(k);h=esc(x.slice(0,j))+"<mark>"+esc(x.slice(j,j+k.length))+"</mark>"+esc(x.slice(j+k.length));}
-  return `<a href="${esc(lk||url(n+" "+x))}" data-ui="cat_item"><span>${h}</span></a>`}).join("");}
+  return `<a href="${esc(lk||("ready-ppts.html?"+new URLSearchParams({m:catnavKey(n,x),t:n+" › "+x,q:n+" "+x})))}" data-ui="cat_item"><span>${h}</span></a>`}).join("");}
 let opT=0;function open(i){if(cur===i||!CATS[i])return;cur=i;opT=Date.now();(innerWidth<=720?document.body:nav).appendChild(pan);const [n,e,c,d,it,kind]=CATS[i];
  row.querySelectorAll(".cn-b").forEach(b=>b.setAttribute("aria-expanded",b.dataset.i==i));
  pan.style.setProperty("--c",c);

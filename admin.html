@@ -630,6 +630,16 @@ body.noscroll{overflow:hidden}
   .bigk{grid-template-columns:1fr 1fr}
   .bigk b{font-size:1.25rem}
 }
+.pmenu{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:12px;border:1px dashed color-mix(in srgb,var(--accent) 45%,transparent);background:var(--accent-soft)}
+.pmsel{display:flex;gap:6px;flex-wrap:wrap}
+.pmsel .pill{gap:6px;padding:4px 6px 4px 11px;font-size:.78rem}
+.pmsel .pill button{border:0;background:transparent;color:inherit;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.7rem}
+.pmsel .pill button:hover{background:var(--accent-soft)}
+.pmrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.pmrow .search{min-width:0}
+.pmits{max-height:190px;overflow:auto;padding:2px}
+.mnhow{padding:10px 12px;border-radius:10px;background:var(--accent-soft);color:var(--text);line-height:1.6}
+@media(max-width:560px){.pmrow{grid-template-columns:1fr}}
 @media(max-width:1100px){.mngrid{grid-template-columns:1fr}.mnside{position:static;max-height:none}.mnlist{max-height:300px}}
 @media(max-width:900px){.topbar{padding:10px 16px}.content{padding:18px 16px 70px}.dgrid{grid-template-columns:1fr}}
 @media(max-width:560px){
@@ -842,6 +852,10 @@ body.noscroll{overflow:hidden}
     <div style="display:flex;flex-direction:column;gap:6px" id="peCatW"><span class="phead">Category</span><div class="seg" id="peCat"></div></div>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Class <span style="text-transform:none;letter-spacing:0;font-weight:500">— kai chun sakte hain</span></span><div class="seg" id="peCls"></div></div>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Board / Exam</span><div class="seg" id="peBoard"></div></div>
+    <div class="pmenu" id="peMenuW"><span class="phead">Category menu <span style="text-transform:none;letter-spacing:0;font-weight:500">— home page ki category line (NCERT, CBSE, JEE…) me kahan dikhe · kai chun sakte hain</span></span>
+      <div class="pmsel" id="peMenuSel"></div>
+      <div class="pmrow"><select id="peMenuCat" aria-label="Menu category"></select><label class="search"><svg class="i"><use href="#i-search"/></svg><input type="search" id="peMenuQ" placeholder="Item dhoondhein…" aria-label="Search items"></label></div>
+      <div class="seg pmits" id="peMenuIt"></div></div>
     <div class="grid2">
       <div style="display:flex;flex-direction:column;gap:6px"><span class="phead">Language</span><div class="seg" id="peLang"></div></div>
       <div style="display:flex;flex-direction:column;gap:6px" id="peThemeW"><span class="phead">Theme</span><div class="seg" id="peTheme"></div></div>
@@ -1409,9 +1423,9 @@ function seg(el, opts, val, key) {
 function mseg(el, opts, key) {
   const draw = () => {
     el.innerHTML = opts.map(v => `<button type="button" class="${ED[key].includes(v) ? "on" : ""}" data-v="${esc(v)}">${ED[key].includes(v) ? "✓ " : ""}${esc(v)}</button>`).join("") +
-      (ED[key].length ? `<button type="button" data-clear style="color:var(--bad)">✕ Clear</button>` : "");
+      (ED[key].some(v => opts.includes(v)) ? `<button type="button" data-clear style="color:var(--bad)">✕ Clear</button>` : "");
     el.querySelectorAll("[data-v]").forEach(b => b.onclick = () => { const v = b.dataset.v, a = ED[key]; a.includes(v) ? a.splice(a.indexOf(v), 1) : a.push(v); a.sort((x, y) => opts.indexOf(x) - opts.indexOf(y)); draw(); });
-    const c = el.querySelector("[data-clear]"); if (c) c.onclick = () => { ED[key] = []; draw(); };
+    const c = el.querySelector("[data-clear]"); if (c) c.onclick = () => { ED[key] = ED[key].filter(v => !opts.includes(v)); draw(); };
   };
   draw();
 }
@@ -2543,8 +2557,28 @@ function editPpt(p) {
   const S = (el, opts, key) => { ED = PE; seg(el, opts, PE[key], key); };
   S($("#peCat"), PCATS, "cat"); S($("#peLang"), LANGS, "lang"); S($("#peTheme"), [["Dark", "🌙 Dark"], ["Light", "☀️ Light"]], "theme"); S($("#peBadge"), PBADGE, "badge");
   ED = PE; mseg($("#peCls"), CLASSES, "level"); mseg($("#peBoard"), BOARDS, "board");
+  PMC = ""; $("#peMenuQ").value = ""; drawPeMenu(); menuList().then(drawPeMenu);
   drawPeImgs(); drawPeFile(); $("#pptModal").hidden = false; $("#peName").focus();
 }
+/* Category menu: file ko home page ki category line ke item (jaise NCERT › NCERT Solutions) me dikhana.
+   PE.board me "#ncert/ncert-solutions" jaisa chhupa tag judta hai */
+let MENU_L = null, PMC = "";
+async function menuList() { if (!MENU_L) { const r = await call("adminPrices"); MENU_L = catnavList(r.ok ? r.settings : {}); } return MENU_L; }
+function menuLabels() { const m = {}; (MENU_L || catnavList({})).forEach(c => c.it.forEach(x => { const [l] = catnavSplit(x); m[catnavKey(c.n, l)] = c.n + " › " + l; })); return m; }
+function drawPeMenu() {
+  if (!PE) return;
+  const L = (MENU_L || catnavList({})).filter(c => c.k !== "states" && c.it.length), lab = menuLabels(), tags = PE.board.filter(x => x[0] === "#");
+  if (!PMC || !L.some(c => c.n === PMC)) PMC = (L[0] || {}).n || "";
+  $("#peMenuSel").innerHTML = tags.length ? tags.map(t => `<span class="pill tk">${esc(lab[t] || t.slice(1))}<button type="button" data-unt="${esc(t)}" aria-label="Remove ${esc(lab[t] || t)}">✕</button></span>`).join("") : `<span class="note">Abhi kisi category me nahi. Neeche se chunein (optional).</span>`;
+  $("#peMenuCat").innerHTML = L.map(c => `<option value="${esc(c.n)}" ${c.n === PMC ? "selected" : ""}>${esc(c.e + " " + c.n)} (${c.it.length})</option>`).join("");
+  const c = L.find(x => x.n === PMC), q = $("#peMenuQ").value.trim().toLowerCase();
+  const its = c ? c.it.map(x => catnavSplit(x)).filter(([l, lk]) => !lk && (!q || l.toLowerCase().includes(q))) : [];
+  $("#peMenuIt").innerHTML = its.map(([l]) => { const k = catnavKey(c.n, l), on = PE.board.includes(k); return `<button type="button" class="${on ? "on" : ""}" data-tg="${esc(k)}" aria-pressed="${on}">${on ? "✓ " : ""}${esc(l)}</button>`; }).join("") || `<span class="note">Koi item nahi mila.</span>`;
+  $$("#peMenuIt [data-tg]").forEach(b => b.onclick = () => { const k = b.dataset.tg, a = PE.board; if (a.includes(k)) a.splice(a.indexOf(k), 1); else if (a.length >= 20) return toast("20 se zyada tag nahi lag sakte", true); else a.push(k); drawPeMenu(); });
+  $$("#peMenuSel [data-unt]").forEach(b => b.onclick = () => { PE.board = PE.board.filter(x => x !== b.dataset.unt); ED = PE; drawPeMenu(); });
+}
+$("#peMenuCat").onchange = e => { PMC = e.target.value; $("#peMenuQ").value = ""; drawPeMenu(); };
+$("#peMenuQ").oninput = drawPeMenu;
 function drawPeFile(prog) {
   const f = PE.file, box = $("#peFile");
   if (typeof prog === "string") { box.innerHTML = `<div class="up"><b>${esc(prog)}</b><small>Andar ki saari PPT gin rahe hain</small></div>`; return; }
@@ -3231,9 +3265,12 @@ $("#peSave").onclick = async () => {
 /* ---------- Category Menu: home page ki category line (State Books, NCERT, CBSE…) ---------- */
 let MN = [], MNI = 0, MNDIRTY = false, MNCUSTOM = false;
 const MN_COLORS = ["#f97316", "#2563eb", "#7c3aed", "#0891b2", "#dc2626", "#16a34a", "#db2777", "#ca8a04", "#0f766e", "#4f46e5", "#e11d48", "#64748b"];
+let MNCOUNT = null;
+const MN_FILES = c => c.it.reduce((s, x) => s + (MNCOUNT[catnavKey(c.n, catnavSplit(x)[0])] || 0), 0);
 async function menu() {
   loading();
-  const r = await call("adminPrices"); if (!r.ok) return fail(r.error);
+  const [r, pp] = await Promise.all([call("adminPrices"), call("adminPpts")]); if (!r.ok) return fail(r.error);
+  MNCOUNT = {}; if (pp.ok) pp.ppts.forEach(p => (p.board || []).forEach(t => { if (String(t)[0] === "#") MNCOUNT[t] = (MNCOUNT[t] || 0) + 1; }));
   MNCUSTOM = !!(r.settings && r.settings.catnav);
   MN = catnavList(r.settings || {}); MNI = 0; MNDIRTY = false;
   V(head("Category Menu", "The category bar on the home page. Rename, reorder, hide or add categories and the links inside them.",
@@ -3261,7 +3298,7 @@ function mnDraw() {
   $("#mnPrev").innerHTML = live.length ? live.map(c => `<span class="mnchip" role="listitem" style="--c:${c.c}"><span aria-hidden="true">${esc(c.e)}</span>${esc(c.n)}</span>`).join("") : `<span class="note">All categories are hidden — the bar will not show.</span>`;
   $("#mnCount").textContent = `${live.length} live · ${MN.length - live.length} hidden`;
   $("#mnList").innerHTML = MN.map((c, i) => `<li><button type="button" class="mnit${i === MNI ? " on" : ""}${c.h ? " off" : ""}" data-i="${i}" aria-current="${i === MNI}" style="--c:${c.c}">
-    <span class="mne" aria-hidden="true">${esc(c.e)}</span><span class="mnt"><b>${esc(c.n)}</b><small>${c.it.length ? c.it.length + " links" : "Single link"}${c.h ? " · Hidden" : ""}</small></span></button></li>`).join("");
+    <span class="mne" aria-hidden="true">${esc(c.e)}</span><span class="mnt"><b>${esc(c.n)}</b><small>${c.it.length ? c.it.length + " links" : "Single link"}${MNCOUNT && c.k !== "states" && MN_FILES(c) ? ` · ${MN_FILES(c)} files` : ""}${c.h ? " · Hidden" : ""}</small></span></button></li>`).join("");
   $$("#mnList .mnit").forEach(b => b.onclick = () => { MNI = +b.dataset.i; mnDraw(); });
   mnEd();
 }
@@ -3280,7 +3317,8 @@ function mnEd() {
       <label class="f mnw"><span class="lh">Link <small>· optional · used for “View all”, or when there are no items</small></span><input type="text" id="mnU" inputmode="url" placeholder="${c.k === "states" ? "state-books.html" : "ready-ppts.html?q=" + esc(encodeURIComponent(c.n))}" value="${esc(c.u || "")}"></label>
       <label class="f mnw"><span class="lh">Items <small>· one per line · add “ | link” for a custom page, e.g. <code>NCERT Notes | study-notes-pdf.html</code></small></span>
         <textarea id="mnIt" rows="10" spellcheck="false">${esc(c.it.join("\n"))}</textarea><span class="note" id="mnItN"></span></label>
-      ${c.k === "states" ? `<p class="note mnw">ℹ️ Each item opens that state's State Board page. Files are managed in <a href="#books" data-go="books">State Books</a>.</p>` : ""}
+      ${c.k === "states" ? `<p class="note mnw">ℹ️ Each item opens that state's State Board page. Upload its files in <a href="#books" data-go="books">State books</a>.</p>`
+        : `<p class="note mnw mnhow">📤 <b>Files kaise lagayein:</b> <a href="#ppts" data-go="ppts">Ready PPTs</a> ya <a href="#notes" data-go="notes">Study notes</a> me file upload karein → “Category menu” me ye category aur item chunein → Save. Item par click karte hi wahi files dikhengi.${MNCOUNT && MN_FILES(c) ? ` <span class="pill ok">${MN_FILES(c)} file${MN_FILES(c) === 1 ? "" : "s"} lagi hain</span>` : ""}</p>`}
     </div>
     <div class="row mnfoot"><label class="sw"><input type="checkbox" id="mnH" ${c.h ? "" : "checked"}><i></i> Show on website</label><span class="sp"></span>
       <span id="mnDelBox"><button class="btn sm danger" id="mnDel">${ic("i-trash")} Delete category</button></span></div>`;
@@ -3317,6 +3355,7 @@ async function mnSave(reset) {
   const r = await call("adminMenuSave", reset ? { reset: true } : { cats });
   btn.disabled = false;
   if (!r.ok) return toast(/Unknown admin action/i.test(r.error || "") ? "Google Script update needed for Category Menu" : r.error, true);
+  MENU_L = null;
   toast(reset ? "Menu reset to default" : "Menu published — live on the website");
   menu();
 }

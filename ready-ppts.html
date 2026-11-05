@@ -412,9 +412,12 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
       <button class="btn btn-ghost btn-sm ftoggle" id="ftoggle"><svg class="i" style="width:15px"><use href="#i-sliders"/></svg>Filters <span id="fcount"></span></button>
     </div>
     <div class="trow" style="margin-top:10px"><div class="cats" id="cats"></div></div>
+    <div class="mnf" id="mnf" hidden></div>
     <div class="filters" id="filters"></div>
   </div>
 </div>
+<style>.mnf{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;padding:9px 12px;border-radius:12px;border:1px solid rgba(139,44,255,.4);background:rgba(139,44,255,.08);font-weight:600;font-size:.88rem}
+.mnf[hidden]{display:none}.mnf button{margin-left:auto;border:1px solid currentColor;background:none;color:inherit;font:inherit;font-size:.8rem;padding:4px 10px;border-radius:99px;cursor:pointer;opacity:.8}</style>
 
 <main class="container">
   <div class="result"><span id="resultTxt"></span><button class="clear" id="clear" hidden>Clear all filters ✕</button></div>
@@ -535,11 +538,12 @@ async function postS(action, body){   /* Google Script (admin panel) */
 }
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem("la_cart")) || []; } catch(e) {}
-const st = { q:"", cat:"all", f:{}, sort:"random", shown:CONFIG.perPage };
+const st = { menu:"", menuT:"", q:"", cat:"all", f:{}, sort:"random", shown:CONFIG.perPage };
 /* PPTs ya Notes: admin panel mein category "Notes" wali PDF yahan "Notes" tab mein dikhti hai */
 let NOTES = /\/notes/.test(location.pathname) || new URLSearchParams(location.search).get("type") === "notes";
 /* Notes ki pehchaan: category "notes" (naya Google Script) ya class list mein "Study Notes" tag (purana Script bhi chalta rahe) */
 const NOTE_TAG = "Study Notes";
+const brd = p => arr(p.board).filter(x => String(x)[0] !== "#");   // "#..." = Category menu tag (chhupa)
 const isNote = p => p.cat === "notes" || arr(p.level).includes(NOTE_TAG);
 const lv = p => arr(p.level).filter(l => l !== NOTE_TAG);
 const VIEW = () => PRODUCTS.filter(p => isNote(p) === NOTES);
@@ -633,17 +637,17 @@ const FILTERS = [
   { key:"level",   label:"Class",    nl:"Class / Exam", get:p => lv(p), all:CLASS_ALL, order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
   { key:"subject", label:"Subject",  get:p => arr(p.subject), all:SUBJ_ALL },
   { key:"lang",    label:"Language", get:p => p.lang === "Both" ? ["Hindi + English","Hindi","English"] : [p.lang], fixed:["Hindi","English","Hindi + English"], ppt:true },
-  { key:"board",   label:"Board",    nl:"Board / Exam", get:p => arr(p.board) },
+  { key:"board",   label:"Board",    nl:"Board / Exam", get:p => brd(p) },
   { key:"theme",   label:"Theme",    get:p => [p.theme === "Light" ? "☀️ Light" : "🌙 Dark"], ppt:true },
   { key:"style",   label:"Style",    get:p => [p.anim ? "Animated" : "Without Animation"], ppt:true },
   { key:"price",   label:"Price",    get:p => PRICE.filter(b => p.price <= b[0]).map(b => b[1]), fixed:PRICE.map(b => b[1]) }
 ];
 const matchQ = p => { const q = st.q.trim().toLowerCase(); if (!q) return true;
-  const hay = [p.title, p.desc, p.subject, langOf(p), ...lv(p), ...arr(p.board)].join(" ").toLowerCase();
+  const hay = [p.title, p.desc, p.subject, langOf(p), ...lv(p), ...brd(p)].join(" ").toLowerCase();
   return q.split(/\s+/).every(w => hay.includes(w)); };
 const matchF = (p, skip) => FILTERS.every(f => f.key === skip || (NOTES && f.ppt) || !st.f[f.key] || f.get(p).includes(st.f[f.key]));
 const MEDIUM = [["Hindi","Hindi Medium"],["English","English Medium"],["Both","Hindi + English"]];
-const matchC = p => st.cat === "all" || (st.cat.startsWith("m:") ? p.lang === st.cat.slice(2) : p.cat === st.cat || (st.cat === "anim" && p.anim));
+const matchC = p => (!st.menu || arr(p.board).includes(st.menu)) && (st.cat === "all" || (st.cat.startsWith("m:") ? p.lang === st.cat.slice(2) : p.cat === st.cat || (st.cat === "anim" && p.anim)));
 /* Har baar page khulne par PPTs naye random order mein (render dobara hone par order wahi rahe) */
 const RND = new Map(), rnd = p => RND.get(p.id) ?? (RND.set(p.id, Math.random()), RND.get(p.id));
 const SORTS = { random:(a,b) => rnd(a) - rnd(b), popular:(a,b) => b.sales - a.sales || b.added - a.added, low:(a,b) => a.price - b.price, high:(a,b) => b.price - a.price, new:(a,b) => b.added - a.added };
@@ -734,6 +738,8 @@ function card(p){
     </div></article>`;
 }
 function render(){
+  const mf = $("#mnf"); mf.hidden = !st.menu;
+  if (st.menu) { mf.innerHTML = `<span>📂 ${esc(st.menuT || "Category")}</span><button type="button">✕ Show all</button>`; mf.querySelector("button").onclick = () => { st.menu = ""; render(); }; }
   renderCats(); renderFilters();
   const V = VIEW(), w = W();
   const list = V.filter(p => matchC(p) && matchQ(p) && matchF(p)).sort(SORTS[st.sort]);
@@ -846,7 +852,7 @@ function openPreview(id){
     <div class="m-info">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
-      <div class="tags">${(isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...arr(p.board), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "📦 PPT Bundle (ZIP)" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      <div class="tags">${(isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "📦 PPT Bundle (ZIP)" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       ${N ? `<p style="font-size:.78rem;color:var(--dim)">🔒 ${slots.filter(x => !x.lock).length} ${isNote(p) ? "page" : "slides"} free preview · baaki ${slots.filter(x => x.lock).length} kharidne ke baad khulengi (kul ${N}).</p>` : ""}
       <div class="m-buy">
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
@@ -1139,7 +1145,10 @@ function seoList(){
   } catch(e) {}
   if (!API && !PRODUCTS.length) PRODUCTS = DEMO;
   if (!API && PRODUCTS === DEMO) try { const v = await (await fetch("api/pay-config", { cache:"no-store" })).json(); if (v.ok && v.payments) VPAY = PAY = true; } catch(e) {}
-  const qs = new URLSearchParams(location.search), q = qs.get("q"); if (q) { st.q = q; $("#q").value = q; }
+  const qs = new URLSearchParams(location.search), q = qs.get("q"), mk = qs.get("m");
+  const tagged = mk ? PRODUCTS.filter(p => arr(p.board).includes(mk)) : [];
+  if (tagged.length) { st.menu = mk; st.menuT = qs.get("t") || ""; NOTES = tagged.every(isNote); }   /* home page Category menu se aaye: sirf us item ki files */
+  else if (q) { st.q = q; $("#q").value = q; }
   setKind(NOTES, true); render(); window.PSLoader && PSLoader.hide(); seoList();
   /* homepage se "Buy / Checkout": seedha payment kholo */
   const pay = (qs.get("pay") || "").split(",").map(Number).filter(id => PRODUCTS.some(p => p.id === id));
