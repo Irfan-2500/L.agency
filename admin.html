@@ -405,11 +405,211 @@ label.f span{font-weight:500;color:var(--dim)}
   .stat b{font-size:1.6rem}
   .pagehead .acts{margin-left:0}
 }
+/* =========================================================
+   PRO LAYER — refined colours, layout, accessibility (v2)
+   ========================================================= */
+:root,[data-theme="dark"]{
+  --bg:#0a0c12;--bg2:#10131c;--side:#0d1017;--card:#141823;--card2:#1a1f2c;--hover:#1e2433;
+  --line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.13);
+  --text:#eef1f8;--muted:#aab1c5;--dim:#8d94ab;
+  --accent:#8b5cf6;--accent2:#7c3aed;--accent-soft:rgba(139,92,246,.15);--cyan:#22d3ee;--pink:#f472b6;--ok2:#10b981;
+  --shadow:0 1px 0 rgba(255,255,255,.03) inset,0 8px 24px -14px rgba(0,0,0,.7);
+  --glow:0 0 0 1px rgba(139,92,246,.45),0 14px 34px -16px rgba(139,92,246,.55);
+  --ring:0 0 0 3px rgba(139,92,246,.45);
+}
+[data-theme="light"]{
+  --bg:#f5f6fa;--bg2:#eef0f5;--side:#ffffff;--card:#ffffff;--card2:#f6f7fb;--hover:#f1eefc;
+  --line:rgba(17,20,39,.08);--line2:rgba(17,20,39,.15);
+  --text:#111427;--muted:#4b5167;--dim:#5f6680;
+  --accent:#6d28d9;--accent2:#6d28d9;--accent-soft:rgba(109,40,217,.09);--cyan:#0e7490;--pink:#db2777;--ok2:#059669;
+  --ok:#15803d;--warn:#b45309;--bad:#be123c;--info:#0369a1;
+  --shadow:0 1px 2px rgba(17,20,39,.05),0 8px 24px -18px rgba(17,20,39,.25);
+  --glow:0 0 0 1px rgba(109,40,217,.35),0 14px 30px -18px rgba(109,40,217,.45);
+  --ring:0 0 0 3px rgba(109,40,217,.3);
+}
+body{font-size:14.5px;letter-spacing:-.003em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:fixed;left:12px;top:-60px;z-index:200;padding:10px 16px;border-radius:10px;background:var(--accent2);color:#fff;font-weight:700;transition:top .15s}
+.skip:focus{top:12px;text-decoration:none}
+kbd{font:600 .68rem/1 var(--body);padding:3px 6px;border-radius:6px;border:1px solid var(--line2);background:var(--card2);color:var(--dim)}
+
+/* buttons & inputs */
+.btn{border-radius:9px;min-height:38px}
+.btn.sm{min-height:32px}
+.btn.pri{background:var(--accent2);border-color:var(--accent2);box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 8px 18px -10px var(--accent2)}
+.btn.pri:hover{filter:brightness(1.1);border-color:var(--accent2)}
+.btn:focus-visible{box-shadow:var(--ring);outline:0}
+input:focus,select:focus,textarea:focus{box-shadow:var(--ring)}
+label.f{color:var(--text);font-weight:600;font-size:.8rem}
+label.f span{color:var(--dim)}
+.card{border-radius:14px;padding:18px 20px}
+.card h3{font-size:.98rem;letter-spacing:-.01em}
+
+/* sidebar */
+@media(min-width:901px){.shell{grid-template-columns:256px 1fr}}
+.side{gap:14px;padding:18px 12px}
+.side .brand{padding:2px 8px 6px}
+.nav{gap:2px}
+.nav .lbl{font-size:.64rem;letter-spacing:.12em;padding:14px 12px 5px;color:var(--dim)}
+.nav button{min-height:38px;padding:8px 12px;border-radius:9px;font-size:.88rem;font-weight:600;gap:10px;color:var(--muted)}
+.nav button svg{width:17px;height:17px;opacity:.85}
+.nav button.on{background:var(--accent-soft);color:var(--text);box-shadow:inset 3px 0 0 var(--accent)}
+.nav .n{background:var(--accent2)}
+.jump{display:flex;align-items:center;gap:9px;width:100%;min-height:38px;margin-bottom:4px;padding:8px 10px 8px 12px;border-radius:10px;border:1px solid var(--line2);background:var(--bg2);color:var(--dim);font-weight:600;text-align:left}
+.jump:hover{border-color:var(--accent);color:var(--text)}
+.jump kbd{margin-left:auto}
+.side .foot{border-radius:12px}
+
+/* topbar */
+.topbar{padding:12px 28px;gap:10px}
+.topbar .crumb{font-size:.74rem;font-weight:600;color:var(--dim);letter-spacing:.02em}
+.topbar .crumb b{color:var(--muted);font-weight:600}
+.topbar h2{font-size:1.08rem}
+.content{padding:26px 28px 70px;max-width:1280px}
+.pagehead{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.pagehead h1{font-size:1.5rem;letter-spacing:-.02em}
+.pagehead p{font-size:.9rem}
+h1[tabindex="-1"]:focus{outline:0}
+
+/* dashboard */
+.dhead{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.dhead h1{font-family:var(--display);font-size:clamp(1.35rem,2.6vw,1.75rem);letter-spacing:-.02em;line-height:1.2}
+.dhead p{color:var(--muted);margin-top:3px}
+.dhead .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.alertbar{display:flex;align-items:center;gap:12px;width:100%;margin-bottom:16px;padding:12px 16px;border-radius:12px;border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);background:var(--warn-soft);color:var(--text);text-align:left;font-weight:500}
+.alertbar svg{color:var(--warn)}
+.alertbar .go{font-weight:700;color:var(--warn)}
+.alertbar:hover{border-color:var(--warn)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:16px}
+.kpi{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:16px 18px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);text-align:left;color:var(--text);overflow:hidden;transition:.18s;min-height:150px}
+.kpi:hover{border-color:color-mix(in srgb,var(--c) 55%,transparent);transform:translateY(-1px)}
+.kpi .kh{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:.8rem;font-weight:600}
+.kpi .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);font-weight:800}
+.kpi .ic svg{width:16px;height:16px}
+.kpi b{font-family:var(--display);font-size:1.85rem;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin-top:4px}
+.kpi small{color:var(--dim);font-size:.76rem;font-weight:500}
+.kpi .spark{position:absolute;right:0;bottom:0;width:48%;height:42px}
+.spark polyline{fill:none;stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.dl{display:inline-flex;align-items:center;gap:4px;font-size:.76rem;font-weight:700;padding:2px 8px;border-radius:99px;position:relative;z-index:1}
+.dl small{font-weight:500;color:var(--dim);font-size:.72rem}
+.dl.up{color:var(--ok);background:var(--ok-soft)}
+.dl.dn{color:var(--bad);background:var(--bad-soft)}
+.dl.flat{color:var(--dim);background:var(--card2)}
+.dgrid{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+.dstack{display:flex;flex-direction:column;gap:16px;min-width:0}
+.combo{position:relative}
+.combo svg{width:100%;height:auto;display:block;overflow:visible}
+.combo .gl{stroke:var(--line);stroke-width:1}
+.combo .ax{fill:var(--dim);font-size:10px;font-family:var(--body)}
+.combo .ln{fill:none;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.combo .hit rect{fill:transparent}
+.combo .hit .cur{stroke:var(--line2);stroke-dasharray:3 3;opacity:0}
+.combo .hit circle{fill:var(--card);stroke-width:2.2;opacity:0}
+.combo .hit:hover .cur,.combo .hit:focus .cur,.combo .hit:hover circle,.combo .hit:focus circle{opacity:1}
+.combo .hit:focus{outline:0}
+.ctip{position:absolute;top:0;z-index:3;display:flex;flex-direction:column;gap:3px;padding:8px 11px;border-radius:10px;background:var(--card);border:1px solid var(--line2);box-shadow:0 12px 30px -10px rgba(0,0,0,.45);font-size:.78rem;pointer-events:none;white-space:nowrap}
+.ctip span,.clegend span{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.ctip i,.clegend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.clegend{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:.78rem}
+.ctbl{margin-top:10px;font-size:.8rem}
+.ctbl summary{cursor:pointer;color:var(--dim);font-weight:600;width:max-content}
+.ctbl .rtbl{max-height:240px;overflow:auto;margin-top:8px}
+.donut{position:relative;width:min(190px,70%);margin:4px auto 16px}
+.donut svg{width:100%;height:auto;display:block;transform:none}
+.donut circle{fill:none;stroke-width:5.2}
+.donut circle.bg{stroke:var(--card2)}
+.donut .dc{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.donut .dc b{font-family:var(--display);font-size:1.7rem;line-height:1}
+.donut .dc small{color:var(--dim);font-size:.74rem}
+.legend div{gap:9px}
+.legend small{color:var(--dim);font-size:.74rem;min-width:34px;text-align:right}
+.notes{display:flex;flex-direction:column;gap:8px;padding-left:18px;color:var(--muted);font-size:.86rem}
+.todo{list-style:none;display:flex;flex-direction:column;gap:6px}
+.todo button{display:flex;align-items:center;gap:11px;width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--text);text-align:left;font-weight:600;font-size:.86rem}
+.todo button:hover{border-color:var(--c)}
+.todo .qi{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);flex-shrink:0}
+.todo .qi svg{width:16px;height:16px}
+.todo b{margin-left:auto;min-width:26px;padding:1px 8px;border-radius:99px;text-align:center;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c);font-variant-numeric:tabular-nums}
+.allgood{display:flex;align-items:center;gap:8px;color:var(--ok);font-weight:600}
+.recent .pill{flex-shrink:0}
+.quick{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.lh small{color:var(--dim);font-weight:500;font-size:.76rem}
+.stat{border-radius:14px}
+.stat b{font-size:1.75rem}
+
+/* command palette */
+.pal{position:fixed;inset:0;z-index:120;display:flex;justify-content:center;align-items:flex-start;padding:12vh 14px 14px;background:rgba(3,4,10,.55);backdrop-filter:blur(4px)}
+.pal[hidden]{display:none}
+.pbox{width:min(560px,100%);border-radius:16px;background:var(--card);border:1px solid var(--line2);box-shadow:0 30px 80px -20px rgba(0,0,0,.6);overflow:hidden;animation:fade .15s}
+.pbox .pin{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.pbox .pin input{border:0;background:transparent;box-shadow:none;padding:6px 0;font-size:1rem}
+.pbox .pin input:focus{box-shadow:none}
+.pbox ul{list-style:none;max-height:min(420px,55vh);overflow:auto;padding:6px}
+.pbox li{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-weight:600}
+.pbox li small{margin-left:auto;color:var(--dim);font-weight:500;font-size:.74rem}
+.pbox li[aria-selected="true"]{background:var(--accent-soft);color:var(--text)}
+.pbox .pf{display:flex;gap:14px;padding:9px 16px;border-top:1px solid var(--line);font-size:.72rem;color:var(--dim)}
+
+/* category menu */
+.mnprev{margin-bottom:16px}
+.mnchips{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:thin}
+.mnchip{flex:none;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;border:1px solid color-mix(in srgb,var(--c) 45%,var(--line2));background:color-mix(in srgb,var(--c) 10%,var(--card));font-weight:600;font-size:.82rem;white-space:nowrap}
+.mngrid{display:grid;grid-template-columns:minmax(240px,320px) minmax(0,1fr);gap:16px;align-items:start}
+.mnside{position:sticky;top:84px;max-height:calc(100vh - 110px);display:flex;flex-direction:column}
+.mnside .ch{flex-wrap:wrap}
+.mnside .ch .note{margin-left:0}
+.mnside .ch .btn{margin-left:auto}
+.mnlist{list-style:none;display:flex;flex-direction:column;gap:4px;overflow:auto;margin:0 -6px;padding:0 6px}
+.mnit{display:flex;align-items:center;gap:11px;width:100%;padding:8px 10px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text);text-align:left}
+.mnit:hover{background:var(--hover)}
+.mnit.on{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+.mnit.off{opacity:.55}
+.mne,.mnbadge{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;font-size:1rem;background:color-mix(in srgb,var(--c) 18%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 45%,transparent)}
+.mnt{min-width:0;display:flex;flex-direction:column}
+.mnt b{font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mnt small{color:var(--dim);font-size:.74rem}
+.mned .ch{flex-wrap:wrap}
+.mned .ch .btn.icon{width:34px;height:34px;min-height:34px;padding:0;font-weight:800}
+.mnform{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px}
+.mnform .mnw{grid-column:1/-1}
+.mnform .f{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:600}
+.mnform textarea{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84rem;line-height:1.55;resize:vertical}
+.mnform code{font-size:.78rem;padding:1px 5px;border-radius:5px;background:var(--card2)}
+.mncol{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mncol button{width:30px;height:30px;border-radius:50%;border:2px solid var(--card);background:var(--c);box-shadow:0 0 0 1px var(--line2)}
+.mncol button[aria-checked="true"]{box-shadow:0 0 0 2px var(--text)}
+.mncustom{position:relative;width:30px;height:30px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 1px var(--line2);background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red);cursor:pointer}
+.mncustom input{position:absolute;inset:-6px;width:calc(100% + 12px);height:calc(100% + 12px);opacity:0;cursor:pointer}
+.mnfoot{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+#mnBar.on{border-color:var(--warn)}
+@media(max-width:560px){#mnBar:not(.on){display:none}}
+
+@media(max-width:1100px){.mngrid{grid-template-columns:1fr}.mnside{position:static;max-height:none}.mnlist{max-height:300px}}
+@media(max-width:900px){.topbar{padding:10px 16px}.content{padding:18px 16px 70px}.dgrid{grid-template-columns:1fr}}
+@media(max-width:560px){
+  .kpis{grid-template-columns:1fr 1fr;gap:10px}
+  .kpi{padding:13px 13px 12px;min-height:132px}
+  .kpi b{font-size:1.35rem}
+  .kpi .kh{font-size:.72rem;gap:7px}.kpi .ic{width:26px;height:26px}
+  .kpi .spark{width:60%;height:30px;opacity:.8}
+  .dl small{display:none}
+  .dhead .acts{margin-left:0}
+  .mnform{grid-template-columns:1fr}
+  .pagehead h1{font-size:1.3rem}
+}
+@media(prefers-reduced-motion:reduce){.skip{transition:none}}
+@media(forced-colors:active){.nav button.on{outline:2px solid CanvasText}.kpi,.card{border:1px solid CanvasText}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
+<a class="skip" href="#view">Skip to content</a>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+  <symbol id="i-rupee" viewBox="0 0 24 24"><path d="M6 3h12M6 8h12M14.5 21 6 13h3a5 5 0 0 0 0-10"/></symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2z"/></symbol>
   <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></symbol>
   <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></symbol>
@@ -448,7 +648,7 @@ label.f span{font-weight:500;color:var(--dim)}
   <div class="card">
     <div class="tgl js-tgl" aria-label="Theme"></div>
     <div class="brand" style="margin:6px auto 0"><img src="uploads/brand/logo.webp" alt="PPT Store" width="46" height="20" style="height:20px;width:auto"><span><b>PPT Store</b><small>Admin Panel</small></span></div>
-    <div id="loginBox"><h1>Admin Login</h1><p>Apna Admin ID aur password daalein.</p></div>
+    <div id="loginBox"><h1>Admin Login</h1><p>Sign in to manage your store.</p></div>
     <form id="loginForm" style="display:flex;flex-direction:column;gap:12px">
       <label class="f">Admin ID<input type="text" id="uid" autocomplete="username" autocapitalize="off" spellcheck="false" required></label>
       <label class="f">Password<span class="pwbox"><input type="password" id="pw" autocomplete="current-password" required><button type="button" id="pwEye" aria-label="Show password"><svg class="i"><use href="#i-eye"/></svg></button></span></label>
@@ -465,24 +665,28 @@ label.f span{font-weight:500;color:var(--dim)}
     <aside class="side" id="side">
       <div class="brand"><img src="uploads/brand/logo.webp" alt="PPT Store" width="46" height="20" style="height:20px;width:auto"><span><b>PPT Store</b><small>Admin Panel</small></span></div>
       <nav class="nav" id="tabs" aria-label="Admin sections">
+        <button type="button" class="jump" data-pal aria-label="Search sections (Ctrl+K)"><svg class="i"><use href="#i-search"/></svg>Search…<kbd>Ctrl K</kbd></button>
         <span class="lbl">Overview</span>
         <button data-t="dash"><svg class="i"><use href="#i-home"/></svg>Dashboard</button>
-        <button data-t="stats"><svg class="i"><use href="#i-chart"/></svg>Analytics (Visitors)</button>
-        <button data-t="report"><svg class="i"><use href="#i-pie"/></svg>Kamai Report</button>
-        <span class="lbl">Business</span>
+        <button data-t="stats"><svg class="i"><use href="#i-chart"/></svg>Analytics</button>
+        <button data-t="report"><svg class="i"><use href="#i-pie"/></svg>Revenue report</button>
+        <span class="lbl">Sales</span>
         <button data-t="orders"><svg class="i"><use href="#i-cart"/></svg>Orders<span class="n" id="nOrders" hidden></span></button>
-        <button data-t="sales"><svg class="i"><use href="#i-pie"/></svg>Sales (Online)</button>
-        <button data-t="customers"><svg class="i"><use href="#i-phone"/></svg>Customers (Login)</button>
+        <button data-t="sales"><svg class="i"><use href="#i-rupee"/></svg>Online sales</button>
+        <button data-t="customers"><svg class="i"><use href="#i-users"/></svg>Customers</button>
         <button data-t="coupons"><svg class="i"><use href="#i-tag"/></svg>Coupons</button>
-        <button data-t="messages"><svg class="i"><use href="#i-msg"/></svg>Messages / Tickets</button>
+        <span class="lbl">Engagement</span>
+        <button data-t="messages"><svg class="i"><use href="#i-msg"/></svg>Inbox</button>
         <button data-t="reviews"><svg class="i"><use href="#i-star"/></svg>Reviews<span class="n" id="nReviews" hidden></span></button>
-        <span class="lbl">Website</span>
-        <button data-t="ppts"><svg class="i"><use href="#i-upload"/></svg>Ready PPTs (Upload)</button>
-        <button data-t="notes"><svg class="i"><use href="#i-book"/></svg>Study Notes (PDF)</button>
-        <button data-t="books"><svg class="i"><use href="#i-book"/></svg>State Books</button>
+        <span class="lbl">Catalog</span>
+        <button data-t="ppts"><svg class="i"><use href="#i-upload"/></svg>Ready PPTs</button>
+        <button data-t="notes"><svg class="i"><use href="#i-book"/></svg>Study notes</button>
+        <button data-t="books"><svg class="i"><use href="#i-book"/></svg>State books</button>
         <button data-t="themes"><svg class="i"><use href="#i-image"/></svg>Themes</button>
-        <button data-t="prices"><svg class="i"><use href="#i-tag"/></svg>Prices</button>
-        <button data-t="site"><svg class="i"><use href="#i-sliders"/></svg>Website Controls</button>
+        <button data-t="prices"><svg class="i"><use href="#i-tag"/></svg>Pricing</button>
+        <span class="lbl">Website</span>
+        <button data-t="menu"><svg class="i"><use href="#i-list"/></svg>Category menu</button>
+        <button data-t="site"><svg class="i"><use href="#i-sliders"/></svg>Site controls</button>
         <button data-t="settings"><svg class="i"><use href="#i-gear"/></svg>Settings</button>
       </nav>
       <div class="foot">
@@ -493,17 +697,24 @@ label.f span{font-weight:500;color:var(--dim)}
     <div class="scrim" id="scrim"></div>
     <div class="main">
       <header class="topbar">
-        <button class="btn icon ghost menu" id="menuBtn" aria-label="Open menu"><svg class="i"><use href="#i-menu"/></svg></button>
-        <div><div class="crumb">Admin Panel</div><h2 id="pageTitle">Dashboard</h2></div>
+        <button class="btn icon ghost menu" id="menuBtn" aria-label="Open menu" aria-controls="side" aria-expanded="false"><svg class="i"><use href="#i-menu"/></svg></button>
+        <div><div class="crumb" id="crumb">Admin</div><h2 id="pageTitle">Dashboard</h2></div>
         <span class="sp"></span>
         <span class="note hide-m" id="lastSync"></span>
+        <button class="btn icon" data-pal aria-label="Search sections (Ctrl+K)" title="Search (Ctrl+K)"><svg class="i"><use href="#i-search"/></svg></button>
         <button class="btn icon" id="refresh" aria-label="Refresh" title="Refresh"><svg class="i"><use href="#i-refresh"/></svg></button>
         <div class="tgl js-tgl" aria-label="Theme"></div>
       </header>
-      <main class="content" id="view"></main>
+      <main class="content" id="view" tabindex="-1" aria-busy="false"></main>
     </div>
   </div>
 </section>
+<!-- QUICK SEARCH (Ctrl+K) -->
+<div class="pal" id="pal" hidden role="dialog" aria-modal="true" aria-label="Go to section">
+  <div class="pbox"><div class="pin"><svg class="i"><use href="#i-search"/></svg><input type="text" id="palQ" placeholder="Go to section…" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="palL" aria-autocomplete="list"><kbd>Esc</kbd></div>
+    <ul id="palL" role="listbox" aria-label="Sections"></ul>
+    <div class="pf"><span><kbd>↑</kbd> <kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>/</kbd> or <kbd>Ctrl K</kbd> anytime</span></div></div>
+</div>
 
 <!-- THEME EDITOR -->
 <div class="modal" id="themeModal" hidden role="dialog" aria-modal="true" aria-labelledby="teTitle">
@@ -604,6 +815,7 @@ label.f span{font-weight:500;color:var(--dim)}
 </div>
 
 <script src="config.js"></script>
+<script src="js/catnav.js"></script>
 <script>
 const LA = window.LA_CONFIG || {};
 const API = String(LA.orderUrl || "").trim();
@@ -614,7 +826,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Physical Education","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Kamai Report", coupons: "Coupons", sales: "Sales", customers: "Customers", ppts: "Ready PPTs", notes: "Study Notes", books: "State Books", orders: "Orders", themes: "Themes", prices: "Prices", reviews: "Reviews", messages: "Messages / Tickets", site: "Website Controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", sales: "Online sales", customers: "Customers", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", notes: "Study notes", books: "State books", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -718,6 +930,7 @@ async function demoCall(a, d) {
     case "adminMessages": return ok({ messages: D.messages });
     case "adminOrderDelete": { const keys = (d.rows || []).map(x => x.row + "|" + x.id); const before = D.orders.length; D.orders = D.orders.filter(o => !keys.includes(o.row + "|" + o.id)); D.orders.forEach((o, i) => o.row = i + 2); return ok({ deleted: before - D.orders.length }); }
     case "adminUiSave": Object.assign(D.settings, d.settings); return ok({ settings: Object.assign({}, D.settings) });
+    case "adminMenuSave": D.settings.catnav = d.reset ? "" : JSON.stringify({ v: 1, cats: d.cats }); return ok({ settings: Object.assign({}, D.settings) });
     case "adminStats": {
       const day = k => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - k); return d.toISOString(); };
       const daily = [...Array(30)].map((_, k) => { const v = Math.round(8 + 6 * Math.sin(k / 3) + k / 2); return { day: day(29 - k), visitors: v, visits: v * 2 }; });
@@ -764,7 +977,7 @@ const DEMO_IMG = {};
 if (LA.previewDemo) document.addEventListener("DOMContentLoaded", () => {
   const b = document.createElement("div");
   b.textContent = "👀 Preview demo · sample data"; b.title = "Sirf preview: koi bhi Admin ID / password chalega, yahan ke badlav asli website par nahi jaate";
-  b.style.cssText = "position:fixed;left:10px;bottom:10px;z-index:99;padding:5px 12px;border-radius:99px;font-size:.74rem;font-weight:700;background:#f59e0b;color:#1c1917;box-shadow:0 6px 18px rgba(0,0,0,.25);max-width:calc(100% - 24px);text-align:center";
+  b.style.cssText = "position:fixed;right:10px;bottom:10px;z-index:99;padding:5px 12px;border-radius:99px;font-size:.74rem;font-weight:700;background:#f59e0b;color:#1c1917;box-shadow:0 6px 18px rgba(0,0,0,.25);max-width:calc(100% - 24px);text-align:center";
   document.body.appendChild(b);
 });
 function setToken(t) { TOKEN = t || ""; try { t ? sessionStorage.setItem("la_admin", t) : sessionStorage.removeItem("la_admin"); } catch (e) {} }
@@ -788,7 +1001,7 @@ $("#pwEye").onclick = () => { const p = $("#pw"); p.type = p.type === "password"
 $("#loginForm").onsubmit = async e => {
   e.preventDefault();
   const user = $("#uid").value.trim(), pw = $("#pw").value;
-  if (!user || !pw) return $("#loginErr").textContent = "Admin ID aur password dono daalein";
+  if (!user || !pw) return $("#loginErr").textContent = "Enter your Admin ID and password";
   $("#loginBtn").disabled = true; $("#loginErr").textContent = "";
   const r = await call("adminLogin", { user, password: pw });
   $("#loginBtn").disabled = false;
@@ -799,18 +1012,25 @@ $("#loginForm").onsubmit = async e => {
 $("#logout").onclick = () => logout();
 
 /* ---------- APP ---------- */
-$$("#tabs button").forEach(b => b.onclick = () => go(b.dataset.t));
-const closeMenu = () => { $("#side").classList.remove("open"); $("#scrim").classList.remove("open"); };
-$("#menuBtn").onclick = () => { $("#side").classList.add("open"); $("#scrim").classList.add("open"); };
+$$("#tabs button[data-t]").forEach(b => b.onclick = () => go(b.dataset.t, true));
+const closeMenu = () => { $("#side").classList.remove("open"); $("#scrim").classList.remove("open"); $("#menuBtn").setAttribute("aria-expanded", "false"); };
+$("#menuBtn").onclick = () => { $("#side").classList.add("open"); $("#scrim").classList.add("open"); $("#menuBtn").setAttribute("aria-expanded", "true"); const b = $("#tabs button.on") || $("#tabs button"); b && b.focus(); };
 $("#scrim").onclick = closeMenu;
 $("#refresh").onclick = () => go(tab);
-function go(t) {
+function go(t, user) {
+  if (!TITLES[t]) t = "dash";
   tab = t; closeMenu();
-  $$("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.t === t));
+  $$("#tabs button[data-t]").forEach(b => { b.classList.toggle("on", b.dataset.t === t); b.dataset.t === t ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"); });
   $("#pageTitle").textContent = TITLES[t] || "";
+  $("#crumb").innerHTML = `Admin <span aria-hidden="true">/</span> <b>${esc(GROUP[t] || "")}</b>`;
+  document.title = (TITLES[t] || "Admin") + " · PPT Store Admin";
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   window.scrollTo(0, 0);
-  ({ dash, stats, report, sales, customers, coupons, ppts, notes, books: stateBooks, orders, themes, prices, reviews, messages, site, settings })[t]();
+  const v = $("#view"); v.setAttribute("aria-busy", "true");
+  Promise.resolve(({ dash, stats, report, sales, customers, coupons, ppts, notes, books: stateBooks, menu, orders, themes, prices, reviews, messages, site, settings })[t]()).finally(() => {
+    v.setAttribute("aria-busy", "false");
+    if (user && tab === t) { const h = $("#view h1"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
+  });
 }
 async function startApp() {
   $("#app").hidden = false;
@@ -827,56 +1047,130 @@ const ago = t => { const d = new Date(t); if (isNaN(d)) return ""; const m = Mat
 const head = (title, sub, acts) => `<div class="pagehead"><div><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${acts ? `<div class="acts">${acts}</div>` : ""}</div>`;
 function setWho() { const u = SUM.user || "Admin"; $("#whoName").textContent = u; $("#whoAv").textContent = initials(u); }
 
+/* ---------- Chart helpers (SVG, no library) ---------- */
+const DAY = 864e5;
+const day0 = k => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - k); return d; };   // k din pehle (aaj = 0)
+const dLabel = d => d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+const pct = (a, b) => b ? Math.round((a - b) / b * 100) : (a ? 100 : 0);
+const sum = a => a.reduce((x, y) => x + (+y || 0), 0);
+function perDay(list, n, val) {   // last n days ke buckets (purane → aaj)
+  const out = Array(n).fill(0), start = day0(n - 1).getTime();
+  list.forEach(x => { const t = new Date(x.time).getTime(); if (isNaN(t) || t < start) return; const i = Math.floor((t - start) / DAY); if (i >= 0 && i < n) out[i] += val ? val(x) : 1; });
+  return out;
+}
+function delta(a, b, vs) {
+  if (!a && !b) return `<span class="dl flat">No change</span>`;
+  const p = pct(a, b), up = p >= 0;
+  return `<span class="dl ${p === 0 ? "flat" : up ? "up" : "dn"}"><span aria-hidden="true">${p === 0 ? "■" : up ? "▲" : "▼"}</span> ${Math.abs(p)}%<span class="sr"> ${up ? "up" : "down"}</span> <small>vs ${vs}</small></span>`;
+}
+function spark(vals, col) {
+  if (!vals || !vals.length) return "";
+  const mx = Math.max(1, ...vals), w = 120, h = 34, st = w / Math.max(1, vals.length - 1);
+  const pts = vals.map((v, i) => [i * st, h - 3 - v / mx * (h - 6)]);
+  const line = pts.map(p => p.map(n => n.toFixed(1)).join(",")).join(" ");
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,${h} ${line} ${w},${h}" style="fill:${col};opacity:.14"/><polyline points="${line}" style="stroke:${col}"/></svg>`;
+}
+function kpi(o) {
+  return `<button class="kpi${o.hot ? " hot" : ""}" data-go="${o.go}" style="--c:${o.col}" aria-label="${esc(o.label)}: ${esc(String(o.value))}. Open ${esc(TITLES[o.go] || o.go)}">
+    <span class="kh"><span class="ic">${o.icon}</span><span class="kl">${esc(o.label)}</span></span>
+    <b>${o.value}</b>${o.d || ""}${o.sub ? `<small>${o.sub}</small>` : ""}${spark(o.sp, o.col)}</button>`;
+}
+/* Area (left axis) + bars (right axis) chart, hover tooltips + table for screen readers */
+function comboChart(id, days, area, bars) {
+  const W = 720, H = 250, L = 34, R = bars ? 30 : 10, T = 14, B = 26, iw = W - L - R, ih = H - T - B, n = days.length, st = iw / Math.max(1, n - 1), bw = Math.max(3, Math.min(14, iw / n * .45));
+  const mxA = Math.max(4, ...area.vals), mxB = bars ? Math.max(2, ...bars.vals) : 1;
+  const nice = m => { m = Math.max(1, m); const p = Math.pow(10, Math.floor(Math.log10(m))), f = m / p; return Math.max(1, ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find(x => f <= x) || 10) * p); };
+  const tA = nice(mxA / 4) * 4, tB = nice(mxB / 4) * 4;
+  const x = i => L + i * st, yA = v => T + ih - v / tA * ih, yB = v => T + ih - v / tB * ih;
+  const line = area.vals.map((v, i) => `${x(i).toFixed(1)},${yA(v).toFixed(1)}`).join(" ");
+  const grid = [0, .25, .5, .75, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${(T + ih - f * ih).toFixed(1)}" y2="${(T + ih - f * ih).toFixed(1)}" class="gl"/><text x="${L - 6}" y="${(T + ih - f * ih + 3).toFixed(1)}" class="ax" text-anchor="end">${nf(Math.round(tA * f))}</text>${bars ? `<text x="${W - R + 6}" y="${(T + ih - f * ih + 3).toFixed(1)}" class="ax">${nf(Math.round(tB * f))}</text>` : ""}`).join("");
+  const every = Math.ceil(n / 7);
+  const xl = days.map((d, i) => (i % every === (n - 1) % every) ? `<text x="${x(i).toFixed(1)}" y="${H - 6}" class="ax" text-anchor="middle">${i === n - 1 ? "Today" : dLabel(d)}</text>` : "").join("");
+  const bar = bars ? bars.vals.map((v, i) => v ? `<rect x="${(x(i) - bw / 2).toFixed(1)}" y="${yB(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${(T + ih - yB(v)).toFixed(1)}" rx="2" style="fill:${bars.col}"/>` : "").join("") : "";
+  const hits = days.map((d, i) => `<g class="hit" tabindex="0" role="listitem" aria-label="${dLabel(d)}: ${area.vals[i]} ${area.name}${bars ? `, ${bars.vals[i]} ${bars.name}` : ""}"><rect x="${(x(i) - st / 2).toFixed(1)}" y="${T}" width="${st.toFixed(1)}" height="${ih}"/><line x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${T}" y2="${T + ih}" class="cur"/><circle cx="${x(i).toFixed(1)}" cy="${yA(area.vals[i]).toFixed(1)}" r="4" style="stroke:${area.col}"/></g>`).join("");
+  const tip = `<div class="ctip" id="${id}Tip" hidden></div>`;
+  const tbl = `<details class="ctbl"><summary>View as table</summary><div class="rtbl"><table><thead><tr><th>Date</th><th>${esc(area.name)}</th>${bars ? `<th>${esc(bars.name)}</th>` : ""}</tr></thead><tbody>${days.map((d, i) => `<tr><td>${dLabel(d)}</td><td>${nf(area.vals[i])}</td>${bars ? `<td>${nf(bars.vals[i])}</td>` : ""}</tr>`).reverse().join("")}</tbody></table></div></details>`;
+  setTimeout(() => {
+    const root = document.getElementById(id); if (!root) return; const tp = document.getElementById(id + "Tip");
+    const show = (g, i) => { const r = root.getBoundingClientRect(), b = g.querySelector("rect").getBoundingClientRect();
+      tp.innerHTML = `<b>${i === n - 1 ? "Today" : dLabel(days[i])}</b><span><i style="background:${area.col}"></i>${nf(area.vals[i])} ${esc(area.name)}</span>${bars ? `<span><i style="background:${bars.col}"></i>${nf(bars.vals[i])} ${esc(bars.name)}</span>` : ""}`;
+      tp.hidden = false; const left = Math.min(r.width - tp.offsetWidth - 4, Math.max(4, b.left - r.left + b.width / 2 - tp.offsetWidth / 2)); tp.style.left = left + "px"; };
+    root.querySelectorAll(".hit").forEach((g, i) => { g.onmouseenter = g.onfocus = () => show(g, i); g.onmouseleave = g.onblur = () => tp.hidden = true; });
+  });
+  return `<div class="combo" id="${id}"><svg viewBox="0 0 ${W} ${H}" role="list" aria-label="${esc(area.name)}${bars ? " and " + esc(bars.name) : ""}, last ${n} days">
+    <defs><linearGradient id="${id}G" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:${area.col};stop-opacity:.32"/><stop offset="1" style="stop-color:${area.col};stop-opacity:0"/></linearGradient></defs>
+    ${grid}${bar}<polygon points="${L},${T + ih} ${line} ${x(n - 1).toFixed(1)},${T + ih}" style="fill:url(#${id}G)"/><polyline points="${line}" class="ln" style="stroke:${area.col}"/>${xl}${hits}</svg>${tip}</div>
+    <div class="clegend"><span><i style="background:${area.col}"></i>${esc(area.name)}</span>${bars ? `<span><i style="background:${bars.col}"></i>${esc(bars.name)} (right axis)</span>` : ""}</div>${tbl}`;
+}
+function donut(parts, total, label) {
+  let off = 25; const t = total || 1;
+  const segs = parts.map(([k, n, col]) => { const len = n / t * 100, s = `<circle r="15.9155" cx="21" cy="21" style="stroke:${col}" stroke-dasharray="${len.toFixed(2)} ${(100 - len).toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}"><title>${esc(k)}: ${n}</title></circle>`; off -= len; return s; }).join("");
+  return `<div class="donut"><svg viewBox="0 0 42 42" role="img" aria-label="${esc(label)}: ${parts.map(([k, n]) => k + " " + n).join(", ")}"><circle r="15.9155" cx="21" cy="21" class="bg"/>${segs}</svg><div class="dc"><b>${nf(total)}</b><small>${esc(label)}</small></div></div>`;
+}
+
 /* ---------- Dashboard ---------- */
-const STATUS_COL = { New: "var(--warn)", In: "var(--info)", Done: "var(--ok)", Paid: "var(--ok)", Cancelled: "var(--bad)" };
+const STATUS_COL = { New: "var(--warn)", In: "var(--info)", Done: "var(--ok)", Paid: "var(--ok2)", Cancelled: "var(--bad)" };
 const stCol = s => STATUS_COL[String(s).split(" ")[0]] || "var(--accent)";
 async function dash() {
   loading();
   const [s, o, vs, sl] = await Promise.all([call("adminSummary"), call("adminOrders"), call("adminStats"), call("adminSales")]);
   if (!s.ok) return fail(s.error);
-  SUM = s; setWho(); badge("#nOrders", s.newOrders); 
-  const list = o.ok ? o.orders : [], stats = o.ok ? o.statuses : [];
+  SUM = s; setWho(); badge("#nOrders", s.newOrders);
+  const list = o.ok ? o.orders : [], stats = o.ok ? o.statuses : [], sales = sl.ok ? sl.sales : [];
   if (o.ok) { ORD = list; STAT = stats; }
   const hr = new Date().getHours(), greet = hr < 12 ? "Good morning" : hr < 17 ? "Good afternoon" : "Good evening";
   const today = new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-  // last 7 days
-  const days = [...Array(7)].map((_, k) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (6 - k)); return d; });
-  const per = days.map(d => list.filter(x => { const t = new Date(x.time); return !isNaN(t) && t >= d && t < new Date(d.getTime() + 864e5); }).length);
-  const mx = Math.max(1, ...per), week = per.reduce((a, b) => a + b, 0), todayN = per[6];
-  // status split
-  const counts = (stats.length ? stats : [...new Set(list.map(x => x.status))]).map(st => [st, list.filter(x => x.status === st).length]).filter(x => x[1]);
-  const total = list.length || 1;
-  V(`<div class="hello"><h1>${greet}${SUM.user ? ", " + esc(SUM.user) : ""}! 👋</h1><p>${today} · Aapki website ka poora control yahan hai. Jo bhi yahan badlenge, website par turant dikhega.</p>
-    <div class="row"><button class="btn sm" data-go="orders">${ic("i-cart")} View orders</button><button class="btn sm" data-go="ppts">${ic("i-upload")} Upload PPT / PDF</button><button class="btn sm" data-go="themes" data-add="1">${ic("i-plus")} Add theme</button><a class="btn sm" href="./" target="_blank" rel="noopener">${ic("i-ext")} Open website</a></div></div>
-  <div class="stats">
-    <button class="stat ${s.newOrders ? "hot" : ""}" data-go="orders" style="--c:var(--warn)"><span class="ic">${ic("i-zap")}</span><b>${s.newOrders}</b><small>New orders</small></button>
-    <button class="stat" data-go="orders" style="--c:var(--accent)"><span class="ic">${ic("i-cart")}</span><b>${s.orders}</b><small>Total orders${o.ok ? ` · ${todayN} today` : ""}</small></button>
-    <button class="stat" data-go="themes" style="--c:var(--cyan)"><span class="ic">${ic("i-image")}</span><b>${s.liveThemes}</b><small>Themes live${s.themes > s.liveThemes ? ` · ${s.themes - s.liveThemes} hidden` : ""}</small></button>
-    <button class="stat" data-go="reviews" style="--c:#fbbf24"><span class="ic">${ic("i-star")}</span><b>${s.pendingReviews}</b><small>Hidden reviews</small></button>
-    <button class="stat" data-go="messages" style="--c:var(--ok)"><span class="ic">${ic("i-msg")}</span><b>${s.messages}</b><small>Messages / tickets</small></button>
-    ${vs.ok ? `<button class="stat" data-go="stats" style="--c:var(--info)"><span class="ic">${ic("i-eye")}</span><b>${nf(vs.todayUnique)}</b><small>Aaj ke visitors · ${nf(vs.monthUnique)} is mahine</small></button>` : ""}
-    ${sl.ok ? `<button class="stat" data-go="sales" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(sl.sales.filter(x => new Date(x.time) >= new Date(new Date().getFullYear(), new Date().getMonth(), 1)).reduce((a, x) => a + x.amount, 0))}</b><small>Online kamai is mahine · ${sl.sales.length} sale total</small></button>` : ""}
+  // 30 din ka data
+  const days = [...Array(30)].map((_, k) => day0(29 - k));
+  const ord30 = perDay(list, 30), sale30 = perDay(sales, 30), rev30 = perDay(sales, 30, x => +x.amount || 0);
+  const vis30 = days.map(d => { const r = vs.ok && (vs.daily || []).find(x => { const t = new Date(x.day); t.setHours(0, 0, 0, 0); return t.getTime() === d.getTime(); }); return r ? +r.visitors || 0 : 0; });
+  const last7 = a => sum(a.slice(23)), prev7 = a => sum(a.slice(16, 23));
+  const now = new Date(), mStart = new Date(now.getFullYear(), now.getMonth(), 1), pmStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const pmSame = new Date(pmStart.getTime() + (now - mStart));   // pichle mahine ki isi tareekh tak
+  const revM = sum(sales.filter(x => new Date(x.time) >= mStart).map(x => x.amount)), revPM = sum(sales.filter(x => { const t = new Date(x.time); return t >= pmStart && t < pmSame; }).map(x => x.amount));
+  const conv = v => v ? (Math.round(v * 1000) / 10) : 0;
+  const cv7 = conv(last7(vis30) ? (last7(ord30) + last7(sale30)) / last7(vis30) : 0), cvP = conv(prev7(vis30) ? (prev7(ord30) + prev7(sale30)) / prev7(vis30) : 0);
+  const counts = (stats.length ? stats : [...new Set(list.map(x => x.status))]).map(st => [st, list.filter(x => x.status === st).length, stCol(st)]).filter(x => x[1]);
+  const todo = [
+    [s.newOrders, "New orders to confirm", "orders", "i-zap", "var(--warn)"],
+    [s.messages, "Messages / tickets", "messages", "i-msg", "var(--info)"],
+    [s.pendingReviews, "Reviews hidden from site", "reviews", "i-star", "#f59e0b"],
+    [s.themes - s.liveThemes, "Themes hidden from site", "themes", "i-image", "var(--cyan)"]
+  ].filter(x => x[0] > 0);
+  V(`<div class="dhead"><div><h1 tabindex="-1">${greet}${SUM.user ? ", " + esc(SUM.user) : ""}</h1><p>${today} · Here's how your store is doing.</p></div>
+    <div class="acts"><button class="btn sm" data-go="ppts">${ic("i-upload")} Upload PPT</button><button class="btn sm" data-go="themes" data-add="1">${ic("i-plus")} Add theme</button><a class="btn sm pri" href="./" target="_blank" rel="noopener">${ic("i-ext")} View site</a></div></div>
+  ${s.newOrders ? `<button class="alertbar" data-go="orders">${ic("i-zap")}<span><b>${s.newOrders} new order${s.newOrders > 1 ? "s" : ""}</b> waiting for confirmation</span><span class="sp"></span><span class="go">Review →</span></button>` : ""}
+  <div class="kpis">
+    ${sl.ok ? kpi({ go: "sales", col: "var(--ok)", icon: "₹", label: "Revenue · this month", value: rs(revM), d: delta(revM, revPM, "last month"), sp: rev30.slice(16) }) : ""}
+    ${kpi({ go: "orders", col: "var(--accent)", icon: ic("i-cart"), label: "Orders · last 7 days", value: nf(last7(ord30) + last7(sale30)), d: delta(last7(ord30) + last7(sale30), prev7(ord30) + prev7(sale30), "prev. 7 days"), sp: ord30.map((v, i) => v + sale30[i]).slice(16), sub: `${nf(s.orders)} orders all time` })}
+    ${vs.ok ? kpi({ go: "stats", col: "var(--info)", icon: ic("i-eye"), label: "Visitors · last 7 days", value: nf(last7(vis30)), d: delta(last7(vis30), prev7(vis30), "prev. 7 days"), sp: vis30.slice(16), sub: `${nf(vs.todayUnique)} today` }) : ""}
+    ${vs.ok ? kpi({ go: "report", col: "var(--pink)", icon: ic("i-pie"), label: "Conversion · last 7 days", value: cv7 + "%", d: delta(cv7, cvP, "prev. 7 days"), sub: "Orders ÷ visitors" }) : ""}
   </div>
   <div class="dgrid">
-    <div class="card"><div class="ch"><h3>${ic("i-chart", "color:var(--accent)")} Orders — last 7 days</h3><span class="note">${week} this week</span></div>
-      ${o.ok ? `<div class="bars">${per.map((n, k) => `<div class="bc"><div class="b ${n ? "" : "zero"}" style="height:${Math.max(3, n / mx * 100)}%"><span>${n || ""}</span></div><small>${k === 6 ? "Today" : days[k].toLocaleDateString("en-IN", { weekday: "short" })}</small></div>`).join("")}</div>` : `<p class="note">${esc(o.error || "")}</p>`}</div>
-    <div class="card"><div class="ch"><h3>${ic("i-pie", "color:var(--cyan)")} Order status</h3></div>
-      ${counts.length ? `<div class="split">${counts.map(([st, n]) => `<i style="width:${n / total * 100}%;background:${stCol(st)}" title="${esc(st)}: ${n}"></i>`).join("")}</div>
-      <div class="legend">${counts.map(([st, n]) => `<div><i style="background:${stCol(st)}"></i>${esc(st)}<b>${n}</b></div>`).join("")}</div>` : `<p class="note">Abhi tak koi order nahi.</p>`}</div>
+    <section class="card" aria-labelledby="chH"><div class="ch"><h3 id="chH">${ic("i-chart", "color:var(--accent)")} Traffic &amp; orders</h3><span class="note">Last 30 days</span></div>
+      ${comboChart("dChart", days, { name: "Visitors", vals: vis30, col: "var(--accent)" }, { name: "Orders", vals: ord30.map((v, i) => v + sale30[i]), col: "var(--cyan)" })}</section>
+    <section class="card" aria-labelledby="osH"><div class="ch"><h3 id="osH">${ic("i-pie", "color:var(--cyan)")} Order status</h3></div>
+      ${counts.length ? `${donut(counts, list.length, "orders")}
+      <div class="legend">${counts.map(([st, n, c]) => `<div><i style="background:${c}"></i>${esc(st)}<b>${n}</b><small>${Math.round(n / (list.length || 1) * 100)}%</small></div>`).join("")}</div>` : `<p class="note">No orders yet.</p>`}</section>
   </div>
   <div class="dgrid">
-    <div class="card"><div class="ch"><h3>${ic("i-clock", "color:var(--warn)")} Recent orders</h3><button class="btn sm" data-go="orders" style="margin-left:auto">View all</button></div>
-      <div class="recent">${list.slice(0, 6).map(x => `<a href="#orders" data-go="orders" data-q="${esc(x.id)}"><span class="av">${esc(initials(x.name))}</span><span class="tx"><b>#${esc(x.id)} · ${esc(x.name)}</b><small>${esc(x.topic)} · ${ago(x.time)}</small></span><span class="pill" style="color:${stCol(x.status)};border-color:currentColor">${esc(x.status)}</span></a>`).join("") || `<p class="note">Abhi tak koi order nahi aaya.</p>`}</div></div>
-    <div class="card"><div class="ch"><h3>${ic("i-zap", "color:var(--accent)")} Quick links</h3></div>
-      <div class="quick">
-        <a href="${esc(s.sheetUrl)}" target="_blank" rel="noopener" style="--c:var(--ok)"><span class="qi">${ic("i-sheet")}</span><span>Google Sheet<small>Saara data</small></span></a>
-        <a href="${esc(s.filesUrl)}" target="_blank" rel="noopener" style="--c:var(--warn)"><span class="qi">${ic("i-folder")}</span><span>Customer files<small>Orders ki files</small></span></a>
-        <a href="${esc(s.imagesUrl)}" target="_blank" rel="noopener" style="--c:var(--cyan)"><span class="qi">${ic("i-image")}</span><span>Theme images<small>Uploaded slides</small></span></a>
-        <button data-go="prices" style="--c:#f472b6"><span class="qi">${ic("i-tag")}</span><span>Edit prices<small>Smart Board pricing</small></span></button>
-        <button data-go="settings" style="--c:var(--accent)"><span class="qi">${ic("i-gear")}</span><span>Settings<small>Contact &amp; password</small></span></button>
-        <a href="./" target="_blank" rel="noopener" style="--c:var(--info)"><span class="qi">${ic("i-globe")}</span><span>Website<small>Changes check karein</small></span></a>
-      </div></div>
-  </div>`);
+    <section class="card" aria-labelledby="roH"><div class="ch"><h3 id="roH">${ic("i-clock", "color:var(--warn)")} Recent orders</h3><button class="btn sm" data-go="orders" style="margin-left:auto">View all</button></div>
+      <div class="recent">${list.slice(0, 6).map(x => `<a href="#orders" data-go="orders" data-q="${esc(x.id)}"><span class="av">${esc(initials(x.name))}</span><span class="tx"><b>#${esc(x.id)} · ${esc(x.name)}</b><small>${esc(x.topic)} · ${ago(x.time)}</small></span><span class="pill" style="color:${stCol(x.status)};border-color:color-mix(in srgb,${stCol(x.status)} 45%,transparent)">${esc(x.status)}</span></a>`).join("") || `<p class="note">No orders yet.</p>`}</div></section>
+    <div class="dstack">
+      <section class="card" aria-labelledby="tdH"><div class="ch"><h3 id="tdH">${ic("i-check", "color:var(--ok)")} Needs attention</h3></div>
+        ${todo.length ? `<ul class="todo">${todo.map(([n, l, g, i, c]) => `<li><button data-go="${g}" style="--c:${c}"><span class="qi">${ic(i)}</span><span>${l}</span><b>${n}</b></button></li>`).join("")}</ul>` : `<p class="allgood">${ic("i-check")} All caught up.</p>`}</section>
+      ${vs.ok && vs.sources && vs.sources.length ? `<section class="card" aria-labelledby="srH"><div class="ch"><h3 id="srH">${ic("i-globe", "color:var(--info)")} Top traffic sources</h3><button class="btn sm" data-go="stats" style="margin-left:auto">Details</button></div>${toplist(vs.sources.slice(0, 5), vs.month, "var(--info)")}</section>` : ""}
+    </div>
+  </div>
+  <section class="card" aria-labelledby="qlH"><div class="ch"><h3 id="qlH">${ic("i-zap", "color:var(--accent)")} Shortcuts</h3></div>
+    <div class="quick">
+      <a href="${esc(s.sheetUrl)}" target="_blank" rel="noopener" style="--c:var(--ok)"><span class="qi">${ic("i-sheet")}</span><span>Google Sheet<small>All store data</small></span></a>
+      <a href="${esc(s.filesUrl)}" target="_blank" rel="noopener" style="--c:var(--warn)"><span class="qi">${ic("i-folder")}</span><span>Customer files<small>Order uploads</small></span></a>
+      <a href="${esc(s.imagesUrl)}" target="_blank" rel="noopener" style="--c:var(--cyan)"><span class="qi">${ic("i-image")}</span><span>Theme images<small>Uploaded slides</small></span></a>
+      <button data-go="menu" style="--c:#f97316"><span class="qi">${ic("i-list")}</span><span>Category menu<small>Home page categories</small></span></button>
+      <button data-go="prices" style="--c:var(--pink)"><span class="qi">${ic("i-tag")}</span><span>Pricing<small>Smart Board prices</small></span></button>
+      <button data-go="settings" style="--c:var(--accent)"><span class="qi">${ic("i-gear")}</span><span>Settings<small>Contact &amp; password</small></span></button>
+    </div></section>`);
   $$("#view [data-go]").forEach(b => b.onclick = e => { e.preventDefault(); if (b.dataset.q) OQ = b.dataset.q; if (b.dataset.add) ADD_AFTER = true; go(b.dataset.go); });
 }
 
@@ -887,7 +1181,7 @@ async function orders() {
   const r = await call("adminOrders"); if (!r.ok) return fail(r.error);
   ORD = r.orders; STAT = r.statuses;
   badge("#nOrders", ORD.filter(o => String(o.status).split(" ")[0] === "New").length);
-  V(head("Orders", "Har order yahan aata hai. Status badlein — Google Sheet mein bhi update ho jayega.", `<button class="btn sm" id="oCsv">${ic("i-down")} Export CSV</button>`) + `
+  V(head("Orders", "Every custom PPT order. Changing a status also updates the Google Sheet.", `<button class="btn sm" id="oCsv">${ic("i-down")} Export CSV</button>`) + `
   <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="oq" placeholder="Search name, mobile, topic, order ID…" aria-label="Search orders"></label>
     <select id="osort" aria-label="Sort"><option value="new">Newest first</option><option value="old">Oldest first</option></select></div>
   <div class="chips" id="ochips"></div>
@@ -949,7 +1243,7 @@ function drawOrders() {
       ${files ? `<div class="files">${files}</div>` : ""}
       ${o.failed && o.failed !== "—" ? `<div class="files" style="color:var(--warn)">⚠ Not uploaded: ${esc(o.failed)}</div>` : ""}
     </article>`;
-  }).join("") : `<div class="empty"><b>📭</b>${ORD.length ? "Is filter mein koi order nahi." : "Abhi tak koi order nahi aaya."}</div>`;
+  }).join("") : `<div class="empty"><b>📭</b>${ORD.length ? "No orders match this filter." : "No orders yet."}</div>`;
   $$("#olist [data-pick]").forEach(c => c.onchange = () => { c.checked ? OSEL.add(c.dataset.pick) : OSEL.delete(c.dataset.pick); c.closest(".order").classList.toggle("sel", c.checked); drawBulk(); });
   $$("#olist [data-odel]").forEach(b => b.onclick = () => {
     const k = b.dataset.odel, box = document.querySelector(`[data-ocf="${CSS.escape(k)}"]`), [row, id] = k.split("|");
@@ -986,7 +1280,7 @@ async function themes() {
   loading();
   const r = await call("adminThemes"); if (!r.ok) return fail(r.error);
   TH = r.themes;
-  V(head("Themes", `Website ke "Choose Your PPT Theme" section mein yahi themes dikhti hain. Nayi theme add karein, slides badlein, ya chhupa dein.`, `<button class="btn pri" id="addTheme">${ic("i-plus")} Add Theme</button>`) + `
+  V(head("Themes", `Design themes customers can pick when ordering. Add, edit or hide themes.`, `<button class="btn pri" id="addTheme">${ic("i-plus")} Add Theme</button>`) + `
   <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="tq" placeholder="Search theme name…" aria-label="Search themes"></label>
     <select id="tf" aria-label="Filter"><option value="">All themes</option><option value="live">Live only</option><option value="hidden">Hidden only</option><option value="views">Most viewed first</option>${TYPES.map(t => `<option value="t:${esc(t)}">${esc(t)}</option>`).join("")}</select></div>
   <div class="tgrid" id="tgrid"></div>`);
@@ -1124,7 +1418,7 @@ async function prices() {
   loading();
   const r = await call("adminPrices"); if (!r.ok) return fail(r.error);
   PR = r.prices; PS = r.settings;
-  V(head("Prices", `Ye prices website ke Smart Board aur "Pricing" popup — dono jagah dikhte hain.`, `<button class="btn pri" id="savePrices">Save Prices</button>`) + `
+  V(head("Pricing", `Prices shown on the Smart Board and in the Pricing pop-up.`, `<button class="btn pri" id="savePrices">Save Prices</button>`) + `
   <div class="dgrid" style="grid-template-columns:1.6fr 1fr">
     <div style="display:flex;flex-direction:column;gap:14px">
       <div class="card" style="display:flex;flex-direction:column;gap:12px">
@@ -1186,7 +1480,7 @@ async function reviews() {
   loading();
   const r = await call("adminReviews"); if (!r.ok) return fail(r.error);
   RV = r.reviews;
-  V(head("Reviews", `Customer ka review likhte hi website par turant dikhta hai — sabse zyada rating wale sabse upar. Koi review galat ya spam ho toh "Hide" ya "Delete" karein.`) + `<div class="chips" id="rchips"></div><div class="list" id="rlist"></div>`);
+  V(head("Reviews", `Customer reviews appear on the website instantly, highest rated first. Hide or delete spam.`) + `<div class="chips" id="rchips"></div><div class="list" id="rlist"></div>`);
   drawReviews();
 }
 function drawReviews() {
@@ -1226,7 +1520,7 @@ async function messages() {
   loading();
   const r = await call("adminMessages"); if (!r.ok) return fail(r.error);
   MS = r.messages;
-  V(head("Messages / Tickets", "Website ke Contact form se aaye messages. Har message ka apna Ticket ID hota hai — customer ko 1 ghante ke andar reply karein.") + `
+  V(head("Inbox", "Messages from the contact form. Each has a ticket ID — aim to reply within 1 hour.") + `
   <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="mq" placeholder="Search ticket ID, name, email, message…" aria-label="Search messages"></label></div>
   <div class="list" id="mlist"></div>`);
   $("#mq").value = MQ; $("#mq").oninput = () => { MQ = $("#mq").value; drawMessages(); };
@@ -1266,7 +1560,7 @@ async function site() {
   loading();
   const r = await call("adminPrices"); if (!r.ok) return fail(r.error);
   WS = Object.assign({}, r.settings); WSI = {};
-  V(head("Website Controls", "Website ke buttons ko dikhayein / chhupayein, chalu / band karein, Custom PPT section ki photos aur social links badlein. Save karte hi website par dikhega.") + `
+  V(head("Site controls", "Show, hide or disable website buttons, and manage section photos, partner logos and social links.") + `
   <div class="card" style="margin-bottom:14px"><div class="ch"><h3>${ic("i-image", "color:var(--cyan)")} Custom PPT section ki photos</h3><span class="note">"Your Topic. Our Design." ke saath ghoomti 4 slides</span></div>
     <div class="wc-imgs" id="wcImgs"></div>
     <input type="file" id="wcFile" accept="image/jpeg,image/png,image/webp" hidden>
@@ -1375,7 +1669,7 @@ async function settings() {
   const r = await call("adminPrices"); if (!r.ok) return fail(r.error);
   if (!SUM.user) { const s2 = await call("adminSummary"); if (s2.ok) { SUM = s2; setWho(); } }
   const s = r.settings;
-  V(head("Settings", "Website par dikhne wali contact details, Admin login aur panel ka look.") + `
+  V(head("Settings", "Contact details, admin login, payments and panel appearance.") + `
   <div class="sgrid">
     <form class="card" id="setForm">
       <h3>📞 Contact details</h3>
@@ -1424,9 +1718,9 @@ async function settings() {
 /* ---------- Analytics (visitors) ---------- */
 const nf = n => (+n || 0).toLocaleString("en-IN");
 const rs = n => "₹" + (+n || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 });
-const NEW_SCRIPT = `<div class="empty"><b>🔧</b>Ye hissa Google Script update hone ke baad chalega.<br><small>Claude se kahein: "Google Script update kar do".</small></div>`;
+const NEW_SCRIPT = `<div class="empty"><b>🔧</b>This section needs a Google Script update.<br><small>Ask Claude to update the Google Script.</small></div>`;
 function toplist(rows, total, col) {
-  if (!rows || !rows.length) return `<p class="note">Abhi data nahi.</p>`;
+  if (!rows || !rows.length) return `<p class="note">No data yet.</p>`;
   const mx = Math.max(1, ...rows.map(r => r[1]));
   return `<div class="toplist">${rows.map(([k, n]) => `<div><span class="tl" title="${esc(k)}">${esc(k)}</span><span class="tb"><i style="width:${n / mx * 100}%;background:${col || "var(--accent)"}"></i></span><b>${nf(n)}</b>${total ? `<small>${Math.round(n / total * 100)}%</small>` : ""}</div>`).join("")}</div>`;
 }
@@ -1459,7 +1753,7 @@ async function stats(silent) {
 }
 function liveTag(busy) {
   const el = $("#stLive"); if (!el) return;
-  el.innerHTML = busy ? `<i class="dot" style="background:var(--warn)"></i>Update ho raha…` : `<i class="dot"></i>Live · ${new Date(ST_AT).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+  el.innerHTML = busy ? `<i class="dot" style="background:var(--warn)"></i>Updating…` : `<i class="dot"></i>Live · ${new Date(ST_AT).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
 }
 setInterval(() => { if (tab === "stats" && !document.hidden) stats(true); }, 15000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden && tab === "stats" && Date.now() - ST_AT > 5000) stats(true); });
@@ -1469,35 +1763,39 @@ function drawStats(r, stale) {
   const dev = r.devices.reduce((s, x) => s + x[1], 0) || 1;
   const DEV_COL = { Mobile: "var(--accent)", Computer: "var(--cyan)", Tablet: "var(--warn)" };
   const geo = splitGeo(r.states);
-  V(head("Analytics", "Website par kitne log aaye, kahan se aaye aur kya dekha. (Har visitor ek baar gina jata hai, naam/number kabhi save nahi hota.)",
-      `<span class="st-live" id="stLive"></span><a class="btn sm" href="${esc(r.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Sheet</a>`) + `
-  <div class="stats">
-    <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-eye")}</span><b>${nf(r.todayUnique)}</b><small>Aaj ke visitors · ${nf(r.today)} page views</small></div>
-    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic("i-chart")}</span><b>${nf(r.weekUnique)}</b><small>Last 7 days visitors · ${nf(r.week)} views</small></div>
-    <div class="stat" style="--c:var(--cyan)"><span class="ic">${ic("i-globe")}</span><b>${nf(r.monthUnique)}</b><small>Last 30 days visitors · ${nf(r.month)} views</small></div>
-    <div class="stat" style="--c:var(--warn)"><span class="ic">${ic("i-zap")}</span><b>${nf(r.allTime)}</b><small>Total page views (shuru se)</small></div>
+  const days = d.map(x => { const t = new Date(x.day); t.setHours(0, 0, 0, 0); return t; });
+  const vis = d.map(x => +x.visitors || 0), vws = d.map(x => +x.visits || 0), L7 = a => sum(a.slice(-7)), P7 = a => sum(a.slice(-14, -7));
+  const peak = vis.indexOf(Math.max(...vis)), avg = Math.round(sum(vis) / (vis.length || 1) * 10) / 10;
+  const ppv = L7(vis) ? Math.round(L7(vws) / L7(vis) * 10) / 10 : 0, ppvP = P7(vis) ? Math.round(P7(vws) / P7(vis) * 10) / 10 : 0;
+  V(head("Analytics", "Who visits your website, where they come from and what they view. Visitors are counted anonymously — no names or numbers are stored.",
+      `<span class="st-live" id="stLive"></span><a class="btn sm" href="${esc(r.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Open sheet</a>`) + `
+  <div class="kpis">
+    ${kpi({ go: "stats", col: "var(--ok)", icon: ic("i-eye"), label: "Visitors · today", value: nf(r.todayUnique), sub: `${nf(r.today)} page views`, sp: vis.slice(-14) })}
+    ${kpi({ go: "stats", col: "var(--accent)", icon: ic("i-users"), label: "Visitors · last 7 days", value: nf(L7(vis) || r.weekUnique), d: delta(L7(vis), P7(vis), "prev. 7 days"), sp: vis.slice(-14) })}
+    ${kpi({ go: "stats", col: "var(--cyan)", icon: ic("i-globe"), label: "Visitors · last 30 days", value: nf(r.monthUnique), sub: `${avg} per day · peak ${dLabel(days[peak] || new Date())}`, sp: vis })}
+    ${kpi({ go: "stats", col: "var(--warn)", icon: ic("i-zap"), label: "Pages per visitor · 7 days", value: ppv, d: delta(ppv, ppvP, "prev. 7 days"), sub: `${nf(r.allTime)} page views all time` })}
   </div>
-  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>${ic("i-chart", "color:var(--accent)")} Visitors — last 30 days</h3><span class="note">${nf(r.monthUnique)} log</span></div>
-    <div class="bars b30">${d.map((x, k) => `<div class="bc" title="${new Date(x.day).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}: ${x.visitors} visitors, ${x.visits} views"><div class="b ${x.visits ? "" : "zero"}" style="height:${Math.max(3, x.visitors / mx * 100)}%"><span>${x.visitors || ""}</span></div><small>${k % 5 === 4 || k === 29 ? (k === 29 ? "Aaj" : new Date(x.day).getDate()) : ""}</small></div>`).join("")}</div></div>
+  <section class="card" style="margin-bottom:16px" aria-labelledby="st30"><div class="ch"><h3 id="st30">${ic("i-chart", "color:var(--accent)")} Visitors &amp; page views</h3><span class="note">Last 30 days</span></div>
+    ${comboChart("sChart", days, { name: "Visitors", vals: vis, col: "var(--accent)" }, { name: "Page views", vals: vws, col: "var(--cyan)" })}</section>
   <div class="dgrid">
-    <div class="card"><div class="ch"><h3>📄 Sabse zyada dekhe gaye pages</h3></div>${toplist(r.pages.map(([k, n]) => [PAGE_NAMES[k] || k, n]), r.month)}</div>
-    <div class="card"><div class="ch"><h3>🔗 Log kahan se aaye</h3></div>${toplist(r.sources, r.month, "var(--cyan)")}</div>
-  </div>
-  <div class="dgrid">
-    <div class="card"><div class="ch"><h3>📍 State (India)</h3></div>${toplist(geo.states, r.month, "var(--ok)")}</div>
-    <div class="card"><div class="ch"><h3>🌍 Country</h3></div>${toplist(geo.countries, r.month, "var(--cyan)")}</div>
-  </div>
-  <div class="dgrid">
-    <div class="card"><div class="ch"><h3>🏙️ City</h3></div>${toplist(r.cities, r.month, "var(--warn)")}</div>
-    <div class="card"><div class="ch"><h3>📱 Mobile ya Computer</h3></div>
-      <div class="split">${r.devices.map(([k, n]) => `<i style="width:${n / dev * 100}%;background:${DEV_COL[k] || "var(--dim)"}" title="${esc(k)}: ${n}"></i>`).join("")}</div>
-      <div class="legend">${r.devices.map(([k, n]) => `<div><i style="background:${DEV_COL[k] || "var(--dim)"}"></i>${esc(k)}<b>${Math.round(n / dev * 100)}%</b></div>`).join("") || `<p class="note">Abhi data nahi.</p>`}</div></div>
+    <section class="card"><div class="ch"><h3>${ic("i-book", "color:var(--accent)")} Top pages</h3></div>${toplist(r.pages.map(([k, n]) => [PAGE_NAMES[k] || k, n]), r.month)}</section>
+    <section class="card"><div class="ch"><h3>${ic("i-ext", "color:var(--cyan)")} Traffic sources</h3></div>${toplist(r.sources, r.month, "var(--cyan)")}</section>
   </div>
   <div class="dgrid">
-    <div class="card"><div class="ch"><h3>🌐 Browser</h3></div>${toplist(r.browsers, r.month, "var(--info)")}</div>
+    <section class="card"><div class="ch"><h3>${ic("i-home", "color:var(--ok)")} States (India)</h3></div>${toplist(geo.states, r.month, "var(--ok)")}</section>
+    <section class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--cyan)")} Countries</h3></div>${toplist(geo.countries, r.month, "var(--cyan)")}</section>
   </div>
-  <p class="note" style="margin-top:6px">ℹ️ Ye page har 15 second mein apne aap update hota hai. Ek hi visitor 30 minute ke andar wahi page dobara khole to wo ek hi baar gina jata hai.</p>
-  <p class="note" style="margin-top:6px">ℹ️ Male / female aur age koi website apne aap nahi jaan sakti (visitor batata hi nahi). Isliye ye yahan nahi dikhta.</p>`);
+  <div class="dgrid">
+    <section class="card"><div class="ch"><h3>${ic("i-home", "color:var(--warn)")} Cities</h3></div>${toplist(r.cities, r.month, "var(--warn)")}</section>
+    <section class="card"><div class="ch"><h3>${ic("i-phone", "color:var(--accent)")} Devices</h3></div>
+      ${donut(r.devices.map(([k, n]) => [k, n, DEV_COL[k] || "var(--dim)"]), dev, "visits")}
+      <div class="legend">${r.devices.map(([k, n]) => `<div><i style="background:${DEV_COL[k] || "var(--dim)"}"></i>${esc(k)}<b>${Math.round(n / dev * 100)}%</b></div>`).join("") || `<p class="note">No data yet.</p>`}</div></section>
+  </div>
+  <div class="dgrid">
+    <section class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--info)")} Browsers</h3></div>${toplist(r.browsers, r.month, "var(--info)")}</section>
+    <section class="card"><div class="ch"><h3>${ic("i-clock", "color:var(--dim)")} About this data</h3></div>
+      <ul class="notes"><li>Refreshes automatically every 15 seconds while this page is open.</li><li>A visitor who reopens the same page within 30 minutes is counted once.</li><li>Gender and age can't be detected by a website, so they aren't shown.</li></ul></section>
+  </div>`);
   liveTag(stale); if (y) window.scrollTo(0, y);
 }
 
@@ -1506,14 +1804,14 @@ let SALES = [], SQ = "";
 async function sales() {
   loading();
   const r = await call("adminSales");
-  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Sales", "") + NEW_SCRIPT) : fail(r.error);
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Online sales", "") + NEW_SCRIPT) : fail(r.error);
   SALES = r.sales;
   const d0 = new Date(); d0.setHours(0, 0, 0, 0);
   const m0 = new Date(d0.getFullYear(), d0.getMonth(), 1);
   const sum = l => l.reduce((s, x) => s + x.amount, 0);
   const today = SALES.filter(x => new Date(x.time) >= d0), month = SALES.filter(x => new Date(x.time) >= m0);
   const per = {}; SALES.forEach(x => x.items.split(", ").forEach(t => { if (t) per[t] = (per[t] || 0) + 1; }));
-  V(head("Sales", "Website se Razorpay ke through biki Ready PPTs. Har sale ki email bhi aapko aati hai.", `<button class="btn sm" id="sCsv">${ic("i-down")} Export CSV</button>`) + `
+  V(head("Online sales", "Ready PPTs sold through Razorpay. You also get an email for every sale.", `<button class="btn sm" id="sCsv">${ic("i-down")} Export CSV</button>`) + `
   <div class="stats">
     <div class="stat" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(sum(today))}</b><small>Aaj ki kamai · ${today.length} sale</small></div>
     <div class="stat" style="--c:var(--accent)"><span class="ic">₹</span><b>${rs(sum(month))}</b><small>Is mahine · ${month.length} sale</small></div>
@@ -1554,11 +1852,11 @@ function drawSales() {
 async function report() {
   loading();
   const r = await call("adminReport");
-  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Kamai Report", "") + NEW_SCRIPT) : fail(r.error);
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Revenue report", "") + NEW_SCRIPT) : fail(r.error);
   const M = r.months, mx = Math.max(1, ...M.map(m => m.revenue)), name = k => new Date(k + "-15").toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
   const sum = f => M.reduce((s, m) => s + m[f], 0), cur = M[M.length - 1], prev = M[M.length - 2];
   const diff = prev.revenue ? Math.round((cur.revenue - prev.revenue) / prev.revenue * 100) : null;
-  V(head("Kamai Report", "Har mahine kitni kamai hui, kitne order aaye aur kitne log website par aaye. (Online kamai = Razorpay se biki Ready PPTs.)") + `
+  V(head("Revenue report", "Monthly revenue, orders and visitors for the last 12 months. Online revenue = Ready PPTs sold via Razorpay.") + `
   <div class="stats">
     <div class="stat" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(cur.revenue)}</b><small>Is mahine ki online kamai${diff == null ? "" : ` · ${diff >= 0 ? "▲" : "▼"} ${Math.abs(diff)}% pichhle mahine se`}</small></div>
     <div class="stat" style="--c:var(--accent)"><span class="ic">₹</span><b>${rs(sum("revenue"))}</b><small>Last 12 mahine · ${nf(sum("sales"))} sale</small></div>
@@ -1585,7 +1883,7 @@ async function coupons() {
   const r = await call("adminCoupons");
   if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Coupons", "") + NEW_SCRIPT) : fail(r.error);
   CPN = r.coupons;
-  V(head("Coupons", "Discount code banaiye (jaise DIWALI20). Customer Ready PPT khareedte waqt checkout par lagayega. Sirf online payment (Razorpay) par chalta hai.") + `
+  V(head("Coupons", "Discount codes (e.g. DIWALI20) customers apply at checkout. Online payments only.") + `
   <form class="card" id="cpForm" style="margin-bottom:14px;display:flex;flex-direction:column;gap:12px">
     <h3 id="cpTitle" style="font-family:var(--display)">➕ Naya coupon</h3>
     <div class="cform">
@@ -1654,7 +1952,7 @@ async function customers() {
   if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Customers", "") + NEW_SCRIPT) : fail(r.error);
   CUS = r.customers;
   const d30 = Date.now() - 30 * 864e5, active = CUS.filter(c => c.lastLogin && new Date(c.lastLogin) >= d30).length;
-  V(head("Customers", "Jinhone website se PPT khareedi. Ye apne mobile / email + OTP se \"My PPTs\" mein login karke dobara download kar sakte hain.", `<button class="btn sm" id="cCsv">${ic("i-down")} Export CSV</button>`) + `
+  V(head("Customers", "People who bought on the website. They sign in to My PPTs with mobile / email + OTP to download again.", `<button class="btn sm" id="cCsv">${ic("i-down")} Export CSV</button>`) + `
   <div class="stats">
     <div class="stat" style="--c:var(--accent)"><span class="ic">${ic("i-phone")}</span><b>${nf(CUS.length)}</b><small>Total customers</small></div>
     <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-eye")}</span><b>${nf(CUS.filter(c => c.logins).length)}</b><small>Kabhi login kiya · ${active} last 30 din</small></div>
@@ -1736,8 +2034,8 @@ async function stateBooks() {
   if (!SB_SUBJ(SBS.c).includes(SBS.sub)) SBS.sub = SB_SUBJ(SBS.c)[0];
   if (!SBS.y) SBS.y = sbYears()[0];
   const opt = (l, v) => l.map(x => `<option${String(x) === String(v) ? " selected" : ""}>${esc(x)}</option>`).join("");
-  V(head(TITLES.books, `Website ke <b>State Board</b> page ki files yahan se lagayein — Syllabus, Previous Year paper (saal + set), Notes (chapter wise), Model Paper, Practice Questions, Book &amp; Answers. Har jagah PDF, Word aur PPT laga sakte hain. Save karte hi website par dikh jaati hain.`,
-    `<a class="btn sm" href="${esc(SBFOLDER)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a><a class="btn sm" href="state-board.html" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>`) + `
+  V(head(TITLES.books, `Files for the <b>State Board</b> pages — syllabus, previous year papers (year + set), chapter-wise notes, model papers, practice questions and book answers. PDF, Word and PPT supported; changes go live on save.`,
+    `<a class="btn sm" href="${esc(SBFOLDER)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a><a class="btn sm" href="state-board.html" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>`) + `
   <div class="card"><div class="ch"><h3>1️⃣ Kahan lagani hai?</h3></div>
     <div class="grid2 sbsel">
       <label class="f">State / Board<select id="sbS">${opt(SB_ST, SBS.s)}</select></label>
@@ -1748,7 +2046,7 @@ async function stateBooks() {
       <label class="f" id="sbYw">Saal (Year)<select id="sbY">${opt(sbYears(), SBS.y)}</select></label>
     </div>
   </div>
-  <div class="card" style="margin-top:14px"><div class="ch"><h3 id="sbEdT">2️⃣ Files</h3><a class="btn sm note" id="sbOpen" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a></div>
+  <div class="card" style="margin-top:14px"><div class="ch"><h3 id="sbEdT">2️⃣ Files</h3><a class="btn sm note" id="sbOpen" target="_blank" rel="noopener">${ic("i-ext")} View on site</a></div>
     <div id="sbEd"></div>
     <div class="row" style="margin-top:16px"><button class="btn pri" id="sbSave">💾 Save karein</button><button class="btn danger" id="sbDel">🗑 Ye entry hatayein</button><span class="note" id="sbNote"></span></div>
   </div>
@@ -1907,9 +2205,9 @@ async function pptView() {
   PP = r.ppts; PPAY = r.payments; PFOLDER = r.folderUrl;
   const mine = PP.filter(p => isNote(p) === (KIND === "notes")), live = mine.filter(p => p.show).length, sold = mine.reduce((s, p) => s + p.sold, 0), w = KW();
   V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], KIND === "notes"
-      ? `Yahan apne Notes ki A4 PDF upload karein — website ke "Study Notes" page par turant dikhenge. Customer pay karega aur PDF apne aap download hogi.`
-      : `Yahan PPT ya PDF upload karein — website ke "Ready to Use PPTs" page par turant dikhegi. Customer pay karega aur file apne aap download hogi.`,
-      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "notes" ? "" : `<button class="btn" id="addPack">🎁 Full Package banao</button><button class="btn" id="addZip">📦 ZIP Upload</button>`}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
+      ? `Upload A4 PDF notes. They appear on the Study Notes page instantly; customers pay and download automatically.`
+      : `Upload PPT or PDF files. They appear on the Ready PPTs page instantly; customers pay and download automatically.`,
+      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "notes" ? "" : `<button class="btn" id="addPack">🎁 Create bundle</button><button class="btn" id="addZip">📦 ZIP Upload</button>`}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
   ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}
   <div class="stats">
     <div class="stat" style="--c:var(--accent)"><span class="ic">${ic(KIND === "notes" ? "i-book" : "i-upload")}</span><b id="pTot">${mine.length}</b><small id="pTotL">Total ${KIND === "notes" ? "Notes" : "PPTs"} · ${live} live</small></div>
@@ -2062,7 +2360,7 @@ function packOpen() {
   const cl = CLASSES.filter(c => used("cls").includes(c)), sb = SUBJECTS.filter(x => used("subj").includes(x)).concat(used("subj").filter(x => !SUBJECTS.includes(x)));
   let box = $("#packModal"); if (box) box.remove();
   box = document.createElement("div"); box.className = "modal"; box.id = "packModal"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
-  box.innerHTML = `<div class="mbox"><div class="row"><h2>🎁 Full Package banao</h2><span class="sp"></span><button class="btn sm" data-x>✕ Close</button></div>
+  box.innerHTML = `<div class="mbox"><div class="row"><h2>🎁 Create bundle</h2><span class="sp"></span><button class="btn sm" data-x>✕ Close</button></div>
     <p class="note">Class aur subject chunein. Us class-subject ki saari PPT neeche aa jayengi. Jo package mein nahi chahiye uska tick hata dein. Customer ek payment mein saare chapter (ek ZIP) download karega.</p>
     <div class="row" style="gap:10px;flex-wrap:wrap"><label class="fl" style="flex:1;min-width:160px"><span class="phead">Class</span><select id="pkCls">${cl.map(c => `<option>${esc(c)}</option>`).join("")}</select></label>
       <label class="fl" style="flex:1;min-width:160px"><span class="phead">Subject</span><select id="pkSub">${sb.map(c => `<option>${esc(c)}</option>`).join("")}</select></label></div>
@@ -2677,6 +2975,138 @@ $("#peSave").onclick = async () => {
   if (i >= 0) PP[i] = r.ppt; else PP.unshift(r.ppt);
   $("#pptModal").hidden = true; drawPpts(); toast(r.ppt.show ? "Saved — website par dikh raha hai" : "Saved (hidden)");
 };
+
+/* ---------- Category Menu: home page ki category line (State Books, NCERT, CBSE…) ---------- */
+let MN = [], MNI = 0, MNDIRTY = false, MNCUSTOM = false;
+const MN_COLORS = ["#f97316", "#2563eb", "#7c3aed", "#0891b2", "#dc2626", "#16a34a", "#db2777", "#ca8a04", "#0f766e", "#4f46e5", "#e11d48", "#64748b"];
+async function menu() {
+  loading();
+  const r = await call("adminPrices"); if (!r.ok) return fail(r.error);
+  MNCUSTOM = !!(r.settings && r.settings.catnav);
+  MN = catnavList(r.settings || {}); MNI = 0; MNDIRTY = false;
+  V(head("Category Menu", "The category bar on the home page. Rename, reorder, hide or add categories and the links inside them.",
+    `<button class="btn sm" id="mnReset">${ic("i-refresh")} Reset to default</button><a class="btn sm" href="./#catNav" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>`) + `
+  <section class="card mnprev" aria-labelledby="mnPrevH"><div class="ch"><h3 id="mnPrevH">${ic("i-eye", "color:var(--accent)")} Preview</h3><span class="note">${MNCUSTOM ? "Custom menu is live" : "Default menu is live"}</span></div>
+    <div class="mnchips" id="mnPrev" role="list"></div></section>
+  <div class="mngrid">
+    <section class="card mnside" aria-labelledby="mnListH"><div class="ch"><h3 id="mnListH">Categories</h3><span class="note" id="mnCount"></span><button class="btn sm" id="mnAdd">${ic("i-plus")} Add</button></div>
+      <ol class="mnlist" id="mnList"></ol></section>
+    <section class="card mned" id="mnEd" aria-label="Edit category"></section>
+  </div>
+  <div class="savebar" id="mnBar"><span class="note" id="mnNote">No unsaved changes.</span><span class="sp"></span><button class="btn" id="mnUndo">Discard</button><button class="btn pri" id="mnSave">Publish menu</button></div>`);
+  $("#mnAdd").onclick = () => { MN.push({ n: "New category", e: "📁", c: MN_COLORS[MN.length % MN_COLORS.length], d: "", it: [], h: 0, k: "", u: "" }); MNI = MN.length - 1; mnDirty(); mnDraw(); $("#mnN").focus(); $("#mnN").select(); };
+  $("#mnUndo").onclick = () => menu();
+  $("#mnSave").onclick = () => mnSave(false);
+  $("#mnReset").onclick = e => {
+    const b = e.currentTarget; if (b.dataset.sure) return mnSave(true);
+    b.dataset.sure = 1; b.classList.add("danger"); b.innerHTML = `${ic("i-refresh")} Confirm reset`; setTimeout(() => { if (b.isConnected) { delete b.dataset.sure; b.classList.remove("danger"); b.innerHTML = `${ic("i-refresh")} Reset to default`; } }, 4000);
+  };
+  mnDraw();
+}
+function mnDirty() { MNDIRTY = true; const n = $("#mnNote"); if (n) n.innerHTML = `<b style="color:var(--warn)">● Unsaved changes</b> — press Publish to update the website.`; $("#mnBar") && $("#mnBar").classList.add("on"); }
+function mnDraw() {
+  const live = MN.filter(c => !c.h);
+  $("#mnPrev").innerHTML = live.length ? live.map(c => `<span class="mnchip" role="listitem" style="--c:${c.c}"><span aria-hidden="true">${esc(c.e)}</span>${esc(c.n)}</span>`).join("") : `<span class="note">All categories are hidden — the bar will not show.</span>`;
+  $("#mnCount").textContent = `${live.length} live · ${MN.length - live.length} hidden`;
+  $("#mnList").innerHTML = MN.map((c, i) => `<li><button type="button" class="mnit${i === MNI ? " on" : ""}${c.h ? " off" : ""}" data-i="${i}" aria-current="${i === MNI}" style="--c:${c.c}">
+    <span class="mne" aria-hidden="true">${esc(c.e)}</span><span class="mnt"><b>${esc(c.n)}</b><small>${c.it.length ? c.it.length + " links" : "Single link"}${c.h ? " · Hidden" : ""}</small></span></button></li>`).join("");
+  $$("#mnList .mnit").forEach(b => b.onclick = () => { MNI = +b.dataset.i; mnDraw(); });
+  mnEd();
+}
+function mnEd() {
+  const c = MN[MNI], box = $("#mnEd");
+  if (!c) { box.innerHTML = `<div class="empty"><b>🗂️</b>Add a category to get started.</div>`; return; }
+  box.innerHTML = `<div class="ch"><h3><span class="mnbadge" style="--c:${c.c}" aria-hidden="true">${esc(c.e)}</span> ${esc(c.n)}</h3>
+      <span class="sp"></span>
+      <button class="btn sm icon" data-mv="-1" aria-label="Move up" title="Move up" ${MNI ? "" : "disabled"}>↑</button>
+      <button class="btn sm icon" data-mv="1" aria-label="Move down" title="Move down" ${MNI < MN.length - 1 ? "" : "disabled"}>↓</button></div>
+    <div class="mnform">
+      <label class="f"><span class="lh">Name</span><input type="text" id="mnN" maxlength="40" value="${esc(c.n)}"></label>
+      <label class="f"><span class="lh">Icon <small>emoji</small></span><input type="text" id="mnE" maxlength="8" value="${esc(c.e)}"></label>
+      <label class="f mnw"><span class="lh">Short description <small>· shown at the top of the drop-down</small></span><input type="text" id="mnD" maxlength="80" value="${esc(c.d)}"></label>
+      <div class="f mnw"><span class="lh">Colour</span><div class="mncol" role="radiogroup" aria-label="Colour">${MN_COLORS.map(x => `<button type="button" role="radio" aria-checked="${x === c.c}" aria-label="${x}" data-col="${x}" style="--c:${x}"></button>`).join("")}<label class="mncustom" title="Custom colour"><input type="color" id="mnC" value="${esc(c.c)}" aria-label="Custom colour"></label></div></div>
+      <label class="f mnw"><span class="lh">Link <small>· optional · used for “View all”, or when there are no items</small></span><input type="text" id="mnU" inputmode="url" placeholder="${c.k === "states" ? "state-books.html" : "ready-ppts.html?q=" + esc(encodeURIComponent(c.n))}" value="${esc(c.u || "")}"></label>
+      <label class="f mnw"><span class="lh">Items <small>· one per line · add “ | link” for a custom page, e.g. <code>NCERT Notes | study-notes-pdf.html</code></small></span>
+        <textarea id="mnIt" rows="10" spellcheck="false">${esc(c.it.join("\n"))}</textarea><span class="note" id="mnItN"></span></label>
+      ${c.k === "states" ? `<p class="note mnw">ℹ️ Each item opens that state's State Board page. Files are managed in <a href="#books" data-go="books">State Books</a>.</p>` : ""}
+    </div>
+    <div class="row mnfoot"><label class="sw"><input type="checkbox" id="mnH" ${c.h ? "" : "checked"}><i></i> Show on website</label><span class="sp"></span>
+      <span id="mnDelBox"><button class="btn sm danger" id="mnDel">${ic("i-trash")} Delete category</button></span></div>`;
+  const itN = () => { const n = $("#mnIt").value.split("\n").filter(x => x.trim()).length; $("#mnItN").textContent = n ? n + " items" : "No items — the category opens its link directly."; };
+  itN();
+  const set = (k, v, redraw) => { c[k] = v; mnDirty(); if (redraw) { const f = document.activeElement && document.activeElement.id; mnDraw(); if (f && $("#" + f)) { const el = $("#" + f); el.focus(); if (el.setSelectionRange && el.type === "text") el.setSelectionRange(el.value.length, el.value.length); } } };
+  $("#mnN").oninput = e => { set("n", e.target.value.trim() || "Untitled"); mnSoft(); };
+  $("#mnE").oninput = e => { set("e", e.target.value.trim() || "📁"); mnSoft(); };
+  $("#mnD").oninput = e => set("d", e.target.value);
+  $("#mnU").oninput = e => set("u", e.target.value.trim());
+  $("#mnIt").oninput = e => { set("it", e.target.value.split("\n").map(x => x.trim()).filter(Boolean)); itN(); mnSoft(); };
+  $("#mnC").oninput = e => { set("c", e.target.value); mnSoft(); $$("#mnEd [data-col]").forEach(b => b.setAttribute("aria-checked", b.dataset.col === c.c)); };
+  $$("#mnEd [data-col]").forEach(b => b.onclick = () => { set("c", b.dataset.col); $("#mnC").value = b.dataset.col; mnSoft(); $$("#mnEd [data-col]").forEach(x => x.setAttribute("aria-checked", x === b)); });
+  $("#mnH").onchange = e => set("h", e.target.checked ? 0 : 1, true);
+  $$("#mnEd [data-mv]").forEach(b => b.onclick = () => { const j = MNI + +b.dataset.mv; [MN[MNI], MN[j]] = [MN[j], MN[MNI]]; MNI = j; mnDirty(); mnDraw(); const nb = $(`#mnEd [data-mv="${b.dataset.mv}"]`); if (nb && !nb.disabled) nb.focus(); });
+  $("#mnDel").onclick = () => {
+    $("#mnDelBox").innerHTML = `<span class="confirm">Delete “${esc(c.n)}”? <button class="btn sm danger" id="mnYes">Delete</button><button class="btn sm" id="mnNo">Cancel</button></span>`;
+    $("#mnNo").onclick = mnEd; $("#mnYes").focus();
+    $("#mnYes").onclick = () => { MN.splice(MNI, 1); MNI = Math.max(0, MNI - 1); mnDirty(); mnDraw(); };
+  };
+  $$("#mnEd [data-go]").forEach(a => a.onclick = e => { e.preventDefault(); go(a.dataset.go); });
+}
+/* list + preview update without rebuilding the form (typing stays smooth) */
+function mnSoft() {
+  const c = MN[MNI], live = MN.filter(x => !x.h);
+  $("#mnPrev").innerHTML = live.map(x => `<span class="mnchip" role="listitem" style="--c:${x.c}"><span aria-hidden="true">${esc(x.e)}</span>${esc(x.n)}</span>`).join("");
+  const b = $(`#mnList [data-i="${MNI}"]`);
+  if (b) { b.style.setProperty("--c", c.c); b.querySelector(".mne").textContent = c.e; b.querySelector("b").textContent = c.n; b.querySelector("small").textContent = (c.it.length ? c.it.length + " links" : "Single link") + (c.h ? " · Hidden" : ""); }
+  const h = $("#mnEd h3"); if (h) h.innerHTML = `<span class="mnbadge" style="--c:${c.c}" aria-hidden="true">${esc(c.e)}</span> ${esc(c.n)}`;
+}
+async function mnSave(reset) {
+  const btn = $("#mnSave"); btn.disabled = true;
+  const cats = MN.map(c => ({ n: c.n, e: c.e, c: c.c, d: c.d, it: c.it, h: c.h ? 1 : 0, k: c.k || "", u: c.u || "" }));
+  const r = await call("adminMenuSave", reset ? { reset: true } : { cats });
+  btn.disabled = false;
+  if (!r.ok) return toast(/Unknown admin action/i.test(r.error || "") ? "Google Script update needed for Category Menu" : r.error, true);
+  toast(reset ? "Menu reset to default" : "Menu published — live on the website");
+  menu();
+}
+
+/* ---------- Quick search (Ctrl+K / "/"): kisi bhi section par turant jaayein ---------- */
+const GROUP = { dash: "Overview", stats: "Overview", report: "Overview", orders: "Sales", sales: "Sales", customers: "Sales", coupons: "Sales", messages: "Engagement", reviews: "Engagement",
+  ppts: "Catalog", notes: "Catalog", books: "Catalog", themes: "Catalog", prices: "Catalog", menu: "Website", site: "Website", settings: "Website" };
+const PAL_EXTRA = { dash: "home overview kpi", stats: "visitors traffic analytics", report: "revenue kamai monthly", orders: "custom ppt", sales: "razorpay payments", customers: "login users", coupons: "discount code",
+  messages: "tickets contact inbox", reviews: "ratings testimonials", ppts: "upload ready ppt pdf", notes: "pdf notes study", books: "state board syllabus pyq", themes: "designs slides", prices: "smart board pricing",
+  menu: "category bar ncert cbse jee neet cuet cat nda clat ug ca quiz state books", site: "website controls buttons social logos", settings: "password razorpay contact theme" };
+let PALI = 0, PALL = [], PAL_BACK = null;
+function palOpen() {
+  const p = $("#pal"); if (!p.hidden) return;
+  PAL_BACK = document.activeElement; p.hidden = false; $("#palQ").value = ""; palDraw(); $("#palQ").focus();
+}
+function palClose() { $("#pal").hidden = true; if (PAL_BACK && PAL_BACK.focus) PAL_BACK.focus(); }
+function palDraw() {
+  const q = $("#palQ").value.trim().toLowerCase();
+  PALL = Object.keys(TITLES).filter(k => !q || (TITLES[k] + " " + (GROUP[k] || "") + " " + (PAL_EXTRA[k] || "")).toLowerCase().includes(q));
+  PALI = Math.min(PALI, Math.max(0, PALL.length - 1)); if (!q) PALI = Math.max(0, PALL.indexOf(tab));
+  const icon = k => { const b = $(`#tabs button[data-t="${k}"] svg`); return b ? b.outerHTML : ""; };
+  $("#palL").innerHTML = PALL.length ? PALL.map((k, i) => `<li role="option" id="pal-${k}" data-k="${k}" aria-selected="${i === PALI}">${icon(k)}${esc(TITLES[k])}<small>${esc(GROUP[k] || "")}</small></li>`).join("") : `<li aria-disabled="true">No matching section</li>`;
+  $("#palQ").setAttribute("aria-activedescendant", PALL[PALI] ? "pal-" + PALL[PALI] : "");
+  $$("#palL li[data-k]").forEach(li => { li.onclick = () => { palClose(); go(li.dataset.k, true); }; li.onmousemove = () => { if (PALI !== PALL.indexOf(li.dataset.k)) { PALI = PALL.indexOf(li.dataset.k); palMark(); } }; });
+}
+function palMark() { $$("#palL li[data-k]").forEach((li, i) => li.setAttribute("aria-selected", i === PALI)); $("#palQ").setAttribute("aria-activedescendant", PALL[PALI] ? "pal-" + PALL[PALI] : ""); const el = $("#palL [aria-selected=true]"); if (el) el.scrollIntoView({ block: "nearest" }); }
+$("#palQ").oninput = () => { PALI = 0; palDraw(); };
+$("#palQ").onkeydown = e => {
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (!PALL.length) return; PALI = (PALI + (e.key === "ArrowDown" ? 1 : -1) + PALL.length) % PALL.length; palMark(); }
+  else if (e.key === "Enter") { e.preventDefault(); const k = PALL[PALI]; if (k) { palClose(); go(k, true); } }
+  else if (e.key === "Escape") { e.preventDefault(); palClose(); }
+  else if (e.key === "Tab") e.preventDefault();
+};
+$("#pal").onclick = e => { if (e.target.id === "pal") palClose(); };
+$$("[data-pal]").forEach(b => b.onclick = palOpen);
+document.addEventListener("keydown", e => {
+  if ($("#app").hidden) return;
+  const typing = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || "")) || e.target.isContentEditable;
+  if ((e.key === "k" || e.key === "K") && (e.ctrlKey || e.metaKey)) { e.preventDefault(); palOpen(); }
+  else if (e.key === "/" && !typing && $("#pal").hidden && !document.querySelector(".modal:not([hidden])")) { e.preventDefault(); palOpen(); }
+  else if (e.key === "Escape" && $("#side").classList.contains("open")) { closeMenu(); $("#menuBtn").focus(); }
+});
 
 /* ---------- Settings → Razorpay ---------- */
 async function payCard() {
