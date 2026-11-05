@@ -640,6 +640,26 @@ body.noscroll{overflow:hidden}
 .pmits{max-height:190px;overflow:auto;padding:2px}
 .mnhow{padding:10px 12px;border-radius:10px;background:var(--accent-soft);color:var(--text);line-height:1.6}
 @media(max-width:560px){.pmrow{grid-template-columns:1fr}}
+.cfq{margin-bottom:10px}
+.cfits{display:flex;gap:6px;flex-wrap:wrap;max-height:220px;overflow:auto;padding:2px}
+.cfit{display:inline-flex;align-items:center;gap:7px;padding:6px 8px 6px 12px;border-radius:99px;border:1px solid var(--line2);background:var(--card);color:var(--text);font:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
+.cfit:hover{background:var(--hover)}
+.cfit.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.cfn{min-width:22px;height:20px;padding:0 6px;border-radius:99px;display:grid;place-items:center;font-size:.72rem;background:var(--hover);color:var(--dim)}
+.cfn.ok{background:color-mix(in srgb,var(--ok) 20%,transparent);color:var(--ok)}
+.cfit.on .cfn{background:rgba(255,255,255,.25);color:#fff}
+.cfhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0 12px;padding:12px 14px;border-radius:12px;background:var(--accent-soft)}
+.cfhead small{display:block;color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+.cfhead b{font-size:1rem}
+.cfhead .sp{flex:1}
+.cfadd{margin-top:16px;border:1px dashed var(--line2);border-radius:12px;padding:10px 12px}
+.cfadd summary{cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px}
+.cfadd .search{margin:10px 0}
+.cfal{display:flex;flex-direction:column;gap:4px;max-height:280px;overflow:auto}
+.cfrow{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:6px 8px;border-radius:8px}
+.cfrow:hover{background:var(--hover)}
+.cfrow span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:560px){.cfhead .btn{flex:1 1 100%;justify-content:center}}
 @media(max-width:1100px){.mngrid{grid-template-columns:1fr}.mnside{position:static;max-height:none}.mnlist{max-height:300px}}
 @media(max-width:900px){.topbar{padding:10px 16px}.content{padding:18px 16px 70px}.dgrid{grid-template-columns:1fr}}
 @media(max-width:560px){
@@ -739,6 +759,7 @@ body.noscroll{overflow:hidden}
         <button data-t="ppts"><svg class="i"><use href="#i-upload"/></svg>Ready PPTs</button>
         <button data-t="notes"><svg class="i"><use href="#i-book"/></svg>Study notes</button>
         <button data-t="books"><svg class="i"><use href="#i-book"/></svg>State books</button>
+        <button data-t="cfiles"><svg class="i"><use href="#i-folder"/></svg>Category files</button>
         <button data-t="themes"><svg class="i"><use href="#i-image"/></svg>Themes</button>
         <button data-t="prices"><svg class="i"><use href="#i-tag"/></svg>Pricing</button>
         <span class="lbl">Website</span>
@@ -892,7 +913,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Physical Education","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", sales: "Online sales", customers: "Customers", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", notes: "Study notes", books: "State books", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", sales: "Online sales", customers: "Customers", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", notes: "Study notes", books: "State books", cfiles: "Category files", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -1111,7 +1132,7 @@ function go(t, user) {
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   window.scrollTo(0, 0);
   const v = $("#view"); v.setAttribute("aria-busy", "true");
-  Promise.resolve(({ dash, stats, report, sales, customers, coupons, ppts, notes, books: stateBooks, menu, orders, themes, prices, reviews, messages, site, settings })[t]()).finally(() => {
+  Promise.resolve(({ dash, stats, report, sales, customers, coupons, ppts, notes, books: stateBooks, cfiles, menu, orders, themes, prices, reviews, messages, site, settings })[t]()).finally(() => {
     v.setAttribute("aria-busy", "false");
     if (user && tab === t) { const h = $("#view h1"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
   });
@@ -3018,7 +3039,7 @@ async function runJob(j) {
     const r = await call("adminPptSave", pptPayload(p));
     if (!r.ok) throw new Error(r.error);
     const i = PP.findIndex(x => x.id === r.ppt.id); if (i >= 0) PP[i] = r.ppt; else PP.unshift(r.ppt);
-    if ($("#pgrid")) drawPpts();
+    ppRedraw();
     j.st = "ok"; j.msg = r.ppt.show ? "✅ Website par live" : "✅ Saved (hidden)"; dropJob(j);
   } catch (e) { j.st = "bad"; j.msg = "❌ " + e.message; keepJob(j); }
   j.prog = null;
@@ -3259,9 +3280,83 @@ $("#peSave").onclick = async () => {
   if (!r.ok) return $("#peErr").textContent = r.error;
   const i = PP.findIndex(x => x.id === r.ppt.id);
   if (i >= 0) PP[i] = r.ppt; else PP.unshift(r.ppt);
-  $("#pptModal").hidden = true; drawPpts(); toast(r.ppt.show ? "Saved — website par dikh raha hai" : "Saved (hidden)");
+  $("#pptModal").hidden = true; ppRedraw(); toast(r.ppt.show ? "Saved — website par dikh raha hai" : "Saved (hidden)");
 };
 
+/* ---------- Category files: home page category menu (NCERT, CBSE, JEE…) ke har item ki files ---------- */
+const CFS = { c: "", i: "", q: "", aq: "" };
+const ppRedraw = () => { if ($("#pgrid")) drawPpts(); else if ($("#cfGrid")) cfDraw(); };
+const cfCats = () => (MENU_L || catnavList({})).filter(c => c.k !== "states" && c.it.some(x => !catnavSplit(x)[1]));
+const cfItems = c => c ? c.it.map(x => catnavSplit(x)).filter(([, lk]) => !lk).map(([l]) => l) : [];
+const cfCount = k => PP.filter(p => (p.board || []).includes(k)).length;
+async function cfiles() {
+  loading();
+  const [r, m] = await Promise.all([call("adminPpts"), call("adminPrices")]);
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head(TITLES.cfiles, "") + NEW_SCRIPT) : fail(r.error);
+  PP = r.ppts; PPAY = r.payments; PFOLDER = r.folderUrl;
+  MENU_L = catnavList(m.ok ? m.settings : {});
+  V(head(TITLES.cfiles, `Home page ki category line (NCERT, CBSE, JEE…) ke har item ki files. Category aur item chunein, phir file upload karein — website par us item par click karte hi wahi files dikhengi.`,
+    `<a class="btn sm" href="${esc(PFOLDER)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a><button class="btn sm" data-go="menu">${ic("i-list")} Edit menu</button>`) + `
+  <div class="mngrid">
+    <section class="card mnside" aria-labelledby="cfCatH"><div class="ch"><h3 id="cfCatH">Categories</h3><span class="note" id="cfTot"></span></div>
+      <ol class="mnlist" id="cfCats"></ol></section>
+    <section class="card mned" id="cfMain" aria-label="Item files"></section>
+  </div>`);
+  $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+  cfDraw();
+}
+function cfDraw() {
+  const L = cfCats();
+  if (!L.length) { $("#cfCats").innerHTML = ""; $("#cfMain").innerHTML = `<div class="empty"><b>🗂️</b>Category menu me koi item nahi. <button class="btn sm" data-go="menu">Category menu kholein</button></div>`; $$("#cfMain [data-go]").forEach(b => b.onclick = () => go(b.dataset.go)); return; }
+  let c = L.find(x => x.n === CFS.c); if (!c) { c = L[0]; CFS.c = c.n; CFS.i = ""; CFS.q = ""; }
+  const its = cfItems(c); if (!its.includes(CFS.i)) CFS.i = its[0];
+  const tagged = PP.filter(p => (p.board || []).some(t => String(t)[0] === "#")).length;
+  $("#cfTot").textContent = `${tagged} file${tagged === 1 ? "" : "s"} lagi hain`;
+  $("#cfCats").innerHTML = L.map(x => { const n = cfItems(x).reduce((s, l) => s + cfCount(catnavKey(x.n, l)), 0);
+    return `<li><button type="button" class="mnit${x.n === c.n ? " on" : ""}${x.h ? " off" : ""}" data-c="${esc(x.n)}" aria-current="${x.n === c.n}" style="--c:${x.c}">
+    <span class="mne" aria-hidden="true">${esc(x.e)}</span><span class="mnt"><b>${esc(x.n)}</b><small>${cfItems(x).length} items · ${n ? `<span style="color:var(--ok);font-weight:700">${n} files</span>` : "khaali"}${x.h ? " · Hidden" : ""}</small></span></button></li>`; }).join("");
+  $$("#cfCats [data-c]").forEach(b => b.onclick = () => { CFS.c = b.dataset.c; CFS.i = ""; CFS.q = ""; CFS.aq = ""; cfDraw(); $("#cfMain").scrollIntoView({ block: "nearest" }); });
+  const k = catnavKey(c.n, CFS.i), files = PP.map((p, i) => [p, i]).filter(([p]) => (p.board || []).includes(k));
+  const q = CFS.q.toLowerCase(), shown = its.filter(l => !q || l.toLowerCase().includes(q));
+  const box = $("#cfMain"), hadQ = document.activeElement && document.activeElement.id;
+  box.innerHTML = `<div class="ch"><h3><span class="mnbadge" style="--c:${c.c}" aria-hidden="true">${esc(c.e)}</span> ${esc(c.n)}</h3><span class="note">${its.length} items</span></div>
+    ${its.length > 8 ? `<label class="search cfq">${ic("i-search")}<input type="search" id="cfQ" placeholder="Item dhoondhein…" aria-label="Search items" value="${esc(CFS.q)}"></label>` : ""}
+    <div class="cfits" role="list">${shown.map(l => { const n = cfCount(catnavKey(c.n, l)); return `<button type="button" role="listitem" class="cfit${l === CFS.i ? " on" : ""}" data-i="${esc(l)}" aria-pressed="${l === CFS.i}">${esc(l)}<span class="cfn${n ? " ok" : ""}">${n}</span></button>`; }).join("") || `<span class="note">Koi item nahi mila.</span>`}</div>
+    <div class="cfhead"><div><small>Selected item</small><b>${esc(c.n)} › ${esc(CFS.i)}</b></div>
+      <span class="sp"></span>
+      <a class="btn sm" href="ready-ppts.html?${esc(new URLSearchParams({ m: k, t: c.n + " › " + CFS.i, q: c.n + " " + CFS.i }).toString())}" target="_blank" rel="noopener">${ic("i-ext")} Website par dekhein</a>
+      <button class="btn sm" id="cfUpN">📝 Upload notes (PDF)</button>
+      <button class="btn pri" id="cfUp">${ic("i-upload")} Upload PPT / PDF</button></div>
+    <div class="tgrid" id="cfGrid">${files.length ? files.map(([p, i]) => `<div class="tcard ${p.show ? "" : "hid"}">
+      <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}</span></div>
+      <div class="body"><b>${esc(p.title)}</b>
+        <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span><span class="pill">${isNote(p) ? "📝 Notes" : "📊 PPT"}</span>${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}</div>
+        <div class="acts"><button class="btn sm" data-ce="${i}">✏️ Edit</button><button class="btn sm" data-cr="${i}" title="Sirf is item se hatayein — file delete nahi hogi">✕ Is item se hatayein</button></div></div></div>`).join("")
+      : `<div class="empty" style="grid-column:1/-1"><b>📂</b>Is item me abhi koi file nahi.<br><small>“Upload PPT / PDF” dabayein, ya neeche se pehle se bani file jodein.</small></div>`}</div>
+    <details class="cfadd"${CFS.aq ? " open" : ""}><summary>${ic("i-plus")} Pehle se upload ki hui file is item me jodein</summary>
+      <label class="search">${ic("i-search")}<input type="search" id="cfAQ" placeholder="PPT / Notes ka naam likhein…" aria-label="Search existing files" value="${esc(CFS.aq)}"></label>
+      <div class="cfal" id="cfAL"></div></details>`;
+  const aq = CFS.aq.toLowerCase().trim(), cand = PP.map((p, i) => [p, i]).filter(([p]) => !(p.board || []).includes(k) && (!aq || [p.title, p.subject, ...(p.level || [])].join(" ").toLowerCase().includes(aq))).slice(0, 30);
+  $("#cfAL").innerHTML = cand.length ? cand.map(([p, i]) => `<div class="cfrow"><span>${isNote(p) ? "📝" : "📊"} ${esc(p.title)}${p.show ? "" : ` <span class="pill off">Hidden</span>`}</span><button class="btn sm" data-ca="${i}">${ic("i-plus")} Jodein</button></div>`).join("") : `<span class="note">Koi file nahi mili.</span>`;
+  $$("#cfMain [data-i]").forEach(b => b.onclick = () => { CFS.i = b.dataset.i; cfDraw(); });
+  if ($("#cfQ")) { $("#cfQ").oninput = e => { CFS.q = e.target.value; cfDraw(); }; if (hadQ === "cfQ") { const el = $("#cfQ"); el.focus(); el.setSelectionRange(el.value.length, el.value.length); } }
+  $("#cfAQ").oninput = e => { CFS.aq = e.target.value; cfDraw(); };
+  if (hadQ === "cfAQ") { const el = $("#cfAQ"); el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+  const up = kind => { KIND = kind; editPpt(null); if (!PE.board.includes(k)) PE.board.push(k); if (kind !== "notes" && /^(ncert|cbse|icse|jee|neet)$/i.test(c.n) && BOARDS.includes(c.n.toUpperCase())) PE.board.push(c.n.toUpperCase()); ED = PE; mseg($("#peBoard"), BOARDS, "board"); drawPeMenu(); };
+  $("#cfUp").onclick = () => up("ppt");
+  $("#cfUpN").onclick = () => up("notes");
+  $$("#cfGrid [data-ce]").forEach(b => b.onclick = () => { KIND = isNote(PP[+b.dataset.ce]) ? "notes" : "ppt"; editPpt(PP[+b.dataset.ce]); });
+  const retag = async (b, i, on) => {
+    const p = PP[i], bd = (p.board || []).filter(t => t !== k);
+    if (on) { if (bd.length >= 20) return toast("Is file me 20 se zyada tag nahi lag sakte", true); bd.push(k); }
+    b.disabled = true;
+    const r = await call("adminPptSave", Object.assign(pptPayload(p), { board: bd }));
+    if (!r.ok) { b.disabled = false; return toast(r.error, true); }
+    PP[i] = r.ppt; cfDraw(); toast(on ? `“${CFS.i}” me jod diya` : `“${CFS.i}” se hata diya (file safe hai)`);
+  };
+  $$("#cfGrid [data-cr]").forEach(b => b.onclick = () => retag(b, +b.dataset.cr, false));
+  $$("#cfAL [data-ca]").forEach(b => b.onclick = () => retag(b, +b.dataset.ca, true));
+}
 /* ---------- Category Menu: home page ki category line (State Books, NCERT, CBSE…) ---------- */
 let MN = [], MNI = 0, MNDIRTY = false, MNCUSTOM = false;
 const MN_COLORS = ["#f97316", "#2563eb", "#7c3aed", "#0891b2", "#dc2626", "#16a34a", "#db2777", "#ca8a04", "#0f766e", "#4f46e5", "#e11d48", "#64748b"];
@@ -3318,7 +3413,7 @@ function mnEd() {
       <label class="f mnw"><span class="lh">Items <small>· one per line · add “ | link” for a custom page, e.g. <code>NCERT Notes | study-notes-pdf.html</code></small></span>
         <textarea id="mnIt" rows="10" spellcheck="false">${esc(c.it.join("\n"))}</textarea><span class="note" id="mnItN"></span></label>
       ${c.k === "states" ? `<p class="note mnw">ℹ️ Each item opens that state's State Board page. Upload its files in <a href="#books" data-go="books">State books</a>.</p>`
-        : `<p class="note mnw mnhow">📤 <b>Files kaise lagayein:</b> <a href="#ppts" data-go="ppts">Ready PPTs</a> ya <a href="#notes" data-go="notes">Study notes</a> me file upload karein → “Category menu” me ye category aur item chunein → Save. Item par click karte hi wahi files dikhengi.${MNCOUNT && MN_FILES(c) ? ` <span class="pill ok">${MN_FILES(c)} file${MN_FILES(c) === 1 ? "" : "s"} lagi hain</span>` : ""}</p>`}
+        : `<p class="note mnw mnhow">📤 <b>Files kaise lagayein:</b> <a href="#cfiles" data-go="cfiles">Category files</a> page kholein → category aur item chunein → “Upload” dabayein. Item par click karte hi wahi files website par dikhengi.${MNCOUNT && MN_FILES(c) ? ` <span class="pill ok">${MN_FILES(c)} file${MN_FILES(c) === 1 ? "" : "s"} lagi hain</span>` : ""}</p>`}
     </div>
     <div class="row mnfoot"><label class="sw"><input type="checkbox" id="mnH" ${c.h ? "" : "checked"}><i></i> Show on website</label><span class="sp"></span>
       <span id="mnDelBox"><button class="btn sm danger" id="mnDel">${ic("i-trash")} Delete category</button></span></div>`;
@@ -3362,9 +3457,9 @@ async function mnSave(reset) {
 
 /* ---------- Quick search (Ctrl+K / "/"): kisi bhi section par turant jaayein ---------- */
 const GROUP = { dash: "Overview", stats: "Overview", report: "Overview", orders: "Sales", sales: "Sales", customers: "Sales", coupons: "Sales", messages: "Engagement", reviews: "Engagement",
-  ppts: "Catalog", notes: "Catalog", books: "Catalog", themes: "Catalog", prices: "Catalog", menu: "Website", site: "Website", settings: "Website" };
+  ppts: "Catalog", notes: "Catalog", books: "Catalog", cfiles: "Catalog", themes: "Catalog", prices: "Catalog", menu: "Website", site: "Website", settings: "Website" };
 const PAL_EXTRA = { dash: "home overview kpi", stats: "visitors traffic analytics", report: "revenue kamai monthly", orders: "custom ppt", sales: "razorpay payments", customers: "login users", coupons: "discount code",
-  messages: "tickets contact inbox", reviews: "ratings testimonials", ppts: "upload ready ppt pdf", notes: "pdf notes study", books: "state board syllabus pyq", themes: "designs slides", prices: "smart board pricing",
+  messages: "tickets contact inbox", reviews: "ratings testimonials", ppts: "upload ready ppt pdf", notes: "pdf notes study", books: "state board syllabus pyq", cfiles: "category menu files upload ncert cbse jee neet cuet", themes: "designs slides", prices: "smart board pricing",
   menu: "category bar ncert cbse jee neet cuet cat nda clat ug ca quiz state books", site: "website controls buttons social logos", settings: "password razorpay contact theme" };
 let PALI = 0, PALL = [], PAL_BACK = null;
 function palOpen() {
