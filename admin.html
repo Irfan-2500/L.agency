@@ -585,6 +585,51 @@ h1[tabindex="-1"]:focus{outline:0}
 #mnBar.on{border-color:var(--warn)}
 @media(max-width:560px){#mnBar:not(.on){display:none}}
 
+
+/* date range + full view */
+.rbar{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;padding:12px;border-radius:14px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.rchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+.rchips button{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:6px 13px;border-radius:99px;border:1px solid var(--line2);background:var(--bg2);color:var(--muted);font-weight:600;font-size:.82rem}
+.rchips button svg{width:14px;height:14px}
+.rchips button:hover{color:var(--text);border-color:var(--accent)}
+.rchips button[aria-checked="true"]{background:var(--accent2);border-color:var(--accent2);color:#fff}
+.rmeta{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap}
+.rcust{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap}
+.rcust label{display:flex;flex-direction:column;gap:4px;font-size:.72rem;font-weight:700;color:var(--dim)}
+.rcust input{width:auto;padding:7px 10px;min-height:34px}
+.rlbl{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.86rem}
+.rlbl svg{width:15px;height:15px;color:var(--accent)}
+.rlbl small{color:var(--dim);font-weight:500}
+.rgran{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;color:var(--dim)}
+.rgran select{width:auto;padding:6px 10px;min-height:34px;font-weight:600}
+.kpi{cursor:pointer}
+.kpi .kx{position:absolute;top:12px;right:12px;color:var(--dim);opacity:0;transition:.15s}
+.kpi .kx svg{width:15px;height:15px}
+.kpi:hover .kx,.kpi:focus-visible .kx{opacity:1}
+.bigm{padding:16px;align-items:center}
+.bbox{width:min(1240px,100%);max-height:calc(100vh - 32px);overflow:auto;gap:14px;padding:22px 24px}
+.bhead{position:sticky;top:-22px;z-index:4;margin:-22px -24px 0;padding:16px 24px;background:var(--card);border-bottom:1px solid var(--line)}
+.bhead h2{font-size:1.3rem}
+.bbox .rbar{box-shadow:none;background:var(--bg2)}
+.bigk{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.bigk>div{display:flex;flex-direction:column;gap:5px;align-items:flex-start;padding:14px 16px;border-radius:12px;background:var(--bg2);border:1px solid var(--line)}
+.bigk>div>small{color:var(--dim);font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.05em}
+.bigk b{font-family:var(--display);font-size:1.6rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.combo.tall svg{max-height:62vh}
+.combo .hit.hb:hover rect,.combo .hit.hb:focus rect{fill:var(--accent-soft)}
+body.noscroll{overflow:hidden}
+.rtbl.scroll{max-height:460px;overflow:auto}
+.rtbl.scroll thead th,.ctbl thead th{position:sticky;top:0;background:var(--card);z-index:1}
+.rtbl.scroll tfoot td{position:sticky;bottom:0;background:var(--card)}
+.rtbl tfoot td{font-weight:800;border-top:2px solid var(--line2);border-bottom:0}
+@media(max-width:560px){
+  .bigm{padding:0}
+  .bbox{width:100%;max-height:100vh;height:100vh;border-radius:0;padding:16px}
+  .bhead{top:-16px;margin:-16px -16px 0;padding:12px 16px}
+  .rgran{margin-left:0}
+  .bigk{grid-template-columns:1fr 1fr}
+  .bigk b{font-size:1.25rem}
+}
 @media(max-width:1100px){.mngrid{grid-template-columns:1fr}.mnside{position:static;max-height:none}.mnlist{max-height:300px}}
 @media(max-width:900px){.topbar{padding:10px 16px}.content{padding:18px 16px 70px}.dgrid{grid-template-columns:1fr}}
 @media(max-width:560px){
@@ -606,6 +651,8 @@ h1[tabindex="-1"]:focus{outline:0}
 <body>
 <a class="skip" href="#view">Skip to content</a>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-max" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
   <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
@@ -709,6 +756,11 @@ h1[tabindex="-1"]:focus{outline:0}
     </div>
   </div>
 </section>
+<!-- FULL VIEW (card par click) -->
+<div class="modal bigm" id="bigM" hidden role="dialog" aria-modal="true" aria-labelledby="bigT">
+  <div class="mbox bbox"><div class="row bhead"><h2 id="bigT">Details</h2><span class="sp"></span><button class="btn sm" id="bigGo" type="button">Open section</button><button class="btn sm icon" id="bigX" type="button" aria-label="Close full view">✕</button></div>
+    <div id="bigB"></div></div>
+</div>
 <!-- QUICK SEARCH (Ctrl+K) -->
 <div class="pal" id="pal" hidden role="dialog" aria-modal="true" aria-label="Go to section">
   <div class="pbox"><div class="pin"><svg class="i"><use href="#i-search"/></svg><input type="text" id="palQ" placeholder="Go to section…" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="palL" aria-autocomplete="list"><kbd>Esc</kbd></div>
@@ -932,14 +984,32 @@ async function demoCall(a, d) {
     case "adminUiSave": Object.assign(D.settings, d.settings); return ok({ settings: Object.assign({}, D.settings) });
     case "adminMenuSave": D.settings.catnav = d.reset ? "" : JSON.stringify({ v: 1, cats: d.cats }); return ok({ settings: Object.assign({}, D.settings) });
     case "adminStats": {
-      const day = k => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - k); return d.toISOString(); };
-      const daily = [...Array(30)].map((_, k) => { const v = Math.round(8 + 6 * Math.sin(k / 3) + k / 2); return { day: day(29 - k), visitors: v, visits: v * 2 }; });
-      return ok({ today: 46, todayUnique: 23, week: 290, weekUnique: 141, month: 1180, monthUnique: 512, allTime: 3420, daily,
-        pages: [["/", 520], ["/ready-ppts", 310], ["/order", 160], ["/account", 70], ["/about", 40]], sources: [["Direct", 610], ["WhatsApp", 280], ["Google", 190], ["Instagram", 70], ["YouTube", 30]],
-        states: [["Bihar", 410], ["Uttar Pradesh", 300], ["Delhi", 190], ["Jharkhand", 120], ["US", 25], ["Maharashtra", 60], ["GB", 3], ["NP", 2]], cities: [["Patna", 280], ["Lucknow", 140], ["New Delhi", 120], ["Ranchi", 90], ["Gaya", 70]],
-        devices: [["Mobile", 900], ["Computer", 250], ["Tablet", 30]], browsers: [["Chrome", 820], ["Safari", 160], ["Samsung Internet", 110], ["Edge", 60]], sheetUrl: "#" });
+      const pd = s => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ""); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
+      const key = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+      const t0 = new Date(); t0.setHours(0, 0, 0, 0);
+      const first = new Date(t0); first.setFullYear(first.getFullYear() - 2); first.setMonth(first.getMonth() - 3);
+      const vday = d => { if (d < first || d > t0) return 0; const k = (d - first) / 864e5; return Math.max(0, Math.round(6 + k / 40 + 6 * Math.sin(k / 3) + 3 * Math.sin(k / 23))); };
+      const span = (a, b) => { const out = []; for (let d = new Date(a); d <= b; d.setDate(d.getDate() + 1)) { const v = vday(d); out.push({ day: key(d), visitors: v, visits: Math.round(v * 2.1) }); } return out; };
+      const d30 = new Date(t0); d30.setDate(d30.getDate() - 29);
+      const daily = span(d30, t0);
+      let from = d.all ? first : pd(d.from) || d30, to = pd(d.to) || t0; if (to > t0) to = t0; if (from > to) from = to;
+      const rd = span(from, to), pf = pd(d.pfrom), pt = new Date(from); pt.setDate(pt.getDate() - 1);
+      const pr = pf ? span(pf, pt) : [];
+      const tot = (a, f) => a.reduce((s, x) => s + x[f], 0), sc = n => Math.max(1, Math.round(n));
+      const V = tot(rd, "visits") || 1, f = r => r.map(([k, n]) => [k, sc(n * V / 1180)]);
+      const lists = { pages: f([["/", 520], ["/ready-ppts", 310], ["/order", 160], ["/account", 70], ["/about", 40]]), sources: f([["Direct", 610], ["WhatsApp", 280], ["Google", 190], ["Instagram", 70], ["YouTube", 30]]),
+        states: f([["Bihar", 410], ["Uttar Pradesh", 300], ["Delhi", 190], ["Jharkhand", 120], ["US", 25], ["Maharashtra", 60], ["GB", 3], ["NP", 2]]), cities: f([["Patna", 280], ["Lucknow", 140], ["New Delhi", 120], ["Ranchi", 90], ["Gaya", 70]]),
+        devices: f([["Mobile", 900], ["Computer", 250], ["Tablet", 30]]), browsers: f([["Chrome", 820], ["Safari", 160], ["Samsung Internet", 110], ["Edge", 60]]) };
+      return ok(Object.assign({ today: daily[29].visits, todayUnique: daily[29].visitors, week: tot(daily.slice(23), "visits"), weekUnique: tot(daily.slice(23), "visitors"), month: tot(daily, "visits"), monthUnique: tot(daily, "visitors"),
+        allTime: tot(span(first, t0), "visits"), daily, first: key(first), sheetUrl: "#",
+        range: Object.assign({ from: key(from), to: key(to), visits: tot(rd, "visits"), visitors: Math.round(tot(rd, "visitors") * .8), daily: rd }, lists),
+        prev: { visits: tot(pr, "visits"), visitors: Math.round(tot(pr, "visitors") * .8) } }, lists));
     }
-    case "adminSales": return ok({ sales: D.sales.slice() });
+    case "adminSales": {
+      if (!D._more) { D._more = 1; const T = ["Class 10 Science — Light", "Class 9 Maths — Polynomials", "Hindi Vyakaran — Sandhi", "Business Pitch Deck", "Class 12 Physics Notes"];
+        for (let k = 8; k < 800; k += 1 + (k * 7) % 5) { const t = new Date(Date.now() - k * 864e5 - (k % 11) * 36e5); D.sales.push({ time: t.toISOString(), name: "Customer " + k, email: "", mobile: "", items: T[k % 5], amount: [49, 99, 149, 199, 79][k % 5], payment: "pay_demo" + k, order: "order_demo" + k }); } }
+      return ok({ sales: D.sales.slice() });
+    }
     case "adminReport": {
       const months = [...Array(12)].map((_, i) => { const d = new Date(); d.setDate(15); d.setMonth(d.getMonth() - 11 + i); const r = i < 6 ? 0 : [99, 248, 397, 520, 690, 815][i - 6];
         return { month: d.toISOString().slice(0, 7), sales: Math.round(r / 60), revenue: r, orders: 3 + i, done: 2 + Math.floor(i / 2), cancelled: i % 4 ? 0 : 1, visitors: 120 + i * 45, newCustomers: Math.round(r / 90), coupons: i > 8 ? i - 8 : 0, discount: 0 }; });
@@ -1016,7 +1086,7 @@ $$("#tabs button[data-t]").forEach(b => b.onclick = () => go(b.dataset.t, true))
 const closeMenu = () => { $("#side").classList.remove("open"); $("#scrim").classList.remove("open"); $("#menuBtn").setAttribute("aria-expanded", "false"); };
 $("#menuBtn").onclick = () => { $("#side").classList.add("open"); $("#scrim").classList.add("open"); $("#menuBtn").setAttribute("aria-expanded", "true"); const b = $("#tabs button.on") || $("#tabs button"); b && b.focus(); };
 $("#scrim").onclick = closeMenu;
-$("#refresh").onclick = () => go(tab);
+$("#refresh").onclick = () => { DATA = { sales: null, orders: null, stats: {} }; go(tab); };
 function go(t, user) {
   if (!TITLES[t]) t = "dash";
   tab = t; closeMenu();
@@ -1071,35 +1141,43 @@ function spark(vals, col) {
   return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,${h} ${line} ${w},${h}" style="fill:${col};opacity:.14"/><polyline points="${line}" style="stroke:${col}"/></svg>`;
 }
 function kpi(o) {
-  return `<button class="kpi${o.hot ? " hot" : ""}" data-go="${o.go}" style="--c:${o.col}" aria-label="${esc(o.label)}: ${esc(String(o.value))}. Open ${esc(TITLES[o.go] || o.go)}">
+  return `<button class="kpi${o.hot ? " hot" : ""}" ${o.big ? `data-big="${o.big}"` : `data-go="${o.go}"`} style="--c:${o.col}" aria-label="${esc(o.label)}: ${esc(String(o.value))}. ${o.big ? "Open full view" : "Open " + esc(TITLES[o.go] || o.go)}" title="Click for full view">
     <span class="kh"><span class="ic">${o.icon}</span><span class="kl">${esc(o.label)}</span></span>
-    <b>${o.value}</b>${o.d || ""}${o.sub ? `<small>${o.sub}</small>` : ""}${spark(o.sp, o.col)}</button>`;
+    <b>${o.value}</b>${o.d || ""}${o.sub ? `<small>${o.sub}</small>` : ""}${spark(o.sp, o.col)}${o.big ? `<span class="kx" aria-hidden="true">${ic("i-max")}</span>` : ""}</button>`;
 }
-/* Area (left axis) + bars (right axis) chart, hover tooltips + table for screen readers */
-function comboChart(id, days, area, bars) {
-  const W = 720, H = 250, L = 34, R = bars ? 30 : 10, T = 14, B = 26, iw = W - L - R, ih = H - T - B, n = days.length, st = iw / Math.max(1, n - 1), bw = Math.max(3, Math.min(14, iw / n * .45));
-  const mxA = Math.max(4, ...area.vals), mxB = bars ? Math.max(2, ...bars.vals) : 1;
+/* Area (left axis) + bars (right axis) chart, hover / keyboard tooltips + table for screen readers.
+   labels: x-axis labels · opt.full: tooltip/table labels · opt.bars: primary series as bars · opt.h: height */
+function comboChart(id, labels, area, bars, opt) {
+  opt = opt || {};
+  const full = opt.full || labels, fA = area.fmt || nf, fB = (bars && bars.fmt) || nf, asBars = !!opt.bars && labels.length <= 60;
+  const sm = innerWidth < 600, W = sm ? 420 : 720, H = (opt.h || 250) * (sm ? .9 : 1), L = sm ? 36 : 44, R = bars ? 34 : 10, T = 14, B = 26, iw = W - L - R, ih = H - T - B, n = labels.length;
+  const st = asBars ? iw / Math.max(1, n) : iw / Math.max(1, n - 1), bw = Math.max(2, Math.min(asBars ? 34 : 14, (iw / n) * (asBars ? .7 : .45)));
   const nice = m => { m = Math.max(1, m); const p = Math.pow(10, Math.floor(Math.log10(m))), f = m / p; return Math.max(1, ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find(x => f <= x) || 10) * p); };
-  const tA = nice(mxA / 4) * 4, tB = nice(mxB / 4) * 4;
-  const x = i => L + i * st, yA = v => T + ih - v / tA * ih, yB = v => T + ih - v / tB * ih;
+  const mxA = Math.max(0, ...area.vals), mxB = bars ? Math.max(0, ...bars.vals) : 0;
+  const tA = nice(Math.max(mxA, 4) / 4) * 4, tB = nice(Math.max(mxB, 2) / 4) * 4;
+  const x = i => asBars ? L + st * i + st / 2 : L + (n === 1 ? iw / 2 : i * st), yA = v => T + ih - v / tA * ih, yB = v => T + ih - v / tB * ih;
+  const short = v => v >= 1e7 ? (v / 1e7).toFixed(1).replace(/\.0$/, "") + "Cr" : v >= 1e5 ? (v / 1e5).toFixed(1).replace(/\.0$/, "") + "L" : v >= 1e3 ? (v / 1e3).toFixed(1).replace(/\.0$/, "") + "k" : String(Math.round(v * 10) / 10);
+  const pre = fA === rs ? "₹" : "";
+  const grid = [0, .25, .5, .75, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${(T + ih - f * ih).toFixed(1)}" y2="${(T + ih - f * ih).toFixed(1)}" class="gl"/><text x="${L - 6}" y="${(T + ih - f * ih + 3).toFixed(1)}" class="ax" text-anchor="end">${pre}${short(tA * f)}</text>${bars ? `<text x="${W - R + 6}" y="${(T + ih - f * ih + 3).toFixed(1)}" class="ax">${short(tB * f)}</text>` : ""}`).join("");
+  const every = Math.max(1, Math.ceil(n / (sm ? 5 : 8)));
+  const xl = labels.map((d, i) => ((n - 1 - i) % every === 0) ? `<text x="${x(i).toFixed(1)}" y="${H - 6}" class="ax" text-anchor="middle">${esc(d)}</text>` : "").join("");
   const line = area.vals.map((v, i) => `${x(i).toFixed(1)},${yA(v).toFixed(1)}`).join(" ");
-  const grid = [0, .25, .5, .75, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${(T + ih - f * ih).toFixed(1)}" y2="${(T + ih - f * ih).toFixed(1)}" class="gl"/><text x="${L - 6}" y="${(T + ih - f * ih + 3).toFixed(1)}" class="ax" text-anchor="end">${nf(Math.round(tA * f))}</text>${bars ? `<text x="${W - R + 6}" y="${(T + ih - f * ih + 3).toFixed(1)}" class="ax">${nf(Math.round(tB * f))}</text>` : ""}`).join("");
-  const every = Math.ceil(n / 7);
-  const xl = days.map((d, i) => (i % every === (n - 1) % every) ? `<text x="${x(i).toFixed(1)}" y="${H - 6}" class="ax" text-anchor="middle">${i === n - 1 ? "Today" : dLabel(d)}</text>` : "").join("");
+  const prim = asBars ? area.vals.map((v, i) => v ? `<rect x="${(x(i) - bw / 2).toFixed(1)}" y="${yA(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${(T + ih - yA(v)).toFixed(1)}" rx="3" style="fill:${area.col}"/>` : "").join("")
+    : (n > 1 ? `<polygon points="${L},${T + ih} ${line} ${x(n - 1).toFixed(1)},${T + ih}" style="fill:url(#${id}G)"/><polyline points="${line}" class="ln" style="stroke:${area.col}"/>` : `<circle cx="${x(0)}" cy="${yA(area.vals[0]).toFixed(1)}" r="5" style="fill:${area.col}"/>`);
   const bar = bars ? bars.vals.map((v, i) => v ? `<rect x="${(x(i) - bw / 2).toFixed(1)}" y="${yB(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${(T + ih - yB(v)).toFixed(1)}" rx="2" style="fill:${bars.col}"/>` : "").join("") : "";
-  const hits = days.map((d, i) => `<g class="hit" tabindex="0" role="listitem" aria-label="${dLabel(d)}: ${area.vals[i]} ${area.name}${bars ? `, ${bars.vals[i]} ${bars.name}` : ""}"><rect x="${(x(i) - st / 2).toFixed(1)}" y="${T}" width="${st.toFixed(1)}" height="${ih}"/><line x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${T}" y2="${T + ih}" class="cur"/><circle cx="${x(i).toFixed(1)}" cy="${yA(area.vals[i]).toFixed(1)}" r="4" style="stroke:${area.col}"/></g>`).join("");
-  const tip = `<div class="ctip" id="${id}Tip" hidden></div>`;
-  const tbl = `<details class="ctbl"><summary>View as table</summary><div class="rtbl"><table><thead><tr><th>Date</th><th>${esc(area.name)}</th>${bars ? `<th>${esc(bars.name)}</th>` : ""}</tr></thead><tbody>${days.map((d, i) => `<tr><td>${dLabel(d)}</td><td>${nf(area.vals[i])}</td>${bars ? `<td>${nf(bars.vals[i])}</td>` : ""}</tr>`).reverse().join("")}</tbody></table></div></details>`;
+  const hw = asBars ? st : (n === 1 ? iw : st);
+  const hits = labels.map((d, i) => `<g class="hit${asBars ? " hb" : ""}" tabindex="0" role="listitem" aria-label="${esc(full[i])}: ${esc(fA(area.vals[i]))} ${esc(area.name)}${bars ? `, ${esc(fB(bars.vals[i]))} ${esc(bars.name)}` : ""}"><rect x="${(x(i) - hw / 2).toFixed(1)}" y="${T}" width="${hw.toFixed(1)}" height="${ih}"/><line x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${T}" y2="${T + ih}" class="cur"/>${asBars ? "" : `<circle cx="${x(i).toFixed(1)}" cy="${yA(area.vals[i]).toFixed(1)}" r="4" style="stroke:${area.col}"/>`}</g>`).join("");
+  const tbl = `<details class="ctbl"><summary>View as table</summary><div class="rtbl"><table><thead><tr><th>Period</th><th>${esc(area.name)}</th>${bars ? `<th>${esc(bars.name)}</th>` : ""}</tr></thead><tbody>${labels.map((d, i) => `<tr><td>${esc(full[i])}</td><td>${esc(fA(area.vals[i]))}</td>${bars ? `<td>${esc(fB(bars.vals[i]))}</td>` : ""}</tr>`).reverse().join("")}</tbody></table></div></details>`;
   setTimeout(() => {
     const root = document.getElementById(id); if (!root) return; const tp = document.getElementById(id + "Tip");
     const show = (g, i) => { const r = root.getBoundingClientRect(), b = g.querySelector("rect").getBoundingClientRect();
-      tp.innerHTML = `<b>${i === n - 1 ? "Today" : dLabel(days[i])}</b><span><i style="background:${area.col}"></i>${nf(area.vals[i])} ${esc(area.name)}</span>${bars ? `<span><i style="background:${bars.col}"></i>${nf(bars.vals[i])} ${esc(bars.name)}</span>` : ""}`;
+      tp.innerHTML = `<b>${esc(full[i])}</b><span><i style="background:${area.col}"></i>${esc(fA(area.vals[i]))} ${esc(area.name)}</span>${bars ? `<span><i style="background:${bars.col}"></i>${esc(fB(bars.vals[i]))} ${esc(bars.name)}</span>` : ""}`;
       tp.hidden = false; const left = Math.min(r.width - tp.offsetWidth - 4, Math.max(4, b.left - r.left + b.width / 2 - tp.offsetWidth / 2)); tp.style.left = left + "px"; };
     root.querySelectorAll(".hit").forEach((g, i) => { g.onmouseenter = g.onfocus = () => show(g, i); g.onmouseleave = g.onblur = () => tp.hidden = true; });
   });
-  return `<div class="combo" id="${id}"><svg viewBox="0 0 ${W} ${H}" role="list" aria-label="${esc(area.name)}${bars ? " and " + esc(bars.name) : ""}, last ${n} days">
+  return `<div class="combo${opt.h > 260 ? " tall" : ""}" id="${id}"><svg viewBox="0 0 ${W} ${H}" role="list" aria-label="${esc(area.name)}${bars ? " and " + esc(bars.name) : ""}, ${n} periods">
     <defs><linearGradient id="${id}G" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:${area.col};stop-opacity:.32"/><stop offset="1" style="stop-color:${area.col};stop-opacity:0"/></linearGradient></defs>
-    ${grid}${bar}<polygon points="${L},${T + ih} ${line} ${x(n - 1).toFixed(1)},${T + ih}" style="fill:url(#${id}G)"/><polyline points="${line}" class="ln" style="stroke:${area.col}"/>${xl}${hits}</svg>${tip}</div>
+    ${grid}${bar}${prim}${xl}${hits}</svg><div class="ctip" id="${id}Tip" hidden></div></div>
     <div class="clegend"><span><i style="background:${area.col}"></i>${esc(area.name)}</span>${bars ? `<span><i style="background:${bars.col}"></i>${esc(bars.name)} (right axis)</span>` : ""}</div>${tbl}`;
 }
 function donut(parts, total, label) {
@@ -1141,14 +1219,14 @@ async function dash() {
     <div class="acts"><button class="btn sm" data-go="ppts">${ic("i-upload")} Upload PPT</button><button class="btn sm" data-go="themes" data-add="1">${ic("i-plus")} Add theme</button><a class="btn sm pri" href="./" target="_blank" rel="noopener">${ic("i-ext")} View site</a></div></div>
   ${s.newOrders ? `<button class="alertbar" data-go="orders">${ic("i-zap")}<span><b>${s.newOrders} new order${s.newOrders > 1 ? "s" : ""}</b> waiting for confirmation</span><span class="sp"></span><span class="go">Review →</span></button>` : ""}
   <div class="kpis">
-    ${sl.ok ? kpi({ go: "sales", col: "var(--ok)", icon: "₹", label: "Revenue · this month", value: rs(revM), d: delta(revM, revPM, "last month"), sp: rev30.slice(16) }) : ""}
-    ${kpi({ go: "orders", col: "var(--accent)", icon: ic("i-cart"), label: "Orders · last 7 days", value: nf(last7(ord30) + last7(sale30)), d: delta(last7(ord30) + last7(sale30), prev7(ord30) + prev7(sale30), "prev. 7 days"), sp: ord30.map((v, i) => v + sale30[i]).slice(16), sub: `${nf(s.orders)} orders all time` })}
-    ${vs.ok ? kpi({ go: "stats", col: "var(--info)", icon: ic("i-eye"), label: "Visitors · last 7 days", value: nf(last7(vis30)), d: delta(last7(vis30), prev7(vis30), "prev. 7 days"), sp: vis30.slice(16), sub: `${nf(vs.todayUnique)} today` }) : ""}
-    ${vs.ok ? kpi({ go: "report", col: "var(--pink)", icon: ic("i-pie"), label: "Conversion · last 7 days", value: cv7 + "%", d: delta(cv7, cvP, "prev. 7 days"), sub: "Orders ÷ visitors" }) : ""}
+    ${sl.ok ? kpi({ big: "revenue", col: "var(--ok)", icon: "₹", label: "Revenue · this month", value: rs(revM), d: delta(revM, revPM, "last month"), sp: rev30.slice(16) }) : ""}
+    ${kpi({ big: "orders", col: "var(--accent)", icon: ic("i-cart"), label: "Orders · last 7 days", value: nf(last7(ord30) + last7(sale30)), d: delta(last7(ord30) + last7(sale30), prev7(ord30) + prev7(sale30), "prev. 7 days"), sp: ord30.map((v, i) => v + sale30[i]).slice(16), sub: `${nf(s.orders)} orders all time` })}
+    ${vs.ok ? kpi({ big: "visitors", col: "var(--info)", icon: ic("i-eye"), label: "Visitors · last 7 days", value: nf(last7(vis30)), d: delta(last7(vis30), prev7(vis30), "prev. 7 days"), sp: vis30.slice(16), sub: `${nf(vs.todayUnique)} today` }) : ""}
+    ${vs.ok ? kpi({ big: "conversion", col: "var(--pink)", icon: ic("i-pie"), label: "Conversion · last 7 days", value: cv7 + "%", d: delta(cv7, cvP, "prev. 7 days"), sub: "Orders ÷ visitors" }) : ""}
   </div>
   <div class="dgrid">
     <section class="card" aria-labelledby="chH"><div class="ch"><h3 id="chH">${ic("i-chart", "color:var(--accent)")} Traffic &amp; orders</h3><span class="note">Last 30 days</span></div>
-      ${comboChart("dChart", days, { name: "Visitors", vals: vis30, col: "var(--accent)" }, { name: "Orders", vals: ord30.map((v, i) => v + sale30[i]), col: "var(--cyan)" })}</section>
+      ${comboChart("dChart", days.map((d, i) => i === 29 ? "Today" : dLabel(d)), { name: "Visitors", vals: vis30, col: "var(--accent)" }, { name: "Orders", vals: ord30.map((v, i) => v + sale30[i]), col: "var(--cyan)" }, { full: days.map(d => fmtD(d, 1)) })}<div class="row" style="margin-top:8px"><button class="btn sm" data-big="visitors">${ic("i-max")} Visitors full view</button><button class="btn sm" data-big="orders">${ic("i-max")} Orders full view</button></div></section>
     <section class="card" aria-labelledby="osH"><div class="ch"><h3 id="osH">${ic("i-pie", "color:var(--cyan)")} Order status</h3></div>
       ${counts.length ? `${donut(counts, list.length, "orders")}
       <div class="legend">${counts.map(([st, n, c]) => `<div><i style="background:${c}"></i>${esc(st)}<b>${n}</b><small>${Math.round(n / (list.length || 1) * 100)}%</small></div>`).join("")}</div>` : `<p class="note">No orders yet.</p>`}</section>
@@ -1739,64 +1817,266 @@ function splitGeo(rows) {
   countries.sort((a, b) => b[1] - a[1]);
   return { states, countries };
 }
+/* ---------- Date range: Today · 7d · 30d · Last month · 6m · 1y · 3y · 5y · Lifetime · Custom ---------- */
+const RANGES = [["today", "Today"], ["7d", "7 days"], ["30d", "30 days"], ["lastm", "Last month"], ["6m", "6 months"], ["1y", "1 year"], ["3y", "3 years"], ["5y", "5 years"], ["all", "Lifetime"], ["custom", "Custom"]];
+const GRANS = [["auto", "Auto"], ["day", "Daily"], ["week", "Weekly"], ["month", "Monthly"], ["year", "Yearly"]];
+let RG = { k: "30d", from: "", to: "", g: "auto" };
+try { Object.assign(RG, JSON.parse(localStorage.getItem("la_admin_range") || "{}")); } catch (e) {}
+const saveRG = () => { try { localStorage.setItem("la_admin_range", JSON.stringify(RG)); } catch (e) {} };
+const ymd = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const pday = s => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || "")); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
+const addD = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const addM = (d, n) => { const x = new Date(d); x.setMonth(x.getMonth() + n); return x; };
+const nDays = R => Math.round((R.to - R.from) / DAY) + 1;
+const fmtD = (d, y) => d.toLocaleDateString("en-IN", y ? { day: "numeric", month: "short", year: "numeric" } : { day: "numeric", month: "short" });
+const rLabel = R => nDays(R) === 1 ? fmtD(R.from, 1) : `${fmtD(R.from, R.from.getFullYear() !== R.to.getFullYear())} – ${fmtD(R.to, 1)}`;
+/* Lifetime ki shuruaat: sabse purana sale / order / visit */
+let FIRST = null;
+function rangeOf(rg) {
+  const t = day0(0); let f = t, to = t;
+  switch (rg.k) {
+    case "today": break;
+    case "7d": f = addD(t, -6); break;
+    case "30d": f = addD(t, -29); break;
+    case "lastm": f = new Date(t.getFullYear(), t.getMonth() - 1, 1); to = new Date(t.getFullYear(), t.getMonth(), 0); break;
+    case "6m": f = addD(addM(t, -6), 1); break;
+    case "1y": f = addD(addM(t, -12), 1); break;
+    case "3y": f = addD(addM(t, -36), 1); break;
+    case "5y": f = addD(addM(t, -60), 1); break;
+    case "all": f = FIRST && FIRST < t ? FIRST : addD(addM(t, -12), 1); break;
+    case "custom": f = pday(rg.from) || addD(t, -29); to = pday(rg.to) || t; if (to > t) to = t; if (f > to) f = to; break;
+  }
+  return { k: rg.k, from: f, to, toEx: addD(to, 1) };
+}
+const prevOf = R => { const n = nDays(R), to = addD(R.from, -1); return { from: addD(to, -(n - 1)), to, toEx: R.from }; };
+function granOf(R, g) {
+  const n = nDays(R), order = ["day", "week", "month", "year"];
+  let k = g && g !== "auto" ? g : n <= 45 ? "day" : n <= 190 ? "week" : n <= 2200 ? "month" : "year";
+  const cnt = k => k === "day" ? n : k === "week" ? n / 7 : k === "month" ? n / 30.4 : n / 365;
+  while (cnt(k) > 400 && order.indexOf(k) < 3) k = order[order.indexOf(k) + 1];   // bahut zyada bars na banein
+  return k;
+}
+function mkBuckets(R, g) {
+  const out = []; let s = new Date(R.from);
+  if (g === "month") s = new Date(s.getFullYear(), s.getMonth(), 1);
+  if (g === "year") s = new Date(s.getFullYear(), 0, 1);
+  while (s < R.toEx && out.length < 800) {
+    const e = g === "day" ? addD(s, 1) : g === "week" ? addD(s, 7) : g === "month" ? addM(s, 1) : new Date(s.getFullYear() + 1, 0, 1);
+    const a = s < R.from ? R.from : s, b = e > R.toEx ? R.toEx : e;
+    const lab = g === "month" ? a.toLocaleDateString("en-IN", { month: "short", year: "2-digit" }) : g === "year" ? String(a.getFullYear()) : fmtD(a);
+    const full = g === "day" ? fmtD(a, 1) : g === "month" ? a.toLocaleDateString("en-IN", { month: "long", year: "numeric" }) : g === "year" ? String(a.getFullYear()) : `${fmtD(a)} – ${fmtD(addD(b, -1), 1)}`;
+    out.push({ s: a, e: b, lab, full }); s = e;
+  }
+  return out;
+}
+function rangeBar(R) {
+  const g = RG.g || "auto";
+  return `<div class="rbar" role="group" aria-label="Date range">
+    <div class="rchips" role="radiogroup" aria-label="Period">${RANGES.map(([k, l]) => `<button type="button" role="radio" aria-checked="${RG.k === k}" data-rk="${k}">${k === "custom" ? ic("i-cal") : ""}${l}</button>`).join("")}</div>
+    <div class="rmeta">
+      <form class="rcust" ${RG.k === "custom" ? "" : "hidden"}><label>From <input type="date" name="f" value="${ymd(R.from)}" max="${ymd(day0(0))}" required></label><label>To <input type="date" name="t" value="${ymd(R.to)}" max="${ymd(day0(0))}" required></label><button class="btn sm pri">Apply</button></form>
+      <span class="rlbl">${ic("i-cal")} ${rLabel(R)} <small>· ${nf(nDays(R))} day${nDays(R) > 1 ? "s" : ""}</small></span>
+      <label class="rgran">View <select aria-label="Group by">${GRANS.map(([k, l]) => `<option value="${k}" ${k === g ? "selected" : ""}>${l}${k === "auto" ? ` (${({ day: "Daily", week: "Weekly", month: "Monthly", year: "Yearly" })[granOf(R)]})` : ""}</option>`).join("")}</select></label>
+    </div></div>`;
+}
+function bindRange(root, cb) {
+  root.querySelectorAll("[data-rk]").forEach(b => b.onclick = () => {
+    if (b.dataset.rk === "custom") { root.querySelector(".rcust").hidden = false; root.querySelectorAll("[data-rk]").forEach(x => x.setAttribute("aria-checked", x === b)); root.querySelector(".rcust input").focus(); return; }
+    RG.k = b.dataset.rk; saveRG(); cb();
+  });
+  const f = root.querySelector(".rcust");
+  if (f) f.onsubmit = e => { e.preventDefault(); const a = f.f.value, z = f.t.value; if (!a || !z) return; RG.k = "custom"; RG.from = a <= z ? a : z; RG.to = a <= z ? z : a; saveRG(); cb(); };
+  const s = root.querySelector(".rgran select"); if (s) s.onchange = () => { RG.g = s.value; saveRG(); cb(); };
+}
+
+/* ---------- Data (ek baar laao, range badalne par dobara na maango) ---------- */
+let DATA = { sales: null, orders: null, stats: {} };
+async function getSales() { if (!DATA.sales) { const r = await call("adminSales"); DATA.salesOk = !!r.ok; DATA.sales = r.ok ? r.sales : []; } return DATA.sales; }
+async function getOrders() { if (!DATA.orders) { const r = await call("adminOrders"); DATA.orders = r.ok ? r.orders : []; } return DATA.orders; }
+async function getStats(R, fresh) {
+  const P = prevOf(R), key = ymd(R.from) + "|" + ymd(R.to), hit = DATA.stats[key];
+  if (hit && !fresh && Date.now() - hit.at < 60000) return hit.r;
+  const r = await call("adminStats", { from: ymd(R.from), to: ymd(R.to), pfrom: ymd(P.from), all: R.k === "all" });
+  if (r.ok) DATA.stats[key] = { r, at: Date.now() };
+  return r;
+}
+async function setFirst() {   // Lifetime ke liye sabse purani tareekh
+  if (FIRST) return;
+  const [s, o] = await Promise.all([getSales(), getOrders()]);
+  let m = null; const see = t => { const d = new Date(t); if (!isNaN(d) && (!m || d < m)) m = d; };
+  s.forEach(x => see(x.time)); o.forEach(x => see(x.time)); if (DATA.firstVisit) see(DATA.firstVisit);
+  if (m) { m.setHours(0, 0, 0, 0); FIRST = m; }
+}
+const inR = (t, R) => { const d = new Date(t); return !isNaN(d) && d >= R.from && d < R.toEx; };
+/* range + pichhla period: sab ginti ek jagah */
+async function collect(R, need) {
+  if (R.k === "all") await setFirst();
+  const want = k => need.indexOf(k) >= 0, P = prevOf(R);
+  const [sales, orders, st] = await Promise.all([want("sales") ? getSales() : [], want("orders") ? getOrders() : [], want("stats") ? getStats(R) : null]);
+  const D = { R, P, sales: sales.filter(x => inR(x.time, R)), psales: sales.filter(x => inR(x.time, P)), orders: orders.filter(x => inR(x.time, R)), porders: orders.filter(x => inR(x.time, P)), st: st && st.ok ? st : null, days: {}, limited: false };
+  if (D.st) {
+    if (D.st.first) { DATA.firstVisit = D.st.first; const f = pday(D.st.first); if (f && (!FIRST || f < FIRST)) FIRST = f; }
+    const rg = D.st.range;
+    (rg ? rg.daily : D.st.daily).forEach(x => { const k = ymd(new Date(pday(x.day) || x.day)); D.days[k] = { v: +x.visits || 0, u: +x.visitors || 0 }; });
+    const sumIn = (A, f) => Object.keys(D.days).filter(k => { const d = pday(k); return d >= A.from && d < A.toEx; }).reduce((s, k) => s + D.days[k][f], 0);
+    D.vis = rg ? +rg.visitors || 0 : sumIn(R, "u"); D.views = rg ? +rg.visits || 0 : sumIn(R, "v");
+    D.pvis = D.st.prev ? +D.st.prev.visitors || 0 : sumIn(P, "u"); D.pviews = D.st.prev ? +D.st.prev.visits || 0 : sumIn(P, "v");
+    D.limited = !rg && R.from < addD(day0(0), -29);
+    D.top = rg && rg.pages ? rg : D.st;   // range wali top lists (naya script) warna 30 din wali
+  }
+  return D;
+}
+/* ---------- Metrics (cards, chart, bada view) ---------- */
+const amt = l => sum(l.map(x => x.amount));
+const METRICS = {
+  revenue: { name: "Revenue", col: "var(--ok)", fmt: rs, need: ["sales"], go: "sales", tot: (D, p) => amt(p ? D.psales : D.sales), bucket: (D, B) => perB(D.sales, B, x => +x.amount || 0) },
+  orders: { name: "Orders", col: "var(--accent)", fmt: nf, need: ["sales", "orders"], go: "orders", tot: (D, p) => p ? D.psales.length + D.porders.length : D.sales.length + D.orders.length, bucket: (D, B) => perB(D.sales.concat(D.orders), B) },
+  sales: { name: "Online sales", col: "var(--ok2)", fmt: nf, need: ["sales"], go: "sales", tot: (D, p) => (p ? D.psales : D.sales).length, bucket: (D, B) => perB(D.sales, B) },
+  custom: { name: "Custom orders", col: "var(--warn)", fmt: nf, need: ["orders"], go: "orders", tot: (D, p) => (p ? D.porders : D.orders).length, bucket: (D, B) => perB(D.orders, B) },
+  aov: { name: "Avg. sale value", col: "var(--pink)", fmt: rs, need: ["sales"], go: "sales", ratio: 1, tot: (D, p) => { const l = p ? D.psales : D.sales; return l.length ? Math.round(amt(l) / l.length) : 0; }, bucket: (D, B) => { const a = perB(D.sales, B, x => +x.amount || 0), c = perB(D.sales, B); return a.map((v, i) => c[i] ? Math.round(v / c[i]) : 0); } },
+  visitors: { name: "Visitors", col: "var(--info)", fmt: nf, need: ["stats"], go: "stats", tot: (D, p) => p ? D.pvis : D.vis, bucket: (D, B) => perDayB(D, B, "u") },
+  views: { name: "Page views", col: "var(--cyan)", fmt: nf, need: ["stats"], go: "stats", tot: (D, p) => p ? D.pviews : D.views, bucket: (D, B) => perDayB(D, B, "v") },
+  ppv: { name: "Pages per visitor", col: "var(--warn)", fmt: v => String(v), need: ["stats"], go: "stats", ratio: 1, tot: (D, p) => { const u = p ? D.pvis : D.vis, v = p ? D.pviews : D.views; return u ? Math.round(v / u * 10) / 10 : 0; }, bucket: (D, B) => { const u = perDayB(D, B, "u"), v = perDayB(D, B, "v"); return u.map((x, i) => x ? Math.round(v[i] / x * 10) / 10 : 0); } },
+  conversion: { name: "Conversion rate", col: "var(--pink)", fmt: v => v + "%", need: ["stats", "sales", "orders"], go: "report", ratio: 1, tot: (D, p) => { const u = p ? D.pvis : D.vis, o = METRICS.orders.tot(D, p); return u ? Math.round(o / u * 1000) / 10 : 0; }, bucket: (D, B) => { const u = perDayB(D, B, "u"), o = perB(D.sales.concat(D.orders), B); return u.map((x, i) => x ? Math.round(o[i] / x * 1000) / 10 : 0); } }
+};
+function perB(list, B, val) {
+  const out = B.map(() => 0);
+  list.forEach(x => { const t = new Date(x.time); if (isNaN(t)) return; for (let i = 0; i < B.length; i++) if (t >= B[i].s && t < B[i].e) { out[i] += val ? val(x) : 1; break; } });
+  return out;
+}
+function perDayB(D, B, f) { return B.map(b => { let s = 0; for (let d = new Date(b.s); d < b.e; d = addD(d, 1)) { const x = D.days[ymd(d)]; if (x) s += x[f]; } return s; }); }
+const rangeNote = D => D.limited ? `<p class="warnbox">${ic("i-clock")} Visitor history older than 30 days will show after the Google Script update. Revenue and orders are complete.</p>` : "";
+function kpiM(m, D, extra) {
+  const M = METRICS[m], v = M.tot(D), pv = M.tot(D, 1), B = mkBuckets(D.R, granOf(D.R));
+  return kpi(Object.assign({ big: m, col: M.col, label: M.name, value: M.fmt(v), d: D.R.k === "all" ? "" : delta(v, pv, "prev. period"), sp: B.length > 1 ? M.bucket(D, B) : null }, extra || {}));
+}
+
+/* ---------- Bada view: card par click → poori screen par graph + table ---------- */
+let BIG = null;
+async function openBig(m) {
+  const M = METRICS[m]; if (!M) return;
+  BIG = m; const box = $("#bigM");
+  if (box.hidden) { box.dataset.back = ""; BIG_BACK = document.activeElement; }
+  box.hidden = false; document.body.classList.add("noscroll");
+  $("#bigT").textContent = M.name; $("#bigGo").dataset.go = M.go; $("#bigGo").textContent = "Open " + (TITLES[M.go] || "") + " →";
+  $("#bigB").innerHTML = `<div class="loading"><i></i><i></i></div>`;
+  $("#bigX").focus();
+  const R = rangeOf(RG), D = await collect(R, M.need); if (BIG !== m || box.hidden) return;
+  const g = granOf(R, RG.g), B = mkBuckets(R, g), vals = M.bucket(D, B), tot = M.tot(D), ptot = M.tot(D, 1);
+  const best = vals.length ? vals.indexOf(Math.max(...vals)) : -1, avg = vals.length ? sum(vals) / vals.length : 0;
+  const per = ({ day: "day", week: "week", month: "month", year: "year" })[g];
+  $("#bigB").innerHTML = rangeBar(R) + rangeNote(D) + `
+    <div class="bigk">
+      <div><small>${M.ratio ? "Overall" : "Total"}</small><b>${M.fmt(tot)}</b>${R.k === "all" ? "" : delta(tot, ptot, "prev. period")}</div>
+      <div><small>Previous period</small><b>${R.k === "all" ? "—" : M.fmt(ptot)}</b><span class="note">${R.k === "all" ? "" : rLabel(prevOf(R))}</span></div>
+      <div><small>Average per ${per}</small><b>${M.fmt(M.ratio ? Math.round(avg * 10) / 10 : Math.round(avg * 10) / 10)}</b></div>
+      <div><small>Best ${per}</small><b>${best >= 0 && vals[best] ? M.fmt(vals[best]) : "—"}</b><span class="note">${best >= 0 && vals[best] ? esc(B[best].full) : ""}</span></div>
+    </div>
+    ${comboChart("bigChart", B.map(b => b.lab), { name: M.name, vals, col: M.col, fmt: M.fmt }, null, { h: 300, full: B.map(b => b.full), bars: true })}`;
+  bindRange($("#bigB"), () => openBig(m));
+}
+let BIG_BACK = null;
+function closeBig() { $("#bigM").hidden = true; BIG = null; document.body.classList.remove("noscroll"); if (BIG_BACK && BIG_BACK.focus) BIG_BACK.focus(); }
+$("#bigX").onclick = closeBig;
+$("#bigM").onclick = e => { if (e.target.id === "bigM") closeBig(); };
+$("#bigGo").onclick = () => { const g = $("#bigGo").dataset.go; closeBig(); go(g, true); };
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#bigM").hidden) { e.preventDefault(); closeBig(); } });
+document.addEventListener("click", e => { const b = e.target.closest("[data-big]"); if (b && !b.closest("#bigM")) { e.preventDefault(); openBig(b.dataset.big); } });
+
+/* ---------- Analytics (visitors) ---------- */
 const PAGE_NAMES = { "/": "Home", "/ready-ppts": "Ready to Use PPTs", "/order": "PPT Order", "/account": "My PPTs", "/about": "About", "/service": "Services", "/thank-you": "Thank you", "/track": "Track Order",
   "/privacy": "Privacy", "/terms": "Terms", "/refund": "Refund", "/delivery": "Delivery", "/contact": "Contact" };
-// Analytics live: khulte hi pichla data turant, phir naya; is page par rehte hue har 15 sec apne aap update
-let ST_LAST = null, ST_AT = 0, ST_BUSY = false;
+let ST_AT = 0, ST_BUSY = false;
 async function stats(silent) {
-  if (!silent) { if (ST_LAST) drawStats(ST_LAST, true); else loading(); }
-  if (ST_BUSY) return; ST_BUSY = true;   // pehle se data aa raha ho to wahi dikhega
-  let r; try { r = await call("adminStats"); } finally { ST_BUSY = false; }
+  if (ST_BUSY) return; ST_BUSY = true;
+  const R = rangeOf(RG);
+  if (!silent) loading();
+  let D; try { if (silent) delete DATA.stats[ymd(R.from) + "|" + ymd(R.to)]; D = await collect(R, ["stats", "sales", "orders"]); } finally { ST_BUSY = false; }
   if (tab !== "stats") return;
-  if (!r.ok) { if (silent || ST_LAST) return liveTag(false); return /Unknown admin action/i.test(r.error || "") ? V(head("Analytics", "") + NEW_SCRIPT) : fail(r.error); }
-  ST_LAST = r; ST_AT = Date.now(); drawStats(r);
+  if (!D.st) { if (silent) return liveTag(false); const r = await call("adminStats"); return /Unknown admin action/i.test(r.error || "") ? V(head("Analytics", "") + NEW_SCRIPT) : fail(r.error || "Could not load analytics"); }
+  ST_AT = Date.now(); drawStats(D);
 }
 function liveTag(busy) {
   const el = $("#stLive"); if (!el) return;
   el.innerHTML = busy ? `<i class="dot" style="background:var(--warn)"></i>Updating…` : `<i class="dot"></i>Live · ${new Date(ST_AT).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
 }
-setInterval(() => { if (tab === "stats" && !document.hidden) stats(true); }, 15000);
-document.addEventListener("visibilitychange", () => { if (!document.hidden && tab === "stats" && Date.now() - ST_AT > 5000) stats(true); });
-function drawStats(r, stale) {
-  const y = window.scrollY;
-  const d = r.daily, mx = Math.max(1, ...d.map(x => x.visits));
-  const dev = r.devices.reduce((s, x) => s + x[1], 0) || 1;
+setInterval(() => { if (tab === "stats" && !document.hidden && $("#bigM").hidden && rangeOf(RG).to >= day0(0)) stats(true); }, 30000);
+function drawStats(D) {
+  const y = window.scrollY, r = D.top, R = D.R, g = granOf(R, RG.g), B = mkBuckets(R, g);
   const DEV_COL = { Mobile: "var(--accent)", Computer: "var(--cyan)", Tablet: "var(--warn)" };
-  const geo = splitGeo(r.states);
-  const days = d.map(x => { const t = new Date(x.day); t.setHours(0, 0, 0, 0); return t; });
-  const vis = d.map(x => +x.visitors || 0), vws = d.map(x => +x.visits || 0), L7 = a => sum(a.slice(-7)), P7 = a => sum(a.slice(-14, -7));
-  const peak = vis.indexOf(Math.max(...vis)), avg = Math.round(sum(vis) / (vis.length || 1) * 10) / 10;
-  const ppv = L7(vis) ? Math.round(L7(vws) / L7(vis) * 10) / 10 : 0, ppvP = P7(vis) ? Math.round(P7(vws) / P7(vis) * 10) / 10 : 0;
+  const dev = sum((r.devices || []).map(x => x[1])) || 1, geo = splitGeo(r.states), tot = D.views || 1;
   V(head("Analytics", "Who visits your website, where they come from and what they view. Visitors are counted anonymously — no names or numbers are stored.",
-      `<span class="st-live" id="stLive"></span><a class="btn sm" href="${esc(r.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Open sheet</a>`) + `
+      `${R.to >= day0(0) ? `<span class="st-live" id="stLive"></span>` : ""}<a class="btn sm" href="${esc(D.st.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Open sheet</a>`) + rangeBar(R) + rangeNote(D) + `
   <div class="kpis">
-    ${kpi({ go: "stats", col: "var(--ok)", icon: ic("i-eye"), label: "Visitors · today", value: nf(r.todayUnique), sub: `${nf(r.today)} page views`, sp: vis.slice(-14) })}
-    ${kpi({ go: "stats", col: "var(--accent)", icon: ic("i-users"), label: "Visitors · last 7 days", value: nf(L7(vis) || r.weekUnique), d: delta(L7(vis), P7(vis), "prev. 7 days"), sp: vis.slice(-14) })}
-    ${kpi({ go: "stats", col: "var(--cyan)", icon: ic("i-globe"), label: "Visitors · last 30 days", value: nf(r.monthUnique), sub: `${avg} per day · peak ${dLabel(days[peak] || new Date())}`, sp: vis })}
-    ${kpi({ go: "stats", col: "var(--warn)", icon: ic("i-zap"), label: "Pages per visitor · 7 days", value: ppv, d: delta(ppv, ppvP, "prev. 7 days"), sub: `${nf(r.allTime)} page views all time` })}
+    ${kpiM("visitors", D, { icon: ic("i-users"), sub: `${nf(D.st.todayUnique)} today` })}
+    ${kpiM("views", D, { icon: ic("i-eye"), sub: `${nf(D.st.allTime)} all time` })}
+    ${kpiM("ppv", D, { icon: ic("i-zap") })}
+    ${kpiM("conversion", D, { icon: ic("i-pie"), sub: "Orders ÷ visitors" })}
   </div>
-  <section class="card" style="margin-bottom:16px" aria-labelledby="st30"><div class="ch"><h3 id="st30">${ic("i-chart", "color:var(--accent)")} Visitors &amp; page views</h3><span class="note">Last 30 days</span></div>
-    ${comboChart("sChart", days, { name: "Visitors", vals: vis, col: "var(--accent)" }, { name: "Page views", vals: vws, col: "var(--cyan)" })}</section>
+  <section class="card" style="margin-bottom:16px" aria-labelledby="st30"><div class="ch"><h3 id="st30">${ic("i-chart", "color:var(--accent)")} Visitors &amp; page views</h3><button class="btn sm" data-big="visitors" style="margin-left:auto">${ic("i-max")} Expand</button></div>
+    ${comboChart("sChart", B.map(b => b.lab), { name: "Visitors", vals: METRICS.visitors.bucket(D, B), col: "var(--accent)" }, { name: "Page views", vals: METRICS.views.bucket(D, B), col: "var(--cyan)" }, { full: B.map(b => b.full) })}</section>
   <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-book", "color:var(--accent)")} Top pages</h3></div>${toplist(r.pages.map(([k, n]) => [PAGE_NAMES[k] || k, n]), r.month)}</section>
-    <section class="card"><div class="ch"><h3>${ic("i-ext", "color:var(--cyan)")} Traffic sources</h3></div>${toplist(r.sources, r.month, "var(--cyan)")}</section>
-  </div>
-  <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-home", "color:var(--ok)")} States (India)</h3></div>${toplist(geo.states, r.month, "var(--ok)")}</section>
-    <section class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--cyan)")} Countries</h3></div>${toplist(geo.countries, r.month, "var(--cyan)")}</section>
+    <section class="card"><div class="ch"><h3>${ic("i-book", "color:var(--accent)")} Top pages</h3></div>${toplist((r.pages || []).map(([k, n]) => [PAGE_NAMES[k] || k, n]), tot)}</section>
+    <section class="card"><div class="ch"><h3>${ic("i-ext", "color:var(--cyan)")} Traffic sources</h3></div>${toplist(r.sources, tot, "var(--cyan)")}</section>
   </div>
   <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-home", "color:var(--warn)")} Cities</h3></div>${toplist(r.cities, r.month, "var(--warn)")}</section>
+    <section class="card"><div class="ch"><h3>${ic("i-home", "color:var(--ok)")} States (India)</h3></div>${toplist(geo.states, tot, "var(--ok)")}</section>
+    <section class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--cyan)")} Countries</h3></div>${toplist(geo.countries, tot, "var(--cyan)")}</section>
+  </div>
+  <div class="dgrid">
+    <section class="card"><div class="ch"><h3>${ic("i-home", "color:var(--warn)")} Cities</h3></div>${toplist(r.cities, tot, "var(--warn)")}</section>
     <section class="card"><div class="ch"><h3>${ic("i-phone", "color:var(--accent)")} Devices</h3></div>
-      ${donut(r.devices.map(([k, n]) => [k, n, DEV_COL[k] || "var(--dim)"]), dev, "visits")}
-      <div class="legend">${r.devices.map(([k, n]) => `<div><i style="background:${DEV_COL[k] || "var(--dim)"}"></i>${esc(k)}<b>${Math.round(n / dev * 100)}%</b></div>`).join("") || `<p class="note">No data yet.</p>`}</div></section>
+      ${(r.devices || []).length ? donut(r.devices.map(([k, n]) => [k, n, DEV_COL[k] || "var(--dim)"]), dev, "visits") : ""}
+      <div class="legend">${(r.devices || []).map(([k, n]) => `<div><i style="background:${DEV_COL[k] || "var(--dim)"}"></i>${esc(k)}<b>${Math.round(n / dev * 100)}%</b></div>`).join("") || `<p class="note">No data yet.</p>`}</div></section>
   </div>
   <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--info)")} Browsers</h3></div>${toplist(r.browsers, r.month, "var(--info)")}</section>
+    <section class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--info)")} Browsers</h3></div>${toplist(r.browsers, tot, "var(--info)")}</section>
     <section class="card"><div class="ch"><h3>${ic("i-clock", "color:var(--dim)")} About this data</h3></div>
-      <ul class="notes"><li>Refreshes automatically every 15 seconds while this page is open.</li><li>A visitor who reopens the same page within 30 minutes is counted once.</li><li>Gender and age can't be detected by a website, so they aren't shown.</li></ul></section>
+      <ul class="notes"><li>Click any card to open it full screen with its own chart and table.</li><li>% change compares with the same number of days just before.</li><li>A visitor who reopens the same page within 30 minutes is counted once.</li><li>Gender and age can't be detected by a website, so they aren't shown.</li></ul></section>
   </div>`);
-  liveTag(stale); if (y) window.scrollTo(0, y);
+  bindRange($("#view"), () => stats());
+  liveTag(false); if (y) window.scrollTo(0, y);
+}
+
+/* ---------- Revenue report (koi bhi date range) ---------- */
+async function report() {
+  loading();
+  const R = rangeOf(RG), D = await collect(R, ["sales", "orders", "stats"]);
+  if (tab !== "report") return;
+  if (!DATA.salesOk) { const r = await call("adminSales"); return /Unknown admin action/i.test(r.error || "") ? V(head("Revenue report", "") + NEW_SCRIPT) : fail(r.error || "Could not load sales"); }
+  const g = granOf(R, RG.g), B = mkBuckets(R, g);
+  const rev = METRICS.revenue.bucket(D, B), sl = METRICS.sales.bucket(D, B), co = METRICS.custom.bucket(D, B);
+  const done = perB(D.orders.filter(o => /^(Done|Paid)/.test(o.status)), B), canc = perB(D.orders.filter(o => /^Cancel/.test(o.status)), B);
+  const vis = D.st ? METRICS.visitors.bucket(D, B) : null;
+  const top = {}; D.sales.forEach(x => { const its = String(x.items || "").split(", ").filter(Boolean); its.forEach(t => { top[t] = top[t] || [0, 0]; top[t][0]++; top[t][1] += (+x.amount || 0) / its.length; }); });
+  const topL = Object.entries(top).sort((a, b) => b[1][1] - a[1][1]).slice(0, 8).map(([k, [n, a]]) => [`${k} · ${n} sale${n > 1 ? "s" : ""}`, Math.round(a)]);
+  const per = ({ day: "Day", week: "Week", month: "Month", year: "Year" })[g];
+  V(head("Revenue report", "Revenue, sales and orders for any period. Online revenue = Ready PPTs sold via Razorpay.", `<button class="btn sm" id="rCsv">${ic("i-down")} Export CSV</button>`) + rangeBar(R) + rangeNote(D) + `
+  <div class="kpis">
+    ${kpiM("revenue", D, { icon: "₹" })}
+    ${kpiM("sales", D, { icon: ic("i-cart") })}
+    ${kpiM("aov", D, { icon: ic("i-tag") })}
+    ${kpiM("custom", D, { icon: ic("i-book"), sub: `${nf(D.orders.filter(o => /^(Done|Paid)/.test(o.status)).length)} completed` })}
+    ${D.st ? kpiM("conversion", D, { icon: ic("i-pie"), sub: "Orders ÷ visitors" }) : ""}
+  </div>
+  <section class="card" style="margin-bottom:16px"><div class="ch"><h3>${ic("i-chart", "color:var(--ok)")} Revenue &amp; orders</h3><button class="btn sm" data-big="revenue" style="margin-left:auto">${ic("i-max")} Expand</button></div>
+    ${comboChart("rChart", B.map(b => b.lab), { name: "Revenue", vals: rev, col: "var(--ok)", fmt: rs }, { name: "Orders", vals: B.map((_, i) => sl[i] + co[i]), col: "var(--accent)" }, { full: B.map(b => b.full) })}</section>
+  <section class="card" style="margin-bottom:16px"><div class="ch"><h3>${ic("i-cal", "color:var(--accent)")} By ${per.toLowerCase()}</h3><span class="note">${B.length} rows</span></div>
+    <div class="rtbl scroll"><table><thead><tr><th>${per}</th>${vis ? "<th>Visitors</th>" : ""}<th>Custom orders</th><th>Completed</th><th>Cancelled</th><th>Online sales</th><th>Revenue</th></tr></thead>
+    <tbody>${B.map((b, i) => `<tr><td>${esc(b.full)}</td>${vis ? `<td>${nf(vis[i])}</td>` : ""}<td>${nf(co[i])}</td><td>${nf(done[i])}</td><td>${nf(canc[i])}</td><td>${nf(sl[i])}</td><td><b>${rs(rev[i])}</b></td></tr>`).reverse().join("")}</tbody>
+    <tfoot><tr><td>Total</td>${vis ? `<td>${nf(D.vis)}</td>` : ""}<td>${nf(sum(co))}</td><td>${nf(sum(done))}</td><td>${nf(sum(canc))}</td><td>${nf(sum(sl))}</td><td><b>${rs(sum(rev))}</b></td></tr></tfoot></table></div></section>
+  <div class="dgrid">
+    <section class="card"><div class="ch"><h3>${ic("i-star", "color:var(--ok)")} Top-earning PPTs</h3></div>${topL.length ? toplist(topL, 0, "var(--ok)").replace(/<b>(\d[\d,]*)<\/b>/g, "<b>₹$1</b>") : `<p class="note">No sales in this period.</p>`}</section>
+    <section class="card"><div class="ch"><h3>${ic("i-clock", "color:var(--dim)")} Notes</h3></div><ul class="notes"><li>Custom PPT orders have no price on the website, so they are counted but not added to revenue.</li><li>Click any card to open it full screen.</li></ul></section>
+  </div>`);
+  bindRange($("#view"), () => report());
+  $("#rCsv").onclick = () => {
+    const cell = v => '"' + String(v).replace(/"/g, '""') + '"';
+    const rows = [[per, vis ? "Visitors" : null, "Custom orders", "Completed", "Cancelled", "Online sales", "Revenue"].filter(x => x !== null).map(cell).join(",")]
+      .concat(B.map((b, i) => [b.full, vis ? vis[i] : null, co[i], done[i], canc[i], sl[i], rev[i]].filter(x => x !== null).map(cell).join(",")));
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + rows.join("\r\n")], { type: "text/csv;charset=utf-8" }));
+    a.download = `revenue-${ymd(R.from)}-to-${ymd(R.to)}.csv`; document.body.appendChild(a); a.click(); a.remove(); toast("CSV downloaded");
+  };
 }
 
 /* ---------- Sales (Razorpay se biki Ready PPTs) ---------- */
@@ -1847,34 +2127,6 @@ function drawSales() {
 }
 
 
-
-/* ---------- Kamai Report (12 mahine) ---------- */
-async function report() {
-  loading();
-  const r = await call("adminReport");
-  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Revenue report", "") + NEW_SCRIPT) : fail(r.error);
-  const M = r.months, mx = Math.max(1, ...M.map(m => m.revenue)), name = k => new Date(k + "-15").toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
-  const sum = f => M.reduce((s, m) => s + m[f], 0), cur = M[M.length - 1], prev = M[M.length - 2];
-  const diff = prev.revenue ? Math.round((cur.revenue - prev.revenue) / prev.revenue * 100) : null;
-  V(head("Revenue report", "Monthly revenue, orders and visitors for the last 12 months. Online revenue = Ready PPTs sold via Razorpay.") + `
-  <div class="stats">
-    <div class="stat" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(cur.revenue)}</b><small>Is mahine ki online kamai${diff == null ? "" : ` · ${diff >= 0 ? "▲" : "▼"} ${Math.abs(diff)}% pichhle mahine se`}</small></div>
-    <div class="stat" style="--c:var(--accent)"><span class="ic">₹</span><b>${rs(sum("revenue"))}</b><small>Last 12 mahine · ${nf(sum("sales"))} sale</small></div>
-    <div class="stat" style="--c:var(--warn)"><span class="ic">${ic("i-cart")}</span><b>${nf(sum("orders"))}</b><small>Custom PPT orders (12 mahine) · ${nf(sum("done"))} complete</small></div>
-    <div class="stat" style="--c:var(--cyan)"><span class="ic">${ic("i-eye")}</span><b>${nf(cur.visitors)}</b><small>Is mahine ke visitors</small></div>
-  </div>
-  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>${ic("i-chart", "color:var(--ok)")} Online kamai — har mahina</h3></div>
-    <div class="bars">${M.map((m, i) => `<div class="bc" title="${name(m.month)}: ${rs(m.revenue)} · ${m.sales} sale"><div class="b ${m.revenue ? "" : "zero"}" style="height:${Math.max(3, m.revenue / mx * 100)}%;${i === M.length - 1 ? "" : "opacity:.75"}"><span>${m.revenue ? "₹" + nf(Math.round(m.revenue)) : ""}</span></div><small>${name(m.month)}</small></div>`).join("")}</div></div>
-  <div class="card" style="margin-bottom:14px"><div class="ch"><h3>📅 Mahine ke hisaab se</h3></div>
-    <div class="rtbl"><table><thead><tr><th>Mahina</th><th>Visitors</th><th>Custom orders</th><th>Complete</th><th>Cancel</th><th>Online sale</th><th>Naye customer</th><th>Coupon</th><th>Kamai</th></tr></thead>
-    <tbody>${M.slice().reverse().map((m, i) => `<tr class="${i ? "" : "now"}"><td>${name(m.month)}</td><td>${nf(m.visitors)}</td><td>${nf(m.orders)}</td><td>${nf(m.done)}</td><td>${nf(m.cancelled)}</td><td>${nf(m.sales)}</td><td>${nf(m.newCustomers)}</td><td>${nf(m.coupons)}</td><td><b>${rs(m.revenue)}</b></td></tr>`).join("")}</tbody></table></div></div>
-  <div class="dgrid">
-    <div class="card"><div class="ch"><h3>🏆 Sabse zyada kamai wali PPTs</h3></div>${toplist(r.topPpts.map(p => [p[0] + " · " + p[1] + " sale", Math.round(p[2])]), 0, "var(--ok)")}</div>
-    <div class="card"><div class="ch"><h3>🏷️ Coupon kitni baar lage</h3><button class="btn sm" data-go="coupons" style="margin-left:auto">Coupons</button></div>${toplist(r.coupons, 0, "var(--warn)")}</div>
-  </div>
-  <p class="note">ℹ️ Custom PPT orders ka daam website par nahi bharta, isliye unki kamai yahan nahi judti. Unki ginti dikhti hai.</p>`);
-  $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
-}
 
 /* ---------- Coupons ---------- */
 let CPN = [], CE = null;
