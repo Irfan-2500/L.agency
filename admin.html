@@ -650,6 +650,19 @@ body.noscroll{overflow:hidden}
 .cfrow:hover{background:var(--hover)}
 .cfrow span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:560px){.cfup .btn{flex:1 1 100%;justify-content:center}}
+.mnits{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow:auto;padding:2px}
+.mnir{display:flex;align-items:center;gap:6px}
+.mnir .no{width:24px;flex:none;text-align:right;color:var(--dim);font-size:.75rem;font-variant-numeric:tabular-nums}
+.mnir input{min-width:0;padding:7px 10px;font-size:.86rem}
+.mnir .nm{flex:2}
+.mnir .lk{flex:1.2;color:var(--dim)}
+.mnir .btn.icon{width:32px;height:32px;min-height:32px;padding:0;flex:none}
+.mnadd{display:flex;gap:8px;margin-top:8px}
+.mnadd input{flex:1;min-width:0}
+.mnbulk{margin-top:8px}
+.mnbulk summary{cursor:pointer;color:var(--dim);font-size:.82rem}
+.mnbulk textarea{margin-top:8px;width:100%}
+@media(max-width:560px){.mnir{flex-wrap:wrap}.mnir .nm{flex:1 1 calc(100% - 30px)}.mnir .lk{flex:1 1 100%;margin-left:30px}}
 @media(max-width:1100px){.mngrid{grid-template-columns:1fr}.mnside{position:static;max-height:none}.mnlist{max-height:300px}}
 @media(max-width:900px){.topbar{padding:10px 16px}.content{padding:18px 16px 70px}.dgrid{grid-template-columns:1fr}}
 @media(max-width:560px){
@@ -2277,6 +2290,7 @@ const PCATS = [["edu", "📚 Educational"], ["biz", "💼 Business"], ["mkt", "�
 const PBADGE = [["", "Koi nahi"], ["best", "🔥 Best Seller"], ["feat", "⭐ Featured"], ["new", "🆕 New"]];
 /* ---------- State Books: website ke State Board pages (Syllabus, Previous Year, Notes…) ki files ---------- */
 const SB_ST = ["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
+const sbStates = () => { const st = (MENU_L || []).find(c => c.k === "states"), l = st ? st.it.map(x => catnavSplit(x)[0]) : []; return l.length ? l : SB_ST; };
 const SB_T = ["Syllabus", "Previous Year Questions", "Model Paper", "Notes", "Practice Questions", "Book & Answers"];
 const SB_SUBJ = c => c <= 5 ? ["English","Hindi","Maths","EVS","Computer","General Knowledge"]
   : c <= 8 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science","Computer"]
@@ -2310,6 +2324,7 @@ async function stateBooks() {
   SB = r.files || {}; SBFOLDER = r.folderUrl || "#";
   SBP = p.ok ? (p.ppts || []).filter(x => !isNote(x)) : [];
   if (!SB_SUBJ(SBS.c).includes(SBS.sub)) SBS.sub = SB_SUBJ(SBS.c)[0];
+  if (!sbStates().includes(SBS.s)) SBS.s = sbStates()[0];
   if (!SBS.y) SBS.y = sbYears()[0];
   const opt = (l, v) => l.map(x => `<option${String(x) === String(v) ? " selected" : ""}>${esc(x)}</option>`).join("");
   V(head(TITLES.cfiles, `Home page ki category line (State Books, NCERT, CBSE, JEE…) ke har item ki files. <b>State Books</b>: syllabus, previous year papers (year + set), chapter-wise notes, model papers — PDF, Word, PPT.`,
@@ -2317,7 +2332,7 @@ async function stateBooks() {
   <div class="card"><div class="ch"><h3>1️⃣ Kahan lagani hai?</h3></div>
     <div class="grid2 sbsel">
       ${cfSel()}
-      <label class="f">State / Board<select id="sbS">${opt(SB_ST, SBS.s)}</select></label>
+      <label class="f">State / Board<select id="sbS">${opt(sbStates(), SBS.s)}</select></label>
       <label class="f">Category<select id="sbT">${opt(SB_T, SBS.t)}</select></label>
       <label class="f">Class<select id="sbC">${opt([1,2,3,4,5,6,7,8,9,10,11,12], SBS.c)}</select></label>
       <label class="f">Medium<select id="sbM">${opt(["Hindi", "English"], SBS.m)}</select></label>
@@ -3360,14 +3375,15 @@ async function cfRetag(b, i, on) {
 /* ---------- Category Menu: home page ki category line (State Books, NCERT, CBSE…) ---------- */
 let MN = [], MNI = 0, MNDIRTY = false, MNCUSTOM = false;
 const MN_COLORS = ["#f97316", "#2563eb", "#7c3aed", "#0891b2", "#dc2626", "#16a34a", "#db2777", "#ca8a04", "#0f766e", "#4f46e5", "#e11d48", "#64748b"];
-let MNCOUNT = null;
+let MNCOUNT = null, MNPP = [];
 const MN_FILES = c => c.it.reduce((s, x) => s + (MNCOUNT[catnavKey(c.n, catnavSplit(x)[0])] || 0), 0);
 async function menu() {
   loading();
   const [r, pp] = await Promise.all([call("adminPrices"), call("adminPpts")]); if (!r.ok) return fail(r.error);
   MNCOUNT = {}; if (pp.ok) pp.ppts.forEach(p => (p.board || []).forEach(t => { if (String(t)[0] === "#") MNCOUNT[t] = (MNCOUNT[t] || 0) + 1; }));
   MNCUSTOM = !!(r.settings && r.settings.catnav);
-  MN = catnavList(r.settings || {}); MNI = 0; MNDIRTY = false;
+  MN = catnavList(r.settings || {}).map(c => Object.assign(c, { _n0: c.n, _o: c.it.map(x => catnavSplit(x)[0]) })); MNI = 0; MNDIRTY = false;
+  MNPP = pp.ok ? pp.ppts : [];
   V(head("Category Menu", "The category bar on the home page. Rename, reorder, hide or add categories and the links inside them.",
     `<button class="btn sm" id="mnReset">${ic("i-refresh")} Reset to default</button><a class="btn sm" href="./#catNav" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>`) + `
   <section class="card mnprev" aria-labelledby="mnPrevH"><div class="ch"><h3 id="mnPrevH">${ic("i-eye", "color:var(--accent)")} Preview</h3><span class="note">${MNCUSTOM ? "Custom menu is live" : "Default menu is live"}</span></div>
@@ -3378,7 +3394,7 @@ async function menu() {
     <section class="card mned" id="mnEd" aria-label="Edit category"></section>
   </div>
   <div class="savebar" id="mnBar"><span class="note" id="mnNote">No unsaved changes.</span><span class="sp"></span><button class="btn" id="mnUndo">Discard</button><button class="btn pri" id="mnSave">Publish menu</button></div>`);
-  $("#mnAdd").onclick = () => { MN.push({ n: "New category", e: "📁", c: MN_COLORS[MN.length % MN_COLORS.length], d: "", it: [], h: 0, k: "", u: "" }); MNI = MN.length - 1; mnDirty(); mnDraw(); $("#mnN").focus(); $("#mnN").select(); };
+  $("#mnAdd").onclick = () => { MN.push({ n: "New category", e: "📁", c: MN_COLORS[MN.length % MN_COLORS.length], d: "", it: [], h: 0, k: "", u: "", _n0: "", _o: [] }); MNI = MN.length - 1; mnDirty(); mnDraw(); $("#mnN").focus(); $("#mnN").select(); };
   $("#mnUndo").onclick = () => menu();
   $("#mnSave").onclick = () => mnSave(false);
   $("#mnReset").onclick = e => {
@@ -3410,21 +3426,29 @@ function mnEd() {
       <label class="f mnw"><span class="lh">Short description <small>· shown at the top of the drop-down</small></span><input type="text" id="mnD" maxlength="80" value="${esc(c.d)}"></label>
       <div class="f mnw"><span class="lh">Colour</span><div class="mncol" role="radiogroup" aria-label="Colour">${MN_COLORS.map(x => `<button type="button" role="radio" aria-checked="${x === c.c}" aria-label="${x}" data-col="${x}" style="--c:${x}"></button>`).join("")}<label class="mncustom" title="Custom colour"><input type="color" id="mnC" value="${esc(c.c)}" aria-label="Custom colour"></label></div></div>
       <label class="f mnw"><span class="lh">Link <small>· optional · used for “View all”, or when there are no items</small></span><input type="text" id="mnU" inputmode="url" placeholder="${c.k === "states" ? "state-books.html" : "ready-ppts.html?q=" + esc(encodeURIComponent(c.n))}" value="${esc(c.u || "")}"></label>
-      <label class="f mnw"><span class="lh">Items <small>· one per line · add “ | link” for a custom page, e.g. <code>NCERT Notes | study-notes-pdf.html</code></small></span>
-        <textarea id="mnIt" rows="10" spellcheck="false">${esc(c.it.join("\n"))}</textarea><span class="note" id="mnItN"></span></label>
-      ${c.k === "states" ? `<p class="note mnw">ℹ️ Each item opens that state's State Board page. Upload its files in <a href="#cfiles" data-go="cfiles">Category files</a>.</p>`
+      <div class="f mnw"><span class="lh">Items <small>· rename, delete, move or add · <span id="mnItN"></span></small></span>
+        <div class="mnits" id="mnIts" role="list"></div>
+        <div class="mnadd"><input type="text" id="mnNew" maxlength="120" placeholder="${c.k === "states" ? "New state / board, e.g. Goa" : "New item, e.g. NCERT Exemplar"}" aria-label="New item name"><button type="button" class="btn sm pri" id="mnAddIt">${ic("i-plus")} Add item</button></div>
+        <details class="mnbulk"><summary>Bulk edit · one per line · add “ | link” for a custom page</summary>
+          <textarea id="mnIt" rows="10" spellcheck="false">${esc(c.it.join("\n"))}</textarea></details></div>
+      ${c.k === "states" ? `<p class="note mnw">ℹ️ Har item us state ka State Board page kholta hai. Files <a href="#cfiles" data-go="cfiles">Category files</a> me lagayein. ⚠️ Kisi state ka naam badalne par uski pehle lagi files purane naam par rahengi.</p>`
         : `<p class="note mnw mnhow">📤 <b>Files kaise lagayein:</b> <a href="#cfiles" data-go="cfiles">Category files</a> page kholein → category aur item chunein → “Upload” dabayein. Item par click karte hi wahi files website par dikhengi.${MNCOUNT && MN_FILES(c) ? ` <span class="pill ok">${MN_FILES(c)} file${MN_FILES(c) === 1 ? "" : "s"} lagi hain</span>` : ""}</p>`}
     </div>
     <div class="row mnfoot"><label class="sw"><input type="checkbox" id="mnH" ${c.h ? "" : "checked"}><i></i> Show on website</label><span class="sp"></span>
       <span id="mnDelBox"><button class="btn sm danger" id="mnDel">${ic("i-trash")} Delete category</button></span></div>`;
-  const itN = () => { const n = $("#mnIt").value.split("\n").filter(x => x.trim()).length; $("#mnItN").textContent = n ? n + " items" : "No items — the category opens its link directly."; };
-  itN();
+  const itN = () => { const n = c.it.length; $("#mnItN").textContent = n ? n + " items" : "no items — the category opens its link directly"; };
+  mnItDraw(); itN();
   const set = (k, v, redraw) => { c[k] = v; mnDirty(); if (redraw) { const f = document.activeElement && document.activeElement.id; mnDraw(); if (f && $("#" + f)) { const el = $("#" + f); el.focus(); if (el.setSelectionRange && el.type === "text") el.setSelectionRange(el.value.length, el.value.length); } } };
   $("#mnN").oninput = e => { set("n", e.target.value.trim() || "Untitled"); mnSoft(); };
   $("#mnE").oninput = e => { set("e", e.target.value.trim() || "📁"); mnSoft(); };
   $("#mnD").oninput = e => set("d", e.target.value);
   $("#mnU").oninput = e => set("u", e.target.value.trim());
-  $("#mnIt").oninput = e => { set("it", e.target.value.split("\n").map(x => x.trim()).filter(Boolean)); itN(); mnSoft(); };
+  $("#mnIt").oninput = e => { const it = e.target.value.split("\n").map(x => x.trim()).filter(Boolean), old = c.it.map(x => catnavSplit(x)[0]);
+    c._o = it.map(x => { const j = old.indexOf(catnavSplit(x)[0]); return j >= 0 ? c._o[j] : null; }); set("it", it); itN(); mnSoft(); mnItDraw(); };
+  const addIt = () => { const v = $("#mnNew").value.replace(/[<>"]/g, "").trim(); if (!v) return $("#mnNew").focus();
+    if (c.it.some(x => catnavSplit(x)[0].toLowerCase() === v.toLowerCase())) return toast("Ye item pehle se hai", true);
+    c.it.push(v); c._o.push(null); mnDirty(); mnItSync(); $("#mnNew").value = ""; $("#mnNew").focus(); toast(`“${v}” add hua — Publish dabayein`); };
+  $("#mnAddIt").onclick = addIt; $("#mnNew").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); addIt(); } };
   $("#mnC").oninput = e => { set("c", e.target.value); mnSoft(); $$("#mnEd [data-col]").forEach(b => b.setAttribute("aria-checked", b.dataset.col === c.c)); };
   $$("#mnEd [data-col]").forEach(b => b.onclick = () => { set("c", b.dataset.col); $("#mnC").value = b.dataset.col; mnSoft(); $$("#mnEd [data-col]").forEach(x => x.setAttribute("aria-checked", x === b)); });
   $("#mnH").onchange = e => set("h", e.target.checked ? 0 : 1, true);
@@ -3435,6 +3459,32 @@ function mnEd() {
     $("#mnYes").onclick = () => { MN.splice(MNI, 1); MNI = Math.max(0, MNI - 1); mnDirty(); mnDraw(); };
   };
   $$("#mnEd [data-go]").forEach(a => a.onclick = e => { e.preventDefault(); go(a.dataset.go); });
+}
+/* Items: har item ka naam badlein, hatayein, upar-neeche karein */
+const mnFiles = (c, l) => l == null || !c._n0 ? 0 : MNPP.filter(p => (p.board || []).includes(catnavKey(c._n0, l))).length;
+function mnItSync() { const c = MN[MNI]; $("#mnIt").value = c.it.join("\n"); $("#mnItN").textContent = c.it.length ? c.it.length + " items" : "no items — the category opens its link directly"; mnSoft(); mnItDraw(); }
+function mnItDraw() {
+  const c = MN[MNI], box = $("#mnIts"); if (!box) return;
+  if (!c._o || c._o.length !== c.it.length) c._o = c.it.map(x => catnavSplit(x)[0]);
+  box.innerHTML = c.it.length ? c.it.map((x, i) => { const [l] = catnavSplit(x), j = x.lastIndexOf(" | "), lk = j < 0 ? "" : x.slice(j + 3), f = c.k === "states" ? 0 : mnFiles(c, c._o[i]);
+    return `<div class="mnir" role="listitem"><span class="no">${i + 1}</span>
+      <input type="text" class="nm" data-nm="${i}" maxlength="120" value="${esc(j < 0 ? x : x.slice(0, j))}" aria-label="Item ${i + 1} name">
+      <input type="text" class="lk" data-lk="${i}" maxlength="300" value="${esc(lk)}" placeholder="link (optional)" aria-label="Item ${i + 1} link">
+      ${f ? `<span class="pill ok" title="Is item me lagi files">${f}</span>` : ""}
+      <button type="button" class="btn sm icon" data-iu="${i}" aria-label="Move ${esc(l)} up" ${i ? "" : "disabled"}>↑</button>
+      <button type="button" class="btn sm icon" data-id="${i}" aria-label="Move ${esc(l)} down" ${i < c.it.length - 1 ? "" : "disabled"}>↓</button>
+      <button type="button" class="btn sm icon danger" data-ix="${i}" aria-label="Delete ${esc(l)}" title="Delete">✕</button></div>`; }).join("")
+    : `<div class="note" style="padding:8px 2px">Abhi koi item nahi. Neeche naam likh kar “Add item” dabayein.</div>`;
+  const val = i => { const n = box.querySelector(`[data-nm="${i}"]`).value.replace(/[<>"|]/g, "").trim(), k = box.querySelector(`[data-lk="${i}"]`).value.trim(); return n ? n + (k ? " | " + k : "") : ""; };
+  $$("#mnIts [data-nm], #mnIts [data-lk]").forEach(el => el.oninput = () => { const i = +(el.dataset.nm || el.dataset.lk), v = val(i); if (!v) return; c.it[i] = v; mnDirty(); $("#mnIt").value = c.it.join("\n"); mnSoft(); });
+  const mv = (i, d) => { const j = i + d; [c.it[i], c.it[j]] = [c.it[j], c.it[i]]; [c._o[i], c._o[j]] = [c._o[j], c._o[i]]; mnDirty(); mnItSync(); const b = $(`#mnIts [data-${d < 0 ? "iu" : "id"}="${j}"]`); if (b && !b.disabled) b.focus(); };
+  $$("#mnIts [data-iu]").forEach(b => b.onclick = () => mv(+b.dataset.iu, -1));
+  $$("#mnIts [data-id]").forEach(b => b.onclick = () => mv(+b.dataset.id, 1));
+  $$("#mnIts [data-ix]").forEach(b => b.onclick = () => {
+    const i = +b.dataset.ix, l = catnavSplit(c.it[i])[0], f = c.k === "states" ? 0 : mnFiles(c, c._o[i]);
+    if (f && !b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Sure?"; b.classList.add("pri"); toast(`“${l}” me ${f} file lagi hain — file delete nahi hogi, sirf menu se item hatega. Dobara ✕ dabayein.`); return; }
+    c.it.splice(i, 1); c._o.splice(i, 1); mnDirty(); mnItSync(); toast(`“${l}” hata diya — Publish dabayein (Discard se wapas)`);
+  });
 }
 /* list + preview update without rebuilding the form (typing stays smooth) */
 function mnSoft() {
@@ -3451,7 +3501,12 @@ async function mnSave(reset) {
   btn.disabled = false;
   if (!r.ok) return toast(/Unknown admin action/i.test(r.error || "") ? "Google Script update needed for Category Menu" : r.error, true);
   MENU_L = null;
-  toast(reset ? "Menu reset to default" : "Menu published — live on the website");
+  let moved = 0;
+  if (!reset) for (const c of MN) { if (!c._n0 || c.k === "states") continue;
+    c.it.forEach((x, i) => { const o = c._o[i]; if (o == null) return; const a = catnavKey(c._n0, o), b = catnavKey(c.n, catnavSplit(x)[0]); if (a === b) return;
+      MNPP.filter(p => (p.board || []).includes(a)).forEach(p => { p.board = p.board.map(t => t === a ? b : t); p._mv = 1; }); }); }
+  for (const p of MNPP.filter(p => p._mv)) { delete p._mv; const r2 = await call("adminPptSave", pptPayload(p)); if (r2.ok) moved++; }
+  toast(reset ? "Menu reset to default" : "Menu published — live on the website" + (moved ? ` · ${moved} file naye naam par shift` : ""));
   menu();
 }
 

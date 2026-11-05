@@ -171,9 +171,13 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
 <script src="js/state-files.js"></script>
 <script src="config.js"></script>
 <script src="js/sb-data.js"></script>
+<script src="js/catnav.js"></script>
 <script>
 (function(){
-const STATES=["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
+const STATES0=["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
+/* Admin → Category menu me State Books ki list (naye / badle naam) */
+const STATES=(()=>{try{const st=(JSON.parse(localStorage.getItem("la_data")||"null")||{}).settings||{},c=window.catnavList&&catnavList(st).find(x=>x.k==="states"),l=c?c.it.map(x=>catnavSplit(x)[0]).filter(Boolean):[];
+ const q=(new URLSearchParams(location.search).get("s")||"").replace(/[<>"]/g,"").trim().slice(0,40);if(q&&!l.includes(q))l.push(q);return l.length?l:STATES0;}catch(e){return STATES0;}})();
 const IC={"Bihar":"🛕","UP":"🕌","Andhra Pradesh":"🌶️","Chhattisgarh":"🌳","West Bengal":"🐅","Gujarat":"🦁","Karnataka":"🐘","Kerala":"🌴","Madhya Pradesh":"🐆","Haryana":"🌾","Maharashtra":"🏛️","Punjab":"🌻","Rajasthan":"🐪","Tamilnadu":"🐚","Jharkhand":"⛏️","Telangana":"🏰","CISCE":"🎓","NIOS":"📚","Odisha":"☸️","Assam":"🍵","Jammu & Kashmir":"🏔️"};
 const TYPES=[["Syllabus","📋"],["Previous Year Questions","🗂️"],["Model Paper","📝"],["Notes","🗒️"],["Practice Questions","✍️"],["Book & Answers","📖"]];
 const SI={"English":["🔤","#2563eb"],"Hindi":["🅷","#dc2626"],"Sanskrit":["🕉️","#b45309"],"Maths":["➗","#7c3aed"],"EVS":["🌱","#16a34a"],"Computer":["💻","#0891b2"],"General Knowledge":["🌍","#0d9488"],
