@@ -2576,33 +2576,49 @@ function sbzDraw() {
     sbzDraw();
   });
 }
+/* ZIP: har file upload hote hi apni jagah save — website par turant dikhe. Ek hi jagah ki kai files ek saath save hoti hain. */
+const SBZQ = {};
+function sbzPlace(r) {
+  const key = sbzKey(r), q = SBZQ[key] = SBZQ[key] || { rows: [], run: null };
+  return new Promise(done => { q.rows.push({ r, done }); if (!q.run) q.run = sbzFlush(key).finally(() => { q.run = null; }); });
+}
+async function sbzFlush(key) {
+  const q = SBZQ[key];
+  while (q.rows.length) {
+    const batch = q.rows.splice(0), kind = sbKind(batch[0].r.t), rec = sbNorm(SB[key], kind);
+    batch.forEach(({ r }) => {
+      if (kind === "one") rec[r.fmt] = r.id;
+      else if (kind === "sets") { while (rec.sets.length < r.set) rec.sets.push({}); rec.sets[r.set - 1][r.fmt] = r.id; }
+      else { while (rec.chapters.length < r.ch) rec.chapters.push({ name: "" }); const c = rec.chapters[r.ch - 1]; c[r.fmt] = r.id; if (!String(c.name || "").trim()) c.name = (r.chn || "Chapter " + r.ch).slice(0, 120); }
+    });
+    if (kind === "chapters") rec.chapters.forEach((c, i) => { if (!String(c.name || "").trim()) c.name = "Chapter " + (i + 1); });
+    let res = await call("adminSbSave", { key, rec });
+    if (!res.ok) res = await call("adminSbSave", { key, rec });
+    if (res.ok) { SB[key] = res.rec || rec; batch.forEach(({ r }) => r.st = "ok"); }
+    else batch.forEach(({ r }) => { r.st = "bad"; r.err = "Upload hui par save nahi hui: " + res.error; });
+    if ($("#sbList")) sbList();
+    if ($("#sbEd") && sbKey() === key && !SBDIRTY && !SBSAVING && !sbBusy()) { const a = document.activeElement; if (!(a && a.closest && a.closest("#sbEd"))) sbLoad(); }
+    batch.forEach(({ done }) => done());
+  }
+}
 async function sbzGo() {
   const list = SBZ.rows.filter(r => r.on && r.st !== "ok");
   if (!list.length) return;
   SBZ.busy = true; sbzDraw();
-  const Z = SBZ, keys = {};
+  const Z = SBZ, places = new Set();
   await Promise.all(list.map(r => { r.st = "up"; r.pc = 0;
     return enqueueTask(r.path.split("/").pop(), async prog => {
       const ext = (r.path.split(".").pop() || "").toLowerCase(), name = r.path.split("/").pop();
       const file = r.blob || new File([await r.entry.async("blob")], name, { type: SBZ_MIME[ext] });
       if (file.size > 200 * 1048576) throw new Error("200 MB se badi");
       return sbSend(file, pc => { r.pc = pc; prog(pc); const c = $$("#sbZ .zs")[Z.rows.indexOf(r)]; if (c && SBZ === Z) c.textContent = `⏳ ${pc}%`; });
-    }).then(res => { if (res.ok) { r.id = "drive:" + res.v; r.st = "done"; (keys[sbzKey(r)] = keys[sbzKey(r)] || []).push(r); } else { r.st = "bad"; r.err = res.error; } if (SBZ === Z) sbzDraw(); });
-  }));
-  // har jagah (key) ka record ek baar save
-  let saved = 0, bad = 0;
-  for (const [key, rs] of Object.entries(keys)) {
-    const kind = sbKind(rs[0].t), rec = sbNorm(SB[key], kind);
-    rs.forEach(r => {
-      if (kind === "one") rec[r.fmt] = r.id;
-      else if (kind === "sets") { while (rec.sets.length < r.set) rec.sets.push({}); rec.sets[r.set - 1][r.fmt] = r.id; }
-      else { while (rec.chapters.length < r.ch) rec.chapters.push({ name: "" }); const c = rec.chapters[r.ch - 1]; c[r.fmt] = r.id; if (!String(c.name || "").trim()) c.name = (r.chn || "Chapter " + r.ch).slice(0, 120); }
+    }).then(async res => {
+      if (!res.ok) { r.st = "bad"; r.err = res.error; }
+      else { r.id = "drive:" + res.v; r.st = "done"; if (SBZ === Z && $("#sbZ")) sbzDraw(); places.add(sbzKey(r)); await sbzPlace(r); }
+      if (SBZ === Z && $("#sbZ")) sbzDraw();
     });
-    if (kind === "chapters") rec.chapters.forEach((c, i) => { if (!String(c.name || "").trim()) c.name = "Chapter " + (i + 1); });
-    const res = await call("adminSbSave", { key, rec });
-    if (res.ok) { SB[key] = res.rec || rec; saved++; rs.forEach(r => r.st = "ok"); }
-    else { bad++; rs.forEach(r => { r.st = "bad"; r.err = res.error; }); }
-  }
+  }));
+  const saved = places.size;
   Z.busy = false;
   if ($("#sbZ") && SBZ === Z) sbzDraw(); if ($("#sbList")) sbList();
   if ($("#sbEd") && !sbBusy() && !SBDIRTY) sbLoad();
