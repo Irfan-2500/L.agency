@@ -2361,7 +2361,7 @@ async function stateBooks() {
   <div class="card sbz" id="sbZ" hidden style="margin-top:14px"></div>
   <div class="card" style="margin-top:14px"><div class="ch"><h3 id="sbEdT">2️⃣ Files</h3><a class="btn sm note" id="sbOpen" target="_blank" rel="noopener">${ic("i-ext")} View on site</a></div>
     <div id="sbEd"></div>
-    <div class="row" style="margin-top:16px"><button class="btn pri" id="sbSave">💾 Save karein</button><button class="btn danger" id="sbDel">🗑 Ye entry hatayein</button><span class="note" id="sbNote"></span></div>
+    <div class="row" style="margin-top:16px"><button class="btn danger" id="sbDel">🗑 Ye entry hatayein</button><span class="note" id="sbNote"></span></div>
   </div>
   <div class="card" style="margin-top:14px"><div class="ch"><h3>📚 Lagi hui sab files</h3><span class="note" id="sbCnt"></span></div>
     <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="sbQ" placeholder="Search: state, class, subject, category…" aria-label="Search"></label></div>
@@ -2372,20 +2372,19 @@ async function stateBooks() {
   if (SBZ && (SBZ.busy || SBZ.rows.length)) { $("#sbZ").hidden = false; sbzDraw(); }
   $("#sbZipIn").onchange = () => sbzRead([...$("#sbZipIn").files]);
   const sel = (id, f) => $(id).onchange = () => {
-    if (SBDIRTY && !confirm("Badlav save nahi hue. Chhod dein?")) return sbFillSel();
+    sbBlur(); if (SBDIRTY) sbSave(true, true);
     f($(id).value); sbLoad();
   };
-  cfBindSel(() => !SBDIRTY || confirm("Badlav save nahi hue. Chhod dein?"));
+  cfBindSel(() => { sbBlur(); if (SBDIRTY) sbSave(true, true); return true; });
   sel("#sbS", v => SBS.s = v); sel("#sbT", v => SBS.t = v === SB_PYQ && $("#sbPm").value === "ch" ? SB_CPYQ : v); sel("#sbPm", v => SBS.t = v === "ch" ? SB_CPYQ : SB_PYQ); sel("#sbM", v => SBS.m = v); sel("#sbY", v => SBS.y = +v); sel("#sbSub", v => SBS.sub = v);
   sel("#sbC", v => { SBS.c = +v; if (!SB_SUBJ(SBS.c).includes(SBS.sub)) SBS.sub = SB_SUBJ(SBS.c)[0]; });
   $("#sbQ").value = SBQ; $("#sbQ").oninput = () => { SBQ = $("#sbQ").value; sbList(); };
-  $("#sbSave").onclick = () => sbSave();
   $("#sbDel").onclick = sbDelete;
   $("#sbEd").addEventListener("click", sbClick);
   $("#sbEd").addEventListener("input", sbInput);
   $("#sbEd").addEventListener("change", sbInput);
   $("#sbList").onclick = e => { const b = e.target.closest("[data-k]"); if (!b) return;
-    if (SBDIRTY && !confirm("Badlav save nahi hue. Chhod dein?")) return;
+    sbBlur(); if (SBDIRTY) sbSave(true, true);
     const p = b.dataset.k.split("|"); Object.assign(SBS, { s: p[0], t: p[1], c: +p[2], m: p[3], sub: p[4], y: +p[5] || SBS.y }); sbLoad(); window.scrollTo({ top: 0, behavior: "smooth" }); };
   $("#sbFile").onchange = sbPicked;
   sbLoad(); sbList();
@@ -2418,7 +2417,7 @@ function sbDraw() {
   const k = sbKind(SBS.t), key = sbKey(), saved = !!SB[key];
   $("#sbEdT").textContent = `2️⃣ ${SBS.s} · Class ${SBS.c} · ${SBS.m} · ${SBS.sub} — ${SBS.t}${k === "sets" ? " " + SBS.y : ""}`;
   $("#sbOpen").href = sbSiteUrl(); $("#sbDel").hidden = !saved;
-  $("#sbNote").innerHTML = SBDIRTY ? "<b style='color:var(--warn,#f59e0b)'>● Save nahi hua</b>" : saved ? "✓ Website par lagi hai" : "Abhi website par khaali hai";
+  $("#sbNote").innerHTML = SBDIRTY || SBSAVING ? "⏳ Save ho raha hai…" : saved ? "✓ Website par lagi hai · har badlav apne aap save hota hai" : "Abhi website par khaali hai · file lagate hi apne aap save ho jayegi";
   let h = "";
   if (k === "one") h = `<p class="note" style="margin-bottom:10px">Is subject ki file lagayein (jo chahiye wahi — teeno zaroori nahi).</p>` + sbSlots(SBR, "");
   else if (k === "sets") h = `<p class="note" style="margin-bottom:10px">${SBS.y} ke question paper — har set alag. Website par "Set 1, Set 2…" dikhte hain.</p>` +
@@ -2430,7 +2429,9 @@ function sbDraw() {
      <div id="sbBulk" hidden style="margin-top:10px"><label class="f">Har line mein ek chapter ka naam<textarea id="sbBulkT" rows="6" placeholder="Matter in Our Surroundings&#10;Is Matter Around Us Pure&#10;Atoms and Molecules"></textarea></label><div class="row" style="margin-top:8px"><button type="button" class="btn pri sm" data-add="bulkok">Jodein</button></div></div>`;
   $("#sbEd").innerHTML = h;
 }
-function sbDirty() { SBDIRTY = true; const n = $("#sbNote"); if (n) n.innerHTML = "<b style='color:var(--warn,#f59e0b)'>● Save nahi hua</b>"; }
+/* koi bhi badlav (naam, set, chapter, file hatana) thodi der me apne aap save — Save button ki zaroorat nahi */
+let SBT = null, SBSAVING = 0, SBQUEUE = Promise.resolve();
+function sbDirty() { SBDIRTY = true; const n = $("#sbNote"); if (n) n.innerHTML = "⏳ Save ho raha hai…"; clearTimeout(SBT); SBT = setTimeout(() => { SBT = null; if (SBDIRTY) sbSave(true, true); }, 900); }
 let SBPICK = null;
 function sbClick(e) {
   const b = e.target.closest("button"); if (!b) return;
@@ -2448,10 +2449,12 @@ function sbClick(e) {
     if (!names.length) return toast("Naam likhein — har line mein ek", true);
     names.forEach(n => SBR.chapters.push({ name: n.slice(0, 120) })); sbDirty(); sbDraw(); toast(`${names.length} chapter jud gaye ✓`); }
 }
+/* jagah badalne se pehle khula input band karo, taaki uska naam purani jagah hi save ho */
+function sbBlur() { const a = document.activeElement; if (a && a.closest && a.closest("#sbEd")) a.blur(); }
 function sbInput(e) {
-  const t = e.target;
-  if (t.dataset.nm) { sbObj(t.dataset.nm).name = t.value; sbDirty(); }
-  else if (t.dataset.pr != null) { const o = sbObj(t.dataset.pr); if (t.value) o.product = +t.value; else delete o.product; sbDirty(); }
+  const t = e.target; if (!t.isConnected) return;
+  if (t.dataset.nm) { const o = sbObj(t.dataset.nm); if (!o || o.name === t.value) return; o.name = t.value; sbDirty(); }
+  else if (t.dataset.pr != null) { const o = sbObj(t.dataset.pr); if (!o) return; if (t.value) o.product = +t.value; else delete o.product; sbDirty(); }
 }
 /* ---------- State Books: ZIP / kai files ek saath — file ke naam se sahi jagah ---------- */
 let SBZ = null;   // { rows:[...], busy }
@@ -2639,25 +2642,38 @@ async function sbPicked() {
   SB[key] = sv.rec || rec; if ($("#sbList")) sbList();
   toast(`✓ ${file.name} lag gayi (${label})`);
 }
-async function sbSave(auto) {
-  if (sbBusy() && !auto) return toast("Upload chal raha hai — khatam hone dein", true);
-  const key = sbKey(), k = sbKind(SBS.t);
-  const rec = JSON.parse(JSON.stringify(SBR));
-  if (k === "chapters") { const bad = rec.chapters.findIndex(c => !String(c.name || "").trim()); if (bad >= 0 && !auto) return toast(`Chapter ${bad + 1} ka naam likhein`, true); }
+function sbSave(auto, quiet) {
+  // abhi ki copy turant le lo (user aage badal de / doosri jagah chala jaye to bhi sahi jagah save ho)
+  clearTimeout(SBT); SBT = null;
+  const key = sbKey(), k = sbKind(SBS.t), rec = JSON.parse(JSON.stringify(SBR));
+  SBDIRTY = false; SBSAVING++;
+  const job = SBQUEUE.then(() => sbPut(key, k, rec, quiet)).finally(() => { SBSAVING--; if ($("#sbEd") && sbKey() === key && !SBDIRTY && !SBSAVING) sbNoteDraw(); });
+  SBQUEUE = job.catch(() => {});
+  return job;
+}
+function sbNoteDraw() { const n = $("#sbNote"), saved = !!SB[sbKey()]; if (n) n.innerHTML = SBDIRTY || SBSAVING ? "⏳ Save ho raha hai…" : saved ? "✓ Website par lagi hai · har badlav apne aap save hota hai" : "Abhi website par khaali hai · file lagate hi apne aap save ho jayegi"; const d = $("#sbDel"); if (d) d.hidden = !saved; }
+async function sbPut(key, k, rec, quiet) {
+  const here = () => $("#sbEd") && sbKey() === key;
+  const typing = () => { const a = document.activeElement; return a && a.closest && a.closest("#sbEd") && /INPUT|TEXTAREA|SELECT/.test(a.tagName); };
   const empty = k === "one" ? !sbHas(rec) : !(rec.sets || rec.chapters).length;
-  if (empty) { if (SB[key]) return sbDelete(true); SBDIRTY = false; sbDraw(); return toast("Kuch lagaya hi nahi — pehle file lagayein", true); }
-  const b = $("#sbSave"); b.disabled = true;
+  if (empty) {
+    if (SB[key]) { const r = await call("adminSbDelete", { key }); if (!r.ok) return toast(r.error, true); delete SB[key]; if ($("#sbList")) sbList(); }
+    return;
+  }
   const r = await call("adminSbSave", { key, rec });
-  b.disabled = false;
-  if (!r.ok) return toast(r.error, true);
-  SB[key] = r.rec || rec; SBDIRTY = false;
-  if (sbKey() === key && !sbBusy()) SBR = sbNorm(SB[key], k);
-  sbDraw(); sbList();
-  toast(auto ? "File lag gayi ✓ Website par dikh rahi hai" : "Saved ✓ Website par dikh raha hai");
+  if (!r.ok) {
+    if (here()) { SBDIRTY = true; const n = $("#sbNote"); if (n) { n.innerHTML = `<b style="color:#dc2626">✕ Save nahi hua</b> <button type="button" class="btn sm" id="sbRetry">↻ Dobara save</button>`; $("#sbRetry").onclick = () => sbSave(true); } }
+    return toast("Save nahi hua: " + r.error, true);
+  }
+  SB[key] = r.rec || rec;
+  if (here() && !SBDIRTY && !sbBusy() && !typing()) { SBR = sbNorm(SB[key], k); sbDraw(); }
+  if ($("#sbList")) sbList();
+  if (!quiet) toast("File lag gayi ✓ Website par dikh rahi hai");
 }
 async function sbDelete(quiet) {
   const key = sbKey(); if (!SB[key]) return;
   if (quiet !== true && !confirm("Ye entry aur iski saari files website se hat jayengi. Pakka?")) return;
+  clearTimeout(SBT); SBT = null; SBDIRTY = false;
   const r = await call("adminSbDelete", { key });
   if (!r.ok) return toast(r.error, true);
   delete SB[key]; sbLoad(); sbList(); toast("Hata diya ✓");
@@ -3178,7 +3194,7 @@ async function runTask(j) {
     j.st = "ok"; j.msg = "✅ Upload ho gaya"; j.prog = 100; j.done({ ok: true, v });
   } catch (e) { j.st = "bad"; j.msg = "❌ " + (e.message || e); j.prog = null; j.done({ ok: false, error: e.message || String(e) }); }
 }
-window.addEventListener("beforeunload", e => { if (UQ.some(j => j.st === "wait" || j.st === "run") || sbBusy()) { e.preventDefault(); e.returnValue = ""; } });
+window.addEventListener("beforeunload", e => { if (UQ.some(j => j.st === "wait" || j.st === "run") || sbBusy() || SBDIRTY || SBSAVING) { e.preventDefault(); e.returnValue = ""; } });
 let UQRESUMED = false;
 async function resumeUQ() {
   if (UQRESUMED) return; UQRESUMED = true;
