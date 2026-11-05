@@ -2306,12 +2306,12 @@ const PBADGE = [["", "Koi nahi"], ["best", "🔥 Best Seller"], ["feat", "⭐ Fe
 /* ---------- State Books: website ke State Board pages (Syllabus, Previous Year, Notes…) ki files ---------- */
 const SB_ST = ["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
 const sbStates = () => { const st = (MENU_L || []).find(c => c.k === "states"), l = st ? st.it.map(x => catnavSplit(x)[0]) : []; return l.length ? l : SB_ST; };
-const SB_T = ["Syllabus", "Previous Year Questions", "Model Paper", "Notes", "Practice Questions", "Book & Answers"];
+const SB_T = ["Syllabus", "Previous Year Questions", "Chapter-wise PYQ", "Model Paper", "Notes", "Practice Questions", "Book & Answers"];
 const SB_SUBJ = c => c <= 5 ? ["English","Hindi","Maths","EVS","Computer","General Knowledge"]
   : c <= 8 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science","Computer"]
   : c <= 10 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science"]
   : ["English","Hindi","Physics","Chemistry","Maths","Biology","Accountancy","Business Studies","Economics","History","Political Science","Geography","Computer Science"];
-const SB_PYQ = "Previous Year Questions", SB_CHT = ["Notes"];
+const SB_PYQ = "Previous Year Questions", SB_CHT = ["Notes", "Chapter-wise PYQ"];
 const SB_F = [["pdf", "PDF", ".pdf", "#e5484d"], ["word", "Word", ".doc,.docx", "#2b6cde"], ["ppt", "PPT", ".ppt,.pptx", "#e8590c"]];
 let SB = {}, SBP = [], SBR = null, SBDIRTY = false, SBQ = "", SBFOLDER = "#";
 const SBUP = {};   // upload chal raha: "path|k" → %
@@ -2476,13 +2476,16 @@ function sbzParse(path) {
   // category
   const TY = [[/\s(model|sample|modal)\s(question\s)?(paper|set)s?\s|\smodel\s/, "Model Paper"], [/\s(pyq|pyqs|previous\syears?|prev\syears?|question\spapers?|board\spapers?|old\spapers?|purane\sprashn)\s/, SB_PYQ],
     [/\s(practice|mcqs?|worksheets?|abhyas)\s/, "Practice Questions"], [/\s(books?|answers?|solutions?|hal)\s/, "Book & Answers"], [/\s(notes?)\s/, "Notes"], [/\s(syllabus|pathyakram)\s/, "Syllabus"]];
+  const cw = /\s(chapter\s?wise|chapterwise|ch\s?wise|adhyay\s?wise)\s/;
   for (const [re, v] of TY) if (has(re) && SB_T.includes(v)) { r.t = v; cut(re); break; }
+  if (has(cw)) { cut(cw); if (!r.t || r.t === SB_PYQ) r.t = "Chapter-wise PYQ"; }
   // year (pehle, taaki class ke number se na takraye)
   const yy = t.match(/\s(20[0-4]\d)\s/); if (yy) { r.y = +yy[1]; cut(new RegExp("\\s" + yy[1] + "\\s")); }
   // set
   const st = t.match(/\sset\s?(\d{1,2}|[a-e])\s/); if (st) { r.set = /\d/.test(st[1]) ? +st[1] : "abcde".indexOf(st[1]) + 1; cut(new RegExp("\\s" + st[0].trim() + "\\s")); }
   // chapter
   const chm = base.match(/(?:^|[\s_\-.])(?:ch|chap|chapter|path|adhyay)[\s_\-.]*(\d{1,2})(?:[\s_\-.:]+(.*))?$/i);
+  if (chm && r.t === SB_PYQ) r.t = "Chapter-wise PYQ";
   if (chm) { r.ch = +chm[1]; r.chn = (chm[2] || "").replace(/[_]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120); cut(/\s(ch|chap|chapter|path|adhyay)\s?\d{1,2}\s/); }
   // class
   const cm = t.match(/\s(?:class|cls|std|kaksha|grade)\s?(\d{1,2}|xii|xi|x|ix|viii|vii|vi|v|iv|iii|ii|i)\s/) || t.match(/\s(\d{1,2})(?:st|nd|rd|th)\s/);

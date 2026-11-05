@@ -107,7 +107,7 @@ const qs=new URLSearchParams(location.search),$=id=>document.getElementById(id);
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 const P={s:qs.get("s")||"Bihar",t:qs.get("t")||"Notes",c:qs.get("c")||"10",m:qs.get("m")==="English"?"English":"Hindi",sub:qs.get("sub")||"English"};
 const NEWTAB=window.self===window.top?' target="_blank" rel="noopener"':"";
-const board="state-board.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m});
+const board="state-board.html?"+new URLSearchParams(P.t==="Chapter-wise PYQ"?{s:P.s,t:"Previous Year Questions",c:P.c,m:P.m,pm:"ch"}:{s:P.s,t:P.t,c:P.c,m:P.m});
 $("bk").href=board;$("crSt").href=board;$("crSt").textContent=P.s;$("crT").textContent=P.t;
 $("ttl").textContent=`${P.sub} — ${P.t}`;
 $("hsub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium`;
