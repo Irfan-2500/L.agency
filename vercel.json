@@ -3,6 +3,34 @@
     {
       "source": "/uploads/themes/samples/:file",
       "destination": "/:file"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/seo?r=sitemap"
+    },
+    {
+      "source": "/study-material",
+      "destination": "/api/seo?r=hub"
+    },
+    {
+      "source": "/ppt/:a",
+      "destination": "/api/seo?r=ppt&a=:a"
+    },
+    {
+      "source": "/topic/:a",
+      "destination": "/api/seo?r=topic&a=:a"
+    },
+    {
+      "source": "/topic/:a/:b",
+      "destination": "/api/seo?r=topic&a=:a&b=:b"
+    },
+    {
+      "source": "/board/:a",
+      "destination": "/api/seo?r=board&a=:a"
+    },
+    {
+      "source": "/board/:a/:b",
+      "destination": "/api/seo?r=board&a=:a&b=:b"
     }
   ],
   "headers": [
@@ -50,6 +78,9 @@
   "functions": {
     "api/hit.js": {
       "includeFiles": "config.js"
+    },
+    "api/seo.js": {
+      "includeFiles": "{config.js,js/catnav.js}"
     }
   }
 }
