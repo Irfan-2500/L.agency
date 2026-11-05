@@ -671,6 +671,9 @@ body.noscroll{overflow:hidden}
 .sbzt select,.sbzt input[type=number]{padding:5px 6px;font-size:.78rem;min-width:76px;max-width:170px}
 .sbzt input[type=number]{width:58px}
 .sbzt td.miss select,.sbzt td.miss input{border-color:#f59e0b;background:color-mix(in srgb,#f59e0b 12%,transparent)}
+.sbzt tr.nomatch td{background:color-mix(in srgb,#dc2626 7%,transparent)}
+.sbzt tr.nomatch td.miss select,.sbzt tr.nomatch td.miss input{border-color:#dc2626;background:color-mix(in srgb,#dc2626 12%,transparent)}
+.pill.bad{background:color-mix(in srgb,#dc2626 14%,transparent);color:#dc2626;white-space:nowrap}
 .sbzt .fn{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sbzt .fx{display:inline-grid;place-items:center;min-width:26px;height:20px;padding:0 4px;margin-right:6px;border-radius:5px;color:#fff;font-size:.62rem;font-weight:800;background:#e5484d}
 .sbzt .fx-word{background:#2b6cde}.sbzt .fx-ppt{background:#e8590c}
@@ -2509,6 +2512,8 @@ function sbzFill(r) {   // jo naam me nahi mila → upar ke dropdown se
   if (r.t === SB_PYQ && !r.y) { r.y = SBS.y; r.miss.push("Year"); }
   return r;
 }
+const SBZ_MUST = ["State", "Category", "Class", "Subject"];
+const sbzBad = r => r.miss.filter(x => SBZ_MUST.includes(x));
 const sbzKey = r => [r.s, r.t, r.c, r.m, r.sub].join("|") + (r.t === SB_PYQ ? "|" + r.y : "");
 function sbzOpen() {
   if (SBZ && SBZ.busy) { $("#sbZ").hidden = false; sbzDraw(); return toast("Pichhli ZIP abhi upload ho rahi hai — neeche dekhein", true); }
@@ -2528,7 +2533,7 @@ async function sbzRead(files) {
       } else if (SBZ_EXT[(f.name.split(".").pop() || "").toLowerCase()]) out.push({ blob: f, name: f.name });
     }
   } catch (e) { toast("ZIP nahi khul paya: " + (e.message || e), true); }
-  out.forEach(o => SBZ.rows.push(Object.assign(sbzFill(sbzParse(o.name)), { entry: o.entry, blob: o.blob, st: "", on: true })));
+  out.forEach(o => { const r = sbzFill(sbzParse(o.name)); SBZ.rows.push(Object.assign(r, { entry: o.entry, blob: o.blob, st: "", on: !sbzBad(r).length })); });
   // set number na ho to: same jagah + same format me kram se 1, 2, 3…
   const nx = {};
   SBZ.rows.forEach(r => { if (r.t !== SB_PYQ || r.set) return; const k = sbzKey(r) + "|" + r.fmt; nx[k] = (nx[k] || 0) + 1; r.set = nx[k]; r.miss.push("Set"); });
@@ -2536,6 +2541,7 @@ async function sbzRead(files) {
   SBZ.rows.forEach(r => { if (sbKind(r.t) !== "chapters" || r.ch) return; const k = sbzKey(r) + "|" + r.fmt; nc[k] = (nc[k] || 0) + 1; r.ch = nc[k]; r.chn = r.chn || r.file; });
   $("#sbZipIn").value = "";
   if (!out.length) toast("Isme PDF / Word / PPT file nahi mili", true);
+  else { const nb = SBZ.rows.filter(r => !r.st && sbzBad(r).length).length; if (nb) toast(`${nb} file match nahi hui (laal) — wo upload nahi hongi`, true); }
   sbzDraw();
 }
 function sbzDraw() {
@@ -2543,12 +2549,13 @@ function sbzDraw() {
   const rows = SBZ.rows, on = rows.filter(r => r.on && !r.st), done = rows.filter(r => r.st === "ok").length;
   const opt = (l, v) => l.map(x => `<option${String(x) === String(v) ? " selected" : ""}>${esc(x)}</option>`).join("");
   box.innerHTML = `<div class="ch"><h3>📦 ZIP / kai files ek saath</h3><span class="sp"></span><button class="btn sm" id="sbzX" ${SBZ.busy ? "disabled" : ""}>✕ Band karein</button></div>
-    <p class="note">PDF ZIP, Word ZIP, PPT ZIP — teeno chalegi. File ke <b>naam</b> se State, Category, Class, Medium, Subject, Year, Set / Chapter pehchana jaata hai. Example: <code>Bihar Class 10 Hindi Medium Maths PYQ 2024 Set 1.pdf</code>. Jo naam me nahi mila (<span class="pill warn">peela</span>) wo upar ke dropdown se liya — neeche badal sakte hain.</p>
+    <p class="note">PDF ZIP, Word ZIP, PPT ZIP — teeno chalegi. File ke <b>naam</b> se State, Category, Class, Medium, Subject, Year, Set / Chapter pehchana jaata hai. Example: <code>Bihar Class 10 Hindi Medium Maths PYQ 2024 Set 1.pdf</code>. Jo naam me nahi mila (<span class="pill warn">peela</span>) wo upar ke dropdown se liya — neeche badal sakte hain. State, Category, Class ya Subject na mile to file <b style="color:#dc2626">laal</b> hogi aur upload nahi hogi.</p>
     <div class="row" style="margin:12px 0"><button class="btn" id="sbzPick" ${SBZ.busy ? "disabled" : ""}>${ic("i-upload")} ZIP ya files chunein</button>
       ${rows.length ? `<span class="note">${rows.length} files · ${done} upload ho gayi</span>` : ""}</div>
     <div class="sbzl" id="sbZList">${rows.length ? `<table class="sbzt"><thead><tr><th><input type="checkbox" id="sbzAll" aria-label="Sab chunein" ${rows.every(r => r.on) ? "checked" : ""}></th><th>File</th><th>State</th><th>Category</th><th>Class</th><th>Medium</th><th>Subject</th><th>Year</th><th>Set / Ch</th><th>Status</th></tr></thead><tbody>${rows.map((r, i) => {
       const w = f => r.miss.includes(f) ? " class=\"miss\"" : "", dis = SBZ.busy || r.st === "ok" ? " disabled" : "";
-      return `<tr class="${r.st === "ok" ? "ok" : r.st === "bad" ? "bad" : ""}"><td><input type="checkbox" data-zon="${i}" ${r.on ? "checked" : ""}${dis} aria-label="Upload ${esc(r.file)}"></td>
+      const nb = !r.st && sbzBad(r);
+      return `<tr class="${r.st === "ok" ? "ok" : r.st === "bad" ? "bad" : nb && nb.length ? "nomatch" : ""}"><td><input type="checkbox" data-zon="${i}" ${r.on ? "checked" : ""}${dis} aria-label="Upload ${esc(r.file)}"></td>
         <td class="fn"><span class="fx fx-${r.fmt}">${r.fmt === "word" ? "W" : r.fmt === "ppt" ? "P" : "PDF"}</span>${esc(r.path.split("/").pop())}</td>
         <td${w("State")}><select data-z="${i}|s"${dis}>${opt(sbStates(), r.s)}</select></td>
         <td${w("Category")}><select data-z="${i}|t"${dis}>${opt(SB_T, r.t)}</select></td>
@@ -2557,19 +2564,22 @@ function sbzDraw() {
         <td${w("Subject")}><select data-z="${i}|sub"${dis}>${opt(SB_SUBJ(r.c), r.sub)}</select></td>
         <td${w("Year")}>${r.t === SB_PYQ ? `<select data-z="${i}|y"${dis}>${opt(sbYears(), r.y)}</select>` : "—"}</td>
         <td${w("Set")}>${r.t === SB_PYQ ? `<input type="number" min="1" max="20" data-z="${i}|set" value="${r.set}"${dis} aria-label="Set">` : sbKind(r.t) === "chapters" ? `<input type="number" min="1" max="80" data-z="${i}|ch" value="${r.ch}"${dis} aria-label="Chapter number" title="${esc(r.chn)}">` : "—"}</td>
-        <td class="zs">${r.st === "ok" ? "✅" : r.st === "bad" ? `❌ ${esc(r.err || "")}` : r.st === "up" ? `⏳ ${r.pc || 0}%` : r.miss.length ? `<span class="pill warn" title="Naam me nahi mila: ${esc(r.miss.join(", "))}">check</span>` : `<span class="pill ok">✓</span>`}</td></tr>`; }).join("")}</tbody></table>`
+        <td class="zs">${r.st === "ok" ? "✅" : r.st === "bad" ? `❌ ${esc(r.err || "")}` : r.st === "up" ? `⏳ ${r.pc || 0}%` : sbzBad(r).length ? `<span class="pill bad" title="File ke naam me nahi mila: ${esc(sbzBad(r).join(", "))} — ye file upload nahi hogi">❌ Match nahi · ${esc(sbzBad(r).join(", "))}</span>` : r.miss.length ? `<span class="pill warn" title="Naam me nahi mila: ${esc(r.miss.join(", "))}">check</span>` : `<span class="pill ok">✓</span>`}</td></tr>`; }).join("")}</tbody></table>`
       : `<div class="empty" style="padding:18px">ZIP ya files chunein — yahan list dikhegi.</div>`}</div>
     ${rows.length ? `<div class="row" style="margin-top:14px"><button class="btn pri" id="sbzGo" ${SBZ.busy || !on.length ? "disabled" : ""}>⬆ ${SBZ.busy ? "Upload ho raha hai…" : `${on.length} file upload karein`}</button><span class="note">Pehle se lagi file usi jagah par ho to nayi se badal jayegi.</span></div>` : ""}`;
   $("#sbzX").onclick = () => { SBZ = null; box.hidden = true; box.innerHTML = ""; };
   $("#sbzPick").onclick = () => $("#sbZipIn").click();
   if ($("#sbzGo")) $("#sbzGo").onclick = sbzGo;
-  if ($("#sbzAll")) $("#sbzAll").onchange = e => { rows.forEach(r => { if (r.st !== "ok") r.on = e.target.checked; }); sbzDraw(); };
-  $$("#sbZ [data-zon]").forEach(el => el.onchange = () => { rows[+el.dataset.zon].on = el.checked; sbzDraw(); });
+  if ($("#sbzAll")) $("#sbzAll").onchange = e => { rows.forEach(r => { if (r.st !== "ok") r.on = e.target.checked && !sbzBad(r).length; }); sbzDraw(); };
+  $$("#sbZ [data-zon]").forEach(el => el.onchange = () => { const r = rows[+el.dataset.zon];
+    if (el.checked && sbzBad(r).length) { el.checked = false; return toast(`Ye file match nahi hui (${sbzBad(r).join(", ")}) — pehle us row me sahi chunein`, true); }
+    r.on = el.checked; sbzDraw(); });
   $$("#sbZ [data-z]").forEach(el => el.onchange = () => {
-    const [i, f] = el.dataset.z.split("|"), r = rows[+i], v = el.value;
+    const [i, f] = el.dataset.z.split("|"), r = rows[+i], v = el.value, badBefore = sbzBad(r).length > 0;
     r[f] = ["c", "y", "set", "ch"].includes(f) ? Math.max(1, +v || 1) : v;
     r.miss = r.miss.filter(x => x !== ({ s: "State", t: "Category", c: "Class", m: "Medium", sub: "Subject", y: "Year", set: "Set" })[f]);
     if (f === "c" && !SB_SUBJ(r.c).includes(r.sub)) { r.sub = SB_SUBJ(r.c)[0]; r.miss.push("Subject"); }
+    if (badBefore && !sbzBad(r).length && !r.st) r.on = true;   // theek kar di → ab upload hogi
     if (f === "t" && r.t === SB_PYQ && !r.y) r.y = SBS.y;
     if (f === "t" && r.t === SB_PYQ && !r.set) r.set = 1;
     if (f === "t" && sbKind(r.t) === "chapters" && !r.ch) { r.ch = 1; r.chn = r.chn || r.file; }
