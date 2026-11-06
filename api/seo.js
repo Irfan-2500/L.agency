@@ -238,6 +238,17 @@ ${sibs.length ? `<h2>More ${E(st)} Board Class ${E(x.c)}</h2><ul class="list">${
   return page({ url, title, desc, body, ld: [crumbLD(crumb.map(([n, u]) => [n, u || url])), { "@context": "https://schema.org", "@type": "LearningResource", name: t, url: SITE + url, educationalLevel: "Class " + x.c, inLanguage: /hindi/i.test(x.m) ? "hi" : "en", learningResourceType: x.t, about: x.sub, provider: { "@type": "Organization", name: "PPT Store", url: SITE } }] });
 }
 
+/* /open/<category>/<item>: menu item me upload hui file seedhe viewer me kholo (state-board.html jaisa link) */
+function openItem(D, cs, is) {
+  const c = D.cats.find(x => slug(x.n) === cs), item = c && c.it.find(x => slug(x) === is); if (!item) return null;
+  const st = c.n + " › " + item, keys = itemFiles(D, c.n, item).sort(), FK = [["PDF", "pdf"], ["Word", "word"], ["PPT", "ppt"]];
+  const k = keys.find(x => FK.some(([, f]) => (D.files[x] || {})[f])) || "";
+  if (!k) return { redirect: "/state-board.html?" + qs({ s: st }), code: 302 };
+  const v = D.files[k], f = FK.find(([, f]) => v[f])[0], p = k.split("|");
+  if (p[1] === "Seedha file") return { redirect: "/view.html?" + qs({ s: st, t: p[1], c: 0, m: "-", sub: "-", f }), code: 302 };
+  return { redirect: "/view.html?" + qs({ s: st, t: p[1], c: p[2], m: p[3], sub: p[4], f, y: p[5], one: keys.length === 1 ? 1 : "" }), code: 302 };
+}
+
 function hubPage(D) {
   const url = "/study-material";
   const title = "Study Material – State Boards, CBSE, NCERT, JEE, NEET Notes, PYQ & PPT | PPT Store";
@@ -272,10 +283,11 @@ module.exports = async (req, res) => {
   if (r === "hub") out = hubPage(D);
   else if (r === "ppt") out = pptPage(D, (/^(\d+)/.exec(a) || [])[1]);
   else if (r === "topic") out = b ? topicPage(D, a, b) : catPage(D, a);
+  else if (r === "open") out = openItem(D, a, b);
   else if (r === "board") out = b ? boardFilePage(D, a, b) : boardPage(D, a);
-  if (out && out.redirect) { res.setHeader("Location", out.redirect); return res.status(301).end(); }
+  if (out && out.redirect) { if (out.code === 302) res.setHeader("Cache-Control", "public, s-maxage=600"); res.setHeader("Location", out.redirect); return res.status(out.code || 301).end(); }
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   if (!out) { res.setHeader("Cache-Control", "public, s-maxage=300"); return res.status(404).send(page({ url: "/study-material", title: "Not found | PPT Store", desc: "This page was not found.", body: `<h1>Page not found</h1><p class="txt">It may have moved. See <a href="/study-material">all study material</a>.</p>`, noindex: true })); }
   return res.status(200).send(out);
 };
-module.exports._test = { slug, catKey, sbUrl, sbTitle, pptPage, topicPage, catPage, boardPage, boardFilePage, hubPage, sitemap, setData: d => { memo = { t: Date.now(), ...d }; } };
+module.exports._test = { slug, catKey, sbUrl, sbTitle, pptPage, topicPage, catPage, boardPage, boardFilePage, hubPage, sitemap, openItem, setData: d => { memo = { t: Date.now(), ...d }; } };

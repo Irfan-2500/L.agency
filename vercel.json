@@ -25,6 +25,10 @@
       "destination": "/api/seo?r=topic&a=:a&b=:b"
     },
     {
+      "source": "/open/:a/:b",
+      "destination": "/api/seo?r=open&a=:a&b=:b"
+    },
+    {
       "source": "/board/:a",
       "destination": "/api/seo?r=board&a=:a"
     },
