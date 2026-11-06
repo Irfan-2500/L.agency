@@ -104,7 +104,8 @@ const G=(new URLSearchParams(location.search).get("g")||"").replace(/[<>"]/g,"")
 let CAT=null;try{const st=(JSON.parse(localStorage.getItem("la_data")||"null")||{}).settings||{},L=window.catnavList?catnavList(st):[];CAT=G?L.find(x=>x.n===G&&x.k!=="states"):L.find(x=>x.k==="states");}catch(e){}
 const STATES0=["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
 const STATES=CAT&&CAT.it.length?CAT.it.map(x=>catnavSplit(x)[0]).filter(Boolean):G?[G]:STATES0;
-const lnk=x=>"state-board.html?"+new URLSearchParams({s:G?G+" › "+x:x});
+const ITEM_PAGE={"CBSE › CBSE Exam Date Sheet 2027":"cbse-date-sheet-2027.html"};
+const lnk=x=>ITEM_PAGE[G+" › "+x]||"state-board.html?"+new URLSearchParams({s:G?G+" › "+x:x});
 if(G){document.getElementById("crG").textContent=document.getElementById("h1").textContent=G;document.getElementById("hic").textContent=(CAT&&CAT.e)||"📁";document.title=G+" — PPT Store";document.getElementById("q").placeholder=G+" me dhoondhein…";}
 const IC={"Bihar":"🛕","UP":"🕌","Andhra Pradesh":"🌶️","Chhattisgarh":"🌳","West Bengal":"🐅","Gujarat":"🦁","Karnataka":"🐘","Kerala":"🌴","Madhya Pradesh":"🐆","Haryana":"🌾","Maharashtra":"🏛️","Punjab":"🌻","Rajasthan":"🐪","Tamilnadu":"🐚","Jharkhand":"⛏️","Telangana":"🏰","CISCE":"🎓","NIOS":"📚","Odisha":"☸️","Assam":"🍵","Jammu & Kashmir":"🏔️"};
 const PAL=[["#f97316","#c2410c"],["#8b2cff","#5b21b6"],["#0ea5e9","#0369a1"],["#16a34a","#15803d"],["#db2777","#9d174d"],["#ca8a04","#a16207"],["#0d9488","#0f766e"],["#4f46e5","#3730a3"]];

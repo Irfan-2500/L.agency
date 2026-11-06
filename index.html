@@ -1889,7 +1889,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
         <li><a href="#home">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="ready-ppts.html">All Presentations</a></li><li data-ui="foot_admin"><a href="admin.html">🔐 Admin Panel</a></li><li><a href="#custom" class="js-custom">Custom PPT Services</a></li><li><a href="#why">Why PPT Store</a></li><li><a href="#payment">Payment &amp; Billing</a></li><li><a href="track.html">Track Order</a></li><li><a href="#contact">Contact Us</a></li><li><a href="#faq">FAQs</a></li></ul></div>
       <div><h5>CATEGORIES</h5><ul id="footCats"></ul></div>
       <div data-ui="foot_more"><h5>MORE OFFERINGS</h5><ul><li><a href="service.html?s=ready-to-use-presentations">Ready-to-Use Presentations</a></li><li><a href="service.html?s=lecture-recording">Lecture Recording</a></li><li><a href="service.html?s=thumbnail-design">Thumbnail Design</a></li><li><a href="ready-ppts.html?type=notes">Study Notes</a></li><li><a href="service.html?s=video-editing">Video Editing</a></li><li><a href="service.html?s=social-media-management">Social Media Management</a></li></ul></div>
-      <div data-ui="foot_popular"><h5>POPULAR</h5><ul><li><a href="/cbse-date-sheet-2027.html">CBSE Date Sheet 2027</a></li><li><a href="/study-material">All Study Material</a></li><li><a href="educational-ppt.html">Educational PPT</a></li><li><a href="ready-made-ppt.html">Ready-Made PPT</a></li><li><a href="custom-ppt-design.html">Custom PPT Design</a></li><li><a href="student-ppt.html">PPT for Students</a></li><li><a href="study-notes-pdf.html">Study Notes PDF</a></li><li><a href="cbse-icse-state-board-ppt.html">CBSE, ICSE &amp; State Board PPT</a></li><li><a href="lecture-recording-video-editing.html">Lecture Recording &amp; Video Editing</a></li></ul></div>
+      <div data-ui="foot_popular"><h5>POPULAR</h5><ul><li><a href="/study-material">All Study Material</a></li><li><a href="educational-ppt.html">Educational PPT</a></li><li><a href="ready-made-ppt.html">Ready-Made PPT</a></li><li><a href="custom-ppt-design.html">Custom PPT Design</a></li><li><a href="student-ppt.html">PPT for Students</a></li><li><a href="study-notes-pdf.html">Study Notes PDF</a></li><li><a href="cbse-icse-state-board-ppt.html">CBSE, ICSE &amp; State Board PPT</a></li><li><a href="lecture-recording-video-editing.html">Lecture Recording &amp; Video Editing</a></li></ul></div>
       <div><h5>TRUST & LEGAL</h5><ul>
         <li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms & Conditions</a></li><li><a href="refund.html">Refund & Cancellation</a></li><li><a href="delivery.html">Shipping & Delivery</a></li><li><a href="contact.html">Contact Us</a></li></ul>
         <h5 style="margin-top:22px">FOLLOW US</h5>
@@ -3396,6 +3396,8 @@ const url=q=>"ready-ppts.html?q="+encodeURIComponent(q);
 const NAV_OK=()=>typeof catnavList==="function";
 function load(st){CATS=(NAV_OK()?catnavList(st):[]).filter(x=>!x.h).map(x=>[x.n,x.e,x.c,x.d,x.it,x.k,x.u]);}
 /* menu se kabhi Shop PPTs (ready-ppts) na khule — har category / item apna page kholta hai */
+/* jin menu items ka apna page bana hai */
+const ITEM_PAGE={"CBSE › CBSE Exam Date Sheet 2027":"cbse-date-sheet-2027.html"};
 const noShop=l=>l&&!/^(\/|https?:\/\/(www\.)?pptstore\.in\/)?ready-ppts\.html/i.test(l)?l:"";
 const gurl=(n,k)=>k==="states"?"state-books.html":"state-books.html?"+new URLSearchParams({g:n});
 const curl=([n,,,,,k,u])=>noShop(u)||(k==="states"?"state-books.html":"state-board.html?"+new URLSearchParams({s:n+" › "+n}));
@@ -3410,7 +3412,7 @@ function list(i,q){const [n,,,,it,kind]=CATS[i],k=q.trim().toLowerCase();
  if(!f.length)return `<div class="cn-none">Kuch nahi mila "${esc(q)}" ke liye.</div>`;
  if(kind==="states")return f.map(([x,lk])=>`<div class="cn-st"><a class="cn-sth" href="${esc(noShop(lk)||"state-board.html?s="+encodeURIComponent(x))}" data-ui="cat_state"><span>${esc(x)}</span><svg class="i cn-ar"><use href="#i-right"/></svg></a></div>`).join("");
  return f.map(([x,lk])=>{let h=esc(x);if(k){const j=x.toLowerCase().indexOf(k);h=esc(x.slice(0,j))+"<mark>"+esc(x.slice(j,j+k.length))+"</mark>"+esc(x.slice(j+k.length));}
-  return `<a href="${esc(noShop(lk)||("state-board.html?"+new URLSearchParams({s:n+" › "+x})))}" data-ui="cat_item"><span>${h}</span></a>`}).join("");}
+  return `<a href="${esc(noShop(lk)||ITEM_PAGE[n+" › "+x]||("state-board.html?"+new URLSearchParams({s:n+" › "+x})))}" data-ui="cat_item"><span>${h}</span></a>`}).join("");}
 let opT=0;function open(i){if(cur===i||!CATS[i])return;cur=i;opT=Date.now();(innerWidth<=720?document.body:nav).appendChild(pan);const [n,e,c,d,it,kind]=CATS[i];
  row.querySelectorAll(".cn-b").forEach(b=>b.setAttribute("aria-expanded",b.dataset.i==i));
  pan.style.setProperty("--c",c);
