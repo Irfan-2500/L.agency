@@ -108,10 +108,11 @@ const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const P={s:qs.get("s")||"Bihar",t:qs.get("t")||"Notes",c:qs.get("c")||"10",m:qs.get("m")==="English"?"English":"Hindi",sub:qs.get("sub")||"English"};
 const NEWTAB=window.self===window.top?' target="_blank" rel="noopener"':"";
 const board="state-board.html?"+new URLSearchParams(P.t==="Chapter-wise PYQ"?{s:P.s,t:"Previous Year Questions",c:P.c,m:P.m,pm:"ch"}:{s:P.s,t:P.t,c:P.c,m:P.m});
-$("bk").href=board;$("crSt").href=board;$("crSt").textContent=P.s;$("crT").textContent=P.t;
+$("bk").href=board;$("crSt").href=board;$("crSt").textContent=P.s.includes(" › ")?sbLabel(P.s):P.s;
+if(P.s.includes(" › ")){const g=document.querySelector('.crumb a[href="state-books.html"]');if(g){g.textContent=sbGroup(P.s);g.removeAttribute("href");}}$("crT").textContent=P.t;
 $("ttl").textContent=`${P.sub} — ${P.t}`;
-$("hsub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium`;
-document.title=`${P.s} Board Class ${P.c} ${P.sub} ${P.t} — Chapter Wise — PPT Store`;
+$("hsub").textContent=`${sbLabel(P.s)} · Class ${P.c} · ${P.m} Medium`;
+document.title=`${sbLabel(P.s)} Class ${P.c} ${P.sub} ${P.t} — Chapter Wise — PPT Store`;
 let chs=[];const load=()=>{chs=(((window.STATE_FILES||{})[[P.s,P.t,P.c,P.m,P.sub].join("|")]||{}).chapters||[]);};load();
 const FC={pdf:["PDF","#e5484d"],word:["Word","#2b6cde"],ppt:["PPT","#e8590c"]};
 const eye=`<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.2"/></svg>`;

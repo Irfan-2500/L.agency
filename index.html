@@ -3395,7 +3395,10 @@ const url=q=>"ready-ppts.html?q="+encodeURIComponent(q);
 /* Menu Admin Panel → Category Menu se aata hai (js/catnav.js) */
 const NAV_OK=()=>typeof catnavList==="function";
 function load(st){CATS=(NAV_OK()?catnavList(st):[]).filter(x=>!x.h).map(x=>[x.n,x.e,x.c,x.d,x.it,x.k,x.u]);}
-const curl=([n,,,,,,u])=>u||url(n);
+/* menu se kabhi Shop PPTs (ready-ppts) na khule — har category / item apna page kholta hai */
+const noShop=l=>l&&!/^(\/|https?:\/\/(www\.)?pptstore\.in\/)?ready-ppts\.html/i.test(l)?l:"";
+const gurl=(n,k)=>k==="states"?"state-books.html":"state-books.html?"+new URLSearchParams({g:n});
+const curl=([n,,,,,k,u])=>noShop(u)||(k==="states"?"state-books.html":"state-board.html?"+new URLSearchParams({s:n+" › "+n}));
 function draw(){row.innerHTML=CATS.map(([n,e,c,d,it,k,u],i)=>it.length
  ?`<button type="button" class="cn-b" style="--c:${c}" data-i="${i}" aria-expanded="false" aria-haspopup="true"><span class="e">${esc(e)}</span>${esc(n)}</button>`
  :`<a class="cn-b" style="--c:${c}" href="${esc(curl(CATS[i]))}" data-ui="cat_${esc(n)}"><span class="e">${esc(e)}</span>${esc(n)}</a>`).join("");}
@@ -3405,14 +3408,14 @@ let cur=-1,tm,tc;const SUB=["Syllabus","Book & Answers","Previous Year Questions
 function list(i,q){const [n,,,,it,kind]=CATS[i],k=q.trim().toLowerCase();
  const f=it.map(x=>catnavSplit(x)).filter(([x])=>!k||x.toLowerCase().includes(k));
  if(!f.length)return `<div class="cn-none">Kuch nahi mila "${esc(q)}" ke liye.</div>`;
- if(kind==="states")return f.map(([x,lk])=>`<div class="cn-st"><a class="cn-sth" href="${esc(lk||"state-board.html?s="+encodeURIComponent(x))}" data-ui="cat_state"><span>${esc(x)}</span><svg class="i cn-ar"><use href="#i-right"/></svg></a></div>`).join("");
+ if(kind==="states")return f.map(([x,lk])=>`<div class="cn-st"><a class="cn-sth" href="${esc(noShop(lk)||"state-board.html?s="+encodeURIComponent(x))}" data-ui="cat_state"><span>${esc(x)}</span><svg class="i cn-ar"><use href="#i-right"/></svg></a></div>`).join("");
  return f.map(([x,lk])=>{let h=esc(x);if(k){const j=x.toLowerCase().indexOf(k);h=esc(x.slice(0,j))+"<mark>"+esc(x.slice(j,j+k.length))+"</mark>"+esc(x.slice(j+k.length));}
-  return `<a href="${esc(lk||("ready-ppts.html?"+new URLSearchParams({m:catnavKey(n,x),t:n+" › "+x,q:n+" "+x})))}" data-ui="cat_item"><span>${h}</span></a>`}).join("");}
+  return `<a href="${esc(noShop(lk)||("state-board.html?"+new URLSearchParams({s:n+" › "+x})))}" data-ui="cat_item"><span>${h}</span></a>`}).join("");}
 let opT=0;function open(i){if(cur===i||!CATS[i])return;cur=i;opT=Date.now();(innerWidth<=720?document.body:nav).appendChild(pan);const [n,e,c,d,it,kind]=CATS[i];
  row.querySelectorAll(".cn-b").forEach(b=>b.setAttribute("aria-expanded",b.dataset.i==i));
  pan.style.setProperty("--c",c);
  pan.innerHTML=`<div class="cn-box${kind==="states"?" cn-states":""}"><div class="cn-hd"><span class="cn-ic">${esc(e)}</span><div><h3>${esc(n)}<span class="ct">${it.length}</span></h3><p>${esc(d)}</p></div>
- <div class="cn-tools"><label class="cn-q"><svg class="i"><use href="#i-search"/></svg><input type="search" placeholder="${esc(n)} me dhoondhein…" aria-label="Search"></label><a class="cn-all" href="${esc(CATS[i][6]||(kind==="states"?"state-books.html":url(n)))}">View all</a><button type="button" class="cn-x" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div></div>
+ <div class="cn-tools"><label class="cn-q"><svg class="i"><use href="#i-search"/></svg><input type="search" placeholder="${esc(n)} me dhoondhein…" aria-label="Search"></label><a class="cn-all" href="${esc(noShop(CATS[i][6])||gurl(n,kind))}">View all</a><button type="button" class="cn-x" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div></div>
  <div class="cn-list">${list(i,"")}</div></div>`;
  pan.classList.add("open");dim.classList.add("open");
  const inp=pan.querySelector("input");inp.oninput=()=>pan.querySelector(".cn-list").innerHTML=list(i,inp.value);

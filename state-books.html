@@ -87,8 +87,8 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
     <a class="back" href="index.html">← Home</a>
   </div>
   <section class="hero">
-    <div class="crumb"><a href="index.html">Home</a>›<b>State Books</b></div>
-    <div class="hrow"><span class="hic">🗺️</span><div><h1>State Books</h1></div></div>
+    <div class="crumb"><a href="index.html">Home</a>›<b id="crG">State Books</b></div>
+    <div class="hrow"><span class="hic" id="hic">🗺️</span><div><h1 id="h1">State Books</h1></div></div>
   </section>
   <div class="bar">
     <span class="cnt" id="cnt"></span>
@@ -96,19 +96,26 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
   </div>
   <div class="grid" id="grid"></div>
 </div>
+<script src="js/catnav.js"></script>
 <script>
 (function(){
-const STATES=["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
+/* ?g=CBSE → us menu category ke saare items; warna State Books */
+const G=(new URLSearchParams(location.search).get("g")||"").replace(/[<>"]/g,"").trim().slice(0,80);
+let CAT=null;try{const st=(JSON.parse(localStorage.getItem("la_data")||"null")||{}).settings||{},L=window.catnavList?catnavList(st):[];CAT=G?L.find(x=>x.n===G&&x.k!=="states"):L.find(x=>x.k==="states");}catch(e){}
+const STATES0=["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
+const STATES=CAT&&CAT.it.length?CAT.it.map(x=>catnavSplit(x)[0]).filter(Boolean):G?[G]:STATES0;
+const lnk=x=>"state-board.html?"+new URLSearchParams({s:G?G+" › "+x:x});
+if(G){document.getElementById("crG").textContent=document.getElementById("h1").textContent=G;document.getElementById("hic").textContent=(CAT&&CAT.e)||"📁";document.title=G+" — PPT Store";document.getElementById("q").placeholder=G+" me dhoondhein…";}
 const IC={"Bihar":"🛕","UP":"🕌","Andhra Pradesh":"🌶️","Chhattisgarh":"🌳","West Bengal":"🐅","Gujarat":"🦁","Karnataka":"🐘","Kerala":"🌴","Madhya Pradesh":"🐆","Haryana":"🌾","Maharashtra":"🏛️","Punjab":"🌻","Rajasthan":"🐪","Tamilnadu":"🐚","Jharkhand":"⛏️","Telangana":"🏰","CISCE":"🎓","NIOS":"📚","Odisha":"☸️","Assam":"🍵","Jammu & Kashmir":"🏔️"};
 const PAL=[["#f97316","#c2410c"],["#8b2cff","#5b21b6"],["#0ea5e9","#0369a1"],["#16a34a","#15803d"],["#db2777","#9d174d"],["#ca8a04","#a16207"],["#0d9488","#0f766e"],["#4f46e5","#3730a3"]];
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 const ab=x=>{const w=x.replace("&","").split(/\s+/).filter(Boolean);return (w.length>1?w[0][0]+w[1][0]:x.slice(0,2)).toUpperCase();};
 const g=document.getElementById("grid"),q=document.getElementById("q"),cnt=document.getElementById("cnt");
 function render(){const k=q.value.trim().toLowerCase(),f=STATES.filter(x=>!k||x.toLowerCase().includes(k));
- cnt.innerHTML=`<b>${f.length}</b> state boards`;
+ cnt.innerHTML=`<b>${f.length}</b> ${G?"items":"state boards"}`;
  g.innerHTML=f.length?f.map((x,i)=>{const [a1,a2]=PAL[STATES.indexOf(x)%PAL.length];
-  return `<a class="st" href="state-board.html?s=${encodeURIComponent(x)}" style="--a1:${a1};--a2:${a2};animation-delay:${i*25}ms" data-ui="state_all"><span class="ab">${IC[x]||"🏫"}<i>${esc(ab(x))}</i></span><div><b>${esc(x)}</b><small>Syllabus · Books · PYQ · Papers</small></div><span class="go">›</span></a>`}).join("")
-  :`<div class="none">"${esc(q.value)}" naam ka board nahi mila.</div>`;}
+  return `<a class="st" href="${esc(lnk(x))}" style="--a1:${a1};--a2:${a2};animation-delay:${i*25}ms" data-ui="state_all"><span class="ab">${G?(CAT&&CAT.e)||"📁":IC[x]||"🏫"}<i>${esc(ab(x))}</i></span><div><b>${esc(x)}</b><small>${G?"Files · PDF":"Syllabus · Books · PYQ · Papers"}</small></div><span class="go">›</span></a>`}).join("")
+  :`<div class="none">"${esc(q.value)}" nahi mila.</div>`;}
 q.oninput=render;render();
 })();
 </script>
