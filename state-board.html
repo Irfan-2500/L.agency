@@ -218,10 +218,12 @@ function renderDirect(){
  const F=window.STATE_FILES||{},rec=F[dKey(s.st)]||{},has=FMT.filter(f=>rec[{PDF:"pdf",Word:"word",PPT:"ppt"}[f[0]]]);
  const more=Object.keys(F).some(k=>k.startsWith(s.st+"|")&&k!==dKey(s.st));
  let el=$("dct");if(!el){el=document.createElement("div");el.id="dct";el.className="list";el.style.margin="14px 0";document.querySelector(".flt").before(el);}
- el.hidden=!has.length;
- el.innerHTML=has.length?`<div class="it" style="--sc:#e5484d"><span class="si">📄</span><div class="nm"><b>${esc(sbLabel(s.st))}</b></div><div class="fs">${has.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:DIRECT,c:0,m:"-",sub:"-",f:f[0]})}" title="${esc(sbLabel(s.st))} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`:"";
+ /* menu item (NCERT, CBSE…) me abhi kuch nahi laga → class / subject ki jagah seedha "jaldi aa raha hai" */
+ const empty=GRP&&!has.length&&!more;
+ el.hidden=!has.length&&!empty;
+ el.innerHTML=empty?`<div class="it" style="--sc:#f97316"><span class="si">📄</span><div class="nm"><b>${esc(sbLabel(s.st))}</b><small style="display:block;color:var(--muted);font-size:.78rem;font-weight:600">Jaldi aa raha hai — abhi file upload nahi hui</small></div></div>`:has.length?`<div class="it" style="--sc:#e5484d"><span class="si">📄</span><div class="nm"><b>${esc(sbLabel(s.st))}</b></div><div class="fs">${has.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:DIRECT,c:0,m:"-",sub:"-",f:f[0]})}" title="${esc(sbLabel(s.st))} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`:"";
  /* sirf seedhi file hai → class / subject wala hissa chhupao */
- const only=has.length&&!more;
+ const only=(has.length&&!more)||empty;
  [".flt",".lh","#list","#pm"].forEach(q=>{const x=document.querySelector(q);if(x)x.style.display=only?"none":"";});
  return only;
 }
