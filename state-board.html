@@ -214,16 +214,25 @@ const CG=[["Primary",1,5],["Middle",6,8],["High School",9,10],["Senior",11,12]];
 $("cls").innerHTML=CG.map(([n,a,z])=>`<div class="cg"><span>${n.replace(" School","<i> School</i>")}</span><div>${Array.from({length:z-a+1},(_,i)=>`<button type="button" class="cl" data-v="${a+i}" title="Class ${a+i}" aria-label="Class ${a+i}">${a+i}</button>`).join("")}</div></div>`).join("");
 const icon=([k,g,l])=>`<svg viewBox="0 0 34 40"><path d="M4 0h18l12 12v24a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="url(#${g})"/><use href="#fold"/><text x="15" y="30" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-weight="800" font-size="${l.length>1?9:15}">${l}</text></svg>`;
 const DIRECT="Seedha file",dKey=st=>[st,DIRECT,0,"-","-"].join("|");
+/* menu item (NCERT, CBSE…): class / subject chooser nahi — jo file upload hui hai wahi seedhi dikhao.
+   State Books (Bihar, UP…) me pehle jaisa: seedhi file ho to card, warna class / subject wala hissa */
 function renderDirect(){
- const F=window.STATE_FILES||{},rec=F[dKey(s.st)]||{},has=FMT.filter(f=>rec[{PDF:"pdf",Word:"word",PPT:"ppt"}[f[0]]]);
- const more=Object.keys(F).some(k=>k.startsWith(s.st+"|")&&k!==dKey(s.st));
+ const F=window.STATE_FILES||{},FK={PDF:"pdf",Word:"word",PPT:"ppt"},lbl=sbLabel(s.st);
+ const card=(name,href,fm,sc)=>`<div class="it" style="--sc:${sc}"><span class="si">📄</span><div class="nm"><b>${esc(name)}</b></div><div class="fs">${fm.map(f=>`<a class="f"${NEWTAB} href="${href(f)}" title="${esc(name)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`;
+ const link=(name,href,sc,sm)=>`<a class="it ch" style="--sc:${sc}" href="${href}" data-ui="state_chapters"><span class="si">📄</span><div class="nm"><b>${esc(name)}</b>${sm?`<small>${esc(sm)}</small>`:""}</div><span class="go"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span></a>`;
+ const keys=Object.keys(F).filter(k=>k.startsWith(s.st+"|")).sort((x,y)=>(x===dKey(s.st)?-1:y===dKey(s.st)?1:x.localeCompare(y,undefined,{numeric:true})));
+ const rows=[];
+ keys.forEach(k=>{const r=F[k]||{},p=k.split("|"),fm=FMT.filter(f=>r[FK[f[0]]]),dir=k===dKey(s.st);
+  const nm=dir||(!GRP?false:keys.length===1)?lbl:`${p[4]} · Class ${p[2]} · ${p[1]}${p[5]?" "+p[5]:""} (${p[3]})`;
+  if(fm.length)rows.push(card(nm,f=>"view.html?"+new URLSearchParams(dir?{s:s.st,t:DIRECT,c:0,m:"-",sub:"-",f:f[0]}:Object.assign({s:s.st,t:p[1],c:p[2],m:p[3],sub:p[4],f:f[0]},p[5]?{y:p[5]}:{},nm===lbl?{one:1}:{})),fm,"#e5484d"));
+  else if(GRP&&(r.chapters||[]).length)rows.push(link(nm,"chapters.html?"+new URLSearchParams({s:s.st,t:p[1],c:p[2],m:p[3],sub:p[4]}),"#2563eb",r.chapters.length+" chapters"));
+  else if(GRP&&(r.sets||[]).length)rows.push(link(nm,"papers.html?"+new URLSearchParams({s:s.st,c:p[2],m:p[3],sub:p[4],y:p[5]||""}),"#2563eb",""));});
+ const hasD=FMT.some(f=>(F[dKey(s.st)]||{})[FK[f[0]]]),more=keys.some(k=>k!==dKey(s.st));
  let el=$("dct");if(!el){el=document.createElement("div");el.id="dct";el.className="list";el.style.margin="14px 0";document.querySelector(".flt").before(el);}
- /* menu item (NCERT, CBSE…) me abhi kuch nahi laga → class / subject ki jagah seedha "jaldi aa raha hai" */
- const empty=GRP&&!has.length&&!more;
- el.hidden=!has.length&&!empty;
- el.innerHTML=empty?`<div class="it" style="--sc:#f97316"><span class="si">📄</span><div class="nm"><b>${esc(sbLabel(s.st))}</b><small style="display:block;color:var(--muted);font-size:.78rem;font-weight:600">Jaldi aa raha hai — abhi file upload nahi hui</small></div></div>`:has.length?`<div class="it" style="--sc:#e5484d"><span class="si">📄</span><div class="nm"><b>${esc(sbLabel(s.st))}</b></div><div class="fs">${has.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:DIRECT,c:0,m:"-",sub:"-",f:f[0]})}" title="${esc(sbLabel(s.st))} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`:"";
- /* sirf seedhi file hai → class / subject wala hissa chhupao */
- const only=(has.length&&!more)||empty;
+ /* State Books: sirf seedhi file ka card; menu item: saari files, aur kuch upload nahi to "jaldi aa raha hai" */
+ const html=GRP?(rows.join("")||`<div class="it" style="--sc:#f97316"><span class="si">📄</span><div class="nm"><b>${esc(lbl)}</b><small style="display:block;color:var(--muted);font-size:.78rem;font-weight:600">Jaldi aa raha hai — abhi file upload nahi hui</small></div></div>`):hasD?rows[0]:"";
+ el.hidden=!html;el.innerHTML=html;
+ const only=GRP||(hasD&&!more);
  [".flt",".lh","#list","#pm"].forEach(q=>{const x=document.querySelector(q);if(x)x.style.display=only?"none":"";});
  return only;
 }
