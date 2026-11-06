@@ -218,7 +218,7 @@ const DIRECT="Seedha file",dKey=st=>[st,DIRECT,0,"-","-"].join("|");
    State Books (Bihar, UP…) me pehle jaisa: seedhi file ho to card, warna class / subject wala hissa */
 function renderDirect(){
  const F=window.STATE_FILES||{},FK={PDF:"pdf",Word:"word",PPT:"ppt"},lbl=sbLabel(s.st);
- const card=(name,href,fm,sc)=>`<div class="it" style="--sc:${sc}"><span class="si">📄</span><div class="nm"><b>${esc(name)}</b></div><div class="fs">${fm.map(f=>`<a class="f"${NEWTAB} href="${href(f)}" title="${esc(name)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`;
+ const card=(name,href,fm,sc)=>`<div class="it" style="--sc:${sc};cursor:pointer"><span class="si">📄</span><div class="nm"><b>${esc(name)}</b></div><div class="fs">${fm.map(f=>`<a class="f"${NEWTAB} href="${href(f)}" title="${esc(name)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`;
  const link=(name,href,sc,sm)=>`<a class="it ch" style="--sc:${sc}" href="${href}" data-ui="state_chapters"><span class="si">📄</span><div class="nm"><b>${esc(name)}</b>${sm?`<small>${esc(sm)}</small>`:""}</div><span class="go"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span></a>`;
  const keys=Object.keys(F).filter(k=>k.startsWith(s.st+"|")).sort((x,y)=>(x===dKey(s.st)?-1:y===dKey(s.st)?1:x.localeCompare(y,undefined,{numeric:true})));
  const rows=[];
@@ -228,7 +228,9 @@ function renderDirect(){
   else if(GRP&&(r.chapters||[]).length)rows.push(link(nm,"chapters.html?"+new URLSearchParams({s:s.st,t:p[1],c:p[2],m:p[3],sub:p[4]}),"#2563eb",r.chapters.length+" chapters"));
   else if(GRP&&(r.sets||[]).length)rows.push(link(nm,"papers.html?"+new URLSearchParams({s:s.st,c:p[2],m:p[3],sub:p[4],y:p[5]||""}),"#2563eb",""));});
  const hasD=FMT.some(f=>(F[dKey(s.st)]||{})[FK[f[0]]]),more=keys.some(k=>k!==dKey(s.st));
- let el=$("dct");if(!el){el=document.createElement("div");el.id="dct";el.className="list";el.style.margin="14px 0";document.querySelector(".flt").before(el);}
+ let el=$("dct");if(!el){el=document.createElement("div");el.id="dct";el.className="list";el.style.margin="14px 0";document.querySelector(".flt").before(el);
+  /* poore box me kahin bhi click → pehli file (PDF) khule */
+  el.onclick=e=>{if(e.target.closest("a"))return;const c=e.target.closest(".it"),f=c&&c.querySelector("a.f");if(f)f.click();};}
  /* State Books: sirf seedhi file ka card; menu item: saari files, aur kuch upload nahi to "jaldi aa raha hai" */
  const html=GRP?(rows.join("")||`<div class="it" style="--sc:#f97316"><span class="si">📄</span><div class="nm"><b>${esc(lbl)}</b><small style="display:block;color:var(--muted);font-size:.78rem;font-weight:600">Jaldi aa raha hai — abhi file upload nahi hui</small></div></div>`):hasD?rows[0]:"";
  el.hidden=!html;el.innerHTML=html;
