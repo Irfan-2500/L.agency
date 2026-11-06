@@ -23,7 +23,7 @@ const ALIAS = { "Bihar":"Bihar Board (BSEB)", "UP":"UP Board (UPMSP)", "Andhra P
   "Maharashtra":"Maharashtra Board (MSBSHSE)", "Punjab":"Punjab Board (PSEB)", "Rajasthan":"Rajasthan Board (RBSE)", "Tamilnadu":"Tamil Nadu Board (TN Samacheer)",
   "Jharkhand":"Jharkhand Board (JAC)", "Telangana":"Telangana Board (TS BSE)", "CISCE":"CISCE (ICSE / ISC)", "NIOS":"NIOS", "Odisha":"Odisha Board (BSE / CHSE)",
   "Assam":"Assam Board (SEBA / AHSEC)", "Jammu & Kashmir":"JK Board (JKBOSE)" };
-const STATIC = [["", "1.0"], ["ready-ppts.html", "0.9"], ["study-material", "0.9"], ["state-books.html", "0.8"], ["order.html", "0.8"], ["educational-ppt.html", "0.8"], ["ready-made-ppt.html", "0.8"],
+const STATIC = [["", "1.0"], ["cbse-date-sheet-2027.html", "0.9"], ["ready-ppts.html", "0.9"], ["study-material", "0.9"], ["state-books.html", "0.8"], ["order.html", "0.8"], ["educational-ppt.html", "0.8"], ["ready-made-ppt.html", "0.8"],
   ["custom-ppt-design.html", "0.8"], ["student-ppt.html", "0.8"], ["study-notes-pdf.html", "0.8"], ["cbse-icse-state-board-ppt.html", "0.8"], ["lecture-recording-video-editing.html", "0.7"],
   ["about.html", "0.5"], ["service.html", "0.5"], ["contact.html", "0.4"], ["privacy.html", "0.2"], ["terms.html", "0.2"], ["refund.html", "0.2"], ["delivery.html", "0.2"]];
 
@@ -66,6 +66,11 @@ const sbLink = (k, v) => {   // website ka asli page jahan file khulti hai
   const f = v && (v.pdf ? "PDF" : v.word ? "Word" : v.ppt ? "PPT" : "PDF");
   return "/view.html?" + qs({ ...base, f });
 };
+/* Menu item ki apni bani hui page ho to wahi khulti hai */
+const ITEM_PAGE = { "/topic/cbse/cbse-exam-date-sheet-2027": "/cbse-date-sheet-2027.html" };
+/* Admin → menu item me upload hui files (key "CBSE › CBSE Exam Date Sheet 2027|...") */
+const itemFiles = (D, cat, item) => Object.keys(D.files).filter(k => sbParts(k).st === cat + " › " + item);
+const itemCount = (D, cat, item) => productsFor(D, cat, item).length + itemFiles(D, cat, item).length;
 const stateOf = s => STATES.find(x => slug(x) === s);
 const productsFor = (D, cat, item) => { const k = catKey(cat, item); return D.products.filter(p => arr(p.board).includes(k)); };
 const img = p => { const a = arr(p.previews).filter(u => /^https:\/\//.test(u) && u !== CARD_MARK); return a[0] || ""; };
@@ -170,27 +175,30 @@ ${related.length ? `<h2>Related study material</h2>${pptList(related)}` : ""}`;
 function topicPage(D, cs, is) {
   const c = D.cats.find(x => slug(x.n) === cs); if (!c) return null;
   const item = c.it.find(x => slug(x) === is); if (!item) return null;
-  const ps = productsFor(D, c.n, item), url = `/topic/${cs}/${is}`;
+  const url = `/topic/${cs}/${is}`;
+  if (ITEM_PAGE[url]) return { redirect: ITEM_PAGE[url] };
+  const ps = productsFor(D, c.n, item), fk = itemFiles(D, c.n, item), n = ps.length + fk.length;
   const name = item.toLowerCase().includes(c.n.toLowerCase()) ? item : `${c.n} ${item}`;
-  const title = fit(name, " – PDF, Notes & PPT Download");
-  const desc = clip(`${name}: ${ps.length ? ps.length + " files – " + ps.slice(0, 3).map(p => p.title).join(", ") + ". " : ""}Download PDF, notes and PPT for ${c.n} preparation, in Hindi & English. ${c.d}`, 158);
+  const title = fit(name, fk.length && !ps.length ? " – PDF Download" : " – PDF, Notes & PPT Download");
+  const desc = clip(`${name}: ${n ? n + " files – " + ps.slice(0, 3).map(p => p.title).join(", ") + ". " : ""}Download PDF, notes and PPT for ${c.n} preparation, in Hindi & English. ${c.d}`, 158);
   const crumb = [["Home", "/"], ["Study Material", "/study-material"], [c.n, `/topic/${cs}`], [item]];
   const body = `${crumbs(crumb)}<h1>${E(name)}</h1><p class="sub">${E(c.d || "Study material")} · PDF, Notes &amp; PPT</p>
-${ps.length ? pptList(ps) : `<p class="txt">Files for ${E(name)} are being added. Need it now? <a href="/order.html">Request a custom PPT</a> or message us on WhatsApp.</p>`}
+${fk.length ? `<div class="btns"><a class="btn p" href="/state-board.html?${E(qs({ s: c.n + " › " + item }))}">View ${E(name)} PDF</a></div>` : ""}
+${ps.length ? pptList(ps) : fk.length ? "" : `<p class="txt">Files for ${E(name)} are being added. Need it now? <a href="/order.html">Request a custom PPT</a> or message us on WhatsApp.</p>`}
 <div class="btns"><a class="btn p" href="/ready-ppts.html?${E(qs({ m: catKey(c.n, item), t: item }))}">Open in store</a></div>
 <h2>More in ${E(c.n)}</h2><div class="chips">${c.it.filter(x => x !== item).map(x => `<a href="/topic/${cs}/${slug(x)}">${E(x)}</a>`).join("")}</div>`;
-  return page({ url, title, desc, body, ld: [crumbLD(crumb.map(([n, u]) => [n, u || url]))], noindex: !ps.length });
+  return page({ url, title, desc, body, ld: [crumbLD(crumb.map(([n, u]) => [n, u || url]))], noindex: !n });
 }
 
 function catPage(D, cs) {
   const c = D.cats.find(x => slug(x.n) === cs); if (!c) return null;
   if (c.k === "states") return { redirect: "/study-material#boards" };
-  const url = `/topic/${cs}`, n = D.products.filter(p => c.it.some(it => arr(p.board).includes(catKey(c.n, it)))).length;
+  const url = `/topic/${cs}`, n = D.products.filter(p => c.it.some(it => arr(p.board).includes(catKey(c.n, it)))).length + c.it.reduce((a, it) => a + itemFiles(D, c.n, it).length, 0);
   const title = fit(`${c.n} Study Material`, " – Notes, PYQ, PDF & PPT");
   const desc = clip(`${c.n} study material: ${c.it.slice(0, 8).join(", ")}. PDF, notes and PPT in Hindi & English.`, 158);
   const crumb = [["Home", "/"], ["Study Material", "/study-material"], [c.n]];
   const body = `${crumbs(crumb)}<h1>${E(c.n)} Study Material</h1><p class="sub">${E(c.d)}${n ? " · " + n + " files" : ""}</p>
-<ul class="list">${c.it.map(it => { const k = productsFor(D, c.n, it).length; return `<li><a href="/topic/${cs}/${slug(it)}"><b>${E(it)}</b><small>${k ? k + " files" : "Coming soon"}</small></a></li>`; }).join("")}</ul>`;
+<ul class="list">${c.it.map(it => { const k = itemCount(D, c.n, it), h = ITEM_PAGE[`/topic/${cs}/${slug(it)}`] || `/topic/${cs}/${slug(it)}`; return `<li><a href="${E(h)}"><b>${E(it)}</b><small>${k ? k + " files" : "Coming soon"}</small></a></li>`; }).join("")}</ul>`;
   return page({ url, title, desc, body, ld: [crumbLD(crumb.map(([n, u]) => [n, u || url]))], noindex: !n });
 }
 
@@ -237,8 +245,9 @@ function hubPage(D) {
   const recent = D.products.slice().sort((a, b) => (b.added || 0) - (a.added || 0)).slice(0, 24);
   const body = `${crumbs([["Home", "/"], ["Study Material"]])}<h1>Study Material — Notes, PYQ, Papers &amp; PPT</h1>
 <p class="sub">Every board and exam in one place · Hindi &amp; English</p>
+<div class="btns"><a class="btn p" href="/cbse-date-sheet-2027.html">CBSE Date Sheet 2027 – Class 10 &amp; 12</a></div>
 <h2 id="boards">State Boards</h2><div class="chips">${STATES.map(x => `<a href="/board/${slug(x)}">${E(ALIAS[x] || x)}</a>`).join("")}</div>
-${D.cats.filter(c => c.k !== "states" && c.it.length).map(c => `<h2>${E(c.n)}</h2><div class="chips">${c.it.map(it => `<a href="/topic/${slug(c.n)}/${slug(it)}">${E(it)}</a>`).join("")}</div>`).join("")}
+${D.cats.filter(c => c.k !== "states" && c.it.length).map(c => `<h2>${E(c.n)}</h2><div class="chips">${c.it.map(it => { const u = `/topic/${slug(c.n)}/${slug(it)}`; return `<a href="${E(ITEM_PAGE[u] || u)}">${E(it)}</a>`; }).join("")}</div>`).join("")}
 ${recent.length ? `<h2>Latest files</h2>${pptList(recent)}` : ""}`;
   return page({ url, title, desc, body, ld: [crumbLD([["Home", "/"], ["Study Material", url]])] });
 }
@@ -248,8 +257,8 @@ function sitemap(D) {
   const add = (loc, pr, lm) => u.push(`<url><loc>${E(SITE + "/" + loc.replace(/^\//, ""))}</loc><lastmod>${lm || today}</lastmod><priority>${pr}</priority></url>`);
   STATIC.forEach(([l, p]) => add(l, p));
   STATES.forEach(st => { if (Object.keys(D.files).some(k => sbParts(k).st === st)) add("/board/" + slug(st), "0.8"); });
-  Object.keys(D.files).forEach(k => add(sbUrl(k), "0.6"));
-  D.cats.forEach(c => { if (c.k === "states") return; let any = 0; c.it.forEach(it => { if (productsFor(D, c.n, it).length) { any = 1; add(`/topic/${slug(c.n)}/${slug(it)}`, "0.7"); } }); if (any) add(`/topic/${slug(c.n)}`, "0.7"); });
+  Object.keys(D.files).filter(k => !sbParts(k).st.includes(" › ")).forEach(k => add(sbUrl(k), "0.6"));
+  D.cats.forEach(c => { if (c.k === "states") return; let any = 0; c.it.forEach(it => { if (itemCount(D, c.n, it)) { any = 1; const u = `/topic/${slug(c.n)}/${slug(it)}`; if (!ITEM_PAGE[u]) add(u, "0.7"); } }); if (any) add(`/topic/${slug(c.n)}`, "0.7"); });
   D.products.forEach(p => add(pptUrl(p), "0.7", p.added ? new Date(p.added).toISOString().slice(0, 10) : ""));
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${u.join("\n")}\n</urlset>\n`;
 }
