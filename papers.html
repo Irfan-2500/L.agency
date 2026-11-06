@@ -115,7 +115,8 @@ const P={s:qs.get("s")||"Bihar",c:qs.get("c")||"10",m:qs.get("m")==="English"?"E
 let y=YEARS.includes(+qs.get("y"))?+qs.get("y"):LAST,sets=[];
 const T="Previous Year Questions",NEWTAB=window.self===window.top?' target="_blank" rel="noopener"':"";
 const board="state-board.html?"+new URLSearchParams({s:P.s,t:T,c:P.c,m:P.m});
-$("bk").href=board;$("crSt").href=board;$("crSt").textContent=P.s;
+$("bk").href=board;$("crSt").href=board;$("crSt").textContent=P.s.includes(" › ")?sbLabel(P.s):P.s;
+if(P.s.includes(" › ")){const g=document.querySelector('.crumb a[href="state-books.html"]');if(g){g.textContent=sbGroup(P.s);g.removeAttribute("href");}}
 $("hsub").textContent=`${sbLabel(P.s)} · Class ${P.c} · ${P.m} Medium`;
 $("yb").innerHTML=YEARS.map(v=>`<a href="?${new URLSearchParams({...P,y:v})}" data-y="${v}">${v}</a>`).join("");
 function render(){
