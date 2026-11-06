@@ -1125,6 +1125,7 @@ function seoList(){
 }
 /* ---------- START ---------- */
 (async function boot(){
+  const QS0 = location.search;   /* pehle hi yaad rakho — purani list dikhate waqt URL saaf ho jata hai, phir menu wala filter kho jata tha */
   /* Pichhli baar ki PPT list turant dikhao (loader jaldi hate); nayi list peeche se aakar update ho jaayegi */
   try { const c = !window.claude && JSON.parse(localStorage.getItem("la_ppts") || "null");
     if (Array.isArray(c) && c.length) { PRODUCTS = c; setKind(NOTES, true); render(); window.PSLoader && PSLoader.hide(); } } catch(e) {}
@@ -1145,7 +1146,7 @@ function seoList(){
   } catch(e) {}
   if (!API && !PRODUCTS.length) PRODUCTS = DEMO;
   if (!API && PRODUCTS === DEMO) try { const v = await (await fetch("api/pay-config", { cache:"no-store" })).json(); if (v.ok && v.payments) VPAY = PAY = true; } catch(e) {}
-  const qs = new URLSearchParams(location.search), q = qs.get("q"), mk = qs.get("m");
+  const qs = new URLSearchParams(QS0), q = qs.get("q"), mk = qs.get("m");
   const tagged = mk ? PRODUCTS.filter(p => arr(p.board).includes(mk)) : [];
   if (tagged.length) { st.menu = mk; st.menuT = qs.get("t") || ""; NOTES = tagged.every(isNote); }   /* home page Category menu se aaye: sirf us item ki files */
   else if (q) { st.q = q; $("#q").value = q; }
