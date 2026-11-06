@@ -213,6 +213,18 @@ $("tabs").innerHTML=TYPES.map(([t,e])=>`<button type="button" class="tab" data-v
 const CG=[["Primary",1,5],["Middle",6,8],["High School",9,10],["Senior",11,12]];
 $("cls").innerHTML=CG.map(([n,a,z])=>`<div class="cg"><span>${n.replace(" School","<i> School</i>")}</span><div>${Array.from({length:z-a+1},(_,i)=>`<button type="button" class="cl" data-v="${a+i}" title="Class ${a+i}" aria-label="Class ${a+i}">${a+i}</button>`).join("")}</div></div>`).join("");
 const icon=([k,g,l])=>`<svg viewBox="0 0 34 40"><path d="M4 0h18l12 12v24a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="url(#${g})"/><use href="#fold"/><text x="15" y="30" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-weight="800" font-size="${l.length>1?9:15}">${l}</text></svg>`;
+const DIRECT="Seedha file",dKey=st=>[st,DIRECT,0,"-","-"].join("|");
+function renderDirect(){
+ const F=window.STATE_FILES||{},rec=F[dKey(s.st)]||{},has=FMT.filter(f=>rec[{PDF:"pdf",Word:"word",PPT:"ppt"}[f[0]]]);
+ const more=Object.keys(F).some(k=>k.startsWith(s.st+"|")&&k!==dKey(s.st));
+ let el=$("dct");if(!el){el=document.createElement("div");el.id="dct";el.className="list";el.style.marginBottom="14px";document.querySelector(".flt").before(el);}
+ el.hidden=!has.length;
+ el.innerHTML=has.length?`<div class="it" style="--sc:#e5484d"><span class="si">📄</span><div class="nm"><b>${esc(sbLabel(s.st))}</b></div><div class="fs">${has.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:DIRECT,c:0,m:"-",sub:"-",f:f[0]})}" title="${esc(sbLabel(s.st))} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`:"";
+ /* sirf seedhi file hai → class / subject wala hissa chhupao */
+ const only=has.length&&!more;
+ [".flt",".lh","#list","#pm"].forEach(q=>{const x=document.querySelector(q);if(x)x.hidden=only;});
+ return only;
+}
 function render(){
  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===s.t));
  document.querySelectorAll(".cl").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.v===s.c));
@@ -236,6 +248,7 @@ function render(){
   return `<div class="it" style="--sc:${c};animation-delay:${i*35}ms"><span class="si">${e}</span><div class="nm"><b>${esc(x)}</b></div><div class="fs">${FMT.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m,sub:x,f:f[0]})}" title="${esc(x)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`}).join("")
   :`<div class="none">"${esc(s.q)}" naam ka subject nahi mila.</div>`;
  document.title=`${sbLabel(s.st)} ${s.t} Class ${s.c} — PPT Store`;
+ if(renderDirect())document.title=`${sbLabel(s.st)} — PPT Store`;
  history.replaceState(null,"","?"+new URLSearchParams(Object.assign({s:s.st,t:s.t,c:s.c,m:s.m},s.t===PYQ&&s.pm==="ch"?{pm:"ch"}:{})));
 }
 $("tabs").onclick=e=>{const b=e.target.closest(".tab");if(b){s.t=b.dataset.v;render();}};

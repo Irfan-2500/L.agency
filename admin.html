@@ -2323,6 +2323,7 @@ const SB_SUBJ = c => c <= 5 ? ["English","Hindi","Maths","EVS","Computer","Gener
   : c <= 8 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science","Computer"]
   : c <= 10 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science"]
   : ["English","Hindi","Physics","Chemistry","Maths","Biology","Accountancy","Business Studies","Economics","History","Political Science","Geography","Computer Science"];
+const SB_DIRECT = "Seedha file";   // menu item ki ek seedhi file (Date Sheet, Syllabus…) — class / subject nahi
 const SB_PYQ = "Previous Year Questions", SB_CPYQ = "Chapter-wise PYQ", SB_CHT = ["Notes", SB_CPYQ];
 const SB_F = [["pdf", "PDF", ".pdf", "#e5484d"], ["word", "Word", ".doc,.docx", "#2b6cde"], ["ppt", "PPT", ".ppt,.pptx", "#e8590c"]];
 let SB = {}, SBP = [], SBR = null, SBDIRTY = false, SBQ = "", SBFOLDER = "#";
@@ -2330,7 +2331,7 @@ const SBUP = {};   // upload chal raha: "path|k" → %
 const SBS = { s: "Bihar", t: "Syllabus", c: 10, m: "Hindi", sub: "", y: 0 };
 const sbYears = () => { const d = new Date(), L = d.getMonth() >= 2 ? d.getFullYear() : d.getFullYear() - 1; return Array.from({ length: 10 }, (_, i) => L - i); };
 const sbKind = t => t === SB_PYQ ? "sets" : SB_CHT.includes(t) ? "chapters" : "one";
-const sbKey = (o = SBS) => [o.s, o.t, o.c, o.m, o.sub].join("|") + (o.t === SB_PYQ ? "|" + o.y : "");
+const sbKey = (o = SBS) => o.t === SB_DIRECT ? [o.s, SB_DIRECT, 0, "-", "-"].join("|") : [o.s, o.t, o.c, o.m, o.sub].join("|") + (o.t === SB_PYQ ? "|" + o.y : "");
 const sbBusy = () => Object.keys(SBUP).length > 0;
 function sbNorm(rec, kind) {
   rec = JSON.parse(JSON.stringify(rec || {}));
@@ -2352,6 +2353,7 @@ async function stateBooks() {
   SBP = p.ok ? (p.ppts || []).filter(x => !isNote(x)) : [];
   if (!SB_SUBJ(SBS.c).includes(SBS.sub)) SBS.sub = SB_SUBJ(SBS.c)[0];
   if (!sbStates().includes(SBS.s)) SBS.s = sbStates()[0];
+  if (!sbGrp() && SBS.t === SB_DIRECT) SBS.t = "Syllabus";
   if (!SBS.y) SBS.y = sbYears()[0];
   const opt = (l, v) => l.map(x => `<option${String(x) === String(v) ? " selected" : ""}>${esc(x)}</option>`).join("");
   V(head(TITLES.cfiles, `Home page ki category line (State Books, NCERT, CBSE, JEE…) ke har item ki files. <b>State Books</b>: syllabus, previous year papers (year + set), chapter-wise notes, model papers — PDF, Word, PPT.`,
@@ -2360,7 +2362,7 @@ async function stateBooks() {
     <div class="grid2 sbsel">
       ${cfSel()}
       <label class="f">${sbGrp() ? esc(sbGrp().n) + " — item" : "State / Board"}<select id="sbS">${sbOpt(SBS.s)}</select></label>
-      <label class="f">Category<select id="sbT">${opt(SB_T.filter(x => x !== SB_CPYQ), SBS.t === SB_CPYQ ? SB_PYQ : SBS.t)}</select></label>
+      <label class="f">Category<select id="sbT">${sbGrp() ? `<option value="${SB_DIRECT}"${SBS.t === SB_DIRECT ? " selected" : ""}>📄 Seedha file (bina class / subject)</option>` : ""}${opt(SB_T.filter(x => x !== SB_CPYQ), SBS.t === SB_CPYQ ? SB_PYQ : SBS.t)}</select></label>
       <label class="f" id="sbPmW">PYQ kaise<select id="sbPm"><option value="year">📅 Year-wise</option><option value="ch">📑 Chapter-wise</option></select></label>
       <label class="f">Class<select id="sbC">${opt([1,2,3,4,5,6,7,8,9,10,11,12], SBS.c)}</select></label>
       <label class="f">Medium<select id="sbM">${opt(["Hindi", "English"], SBS.m)}</select></label>
@@ -2395,7 +2397,7 @@ async function stateBooks() {
   $("#sbEd").addEventListener("change", sbInput);
   $("#sbList").onclick = e => { const b = e.target.closest("[data-k]"); if (!b) return;
     sbBlur(); if (SBDIRTY) sbSave(true, true);
-    const p = b.dataset.k.split("|"); Object.assign(SBS, { s: p[0], t: p[1], c: +p[2], m: p[3], sub: p[4], y: +p[5] || SBS.y }); sbLoad(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+    const p = b.dataset.k.split("|"); Object.assign(SBS, p[1] === SB_DIRECT ? { s: p[0], t: p[1] } : { s: p[0], t: p[1], c: +p[2], m: p[3], sub: p[4], y: +p[5] || SBS.y }); sbLoad(); window.scrollTo({ top: 0, behavior: "smooth" }); };
   $("#sbFile").onchange = sbPicked;
   sbLoad(); sbList();
 }
@@ -2403,6 +2405,7 @@ function sbFillSel() {
   $("#sbS").value = SBS.s; $("#sbT").value = SBS.t === SB_CPYQ ? SB_PYQ : SBS.t; $("#sbPm").value = SBS.t === SB_CPYQ ? "ch" : "year"; $("#sbPmW").hidden = SBS.t !== SB_PYQ && SBS.t !== SB_CPYQ; $("#sbC").value = SBS.c; $("#sbM").value = SBS.m; $("#sbY").value = SBS.y;
   $("#sbSub").innerHTML = SB_SUBJ(SBS.c).map(x => `<option${x === SBS.sub ? " selected" : ""}>${esc(x)}</option>`).join("");
   $("#sbYw").hidden = SBS.t !== SB_PYQ;
+  ["#sbC", "#sbM", "#sbSub"].forEach(id => $(id).closest("label").hidden = SBS.t === SB_DIRECT);
 }
 function sbLoad() {
   sbFillSel();
@@ -2425,11 +2428,11 @@ function sbSlots(o, path) {
 }
 function sbDraw() {
   const k = sbKind(SBS.t), key = sbKey(), saved = !!SB[key];
-  $("#sbEdT").textContent = `2️⃣ ${SBS.s} · Class ${SBS.c} · ${SBS.m} · ${SBS.sub} — ${SBS.t}${k === "sets" ? " " + SBS.y : ""}`;
+  $("#sbEdT").textContent = SBS.t === SB_DIRECT ? `2️⃣ ${SBS.s} — 📄 Seedha file` : `2️⃣ ${SBS.s} · Class ${SBS.c} · ${SBS.m} · ${SBS.sub} — ${SBS.t}${k === "sets" ? " " + SBS.y : ""}`;
   $("#sbOpen").href = sbSiteUrl(); $("#sbDel").hidden = !saved;
   $("#sbNote").innerHTML = SBDIRTY || SBSAVING ? "⏳ Save ho raha hai…" : saved ? "✓ Website par lagi hai · har badlav apne aap save hota hai" : "Abhi website par khaali hai · file lagate hi apne aap save ho jayegi";
   let h = "";
-  if (k === "one") h = `<p class="note" style="margin-bottom:10px">Is subject ki file lagayein (jo chahiye wahi — teeno zaroori nahi).</p>` + sbSlots(SBR, "");
+  if (k === "one") h = `<p class="note" style="margin-bottom:10px">${SBS.t === SB_DIRECT ? "Is item ki seedhi file lagayein — website par item kholte hi yahi dikhegi (class / subject nahi chunna)." : "Is subject ki file lagayein (jo chahiye wahi — teeno zaroori nahi)."}</p>` + sbSlots(SBR, "");
   else if (k === "sets") h = `<p class="note" style="margin-bottom:10px">${SBS.y} ke question paper — har set alag. Website par "Set 1, Set 2…" dikhte hain.</p>` +
     (SBR.sets.length ? SBR.sets.map((o, i) => `<div class="sbrow"><div class="sbh"><b class="no">Set ${i + 1}</b><span class="sp"></span><button type="button" class="btn sm danger" data-x="s${i}">🗑 Set hatayein</button></div>${sbSlots(o, "s" + i)}</div>`).join("") : `<div class="empty" style="padding:18px">Abhi koi set nahi.</div>`) +
     `<button type="button" class="btn" data-add="set" style="margin-top:10px">${ic("i-plus")} Set jodein</button>`;
@@ -2717,7 +2720,7 @@ function sbList() {
   const list = keys.filter(sbInGrp).filter(k => !q || k.toLowerCase().replace(/\|/g, " ").includes(q) || ("class " + k.split("|")[2]).includes(q));
   $("#sbCnt").textContent = list.length + " entries";
   $("#sbList").innerHTML = list.length ? list.map(k => { const p = k.split("|"), cur = k === sbKey();
-    return `<button type="button" class="sbit${cur ? " on" : ""}" data-k="${esc(k)}"><span class="tg">${esc(p[1])}${p[5] ? " " + esc(p[5]) : ""}</span><b>${esc(p[4])}</b><small>${esc(sbLbl(p[0]))} · Class ${esc(p[2])} · ${esc(p[3])}</small><em>${esc(sbSummary(k, SB[k]))}</em><span class="ed">✏️</span></button>`; }).join("")
+    return `<button type="button" class="sbit${cur ? " on" : ""}" data-k="${esc(k)}"><span class="tg">${esc(p[1])}${p[5] ? " " + esc(p[5]) : ""}</span><b>${esc(p[1] === SB_DIRECT ? sbLbl(p[0]) : p[4])}</b><small>${esc(sbLbl(p[0]))}${p[1] === SB_DIRECT ? "" : ` · Class ${esc(p[2])} · ${esc(p[3])}`}</small><em>${esc(sbSummary(k, SB[k]))}</em><span class="ed">✏️</span></button>`; }).join("")
     : `<div class="empty" style="padding:18px">${keys.length ? "Kuch nahi mila" : "Abhi koi file nahi lagi. Upar se chuniye aur file lagayein."}</div>`;
 }
 function notes() { KIND = "notes"; return pptView(); }
