@@ -2,7 +2,11 @@
    js/state-files.js ki entries + Admin Panel → State Books ki entries (admin wali jeetti hain).
    Pichhli baar ka data browser me yaad rehta hai, isliye page turant khulta hai; naya data aate hi "sbdata" event. */
 (function(){
- var W = window, U = String((W.LA_CONFIG || {}).orderUrl || "").trim(), BASE = Object.assign({}, W.STATE_FILES || {});
+ var W = window;
+ /* jagah ka naam: State Books me "Bihar" → "Bihar Board"; baaki menu (NCERT, CBSE…) me "NCERT › NCERT Solutions" → "NCERT Solutions" */
+ W.sbLabel = function(s){ s = String(s || ""); var i = s.indexOf(" › "); return i < 0 ? s + " Board" : s.slice(i + 3); };
+ W.sbGroup = function(s){ s = String(s || ""); var i = s.indexOf(" › "); return i < 0 ? "State Books" : s.slice(0, i); };
+ var U = String((W.LA_CONFIG || {}).orderUrl || "").trim(), BASE = Object.assign({}, W.STATE_FILES || {});
  function use(m){ W.STATE_FILES = Object.assign({}, BASE, m || {}); }
  var old = null; try { old = JSON.parse(localStorage.getItem("la_sb") || "null"); } catch (e) {}
  use(old && old.files);

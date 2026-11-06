@@ -116,11 +116,11 @@ let y=YEARS.includes(+qs.get("y"))?+qs.get("y"):LAST,sets=[];
 const T="Previous Year Questions",NEWTAB=window.self===window.top?' target="_blank" rel="noopener"':"";
 const board="state-board.html?"+new URLSearchParams({s:P.s,t:T,c:P.c,m:P.m});
 $("bk").href=board;$("crSt").href=board;$("crSt").textContent=P.s;
-$("hsub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium`;
+$("hsub").textContent=`${sbLabel(P.s)} · Class ${P.c} · ${P.m} Medium`;
 $("yb").innerHTML=YEARS.map(v=>`<a href="?${new URLSearchParams({...P,y:v})}" data-y="${v}">${v}</a>`).join("");
 function render(){
  $("ttl").textContent=`${P.sub} — ${y} Question Paper`;
- document.title=`${P.s} Board Class ${P.c} ${P.sub} ${y} Question Paper — PPT Store`;
+ document.title=`${sbLabel(P.s)} Class ${P.c} ${P.sub} ${y} Question Paper — PPT Store`;
  $("yb").querySelectorAll("a").forEach(a=>a.setAttribute("aria-current",+a.dataset.y===y));
  const rec=(window.STATE_FILES||{})[[P.s,T,P.c,P.m,P.sub,y].join("|")]||{};sets=(rec.sets||[]).map((u,i)=>({u,i})).filter(({u})=>typeof u==="string"?u:u&&["pdf","word","ppt"].some(k=>u[k]));
  $("cnt").innerHTML=sets.length?`<b>${sets.length}</b> set · ${y}`:"";

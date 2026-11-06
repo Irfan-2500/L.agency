@@ -146,7 +146,7 @@ const raw=rec[FMT[P.f][3]]||"";
 const [c1,c2,l]=FMT[P.f];
 $("fi").innerHTML=`<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c2}"/><stop offset="1" stop-color="${c1}"/></linearGradient></defs><path d="M4 0h18l12 12v24a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="url(#g)"/><path d="M22 0v8a4 4 0 0 0 4 4h8z" fill="#fff" opacity=".5"/><text x="15" y="30" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,Arial" font-weight="800" font-size="${l.length>1?9:15}">${l}</text>`;
 $("ttl").textContent=Y?`${P.sub} — ${Y} Paper · Set ${SET}`:CH?`${P.sub} — Ch ${CH}: ${CHN}`:`${P.sub} — ${P.t}`;
-$("sub").textContent=`${P.s} Board · Class ${P.c} · ${P.m} Medium${CH?" · "+P.t:""} · ${P.f==="PPT"?"PowerPoint":P.f}`;
+$("sub").textContent=`${sbLabel(P.s)} · Class ${P.c} · ${P.m} Medium${CH?" · "+P.t:""} · ${P.f==="PPT"?"PowerPoint":P.f}`;
 document.title=`${P.sub} ${P.t} Class ${P.c} (${P.f}) — PPT Store`;
 $("fmt").innerHTML=Object.keys(FMT).map(k=>{const q=new URLSearchParams({...P,f:k,...(Y?{y:Y,set:SET}:{}),...(CH?{ch:CH}:{})});return `<a href="view.html?${q}" aria-current="${k===P.f}" style="--fc:${FMT[k][0]}"><i>${FMT[k][2]}</i>${k}</a>`}).join("");
 const BACK=Y?"papers.html?"+new URLSearchParams({s:P.s,c:P.c,m:P.m,sub:P.sub,y:Y}):CH?"chapters.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m,sub:P.sub}):"state-board.html?"+new URLSearchParams({s:P.s,t:P.t,c:P.c,m:P.m});

@@ -2310,7 +2310,14 @@ const PCATS = [["edu", "📚 Educational"], ["biz", "💼 Business"], ["mkt", "�
 const PBADGE = [["", "Koi nahi"], ["best", "🔥 Best Seller"], ["feat", "⭐ Featured"], ["new", "🆕 New"]];
 /* ---------- State Books: website ke State Board pages (Syllabus, Previous Year, Notes…) ki files ---------- */
 const SB_ST = ["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
-const sbStates = () => { const st = (MENU_L || []).find(c => c.k === "states"), l = st ? st.it.map(x => catnavSplit(x)[0]) : []; return l.length ? l : SB_ST; };
+const sbGrp = () => { const c = (MENU_L || []).find(x => x.n === CFS.c); return c && c.k !== "states" ? c : null; };
+const sbLbl = x => { x = String(x); const i = x.indexOf(" › "); return i < 0 ? x : x.slice(i + 3); };
+const sbStates = () => {
+  const g = sbGrp();
+  if (g) { const l = cfItems(g).map(x => g.n + " › " + x); return l.length ? l : [g.n + " › " + g.n]; }
+  const st = (MENU_L || []).find(c => c.k === "states"), l = st ? st.it.map(x => catnavSplit(x)[0]) : []; return l.length ? l : SB_ST; };
+const sbOpt = v => sbStates().map(x => `<option value="${esc(x)}"${x === v ? " selected" : ""}>${esc(sbLbl(x))}</option>`).join("");
+const sbInGrp = k => { const s0 = k.split("|")[0], g = sbGrp(); return g ? s0.startsWith(g.n + " › ") : !s0.includes(" › "); };
 const SB_T = ["Syllabus", "Previous Year Questions", "Chapter-wise PYQ", "Model Paper", "Notes", "Practice Questions", "Book & Answers"];
 const SB_SUBJ = c => c <= 5 ? ["English","Hindi","Maths","EVS","Computer","General Knowledge"]
   : c <= 8 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science","Computer"]
@@ -2352,7 +2359,7 @@ async function stateBooks() {
   <div class="card"><div class="ch"><h3>1️⃣ Kahan lagani hai?</h3><span class="sp"></span><button class="btn pri sm" id="sbZipB">📦 ZIP se ek saath upload</button></div>
     <div class="grid2 sbsel">
       ${cfSel()}
-      <label class="f">State / Board<select id="sbS">${opt(sbStates(), SBS.s)}</select></label>
+      <label class="f">${sbGrp() ? esc(sbGrp().n) + " — item" : "State / Board"}<select id="sbS">${sbOpt(SBS.s)}</select></label>
       <label class="f">Category<select id="sbT">${opt(SB_T.filter(x => x !== SB_CPYQ), SBS.t === SB_CPYQ ? SB_PYQ : SBS.t)}</select></label>
       <label class="f" id="sbPmW">PYQ kaise<select id="sbPm"><option value="year">📅 Year-wise</option><option value="ch">📑 Chapter-wise</option></select></label>
       <label class="f">Class<select id="sbC">${opt([1,2,3,4,5,6,7,8,9,10,11,12], SBS.c)}</select></label>
@@ -2476,7 +2483,7 @@ function sbzParse(path) {
   const r = { path, file: base, fmt: SBZ_EXT[ext] || "", s: "", t: "", c: 0, m: "", sub: "", y: 0, set: 0, ch: 0, chn: "" };
   // state
   const al = { "uttar pradesh": "UP", "up board": "UP", "tamil nadu": "Tamilnadu", "jammu and kashmir": "Jammu & Kashmir", "jammu kashmir": "Jammu & Kashmir", "j and k": "Jammu & Kashmir", "bseb": "Bihar", "mp board": "Madhya Pradesh", "cg board": "Chhattisgarh", "wb board": "West Bengal", "icse": "CISCE", "isc": "CISCE" };
-  const sts = sbStates(), cand = [...sts.map(x => [x.toLowerCase().replace(/&/g, "and"), x]), ...Object.entries(al).filter(([, v]) => sts.includes(v))].sort((a, b) => b[0].length - a[0].length);
+  const sts = sbStates(), cand = [...sts.map(x => [sbLbl(x).toLowerCase().replace(/&/g, "and").replace(/[_\-.+()\[\]{},/\\|]+/g, " ").replace(/\s+/g, " ").trim(), x]), ...Object.entries(al).filter(([, v]) => sts.includes(v))].sort((a, b) => b[0].length - a[0].length);
   for (const [k, v] of cand) { const re = new RegExp("\\s" + k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s"); if (re.test(t)) { r.s = v; cut(re); break; } }
   // medium
   const md = t.match(/\s(hindi|english)\s(medium|med|mdm)\s/) || t.match(/\s(hm|em)\s/);
@@ -2504,6 +2511,7 @@ function sbzParse(path) {
 }
 function sbzFill(r) {   // jo naam me nahi mila → upar ke dropdown se
   r.miss = [];
+  r.g = !!sbGrp();
   if (!r.s) { r.s = SBS.s; r.miss.push("State"); }
   if (!r.t) { r.t = SBS.t; r.miss.push("Category"); }
   if (!r.c) { r.c = SBS.c; r.miss.push("Class"); }
@@ -2513,7 +2521,7 @@ function sbzFill(r) {   // jo naam me nahi mila → upar ke dropdown se
   return r;
 }
 const SBZ_MUST = ["State", "Category", "Class", "Subject"];
-const sbzBad = r => r.miss.filter(x => SBZ_MUST.includes(x));
+const sbzBad = r => r.miss.filter(x => SBZ_MUST.includes(x) && !(x === "State" && r.g));
 const sbzKey = r => [r.s, r.t, r.c, r.m, r.sub].join("|") + (r.t === SB_PYQ ? "|" + r.y : "");
 function sbzOpen() {
   if (SBZ && SBZ.busy) { $("#sbZ").hidden = false; sbzDraw(); return toast("Pichhli ZIP abhi upload ho rahi hai — neeche dekhein", true); }
@@ -2552,12 +2560,12 @@ function sbzDraw() {
     <p class="note">PDF ZIP, Word ZIP, PPT ZIP — teeno chalegi. File ke <b>naam</b> se State, Category, Class, Medium, Subject, Year, Set / Chapter pehchana jaata hai. Example: <code>Bihar Class 10 Hindi Medium Maths PYQ 2024 Set 1.pdf</code>. Jo naam me nahi mila (<span class="pill warn">peela</span>) wo upar ke dropdown se liya — neeche badal sakte hain. State, Category, Class ya Subject na mile to file <b style="color:#dc2626">laal</b> hogi aur upload nahi hogi.</p>
     <div class="row" style="margin:12px 0"><button class="btn" id="sbzPick" ${SBZ.busy ? "disabled" : ""}>${ic("i-upload")} ZIP ya files chunein</button>
       ${rows.length ? `<span class="note">${rows.length} files · ${done} upload ho gayi</span>` : ""}</div>
-    <div class="sbzl" id="sbZList">${rows.length ? `<table class="sbzt"><thead><tr><th><input type="checkbox" id="sbzAll" aria-label="Sab chunein" ${rows.every(r => r.on) ? "checked" : ""}></th><th>File</th><th>State</th><th>Category</th><th>Class</th><th>Medium</th><th>Subject</th><th>Year</th><th>Set / Ch</th><th>Status</th></tr></thead><tbody>${rows.map((r, i) => {
+    <div class="sbzl" id="sbZList">${rows.length ? `<table class="sbzt"><thead><tr><th><input type="checkbox" id="sbzAll" aria-label="Sab chunein" ${rows.every(r => r.on) ? "checked" : ""}></th><th>File</th><th>${sbGrp() ? "Item" : "State"}</th><th>Category</th><th>Class</th><th>Medium</th><th>Subject</th><th>Year</th><th>Set / Ch</th><th>Status</th></tr></thead><tbody>${rows.map((r, i) => {
       const w = f => r.miss.includes(f) ? " class=\"miss\"" : "", dis = SBZ.busy || r.st === "ok" ? " disabled" : "";
       const nb = !r.st && sbzBad(r);
       return `<tr class="${r.st === "ok" ? "ok" : r.st === "bad" ? "bad" : nb && nb.length ? "nomatch" : ""}"><td><input type="checkbox" data-zon="${i}" ${r.on ? "checked" : ""}${dis} aria-label="Upload ${esc(r.file)}"></td>
         <td class="fn"><span class="fx fx-${r.fmt}">${r.fmt === "word" ? "W" : r.fmt === "ppt" ? "P" : "PDF"}</span>${esc(r.path.split("/").pop())}</td>
-        <td${w("State")}><select data-z="${i}|s"${dis}>${opt(sbStates(), r.s)}</select></td>
+        <td${w("State")}><select data-z="${i}|s"${dis}>${sbOpt(r.s)}</select></td>
         <td${w("Category")}><select data-z="${i}|t"${dis}>${opt(SB_T, r.t)}</select></td>
         <td${w("Class")}><select data-z="${i}|c"${dis}>${opt([1,2,3,4,5,6,7,8,9,10,11,12], r.c)}</select></td>
         <td${w("Medium")}><select data-z="${i}|m"${dis}>${opt(["Hindi", "English"], r.m)}</select></td>
@@ -2706,10 +2714,10 @@ async function sbDelete(quiet) {
 }
 function sbList() {
   const q = SBQ.trim().toLowerCase(), keys = Object.keys(SB).sort((a, b) => { const A = a.split("|"), B = b.split("|"); return A[0].localeCompare(B[0]) || (+A[2] - +B[2]) || A[1].localeCompare(B[1]) || A[4].localeCompare(B[4]) || A[3].localeCompare(B[3]) || (+(B[5] || 0) - +(A[5] || 0)); });
-  const list = keys.filter(k => !q || k.toLowerCase().replace(/\|/g, " ").includes(q) || ("class " + k.split("|")[2]).includes(q));
-  $("#sbCnt").textContent = keys.length + " entries";
+  const list = keys.filter(sbInGrp).filter(k => !q || k.toLowerCase().replace(/\|/g, " ").includes(q) || ("class " + k.split("|")[2]).includes(q));
+  $("#sbCnt").textContent = list.length + " entries";
   $("#sbList").innerHTML = list.length ? list.map(k => { const p = k.split("|"), cur = k === sbKey();
-    return `<button type="button" class="sbit${cur ? " on" : ""}" data-k="${esc(k)}"><span class="tg">${esc(p[1])}${p[5] ? " " + esc(p[5]) : ""}</span><b>${esc(p[4])}</b><small>${esc(p[0])} · Class ${esc(p[2])} · ${esc(p[3])}</small><em>${esc(sbSummary(k, SB[k]))}</em><span class="ed">✏️</span></button>`; }).join("")
+    return `<button type="button" class="sbit${cur ? " on" : ""}" data-k="${esc(k)}"><span class="tg">${esc(p[1])}${p[5] ? " " + esc(p[5]) : ""}</span><b>${esc(p[4])}</b><small>${esc(sbLbl(p[0]))} · Class ${esc(p[2])} · ${esc(p[3])}</small><em>${esc(sbSummary(k, SB[k]))}</em><span class="ed">✏️</span></button>`; }).join("")
     : `<div class="empty" style="padding:18px">${keys.length ? "Kuch nahi mila" : "Abhi koi file nahi lagi. Upar se chuniye aur file lagayein."}</div>`;
 }
 function notes() { KIND = "notes"; return pptView(); }
@@ -3544,7 +3552,7 @@ async function cfiles() {
   loading();
   await menuList();
   const c = cfCur();
-  if (c && c.k === "states") return stateBooks();
+  if (c) return stateBooks();   // State Books jaisa hi — har menu category (NCERT, CBSE, JEE…)
   const r = await call("adminPpts");
   if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head(TITLES.cfiles, "") + NEW_SCRIPT) : fail(r.error);
   PP = r.ppts; PPAY = r.payments; PFOLDER = r.folderUrl;

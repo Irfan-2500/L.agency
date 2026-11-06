@@ -149,11 +149,11 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
   </div>
 
   <section class="hero">
-    <div class="crumb"><a href="index.html">Home</a>›<span>State Books</span>›<b id="crSt"></b></div>
+    <div class="crumb"><a href="index.html">Home</a>›<span id="crG">State Books</span>›<b id="crSt"></b></div>
     <div class="hrow">
       <span class="hic">🗺️</span>
       <div><h1 id="ttl">State Board</h1></div>
-      <label class="stsel">State <select id="stSel" aria-label="State badlein"></select></label>
+      <label class="stsel"><span id="stL">State</span> <select id="stSel" aria-label="Badlein"></select></label>
     </div>
   </section>
 
@@ -180,8 +180,13 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
 (function(){
 const STATES0=["Bihar","UP","Andhra Pradesh","Chhattisgarh","West Bengal","Gujarat","Karnataka","Kerala","Madhya Pradesh","Haryana","Maharashtra","Punjab","Rajasthan","Tamilnadu","Jharkhand","Telangana","CISCE","NIOS","Odisha","Assam","Jammu & Kashmir"];
 /* Admin → Category menu me State Books ki list (naye / badle naam) */
-const STATES=(()=>{try{const st=(JSON.parse(localStorage.getItem("la_data")||"null")||{}).settings||{},c=window.catnavList&&catnavList(st).find(x=>x.k==="states"),l=c?c.it.map(x=>catnavSplit(x)[0]).filter(Boolean):[];
- const q=(new URLSearchParams(location.search).get("s")||"").replace(/[<>"]/g,"").trim().slice(0,40);if(q&&!l.includes(q))l.push(q);return l.length?l:STATES0;}catch(e){return STATES0;}})();
+/* s="Bihar" → State Books; s="NCERT › NCERT Solutions" → us menu category ke saare items */
+const QS0=(new URLSearchParams(location.search).get("s")||"").replace(/[<>"]/g,"").trim().slice(0,160),GRP=QS0.includes(" › ")?QS0.slice(0,QS0.indexOf(" › ")):"";
+let GCAT=null;
+const STATES=(()=>{try{const st=(JSON.parse(localStorage.getItem("la_data")||"null")||{}).settings||{},L=window.catnavList?catnavList(st):[];
+ GCAT=GRP?L.find(x=>x.n===GRP)||null:null;
+ const c=GRP?GCAT:L.find(x=>x.k==="states"),l=c?(c.it.length?c.it.map(x=>catnavSplit(x)[0]).filter(Boolean).map(x=>GRP?GRP+" › "+x:x):GRP?[GRP+" › "+GRP]:[]):[];
+ const q=QS0;if(q&&!l.includes(q))l.push(q);return l.length?l:STATES0;}catch(e){return QS0?[QS0]:STATES0;}})();
 const IC={"Bihar":"🛕","UP":"🕌","Andhra Pradesh":"🌶️","Chhattisgarh":"🌳","West Bengal":"🐅","Gujarat":"🦁","Karnataka":"🐘","Kerala":"🌴","Madhya Pradesh":"🐆","Haryana":"🌾","Maharashtra":"🏛️","Punjab":"🌻","Rajasthan":"🐪","Tamilnadu":"🐚","Jharkhand":"⛏️","Telangana":"🏰","CISCE":"🎓","NIOS":"📚","Odisha":"☸️","Assam":"🍵","Jammu & Kashmir":"🏔️"};
 const TYPES=[["Syllabus","📋"],["Previous Year Questions","🗂️"],["Model Paper","📝"],["Notes","🗒️"],["Practice Questions","✍️"],["Book & Answers","📖"]];
 const SI={"English":["🔤","#2563eb"],"Hindi":["🅷","#dc2626"],"Sanskrit":["🕉️","#b45309"],"Maths":["➗","#7c3aed"],"EVS":["🌱","#16a34a"],"Computer":["💻","#0891b2"],"General Knowledge":["🌍","#0d9488"],
@@ -197,12 +202,13 @@ const PYQ="Previous Year Questions",CPYQ="Chapter-wise PYQ",CHT=["Notes"];   /* 
 const NEWTAB=window.self===window.top?' target="_blank" rel="noopener"':"";
 const FMT=[["PDF","gP","PDF"],["Word","gW","W"],["PPT","gT","P"]];
 const qs=new URLSearchParams(location.search);
-const s={st:STATES.includes(qs.get("s"))?qs.get("s"):"Bihar",t:qs.get("t")===CPYQ?PYQ:TYPES.some(x=>x[0]===qs.get("t"))?qs.get("t"):TYPES[0][0],pm:qs.get("t")===CPYQ||qs.get("pm")==="ch"?"ch":"year",
+const s={st:STATES.includes(QS0)?QS0:STATES[0],t:qs.get("t")===CPYQ?PYQ:TYPES.some(x=>x[0]===qs.get("t"))?qs.get("t"):TYPES[0][0],pm:qs.get("t")===CPYQ||qs.get("pm")==="ch"?"ch":"year",
  c:+qs.get("c")>=1&&+qs.get("c")<=12?+qs.get("c"):10,m:qs.get("m")==="English"?"English":"Hindi",q:""};
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 const $=id=>document.getElementById(id);
 const ord=n=>n+(n==1?"st":n==2?"nd":n==3?"rd":"th");
-$("stSel").innerHTML=STATES.map(x=>`<option>${esc(x)}</option>`).join("");
+$("stSel").innerHTML=STATES.map(x=>`<option value="${esc(x)}">${esc(GRP?sbLabel(x):x)}</option>`).join("");
+if(GRP){$("crG").textContent=GRP;$("stL").textContent=GRP;}
 $("tabs").innerHTML=TYPES.map(([t,e])=>`<button type="button" class="tab" data-v="${esc(t)}"><span>${e}</span>${esc(t)}</button>`).join("");
 const CG=[["Primary",1,5],["Middle",6,8],["High School",9,10],["Senior",11,12]];
 $("cls").innerHTML=CG.map(([n,a,z])=>`<div class="cg"><span>${n.replace(" School","<i> School</i>")}</span><div>${Array.from({length:z-a+1},(_,i)=>`<button type="button" class="cl" data-v="${a+i}" title="Class ${a+i}" aria-label="Class ${a+i}">${a+i}</button>`).join("")}</div></div>`).join("");
@@ -211,9 +217,9 @@ function render(){
  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===s.t));
  document.querySelectorAll(".cl").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.v===s.c));
  document.querySelectorAll("#med button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===s.m));
- $("stSel").value=s.st;$("crSt").textContent=s.st;
- $("ttl").textContent=s.st+" Board";
- document.querySelector(".hic").textContent=IC[s.st]||"🗺️";
+ $("stSel").value=s.st;$("crSt").textContent=GRP?sbLabel(s.st):s.st;
+ $("ttl").textContent=sbLabel(s.st);
+ document.querySelector(".hic").textContent=GRP?(GCAT&&GCAT.e)||"📁":IC[s.st]||"🗺️";
  const all=SUBJ(s.c),k=s.q.trim().toLowerCase(),subs=all.filter(x=>!k||x.toLowerCase().includes(k));
  /* PYQ tab: Year-wise / Chapter-wise switch */
  let pmEl=$("pm");if(!pmEl){pmEl=document.createElement("div");pmEl.id="pm";pmEl.className="pm";pmEl.setAttribute("role","group");pmEl.setAttribute("aria-label","PYQ dekhne ka tareeka");$("list").before(pmEl);
@@ -229,7 +235,7 @@ function render(){
   if(s.t===PYQ)return `<div class="it py" style="--sc:${c};animation-delay:${i*35}ms"><span class="si">${e}</span><div class="nm"><b>${esc(x)}</b></div><div class="yrs">${YEARS.map(y=>`<a class="yr" href="papers.html?${new URLSearchParams({s:s.st,c:s.c,m:s.m,sub:x,y})}" data-ui="state_pyq_year">${y}</a>`).join("")}</div></div>`;
   return `<div class="it" style="--sc:${c};animation-delay:${i*35}ms"><span class="si">${e}</span><div class="nm"><b>${esc(x)}</b></div><div class="fs">${FMT.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m,sub:x,f:f[0]})}" title="${esc(x)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`}).join("")
   :`<div class="none">"${esc(s.q)}" naam ka subject nahi mila.</div>`;
- document.title=`${s.st} Board ${s.t} Class ${s.c} — PPT Store`;
+ document.title=`${sbLabel(s.st)} ${s.t} Class ${s.c} — PPT Store`;
  history.replaceState(null,"","?"+new URLSearchParams(Object.assign({s:s.st,t:s.t,c:s.c,m:s.m},s.t===PYQ&&s.pm==="ch"?{pm:"ch"}:{})));
 }
 $("tabs").onclick=e=>{const b=e.target.closest(".tab");if(b){s.t=b.dataset.v;render();}};
