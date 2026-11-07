@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI PPT Maker – Make a Presentation from Any Topic | PPT Store</title>
+<meta name="description" content="Free AI presentation maker for teachers and students. Type a topic or upload a PDF, choose Hindi, English or Hinglish, edit the slides and download as PowerPoint (PPTX) or PDF." />
+<link rel="canonical" href="https://www.pptstore.in/ai-ppt.html" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#07080c" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="PPT Store" />
+<meta property="og:title" content="AI PPT Maker – PPT Store" />
+<meta property="og:description" content="Topic likho, AI slides banayega. Edit karo aur PPTX / PDF download karo." />
+<meta property="og:url" content="https://www.pptstore.in/ai-ppt.html" />
+<meta property="og:image" content="https://www.pptstore.in/uploads/brand/og-image.jpg" />
+<link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="192x192" href="/uploads/brand/icon-192.png">
+<script>(function(){var m="system";var w=/(?:^|;)la_theme=(\w+)/.exec(window.name);if(w)m=w[1];else try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
+var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Hind:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080c;--card:#0f121b;--card2:#141826;--line:rgba(255,255,255,.1);--line2:rgba(255,255,255,.16);--text:#f4f5fb;--muted:#9aa1b8;--accent:#c084fc;--cyan:#06b6d4;--grad:linear-gradient(90deg,#8b2cff,#06b6d4);--err:#f87171}
+html.light{--bg:#f6f6fa;--card:#fff;--card2:#f1f2f8;--line:rgba(0,0,0,.09);--line2:rgba(0,0,0,.16);--text:#14151c;--muted:#5b6070;--accent:#7c3aed;--err:#dc2626}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html,body{background:var(--bg)}
+body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);line-height:1.6;padding:0 16px;-webkit-text-size-adjust:100%}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 0 60px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}
+.top a{color:var(--text);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.top b{font-family:Poppins,sans-serif;letter-spacing:.02em}
+.back{padding:8px 14px;border:1px solid var(--line);border-radius:10px;font-size:.88rem;background:var(--card)}
+.hero{text-align:center;max-width:720px;margin:0 auto 22px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px solid rgba(192,132,252,.45);background:var(--card);font-size:.8rem;font-weight:600;color:var(--accent)}
+h1{font-family:Poppins,sans-serif;font-size:clamp(1.7rem,5vw,2.5rem);line-height:1.2;margin:12px 0 8px}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted)}
+/* form */
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.form{max-width:760px;margin:0 auto}
+.f{display:grid;gap:6px;margin-bottom:16px}
+.f label,.lbl{font-weight:600;font-size:.92rem}
+.f small{color:var(--muted);font-size:.8rem}
+.in{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line2);background:var(--card2);outline:none;font-size:1rem}
+.in:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,44,255,.18)}
+textarea.in{min-height:76px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 14px;border-radius:999px;border:1px solid var(--line2);background:var(--card2);font-size:.88rem;font-weight:500}
+.chip[aria-pressed="true"]{background:rgba(139,44,255,.16);border-color:var(--accent);color:var(--accent);font-weight:600}
+.range{display:flex;align-items:center;gap:12px}
+.range input{flex:1;accent-color:#8b2cff}
+.range output{min-width:44px;text-align:center;font-weight:700;padding:6px 8px;border-radius:10px;background:var(--card2);border:1px solid var(--line2)}
+.drop{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px dashed var(--line2);border-radius:12px;background:var(--card2);cursor:pointer}
+.drop:hover{border-color:var(--accent)}
+.drop .ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:rgba(139,44,255,.14);color:var(--accent);flex:none;font-size:1.2rem}
+.drop b{display:block;font-size:.92rem} .drop span{color:var(--muted);font-size:.82rem}
+.drop .x{margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid var(--line2);font-size:.8rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:12px;font-weight:600;text-decoration:none;font-size:.95rem;border:1px solid var(--line2);background:var(--card2);color:var(--text);white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn-p{background:var(--grad);color:#fff;border-color:transparent}
+.btn-p:disabled{opacity:.6;cursor:wait}
+.btn-big{width:100%;padding:15px;font-size:1.05rem}
+.err{color:var(--err);font-size:.9rem;margin-top:10px;min-height:1px}
+.hp{position:absolute;left:-9999px;opacity:0}
+.foot-note{color:var(--muted);font-size:.82rem;text-align:center;margin-top:12px}
+/* loading */
+.loading{display:none;text-align:center;padding:50px 20px}
+.loading.on{display:block}
+.spin{width:54px;height:54px;border-radius:50%;border:4px solid var(--line2);border-top-color:#8b2cff;border-right-color:#06b6d4;animation:sp 1s linear infinite;margin:0 auto 18px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.loading p{color:var(--muted)}
+.loading b{display:block;font-size:1.1rem;margin-bottom:4px}
+/* editor */
+.editor{display:none}
+.editor.on{display:block}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.bar .sp{flex:1}
+.themes{display:flex;gap:6px;align-items:center;padding:4px;border-radius:12px;border:1px solid var(--line2);background:var(--card)}
+.sw{width:30px;height:30px;border-radius:8px;border:2px solid transparent;position:relative;overflow:hidden}
+.sw i{position:absolute;right:3px;bottom:3px;width:10px;height:10px;border-radius:50%}
+.sw[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--accent)}
+.ed{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:start}
+.thumbs{display:grid;gap:10px;max-height:calc(100vh - 140px);overflow:auto;padding:2px 4px 2px 2px;position:sticky;top:12px}
+.th{position:relative;border-radius:10px;border:2px solid var(--line);overflow:hidden;cursor:pointer;background:var(--card)}
+.th[aria-current="true"]{border-color:var(--accent)}
+.th .n{position:absolute;left:5px;bottom:4px;z-index:2;font-size:.7rem;font-weight:700;padding:1px 6px;border-radius:6px;background:rgba(0,0,0,.55);color:#fff}
+.add-th{border:1.5px dashed var(--line2);border-radius:10px;padding:10px;color:var(--muted);font-weight:600;font-size:.85rem}
+.add-th:hover{border-color:var(--accent);color:var(--accent)}
+.main{min-width:0}
+.stage-tools{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center}
+.tb{padding:7px 11px;border-radius:9px;border:1px solid var(--line2);background:var(--card);font-size:.84rem;font-weight:500;display:inline-flex;align-items:center;gap:5px}
+.tb:hover{border-color:var(--accent)}
+.tb:disabled{opacity:.4;cursor:default}
+.tb.del:hover{border-color:var(--err);color:var(--err)}
+select.tb{padding-right:6px}
+.hint{color:var(--muted);font-size:.8rem;margin-left:auto}
+.notes{margin-top:12px}
+.notes textarea{min-height:90px}
+.upsell{margin-top:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:14px;border:1px solid rgba(192,132,252,.35);background:var(--card)}
+.upsell p{color:var(--muted);font-size:.9rem} .upsell b{color:var(--text)}
+/* slide (960x540 canvas, scaled) */
+.fit{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;box-shadow:0 18px 50px -24px rgba(0,0,0,.6)}
+.slide{position:absolute;left:0;top:0;width:960px;height:540px;transform-origin:0 0;transform:scale(var(--k,1));overflow:hidden;background:var(--s-bg);color:var(--s-text);font-family:"Plus Jakarta Sans","Hind",sans-serif}
+.slide.hi{font-family:"Hind","Plus Jakarta Sans",sans-serif}
+.slide .b{position:absolute;outline:none;border-radius:6px;overflow:hidden}
+.slide [contenteditable="true"]:hover{box-shadow:0 0 0 1.5px rgba(127,127,127,.45)}
+.slide [contenteditable="true"]:focus{box-shadow:0 0 0 2px var(--s-accent)}
+.slide [contenteditable="true"]:empty::before{content:attr(data-ph);opacity:.45}
+.slide .ttl{font-family:Poppins,"Hind",sans-serif;font-weight:700;line-height:1.15}
+.slide.hi .ttl{font-family:"Hind",Poppins,sans-serif}
+.slide ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.slide li{position:relative;padding-left:28px;line-height:1.35}
+.slide li::before{content:"";position:absolute;left:4px;top:.5em;width:10px;height:10px;border-radius:3px;background:var(--s-accent)}
+.slide ul.chk li::before{content:"✓";background:none;color:var(--s-accent2);font-weight:700;top:0;left:2px;width:auto;height:auto}
+.slide .rect{position:absolute}
+.slide .im{position:absolute;background:var(--s-bg2) center/cover no-repeat}
+.slide .im.ph{display:grid;place-items:center;color:var(--s-muted);font-size:15px;text-align:center;padding:30px}
+.slide .num{position:absolute;right:30px;bottom:16px;font-size:13px;color:var(--s-muted)}
+.slide .brand{position:absolute;right:30px;bottom:16px;font-size:13px;color:var(--s-muted);font-weight:600}
+.slide .credit{position:absolute;left:8px;bottom:6px;font-size:10px;color:#fff;background:rgba(0,0,0,.45);padding:1px 6px;border-radius:5px}
+.thumbs .slide *{pointer-events:none}
+/* present */
+.present{position:fixed;inset:0;z-index:50;background:#000;display:none;align-items:center;justify-content:center}
+.present.on{display:flex}
+.present .fit{border-radius:0;box-shadow:none;width:min(100vw,calc(100vh*16/9));}
+.present .pc{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;color:#fff;font-size:.85rem;opacity:.35;transition:.2s}
+.present:hover .pc{opacity:1}
+.present .pc button{color:#fff;padding:8px 12px;border-radius:9px;background:rgba(255,255,255,.12)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#111827;color:#fff;padding:10px 16px;border-radius:10px;font-size:.9rem;transition:.25s;z-index:60}
+.toast.on{opacity:1;transform:translateX(-50%)}
+#printArea{display:none}
+@media (max-width:860px){
+  .ed{grid-template-columns:1fr}
+  .thumbs{position:static;max-height:none;display:flex;overflow-x:auto;gap:8px;padding-bottom:6px}
+  .th{flex:0 0 132px}
+  .add-th{flex:0 0 100px}
+  .hint{display:none}
+}
+@media (max-width:600px){
+  .row{grid-template-columns:1fr}
+  .card{padding:16px}
+  .bar .btn{padding:10px 12px;font-size:.85rem}
+}
+@media print{
+  @page{size:960px 540px;margin:0}
+  html,body{background:#fff;padding:0;margin:0}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block}
+  #printArea .pg{position:relative;width:960px;height:540px;overflow:hidden;break-after:page;page-break-after:always}
+  #printArea .slide{transform:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="index.html"><img src="uploads/brand/logo.webp" alt="PPT Store logo" width="50" height="22" style="height:22px;width:auto"><b>PPT STORE</b></a><a class="back" href="index.html">← Home</a></div>
+
+  <!-- STEP 1: form -->
+  <section id="step1">
+    <div class="hero">
+      <span class="badge">✨ AI PPT Maker</span>
+      <h1>Topic likho, <span class="grad">AI PPT bana dega</span></h1>
+      <p>Hindi, English ya Hinglish mein slides. Edit karo, theme badlo, aur PowerPoint (PPTX) ya PDF download karo.</p>
+    </div>
+    <form class="card form" id="genForm" autocomplete="off">
+      <div class="f">
+        <label for="topic">Topic</label>
+        <input class="in" id="topic" name="topic" maxlength="200" required placeholder="jaise: Photosynthesis, Class 10 Science">
+      </div>
+      <div class="f">
+        <span class="lbl">Kitni slides?</span>
+        <div class="range"><input type="range" id="slides" min="3" max="15" value="8" aria-label="Number of slides"><output id="slidesOut">8</output></div>
+      </div>
+      <div class="row">
+        <div class="f">
+          <span class="lbl">Language</span>
+          <div class="chips" data-group="language"><button type="button" class="chip" aria-pressed="true" data-v="English">English</button><button type="button" class="chip" aria-pressed="false" data-v="Hindi">हिंदी</button><button type="button" class="chip" aria-pressed="false" data-v="Hinglish">Hinglish</button></div>
+        </div>
+        <div class="f">
+          <span class="lbl">Tone</span>
+          <div class="chips" data-group="tone"><button type="button" class="chip" aria-pressed="true" data-v="Formal">Formal</button><button type="button" class="chip" aria-pressed="false" data-v="Friendly">Friendly</button><button type="button" class="chip" aria-pressed="false" data-v="Casual">Casual</button><button type="button" class="chip" aria-pressed="false" data-v="Exam-focused">Exam-focused</button></div>
+        </div>
+      </div>
+      <div class="f">
+        <label for="audience">Audience (kiske liye?)</label>
+        <input class="in" id="audience" list="audList" maxlength="80" placeholder="jaise: Class 10 students" value="">
+        <datalist id="audList"><option value="Class 6-8 students"><option value="Class 9-10 students"><option value="Class 11-12 students"><option value="College students"><option value="Teachers / coaching class"><option value="Business meeting"></datalist>
+      </div>
+      <div class="f">
+        <span class="lbl">Notes ya PDF se banaye (optional)</span>
+        <label class="drop" id="drop" for="file">
+          <span class="ic">📄</span>
+          <span><b id="fileName">PDF ya .txt file chunein</b><span id="fileInfo">AI isi content se slides banayega</span></span>
+          <button type="button" class="x" id="fileClear" hidden>Hatao</button>
+        </label>
+        <input type="file" id="file" accept=".pdf,.txt,application/pdf,text/plain" hidden>
+      </div>
+      <div class="f">
+        <label for="extra">Aur kuch? (optional)</label>
+        <textarea class="in" id="extra" maxlength="400" placeholder="jaise: har slide par ek example do, last mein 3 MCQ daalo"></textarea>
+      </div>
+      <input class="hp" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button class="btn btn-p btn-big" id="genBtn" type="submit">✨ PPT Banao</button>
+      <div class="err" id="err" role="alert"></div>
+      <p class="foot-note">Free hai. Slides AI banata hai, isliye download se pehle ek baar padh lein.</p>
+    </form>
+  </section>
+
+  <!-- loading -->
+  <section class="loading" id="loading" aria-live="polite">
+    <div class="spin"></div>
+    <b id="loadMsg">Slides ban rahi hain…</b>
+    <p>Isme 20–60 second lag sakte hain. Page band mat kijiye.</p>
+  </section>
+
+  <!-- STEP 2: editor -->
+  <section class="editor" id="editor">
+    <div class="bar">
+      <button class="btn" id="newBtn" type="button">← Nayi PPT</button>
+      <div class="themes" id="themes" role="group" aria-label="Theme"></div>
+      <span class="sp"></span>
+      <button class="btn" id="presentBtn" type="button">▶ Present</button>
+      <button class="btn" id="pdfBtn" type="button">⬇ PDF</button>
+      <button class="btn btn-p" id="pptxBtn" type="button">⬇ PowerPoint (PPTX)</button>
+    </div>
+    <div class="ed">
+      <div class="thumbs" id="thumbs"></div>
+      <div class="main">
+        <div class="stage-tools">
+          <select class="tb" id="layoutSel" aria-label="Slide layout"></select>
+          <button class="tb" id="upBtn" type="button" title="Upar le jao">↑</button>
+          <button class="tb" id="downBtn" type="button" title="Neeche le jao">↓</button>
+          <button class="tb" id="dupBtn" type="button">⧉ Copy</button>
+          <button class="tb" id="imgBtn" type="button">🖼 Photo</button>
+          <button class="tb" id="imgDel" type="button">Photo hatao</button>
+          <button class="tb del" id="delBtn" type="button">🗑 Delete</button>
+          <span class="hint">Slide par click karke text badlein</span>
+          <input type="file" id="imgFile" accept="image/*" hidden>
+        </div>
+        <div class="fit" id="stage"></div>
+        <div class="f notes">
+          <label for="notes">Speaker notes</label>
+          <textarea class="in" id="notes" placeholder="Is slide par kya bolna hai"></textarea>
+        </div>
+        <div class="upsell"><p><b>Designer wali PPT chahiye?</b> Hamari team 1 ghante mein custom PPT bana deti hai.</p><a class="btn" href="order.html">Custom PPT Order karein →</a></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="present" id="present">
+  <div class="fit" id="pStage"></div>
+  <div class="pc"><button type="button" id="pPrev">←</button><span id="pNum"></span><button type="button" id="pNext">→</button><button type="button" id="pExit">Esc</button></div>
+</div>
+<div id="printArea"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const KEY = "la_ai_deck";
+
+const THEMES = {
+  midnight:{name:"Midnight",bg:"0F1226",bg2:"1A1F3D",card:"1B2044",text:"F4F5FB",muted:"AAB0CC",accent:"A855F7",accent2:"22D3EE"},
+  classroom:{name:"Classroom",bg:"FFFFFF",bg2:"E8EFFD",card:"F1F5FF",text:"14213D",muted:"4A5568",accent:"2563EB",accent2:"F59E0B"},
+  chalk:{name:"Chalkboard",bg:"1F3B2D",bg2:"2B5040",card:"2A4D3B",text:"F7F7EE",muted:"C9D6C6",accent:"FACC15",accent2:"F9A8D4"},
+  sunset:{name:"Sunset",bg:"FFF7ED",bg2:"FED7AA",card:"FFEAD5",text:"3B1D0B",muted:"7C4A2D",accent:"EA580C",accent2:"DB2777"},
+  ocean:{name:"Ocean",bg:"082F49",bg2:"0C4A6E",card:"0E3A5A",text:"F0F9FF",muted:"BAE6FD",accent:"22D3EE",accent2:"A3E635"}
+};
+const LAYOUTS = {title:"Title",section:"Section",bullets:"Bullets","image-left":"Photo + points","two-column":"Two columns",quote:"Quote / Formula",summary:"Summary"};
+
+let deck = null, cur = 0, theme = "midnight", lang = "English";
+const opts = {language:"English", tone:"Formal"};
+let sourceText = "";
+
+/* ---------- form ---------- */
+const slidesIn = $("#slides");
+slidesIn.addEventListener("input", () => $("#slidesOut").textContent = slidesIn.value);
+document.querySelectorAll(".chips").forEach(g => g.addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  g.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === b));
+  opts[g.dataset.group] = b.dataset.v;
+}));
+
+$("#file").addEventListener("change", async e => {
+  const f = e.target.files[0]; if (!f) return;
+  $("#fileName").textContent = f.name; $("#fileInfo").textContent = "Padh rahe hain…"; $("#fileClear").hidden = false;
+  try {
+    sourceText = /\.pdf$/i.test(f.name) || f.type === "application/pdf" ? await readPdf(f) : (await f.text());
+    sourceText = sourceText.replace(/\s+/g, " ").trim();
+    if (sourceText.length < 40) { sourceText = ""; $("#fileInfo").textContent = "Is file mein text nahi mila (scan wali PDF ho sakti hai)."; return; }
+    const cut = sourceText.length > 30000;
+    sourceText = sourceText.slice(0, 30000);
+    $("#fileInfo").textContent = `${sourceText.length.toLocaleString("en-IN")} akshar mile${cut ? " (pehle 30,000 use honge)" : ""}`;
+    if (!$("#topic").value.trim()) $("#topic").value = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ");
+  } catch (err) { sourceText = ""; $("#fileInfo").textContent = "File nahi padh paaye. Doosri file try karein."; }
+});
+$("#fileClear").addEventListener("click", e => { e.preventDefault(); sourceText = ""; $("#file").value = ""; $("#fileName").textContent = "PDF ya .txt file chunein"; $("#fileInfo").textContent = "AI isi content se slides banayega"; $("#fileClear").hidden = true; });
+
+function loadScript(src){ return new Promise((ok, no) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
+async function readPdf(f){
+  if (!window.pdfjsLib) {
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+  const pdf = await pdfjsLib.getDocument({data: await f.arrayBuffer()}).promise;
+  let out = "";
+  for (let i = 1; i <= Math.min(pdf.numPages, 60) && out.length < 32000; i++) {
+    const c = await (await pdf.getPage(i)).getTextContent();
+    out += c.items.map(t => t.str).join(" ") + "\n";
+  }
+  return out;
+}
+
+const MSGS = ["Slides ban rahi hain…", "Topic samajh rahe hain…", "Points likh rahe hain…", "Speaker notes jod rahe hain…", "Bas thoda aur…"];
+$("#genForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const topic = $("#topic").value.trim();
+  $("#err").textContent = "";
+  if (topic.length < 3) { $("#err").textContent = "Topic likhiye."; $("#topic").focus(); return; }
+  $("#genBtn").disabled = true;
+  show("loading");
+  let mi = 0; const tick = setInterval(() => { $("#loadMsg").textContent = MSGS[++mi % MSGS.length]; }, 6000);
+  try {
+    const r = await fetch("/api/ai-ppt", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({
+      topic, slides: +slidesIn.value, language: opts.language, tone: opts.tone,
+      audience: $("#audience").value.trim(), extra: $("#extra").value.trim(), source: sourceText, website: $("#website").value
+    })});
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.ok) throw new Error(j.error || "PPT nahi ban saki. Dobara try karein.");
+    lang = opts.language;
+    deck = normalize(j.deck); deck.lang = lang; cur = 0;
+    save(); openEditor();
+    fetchImages();
+  } catch (err) {
+    show("step1"); $("#err").textContent = err.message || "Network error. Dobara try karein.";
+  } finally { clearInterval(tick); $("#genBtn").disabled = false; }
+});
+
+function normalize(d){
+  const arr = v => Array.isArray(v) ? v.map(x => String(x)).filter(x => x.trim()) : [];
+  return { title: String(d.title || ""), subtitle: String(d.subtitle || ""), theme: d.theme || theme, lang: d.lang || "English",
+    slides: (d.slides || []).map(s => ({ layout: LAYOUTS[s.layout] ? s.layout : "bullets", title: String(s.title || ""),
+      bullets: arr(s.bullets), left: arr(s.left), right: arr(s.right), quote: String(s.quote || ""),
+      notes: String(s.notes || ""), image_query: String(s.image_query || ""), img: s.img || null })) };
+}
+
+async function fetchImages(){
+  const want = deck.slides.filter(s => !s.img && s.image_query && (s.layout === "image-left" || s.layout === "title"));
+  let got = 0;
+  for (let i = 0; i < want.length; i++) {
+    const s = want[i];
+    try {
+      const r = await fetch("/api/ai-img?q=" + encodeURIComponent(s.image_query));
+      const j = await r.json().catch(() => ({}));
+      if (j.ok && j.url) { s.img = {url: j.url, by: j.by}; got++; save(); renderAll(); }
+      else if (i === 1 && !got) break; /* photo key nahi lagi: aage mat poochho */
+    } catch (e) { break; }
+  }
+}
+
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(Object.assign({}, deck, {theme}))); } catch(e){} }
+function show(id){ ["step1","loading","editor"].forEach(x => { const el = $("#" + x); el.classList.toggle("on", x === id); el.style.display = x === id ? "" : "none"; }); if (id === "loading") $("#loading").style.display = "block"; window.scrollTo(0, 0); }
+
+/* ---------- slide rendering ---------- */
+function vars(t){ const T = THEMES[t]; return `--s-bg:#${T.bg};--s-bg2:#${T.bg2};--s-card:#${T.card};--s-text:#${T.text};--s-muted:#${T.muted};--s-accent:#${T.accent};--s-accent2:#${T.accent2}`; }
+function ed(edit, k, ph){ return edit ? ` contenteditable="true" spellcheck="false" data-k="${k}" data-ph="${esc(ph)}"` : ""; }
+function list(items, edit, k, cls){ const it = items.length ? items : (edit ? [""] : []); return `<ul class="${cls||""}"${ed(edit,k,"Point likhein")}>${it.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`; }
+function box(x,y,w,h,extra){ return `style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;${extra||""}"`; }
+
+function slideHTML(s, i, edit){
+  const n = deck.slides.length;
+  const T = `class="b ttl"`;
+  let h = "";
+  const imgBlock = (x,y,w,hh) => s.img ? `<div class="im" ${box(x,y,w,hh,`background-image:url('${esc(s.img.url)}')`)}></div>${s.img.by ? `<span class="credit" style="left:${x+8}px">Photo: ${esc(s.img.by)} / Pexels</span>` : ""}`
+    : `<div class="im ph" ${box(x,y,w,hh)}>${edit ? "🖼 Photo jodne ke liye upar “Photo” dabayein" : ""}</div>`;
+  switch (s.layout) {
+    case "title": {
+      const w = s.img ? 470 : 840;
+      if (s.img) h += imgBlock(540, 0, 420, 540);
+      h += `<div class="rect" ${box(0,0,960,10,"background:var(--s-accent)")}></div>`;
+      h += `<div ${T} ${box(60,120,w,200,"font-size:46px;display:flex;align-items:flex-end")}${ed(edit,"title","Title")}>${esc(s.title)}</div>`;
+      h += `<div class="rect" ${box(60,338,80,8,"background:var(--s-accent2);border-radius:4px")}></div>`;
+      h += `<div class="b" ${box(60,360,w,90,"font-size:22px;color:var(--s-muted)")}${ed(edit,"bullets.0","Subtitle")}>${esc(s.bullets[0] || "")}</div>`;
+      h += `<div class="brand" style="${s.img ? "right:450px" : ""}">pptstore.in</div>`;
+      break; }
+    case "section":
+      h += `<div class="rect" ${box(0,0,960,540,"background:var(--s-bg2)")}></div>`;
+      h += `<div class="rect" ${box(440,170,80,8,"background:var(--s-accent);border-radius:4px")}></div>`;
+      h += `<div ${T} ${box(80,195,800,110,"font-size:44px;text-align:center;display:flex;align-items:center;justify-content:center")}${ed(edit,"title","Section title")}>${esc(s.title)}</div>`;
+      h += `<div class="b" ${box(80,310,800,60,"font-size:22px;text-align:center;color:var(--s-muted)")}${ed(edit,"bullets.0","Ek line")}>${esc(s.bullets[0] || "")}</div>`;
+      break;
+    case "image-left":
+      h += imgBlock(0, 0, 400, 540);
+      h += `<div ${T} ${box(440,40,480,90,"font-size:30px;display:flex;align-items:flex-end")}${ed(edit,"title","Title")}>${esc(s.title)}</div>`;
+      h += `<div class="rect" ${box(440,140,60,6,"background:var(--s-accent);border-radius:3px")}></div>`;
+      h += `<div class="b" ${box(440,165,480,330,"font-size:20px")}>${list(s.bullets, edit, "bullets")}</div>`;
+      break;
+    case "two-column": {
+      h += `<div ${T} ${box(60,36,840,70,"font-size:32px;display:flex;align-items:flex-end")}${ed(edit,"title","Title")}>${esc(s.title)}</div>`;
+      h += `<div class="rect" ${box(60,114,60,6,"background:var(--s-accent);border-radius:3px")}></div>`;
+      [["left",60,"accent"],["right",495,"accent2"]].forEach(([k,x,c]) => {
+        h += `<div class="rect" ${box(x,145,405,350,"background:var(--s-card);border-radius:14px")}></div>`;
+        h += `<div class="rect" ${box(x,145,405,6,`background:var(--s-${c});border-radius:14px 14px 0 0`)}></div>`;
+        const items = s[k];
+        h += `<div class="b ttl" ${box(x+24,168,357,40,`font-size:22px;color:var(--s-${c})`)}${ed(edit,k+".0","Heading")}>${esc(items[0] || "")}</div>`;
+        h += `<div class="b" ${box(x+24,215,357,265,"font-size:18px")}>${list(items.slice(1), edit, k+".rest")}</div>`;
+      });
+      break; }
+    case "quote":
+      h += `<div class="b" ${box(60,50,840,40,"font-size:22px;font-weight:600;color:var(--s-muted)")}${ed(edit,"title","Title")}>${esc(s.title)}</div>`;
+      h += `<div class="rect" ${box(60,140,8,260,"background:var(--s-accent);border-radius:4px")}></div>`;
+      h += `<div class="b ttl" ${box(96,90,100,90,"font-size:110px;color:var(--s-accent);line-height:1")}>“</div>`;
+      h += `<div class="b ttl" ${box(100,170,780,240,"font-size:32px;font-weight:600;display:flex;align-items:center")}${ed(edit,"quote","Definition / formula")}>${esc(s.quote)}</div>`;
+      break;
+    case "summary":
+      h += `<div ${T} ${box(60,36,840,70,"font-size:32px;display:flex;align-items:flex-end")}${ed(edit,"title","Title")}>${esc(s.title)}</div>`;
+      h += `<div class="rect" ${box(60,114,60,6,"background:var(--s-accent2);border-radius:3px")}></div>`;
+      h += `<div class="rect" ${box(60,140,840,360,"background:var(--s-card);border-radius:16px")}></div>`;
+      h += `<div class="b" ${box(90,165,780,320,"font-size:21px")}>${list(s.bullets, edit, "bullets", "chk")}</div>`;
+      break;
+    default: /* bullets */
+      h += `<div ${T} ${box(60,36,840,70,"font-size:32px;display:flex;align-items:flex-end")}${ed(edit,"title","Title")}>${esc(s.title)}</div>`;
+      h += `<div class="rect" ${box(60,114,60,6,"background:var(--s-accent);border-radius:3px")}></div>`;
+      h += `<div class="b" ${box(60,145,840,350,"font-size:22px")}>${list(s.bullets, edit, "bullets")}</div>`;
+  }
+  if (s.layout !== "title") h += `<div class="num">${i + 1} / ${n}</div>`;
+  return `<div class="slide${deck.lang === "Hindi" ? " hi" : ""}" style="${vars(theme)}">${h}</div>`;
+}
+
+function fit(el){ const sl = el.querySelector(".slide"); if (sl) sl.style.setProperty("--k", el.clientWidth / 960); }
+const ro = new ResizeObserver(es => es.forEach(e => fit(e.target)));
+
+function renderThumbs(){
+  const t = $("#thumbs");
+  t.innerHTML = deck.slides.map((s, i) => `<div class="th" role="button" tabindex="0" data-i="${i}" aria-current="${i === cur}" aria-label="Slide ${i+1}"><span class="n">${i+1}</span><div class="fit">${slideHTML(s, i, false)}</div></div>`).join("") + `<button type="button" class="add-th" id="addBtn">+ Slide jodo</button>`;
+  t.querySelectorAll(".fit").forEach(f => { ro.observe(f); fit(f); });
+}
+function renderStage(){
+  const st = $("#stage"); st.innerHTML = slideHTML(deck.slides[cur], cur, true); ro.observe(st); fit(st);
+  const s = deck.slides[cur];
+  $("#notes").value = s.notes || "";
+  $("#layoutSel").value = s.layout;
+  $("#upBtn").disabled = cur === 0; $("#downBtn").disabled = cur === deck.slides.length - 1;
+  $("#delBtn").disabled = deck.slides.length <= 1;
+  $("#imgDel").hidden = !s.img;
+}
+function renderAll(){ if (!deck) return; renderThumbs(); renderStage(); renderThemes(); }
+function renderThemes(){
+  $("#themes").innerHTML = Object.entries(THEMES).map(([k, T]) => `<button type="button" class="sw" title="${T.name}" aria-label="${T.name} theme" aria-pressed="${k === theme}" data-t="${k}" style="background:#${T.bg};border-color:${k===theme?"":"#"+T.bg2}"><i style="background:#${T.accent}"></i></button>`).join("");
+}
+
+function openEditor(){
+  theme = THEMES[deck.theme] ? deck.theme : theme;
+  $("#layoutSel").innerHTML = Object.entries(LAYOUTS).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+  show("editor"); renderAll();
+}
+
+/* ---------- editing ---------- */
+let thumbT;
+$("#stage").addEventListener("input", e => {
+  const el = e.target.closest("[data-k]"); if (!el) return;
+  const s = deck.slides[cur], k = el.dataset.k;
+  if (el.tagName === "UL") {
+    const items = [...el.querySelectorAll("li")].map(li => li.textContent.trim()).filter(Boolean);
+    if (k.endsWith(".rest")) { const base = k.split(".")[0]; s[base] = [s[base][0] || ""].concat(items); }
+    else s[k] = items;
+  } else if (k.includes(".")) {
+    const [base, idx] = k.split("."); const a = s[base].slice(); a[+idx] = el.textContent.trim(); s[base] = a;
+  } else s[k] = el.textContent.trim();
+  save(); clearTimeout(thumbT); thumbT = setTimeout(renderThumbs, 400);
+});
+/* paste as plain text */
+$("#stage").addEventListener("paste", e => { if (!e.target.closest("[data-k]")) return; e.preventDefault(); document.execCommand("insertText", false, (e.clipboardData || window.clipboardData).getData("text/plain")); });
+$("#stage").addEventListener("keydown", e => { const el = e.target.closest("[data-k]"); if (el && el.tagName !== "UL" && e.key === "Enter") { e.preventDefault(); el.blur(); } });
+$("#notes").addEventListener("input", e => { deck.slides[cur].notes = e.target.value; save(); });
+
+$("#thumbs").addEventListener("click", e => {
+  if (e.target.closest("#addBtn")) { deck.slides.splice(cur + 1, 0, {layout:"bullets",title:"",bullets:[],left:[],right:[],quote:"",notes:"",image_query:"",img:null}); cur++; save(); renderAll(); return; }
+  const th = e.target.closest(".th"); if (!th) return; cur = +th.dataset.i; renderAll();
+});
+$("#thumbs").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.closest(".th")) { e.preventDefault(); e.target.click(); } });
+$("#themes").addEventListener("click", e => { const b = e.target.closest(".sw"); if (!b) return; theme = b.dataset.t; save(); renderAll(); });
+$("#layoutSel").addEventListener("change", e => {
+  const s = deck.slides[cur], to = e.target.value;
+  const pts = s.bullets.length ? s.bullets : s.left.concat(s.right);
+  if (to === "two-column" && !s.left.length && !s.right.length) { const h = Math.ceil(pts.length / 2); s.left = ["Part 1"].concat(pts.slice(0, h)); s.right = ["Part 2"].concat(pts.slice(h)); }
+  if (to !== "two-column" && !s.bullets.length && pts.length) s.bullets = pts.slice();
+  if (to === "quote" && !s.quote) s.quote = s.bullets[0] || "";
+  s.layout = to; save(); renderAll();
+});
+const move = d => { const j = cur + d; if (j < 0 || j >= deck.slides.length) return; const a = deck.slides; [a[cur], a[j]] = [a[j], a[cur]]; cur = j; save(); renderAll(); };
+$("#upBtn").addEventListener("click", () => move(-1));
+$("#downBtn").addEventListener("click", () => move(1));
+$("#dupBtn").addEventListener("click", () => { deck.slides.splice(cur + 1, 0, JSON.parse(JSON.stringify(deck.slides[cur]))); cur++; save(); renderAll(); });
+$("#delBtn").addEventListener("click", () => { if (deck.slides.length <= 1) return; deck.slides.splice(cur, 1); cur = Math.min(cur, deck.slides.length - 1); save(); renderAll(); toast("Slide delete ho gayi"); });
+$("#imgBtn").addEventListener("click", () => $("#imgFile").click());
+$("#imgDel").addEventListener("click", () => { deck.slides[cur].img = null; save(); renderAll(); });
+$("#imgFile").addEventListener("change", e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const img = new Image(), url = URL.createObjectURL(f);
+  img.onload = () => { /* chhoti karke rakho taaki browser storage bhar na jaye */
+    const m = Math.min(1, 1280 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+    c.width = Math.round(img.width * m); c.height = Math.round(img.height * m); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    const s = deck.slides[cur]; s.img = {url: c.toDataURL("image/jpeg", .85), by: ""};
+    if (s.layout !== "image-left" && s.layout !== "title") s.layout = "image-left";
+    URL.revokeObjectURL(url); save(); renderAll();
+  };
+  img.src = url;
+});
+$("#newBtn").addEventListener("click", () => { if (!confirmNew()) return; deck = null; try { localStorage.removeItem(KEY); } catch(e){} show("step1"); });
+function confirmNew(){ return window.confirm("Nayi PPT banayein? Ye wali PPT hat jayegi (pehle download kar lein)."); }
+
+/* ---------- present ---------- */
+let pi = 0;
+function pRender(){ const p = $("#pStage"); p.innerHTML = slideHTML(deck.slides[pi], pi, false); ro.observe(p); fit(p); $("#pNum").textContent = `${pi+1} / ${deck.slides.length}`; }
+function pGo(d){ pi = Math.max(0, Math.min(deck.slides.length - 1, pi + d)); pRender(); }
+$("#presentBtn").addEventListener("click", () => { pi = cur; $("#present").classList.add("on"); pRender(); const el = document.documentElement; if (el.requestFullscreen) el.requestFullscreen().catch(() => {}); });
+function pExit(){ $("#present").classList.remove("on"); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); }
+$("#pPrev").addEventListener("click", e => { e.stopPropagation(); pGo(-1); });
+$("#pNext").addEventListener("click", e => { e.stopPropagation(); pGo(1); });
+$("#pExit").addEventListener("click", e => { e.stopPropagation(); pExit(); });
+$("#pStage").addEventListener("click", () => pGo(1));
+document.addEventListener("keydown", e => {
+  if (!$("#present").classList.contains("on")) return;
+  if (["ArrowRight","PageDown"," "].includes(e.key)) { e.preventDefault(); pGo(1); }
+  else if (["ArrowLeft","PageUp"].includes(e.key)) { e.preventDefault(); pGo(-1); }
+  else if (e.key === "Escape") pExit();
+});
+document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) $("#present").classList.remove("on"); });
+
+/* ---------- export ---------- */
+const fileBase = () => (deck.slides[0] && deck.slides[0].title || deck.title || "presentation").replace(/[\\/:*?"<>|]+/g, "").trim().slice(0, 60) || "presentation";
+
+$("#pdfBtn").addEventListener("click", async () => {
+  const pa = $("#printArea");
+  pa.innerHTML = deck.slides.map((s, i) => `<div class="pg">${slideHTML(s, i, false)}</div>`).join("");
+  await Promise.all([document.fonts ? document.fonts.ready : 0].concat([...pa.querySelectorAll(".im")].map(el => {
+    const m = /url\(["']?(.*?)["']?\)/.exec(el.style.backgroundImage); if (!m) return 0;
+    return new Promise(r => { const i = new Image(); i.onload = i.onerror = r; i.src = m[1]; });
+  })));
+  const t = document.title; document.title = fileBase();
+  toast("Print window mein “Save as PDF” chunein");
+  setTimeout(() => { window.print(); document.title = t; }, 300);
+});
+
+async function toDataUrl(url){
+  if (url.startsWith("data:")) return url;
+  const r = await fetch(url); if (!r.ok) throw 0; const b = await r.blob();
+  return await new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.onerror = no; fr.readAsDataURL(b); });
+}
+
+$("#pptxBtn").addEventListener("click", async () => {
+  const btn = $("#pptxBtn"), old = btn.textContent;
+  btn.disabled = true; btn.textContent = "Ban rahi hai…";
+  try {
+    if (!window.PptxGenJS) await loadScript("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js");
+    const T = THEMES[theme], pptx = new PptxGenJS();
+    pptx.layout = "LAYOUT_16x9"; pptx.title = deck.title || fileBase(); pptx.company = "PPT Store";
+    const P = v => v / 96;               /* 960px canvas = 10 inch */
+    const F = v => Math.round(v * 0.75); /* px -> pt */
+    const face = deck.lang === "Hindi" ? "Nirmala UI" : "Calibri", head = deck.lang === "Hindi" ? "Nirmala UI" : "Calibri";
+    const n = deck.slides.length;
+    const rect = (sl, x, y, w, h, color, r) => sl.addShape(r ? pptx.ShapeType.roundRect : pptx.ShapeType.rect, {x:P(x), y:P(y), w:P(w), h:P(h), fill:{color}, line:{color, width:0}, rectRadius: r ? P(r) : undefined});
+    const text = (sl, t, x, y, w, h, o) => sl.addText(t || "", Object.assign({x:P(x), y:P(y), w:P(w), h:P(h), fontFace:face, color:T.text, margin:0, valign:"top", fit:"shrink"}, o));
+    const bullets = (sl, items, x, y, w, h, size, chk) => { if (!items.length) return; sl.addText(items.map(t => ({text:t, options:{bullet: chk ? {code:"2713"} : {code:"25A0"}, paraSpaceAfter:F(size*.55)}})), {x:P(x), y:P(y), w:P(w), h:P(h), fontFace:face, fontSize:F(size), color:T.text, valign:"top", margin:0, fit:"shrink"}); };
+    for (let i = 0; i < n; i++) {
+      const s = deck.slides[i], sl = pptx.addSlide();
+      sl.background = {color: T.bg};
+      let img = null;
+      if (s.img) { try { img = await toDataUrl(s.img.url); } catch(e) { img = null; } }
+      const pic = (x, y, w, h) => { if (img) sl.addImage({data: img, x:P(x), y:P(y), w:P(w), h:P(h), sizing:{type:"cover", w:P(w), h:P(h)}}); else rect(sl, x, y, w, h, T.bg2); };
+      const title = (t, x, y, w, h, size, o) => text(sl, t, x, y, w, h, Object.assign({fontFace:head, fontSize:F(size), bold:true, valign:"bottom"}, o));
+      switch (s.layout) {
+        case "title": {
+          const w = img ? 470 : 840;
+          if (img) pic(540, 0, 420, 540);
+          rect(sl, 0, 0, 960, 10, T.accent);
+          title(s.title, 60, 120, w, 200, 46);
+          rect(sl, 60, 338, 80, 8, T.accent2, 4);
+          text(sl, s.bullets[0] || "", 60, 360, w, 90, {fontSize:F(22), color:T.muted});
+          break; }
+        case "section":
+          sl.background = {color: T.bg2};
+          rect(sl, 440, 170, 80, 8, T.accent, 4);
+          title(s.title, 80, 195, 800, 110, 44, {align:"center", valign:"middle"});
+          text(sl, s.bullets[0] || "", 80, 310, 800, 60, {fontSize:F(22), color:T.muted, align:"center"});
+          break;
+        case "image-left":
+          pic(0, 0, 400, 540);
+          title(s.title, 440, 40, 480, 90, 30);
+          rect(sl, 440, 140, 60, 6, T.accent, 3);
+          bullets(sl, s.bullets, 440, 165, 480, 330, 20);
+          break;
+        case "two-column":
+          title(s.title, 60, 36, 840, 70, 32);
+          rect(sl, 60, 114, 60, 6, T.accent, 3);
+          [["left", 60, T.accent], ["right", 495, T.accent2]].forEach(([k, x, c]) => {
+            rect(sl, x, 145, 405, 350, T.card, 14);
+            rect(sl, x, 145, 405, 6, c);
+            text(sl, s[k][0] || "", x + 24, 168, 357, 40, {fontFace:head, fontSize:F(22), bold:true, color:c});
+            bullets(sl, s[k].slice(1), x + 24, 215, 357, 265, 18);
+          });
+          break;
+        case "quote":
+          text(sl, s.title, 60, 50, 840, 40, {fontSize:F(22), bold:true, color:T.muted});
+          rect(sl, 60, 140, 8, 260, T.accent, 4);
+          text(sl, "“", 96, 90, 100, 90, {fontFace:head, fontSize:F(110), bold:true, color:T.accent, fit:"none"});
+          text(sl, s.quote, 100, 170, 780, 240, {fontFace:head, fontSize:F(32), bold:true, valign:"middle"});
+          break;
+        case "summary":
+          title(s.title, 60, 36, 840, 70, 32);
+          rect(sl, 60, 114, 60, 6, T.accent2, 3);
+          rect(sl, 60, 140, 840, 360, T.card, 16);
+          bullets(sl, s.bullets, 90, 165, 780, 320, 21, true);
+          break;
+        default:
+          title(s.title, 60, 36, 840, 70, 32);
+          rect(sl, 60, 114, 60, 6, T.accent, 3);
+          bullets(sl, s.bullets, 60, 145, 840, 350, 22);
+      }
+      if (s.layout !== "title") text(sl, `${i + 1} / ${n}`, 830, 505, 100, 22, {fontSize:F(13), color:T.muted, align:"right", fit:"none"});
+      if (s.notes) sl.addNotes(s.notes);
+    }
+    await pptx.writeFile({fileName: fileBase() + ".pptx"});
+    toast("PPTX download ho gayi");
+  } catch (e) { console.error(e); toast("Download nahi hua. Dobara try karein."); }
+  finally { btn.disabled = false; btn.textContent = old; }
+});
+
+let toastT;
+function toast(m){ const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2800); }
+
+/* ---------- start: last deck wapas kholo ---------- */
+try { const d = JSON.parse(localStorage.getItem(KEY) || "null"); if (d && d.slides && d.slides.length) { deck = normalize(d); theme = THEMES[d.theme] ? d.theme : theme; openEditor(); } else show("step1"); } catch(e) { show("step1"); }
+const q = new URLSearchParams(location.search).get("topic"); if (q && !deck) $("#topic").value = q.slice(0, 200);
+})();
+</script>
+</body>
+</html>
