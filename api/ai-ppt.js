@@ -123,23 +123,22 @@ module.exports = async (req, res) => {
   }
 };
 
-/* Gemini (free tier) se same JSON. Schema se additionalProperties hatana padta hai. */
-function geminiSchema(x){
-  if (Array.isArray(x)) return x.map(geminiSchema);
-  if (!x || typeof x !== "object") return x;
-  const o = {};
-  for (const [k, v] of Object.entries(x)) if (k !== "additionalProperties") o[k] = geminiSchema(v);
-  return o;
-}
+const GEMINI_SHAPE = `\n\nReply with JSON only, exactly this shape:
+{"title":"","subtitle":"","slides":[{"layout":"title|bullets|two-column|image-left|quote|section|summary","title":"","bullets":[""],"left":[""],"right":[""],"quote":"","notes":"","image_query":""}]}`;
+
+/* Gemini (free tier) se same JSON */
 async function gemini(prompt){
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent`;
   /* "low" thinking se jawab jaldi aata hai; agar model ye setting na maane to bina iske dobara */
+  const t0 = Date.now();
   const call = async thinking => {
-    const generationConfig = { responseMimeType: "application/json", responseSchema: geminiSchema(SCHEMA), maxOutputTokens: 12000 };
+    /* Schema-constrained output Gemini par bahut slow tha, isliye sirf JSON mode + prompt mein shape */
+    const generationConfig = { responseMimeType: "application/json", maxOutputTokens: 12000 };
     if (thinking) generationConfig.thinkingConfig = { thinkingLevel: "low" };
     const r = await fetch(url, { method: "POST", signal: AbortSignal.timeout(100000),
       headers: { "Content-Type": "application/json", "x-goog-api-key": GEMINI_KEY },
-      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] }, contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig }) });
+      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] }, contents: [{ role: "user", parts: [{ text: prompt + GEMINI_SHAPE }] }], generationConfig }) });
+    console.log("ai-ppt gemini", r.status, Date.now() - t0, "ms");
     return { r, j: await r.json().catch(() => ({})) };
   };
   let { r, j } = await call(true);
