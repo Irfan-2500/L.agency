@@ -89,6 +89,9 @@
     },
     "api/seo.js": {
       "includeFiles": "{config.js,js/catnav.js}"
+    },
+    "api/ai-ppt.js": {
+      "maxDuration": 120
     }
   }
 }
