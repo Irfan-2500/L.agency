@@ -15,4 +15,6 @@
    Kisi set ki Word/PPT bhi ho to:  { pdf: "set1.pdf", word: "set1.docx", ppt: "set1.pptx" }
 */
 window.STATE_FILES = {
+  "Bihar|Syllabus|10|Hindi|Poori Class": { pdf: "/uploads/syllabus/bihar-board-class-10-syllabus-2026-27.pdf" },
+  "Bihar|Syllabus|12|Hindi|Poori Class": { pdf: "/uploads/syllabus/bihar-board-class-12-syllabus-2026-27.pdf" },
 };
