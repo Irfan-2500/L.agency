@@ -3,12 +3,17 @@
      ANTHROPIC_API_KEY  (zaroori)  console.anthropic.com se
      AI_MODEL           (optional) default "claude-opus-5-5". Sasta chahiye to "claude-haiku-5-5"
      AI_PER_HOUR        (optional) ek IP se 1 ghante mein kitni PPT, default 5
+   Free testing: ANTHROPIC_API_KEY na ho to GEMINI_API_KEY (aistudio.google.com, free, card nahi lagta)
+     GEMINI_MODEL       (optional) default "gemini-2.5-flash"
    Key kabhi browser tak nahi jaati, sirf yahan server par use hoti hai. */
 const Anthropic = require("@anthropic-ai/sdk");
 
 const MODEL = (process.env.AI_MODEL || "claude-opus-5-5").trim();
 const PER_HOUR = Math.max(1, parseInt(process.env.AI_PER_HOUR || "5", 10) || 5);
 const FALLBACK_OK = /^claude-(opus-5-5|opus-5|fable-5-1|sonnet-5-5)$/.test(MODEL);
+
+const GEMINI_KEY = (process.env.GEMINI_API_KEY || "").trim();
+const GEMINI_MODEL = (process.env.GEMINI_MODEL || "gemini-2.5-flash").trim();
 
 const send = (res, code, obj) => res.status(code).setHeader("Cache-Control", "no-store").json(obj);
 
@@ -67,7 +72,7 @@ const clean = (s, n) => String(s || "").replace(/[\u0000-\u001f]/g, " ").trim().
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") return send(res, 405, { ok: false, error: "POST only" });
-  if (!process.env.ANTHROPIC_API_KEY) return send(res, 503, { ok: false, error: "AI PPT abhi band hai. Thodi der baad try karein." });
+  if (!process.env.ANTHROPIC_API_KEY && !GEMINI_KEY) return send(res, 503, { ok: false, error: "AI PPT abhi band hai. Thodi der baad try karein." });
   const b = req.body || {};
   if (b.website) return send(res, 400, { ok: false, error: "Spam" });
 
@@ -88,6 +93,10 @@ module.exports = async (req, res) => {
   if (source) prompt += `\n\nBuild the deck from this source material (use its facts, do not invent beyond it):\n<source>\n${source}\n</source>`;
 
   try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      const deck = await gemini(prompt);
+      return send(res, 200, { ok: true, deck });
+    }
     const client = new Anthropic();
     const params = {
       model: MODEL,
@@ -107,7 +116,34 @@ module.exports = async (req, res) => {
   } catch (e) {
     const code = e && e.status;
     console.error("ai-ppt", code || "", e && e.message);
+    if (code === 422) return send(res, 422, { ok: false, error: "Is topic par PPT nahi ban saki. Doosra topic try karein." });
     if (code === 429 || code === 529) return send(res, 503, { ok: false, error: "AI abhi busy hai. 1 minute baad try karein." });
     send(res, 500, { ok: false, error: "PPT nahi ban saki. Dobara try karein." });
   }
 };
+
+/* Gemini (free tier) se same JSON. Schema se additionalProperties hatana padta hai. */
+function geminiSchema(x){
+  if (Array.isArray(x)) return x.map(geminiSchema);
+  if (!x || typeof x !== "object") return x;
+  const o = {};
+  for (const [k, v] of Object.entries(x)) if (k !== "additionalProperties") o[k] = geminiSchema(v);
+  return o;
+}
+async function gemini(prompt){
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent`;
+  const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": GEMINI_KEY },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: SYSTEM }] },
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: { responseMimeType: "application/json", responseSchema: geminiSchema(SCHEMA), maxOutputTokens: 16000 }
+    }) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error((j.error && j.error.message) || "Gemini error"); e.status = r.status; throw e; }
+  const c = (j.candidates || [])[0];
+  if (!c || c.finishReason === "SAFETY") { const e = new Error("blocked"); e.status = 422; throw e; }
+  const text = ((c.content && c.content.parts) || []).map(p => p.text || "").join("");
+  const deck = JSON.parse(text);
+  if (!deck || !Array.isArray(deck.slides) || !deck.slides.length) throw new Error("empty deck");
+  return deck;
+}
