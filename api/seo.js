@@ -23,7 +23,7 @@ const ALIAS = { "Bihar":"Bihar Board (BSEB)", "UP":"UP Board (UPMSP)", "Andhra P
   "Maharashtra":"Maharashtra Board (MSBSHSE)", "Punjab":"Punjab Board (PSEB)", "Rajasthan":"Rajasthan Board (RBSE)", "Tamilnadu":"Tamil Nadu Board (TN Samacheer)",
   "Jharkhand":"Jharkhand Board (JAC)", "Telangana":"Telangana Board (TS BSE)", "CISCE":"CISCE (ICSE / ISC)", "NIOS":"NIOS", "Odisha":"Odisha Board (BSE / CHSE)",
   "Assam":"Assam Board (SEBA / AHSEC)", "Jammu & Kashmir":"JK Board (JKBOSE)" };
-const STATIC = [["", "1.0"], ["cbse-date-sheet-2027.html", "0.9"], ["ready-ppts.html", "0.9"], ["study-material", "0.9"], ["state-books.html", "0.8"], ["order.html", "0.8"], ["educational-ppt.html", "0.8"], ["ready-made-ppt.html", "0.8"],
+const STATIC = [["", "1.0"], ["cbse-date-sheet-2027.html", "0.9"], ["bihar-board-class-10-maths-syllabus.html", "0.9"], ["ready-ppts.html", "0.9"], ["study-material", "0.9"], ["state-books.html", "0.8"], ["order.html", "0.8"], ["educational-ppt.html", "0.8"], ["ready-made-ppt.html", "0.8"],
   ["custom-ppt-design.html", "0.8"], ["student-ppt.html", "0.8"], ["study-notes-pdf.html", "0.8"], ["cbse-icse-state-board-ppt.html", "0.8"], ["lecture-recording-video-editing.html", "0.7"],
   ["about.html", "0.5"], ["service.html", "0.5"], ["contact.html", "0.4"], ["privacy.html", "0.2"], ["terms.html", "0.2"], ["refund.html", "0.2"], ["delivery.html", "0.2"]];
 
@@ -67,6 +67,7 @@ const sbLink = (k, v) => {   // website ka asli page jahan file khulti hai
   return "/view.html?" + qs({ ...base, f });
 };
 /* Menu item ki apni bani hui page ho to wahi khulti hai */
+const BOARD_PAGES = { Bihar: [["/bihar-board-class-10-maths-syllabus.html", "Class 10 Maths Syllabus 2026-27"]] };
 const ITEM_PAGE = { "/topic/cbse/cbse-exam-date-sheet-2027": "/cbse-date-sheet-2027.html" };
 /* Admin → menu item me upload hui files (key "CBSE › CBSE Exam Date Sheet 2027|...") */
 const itemFiles = (D, cat, item) => Object.keys(D.files).filter(k => sbParts(k).st === cat + " › " + item);
@@ -213,7 +214,7 @@ function boardPage(D, ss) {
   const groups = types.map(t => `<h2>${E(st)} Board ${E(t)}</h2><ul class="list">${keys.filter(k => sbParts(k).t === t).map(k => { const x = sbParts(k); return `<li><a href="${E(sbUrl(k))}"><b>${E(["Class " + x.c, x.sub, x.y].filter(Boolean).join(" · "))}</b><small>${E([x.m && x.m + " Medium", t].filter(Boolean).join(" · "))}</small></a></li>`; }).join("")}</ul>`).join("");
   const body = `${crumbs(crumb)}<h1>${E(nm)} — Books, Syllabus, PYQ &amp; Notes</h1>
 <p class="sub">Class 1 to 12 · Hindi &amp; English medium · PDF, Word &amp; PPT</p>
-<div class="btns"><a class="btn p" href="/state-board.html?${E(qs({ s: st }))}">Open ${E(st)} Board section</a></div>
+<div class="btns"><a class="btn p" href="/state-board.html?${E(qs({ s: st }))}">Open ${E(st)} Board section</a>${BOARD_PAGES[st] ? BOARD_PAGES[st].map(([u, n]) => `<a class="btn" href="${E(u)}">${E(n)}</a>`).join("") : ""}</div>
 ${groups || `<p class="txt">${E(nm)} files are being added. <a href="/order.html">Request a PPT</a> for any chapter.</p>`}
 <h2>Other boards</h2><div class="chips">${STATES.filter(x => x !== st).map(x => `<a href="/board/${slug(x)}">${E(ALIAS[x] || x)}</a>`).join("")}</div>`;
   return page({ url, title, desc, body, ld: [crumbLD(crumb.map(([n, u]) => [n, u || url]))], noindex: !keys.length });
@@ -247,6 +248,17 @@ function openItem(D, cs, is) {
   const v = D.files[k], f = FK.find(([, f]) => v[f])[0], p = k.split("|");
   if (p[1] === "Seedha file") return { redirect: "/view.html?" + qs({ s: st, t: p[1], c: 0, m: "-", sub: "-", f }), code: 302 };
   return { redirect: "/view.html?" + qs({ s: st, t: p[1], c: p[2], m: p[3], sub: p[4], f, y: p[5], one: keys.length === 1 ? 1 : "" }), code: 302 };
+}
+
+/* /open/file?s=Bihar&t=Syllabus&c=10&m=Hindi&sub=Maths: State Books ki upload hui file seedhe viewer me */
+function openFile(D, q) {
+  const s = String(q.s || ""), t = String(q.t || ""), c = String(q.c || ""), m = String(q.m || ""), sub = String(q.sub || "").toLowerCase();
+  const FK = [["PDF", "pdf"], ["Word", "word"], ["PPT", "ppt"]];
+  const ok = k => { const x = sbParts(k); return x.st === s && x.t === t && String(x.c) === c && String(x.sub || "").toLowerCase() === sub; };
+  const keys = Object.keys(D.files).filter(k => ok(k) && FK.some(([, f]) => (D.files[k] || {})[f])).sort((a, b) => (sbParts(b).m === m) - (sbParts(a).m === m));
+  if (!keys.length) return { redirect: "/state-board.html?" + qs({ s, t, c, m }), code: 302 };
+  const k = keys[0], x = sbParts(k), f = FK.find(([, f]) => D.files[k][f])[0];
+  return { redirect: "/view.html?" + qs({ s: x.st, t: x.t, c: x.c, m: x.m, sub: x.sub, f, y: x.y }), code: 302 };
 }
 
 function hubPage(D) {
@@ -283,6 +295,7 @@ module.exports = async (req, res) => {
   if (r === "hub") out = hubPage(D);
   else if (r === "ppt") out = pptPage(D, (/^(\d+)/.exec(a) || [])[1]);
   else if (r === "topic") out = b ? topicPage(D, a, b) : catPage(D, a);
+  else if (r === "file") out = openFile(D, q);
   else if (r === "open") out = openItem(D, a, b);
   else if (r === "board") out = b ? boardFilePage(D, a, b) : boardPage(D, a);
   if (out && out.redirect) { if (out.code === 302) res.setHeader("Cache-Control", "public, s-maxage=600"); res.setHeader("Location", out.redirect); return res.status(out.code || 301).end(); }
@@ -290,4 +303,4 @@ module.exports = async (req, res) => {
   if (!out) { res.setHeader("Cache-Control", "public, s-maxage=300"); return res.status(404).send(page({ url: "/study-material", title: "Not found | PPT Store", desc: "This page was not found.", body: `<h1>Page not found</h1><p class="txt">It may have moved. See <a href="/study-material">all study material</a>.</p>`, noindex: true })); }
   return res.status(200).send(out);
 };
-module.exports._test = { slug, catKey, sbUrl, sbTitle, pptPage, topicPage, catPage, boardPage, boardFilePage, hubPage, sitemap, openItem, setData: d => { memo = { t: Date.now(), ...d }; } };
+module.exports._test = { slug, catKey, sbUrl, sbTitle, pptPage, topicPage, catPage, boardPage, boardFilePage, hubPage, sitemap, openItem, openFile, setData: d => { memo = { t: Date.now(), ...d }; } };
