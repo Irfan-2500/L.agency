@@ -23,7 +23,7 @@ const ALIAS = { "Bihar":"Bihar Board (BSEB)", "UP":"UP Board (UPMSP)", "Andhra P
   "Maharashtra":"Maharashtra Board (MSBSHSE)", "Punjab":"Punjab Board (PSEB)", "Rajasthan":"Rajasthan Board (RBSE)", "Tamilnadu":"Tamil Nadu Board (TN Samacheer)",
   "Jharkhand":"Jharkhand Board (JAC)", "Telangana":"Telangana Board (TS BSE)", "CISCE":"CISCE (ICSE / ISC)", "NIOS":"NIOS", "Odisha":"Odisha Board (BSE / CHSE)",
   "Assam":"Assam Board (SEBA / AHSEC)", "Jammu & Kashmir":"JK Board (JKBOSE)" };
-const STATIC = [["", "1.0"], ["cbse-date-sheet-2027.html", "0.9"], ["bihar-board-class-10-maths-syllabus.html", "0.9"], ["ready-ppts.html", "0.9"], ["study-material", "0.9"], ["state-books.html", "0.8"], ["order.html", "0.8"], ["educational-ppt.html", "0.8"], ["ready-made-ppt.html", "0.8"],
+const STATIC = [["", "1.0"], ["cbse-date-sheet-2027.html", "0.9"], ["bihar-board-class-10-syllabus.html", "0.9"], ["ready-ppts.html", "0.9"], ["study-material", "0.9"], ["state-books.html", "0.8"], ["order.html", "0.8"], ["educational-ppt.html", "0.8"], ["ready-made-ppt.html", "0.8"],
   ["custom-ppt-design.html", "0.8"], ["student-ppt.html", "0.8"], ["study-notes-pdf.html", "0.8"], ["cbse-icse-state-board-ppt.html", "0.8"], ["lecture-recording-video-editing.html", "0.7"],
   ["about.html", "0.5"], ["service.html", "0.5"], ["contact.html", "0.4"], ["privacy.html", "0.2"], ["terms.html", "0.2"], ["refund.html", "0.2"], ["delivery.html", "0.2"]];
 
@@ -67,7 +67,7 @@ const sbLink = (k, v) => {   // website ka asli page jahan file khulti hai
   return "/view.html?" + qs({ ...base, f });
 };
 /* Menu item ki apni bani hui page ho to wahi khulti hai */
-const BOARD_PAGES = { Bihar: [["/bihar-board-class-10-maths-syllabus.html", "Class 10 Maths Syllabus 2026-27"]] };
+const BOARD_PAGES = { Bihar: [["/bihar-board-class-10-syllabus.html", "Class 10 Syllabus 2026-27"]] };
 const ITEM_PAGE = { "/topic/cbse/cbse-exam-date-sheet-2027": "/cbse-date-sheet-2027.html" };
 /* Admin → menu item me upload hui files (key "CBSE › CBSE Exam Date Sheet 2027|...") */
 const itemFiles = (D, cat, item) => Object.keys(D.files).filter(k => sbParts(k).st === cat + " › " + item);

@@ -2323,6 +2323,7 @@ const SB_SUBJ = c => c <= 5 ? ["English","Hindi","Maths","EVS","Computer","Gener
   : c <= 8 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science","Computer"]
   : c <= 10 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science"]
   : ["English","Hindi","Physics","Chemistry","Maths","Biology","Accountancy","Business Studies","Economics","History","Political Science","Geography","Computer Science"];
+const SB_ALL = "Poori Class";   // poori class ki ek file (sab subjects) — jaise Bihar Class 10 Syllabus
 const SB_DIRECT = "Seedha file";   // menu item ki ek seedhi file (Date Sheet, Syllabus…) — class / subject nahi
 const SB_PYQ = "Previous Year Questions", SB_CPYQ = "Chapter-wise PYQ", SB_CHT = ["Notes", SB_CPYQ];
 const SB_F = [["pdf", "PDF", ".pdf", "#e5484d"], ["word", "Word", ".doc,.docx", "#2b6cde"], ["ppt", "PPT", ".ppt,.pptx", "#e8590c"]];
@@ -2403,7 +2404,7 @@ async function stateBooks() {
 }
 function sbFillSel() {
   $("#sbS").value = SBS.s; $("#sbT").value = SBS.t === SB_CPYQ ? SB_PYQ : SBS.t; $("#sbPm").value = SBS.t === SB_CPYQ ? "ch" : "year"; $("#sbPmW").hidden = SBS.t !== SB_PYQ && SBS.t !== SB_CPYQ; $("#sbC").value = SBS.c; $("#sbM").value = SBS.m; $("#sbY").value = SBS.y;
-  $("#sbSub").innerHTML = SB_SUBJ(SBS.c).map(x => `<option${x === SBS.sub ? " selected" : ""}>${esc(x)}</option>`).join("");
+  $("#sbSub").innerHTML = (sbKind(SBS.t) === "one" ? [SB_ALL] : []).concat(SB_SUBJ(SBS.c)).map(x => `<option value="${esc(x)}"${x === SBS.sub ? " selected" : ""}>${x === SB_ALL ? "📄 Poori Class – ek file (sab subjects)" : esc(x)}</option>`).join("");
   $("#sbYw").hidden = SBS.t !== SB_PYQ;
   ["#sbC", "#sbM", "#sbSub"].forEach(id => $(id).closest("label").hidden = SBS.t === SB_DIRECT);
 }

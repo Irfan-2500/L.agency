@@ -238,6 +238,20 @@ function renderDirect(){
  [".flt",".lh","#list","#pm"].forEach(q=>{const x=document.querySelector(q);if(x)x.style.display=only?"none":"";});
  return only;
 }
+/* Admin → State Books → Subject "Poori Class": us class ki ek hi file (jaise Bihar Class 10 Syllabus) — subject list ki jagah sirf woh card */
+const ALL="Poori Class";
+function renderClassFile(){
+ const F=window.STATE_FILES||{},FK={PDF:"pdf",Word:"word",PPT:"ppt"},has=k=>FMT.some(f=>(F[k]||{})[FK[f[0]]]);
+ const k0=[s.st,s.t,s.c,s.m,ALL].join("|"),key=has(k0)?k0:Object.keys(F).find(k=>{const p=k.split("|");return p[0]===s.st&&p[1]===s.t&&+p[2]===s.c&&p[4]===ALL&&has(k);});
+ let el=$("ccf");if(!el){el=document.createElement("div");el.id="ccf";el.className="list";el.style.margin="14px 0";$("list").before(el);
+  el.onclick=e=>{if(e.target.closest("a"))return;const f=el.querySelector("a.f");if(f)f.click();};}
+ const show=!!key&&s.t!==PYQ;
+ ["#list",".lh"].forEach(q=>{const x=document.querySelector(q);if(x)x.style.display=show?"none":"";});
+ el.hidden=!show;if(!show){el.innerHTML="";return false;}
+ const p=key.split("|"),r=F[key],nm=`${sbLabel(s.st)} Class ${s.c} ${s.t}`;
+ el.innerHTML=`<div class="it" style="--sc:#e5484d;cursor:pointer"><span class="si">📄</span><div class="nm"><b>${esc(nm)}</b><small style="display:block;color:var(--muted);font-size:.78rem;font-weight:600">${esc(p[3])} Medium · sab subjects</small></div><div class="fs">${FMT.filter(f=>r[FK[f[0]]]).map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:p[3],sub:ALL,f:f[0]})}" title="${esc(nm)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`;
+ return true;
+}
 function render(){
  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===s.t));
  document.querySelectorAll(".cl").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.v===s.c));
@@ -262,6 +276,7 @@ function render(){
   :`<div class="none">"${esc(s.q)}" naam ka subject nahi mila.</div>`;
  document.title=`${sbLabel(s.st)} ${s.t} Class ${s.c} — PPT Store`;
  if(renderDirect())document.title=`${sbLabel(s.st)} — PPT Store`;
+ else if(renderClassFile())document.title=`${sbLabel(s.st)} Class ${s.c} ${s.t} — PPT Store`;
  history.replaceState(null,"","?"+new URLSearchParams(Object.assign({s:s.st,t:s.t,c:s.c,m:s.m},s.t===PYQ&&s.pm==="ch"?{pm:"ch"}:{})));
 }
 $("tabs").onclick=e=>{const b=e.target.closest(".tab");if(b){s.t=b.dataset.v;render();}};
