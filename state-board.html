@@ -249,9 +249,10 @@ function renderClassFile(){
  ["#list",".lh"].forEach(q=>{const x=document.querySelector(q);if(x)x.style.display=show?"none":"";});
  el.hidden=!show;if(!show){el.innerHTML="";return false;}
  const p=key.split("|"),r=F[key],nm=`${sbLabel(s.st)} Class ${s.c} ${s.t}`;
- el.innerHTML=`<div class="it" style="--sc:#e5484d;cursor:pointer"><span class="si">📄</span><div class="nm"><b>${esc(nm)}</b><small style="display:block;color:var(--muted);font-size:.78rem;font-weight:600">${esc(p[3])} Medium · sab subjects</small></div><div class="fs">${FMT.filter(f=>r[FK[f[0]]]).map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:p[3],sub:ALL,f:f[0]})}" title="${esc(nm)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`;
+ el.innerHTML=`<div class="it" style="--sc:#e5484d;cursor:pointer"><span class="si">📄</span><div class="nm"><b>${esc(nm)}</b><small style="display:block;color:var(--muted);font-size:.78rem;font-weight:600">${esc(p[3])} Medium · sab subjects</small></div><div class="fs">${FMT.filter(f=>r[FK[f[0]]]).map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:p[3],sub:ALL,f:f[0]})}" title="${esc(nm)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`+(SEO_PG[[s.st,s.t,s.c].join("|")]?`<a class="it ch" style="--sc:#7c3aed" href="${SEO_PG[[s.st,s.t,s.c].join("|")]}" data-ui="state_seo_page"><span class="si">📑</span><div class="nm"><b>Har subject ki Chapter List</b><small>Subject-wise chapters, marks aur month-wise syllabus</small></div><span class="go"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span></a>`:"");
  return true;
 }
+const SEO_PG={"Bihar|Syllabus|10":"/bihar-board-class-10-syllabus.html","Bihar|Syllabus|12":"/bihar-board-class-12-syllabus.html"};
 function render(){
  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===s.t));
  document.querySelectorAll(".cl").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.v===s.c));
