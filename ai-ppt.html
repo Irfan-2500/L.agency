@@ -349,10 +349,13 @@ $("#genForm").addEventListener("submit", async e => {
 
 function normalize(d){
   const arr = v => Array.isArray(v) ? v.map(x => String(x)).filter(x => x.trim()) : [];
-  return { title: String(d.title || ""), subtitle: String(d.subtitle || ""), theme: d.theme || theme, lang: d.lang || "English",
+  const out = { title: String(d.title || ""), subtitle: String(d.subtitle || ""), theme: d.theme || theme, lang: d.lang || "English",
     slides: (d.slides || []).map(s => ({ layout: LAYOUTS[s.layout] ? s.layout : "bullets", title: String(s.title || ""),
       bullets: arr(s.bullets), left: arr(s.left), right: arr(s.right), quote: String(s.quote || ""),
       notes: String(s.notes || ""), image_query: String(s.image_query || ""), img: s.img || null })) };
+  const first = out.slides[0]; /* title slide ka subtitle kabhi deck.subtitle mein aata hai */
+  if (first && first.layout === "title" && !first.bullets.length && out.subtitle) first.bullets = [out.subtitle];
+  return out;
 }
 
 async function fetchImages(){
