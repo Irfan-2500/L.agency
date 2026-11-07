@@ -4,7 +4,7 @@
      AI_MODEL           (optional) default "claude-opus-5-5". Sasta chahiye to "claude-haiku-5-5"
      AI_PER_HOUR        (optional) ek IP se 1 ghante mein kitni PPT, default 5
    Free testing: ANTHROPIC_API_KEY na ho to GEMINI_API_KEY (aistudio.google.com, free, card nahi lagta)
-     GEMINI_MODEL       (optional) default "gemini-2.5-flash"
+     GEMINI_MODEL       (optional) default "gemini-3.8-flash"
    Key kabhi browser tak nahi jaati, sirf yahan server par use hoti hai. */
 const Anthropic = require("@anthropic-ai/sdk");
 
@@ -13,7 +13,7 @@ const PER_HOUR = Math.max(1, parseInt(process.env.AI_PER_HOUR || "5", 10) || 5);
 const FALLBACK_OK = /^claude-(opus-5-5|opus-5|fable-5-1|sonnet-5-5)$/.test(MODEL);
 
 const GEMINI_KEY = (process.env.GEMINI_API_KEY || "").trim();
-const GEMINI_MODEL = (process.env.GEMINI_MODEL || "gemini-2.5-flash").trim();
+const GEMINI_MODEL = (process.env.GEMINI_MODEL || "gemini-3.8-flash").trim();
 
 const send = (res, code, obj) => res.status(code).setHeader("Cache-Control", "no-store").json(obj);
 
