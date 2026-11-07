@@ -116,6 +116,7 @@ module.exports = async (req, res) => {
   } catch (e) {
     const code = e && e.status;
     console.error("ai-ppt", code || "", e && e.message);
+    if (e && (e.name === "TimeoutError" || e.name === "AbortError")) return send(res, 504, { ok: false, error: "AI ne bahut der laga di. Kam slides chunkar dobara try karein." });
     if (code === 422) return send(res, 422, { ok: false, error: "Is topic par PPT nahi ban saki. Doosra topic try karein." });
     if (code === 429 || code === 529) return send(res, 503, { ok: false, error: "AI abhi busy hai. 1 minute baad try karein." });
     send(res, 500, { ok: false, error: "PPT nahi ban saki. Dobara try karein." });
@@ -132,13 +133,17 @@ function geminiSchema(x){
 }
 async function gemini(prompt){
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent`;
-  const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": GEMINI_KEY },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM }] },
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { responseMimeType: "application/json", responseSchema: geminiSchema(SCHEMA), maxOutputTokens: 16000 }
-    }) });
-  const j = await r.json().catch(() => ({}));
+  /* "low" thinking se jawab jaldi aata hai; agar model ye setting na maane to bina iske dobara */
+  const call = async thinking => {
+    const generationConfig = { responseMimeType: "application/json", responseSchema: geminiSchema(SCHEMA), maxOutputTokens: 12000 };
+    if (thinking) generationConfig.thinkingConfig = { thinkingLevel: "low" };
+    const r = await fetch(url, { method: "POST", signal: AbortSignal.timeout(100000),
+      headers: { "Content-Type": "application/json", "x-goog-api-key": GEMINI_KEY },
+      body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] }, contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig }) });
+    return { r, j: await r.json().catch(() => ({})) };
+  };
+  let { r, j } = await call(true);
+  if (r.status === 400 && /thinking/i.test((j.error && j.error.message) || "")) ({ r, j } = await call(false));
   if (!r.ok) { const e = new Error((j.error && j.error.message) || "Gemini error"); e.status = r.status; throw e; }
   const c = (j.candidates || [])[0];
   if (!c || c.finishReason === "SAFETY") { const e = new Error("blocked"); e.status = 422; throw e; }

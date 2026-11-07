@@ -332,7 +332,7 @@ $("#genForm").addEventListener("submit", async e => {
   show("loading");
   let mi = 0; const tick = setInterval(() => { $("#loadMsg").textContent = MSGS[++mi % MSGS.length]; }, 6000);
   try {
-    const r = await fetch("/api/ai-ppt", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({
+    const r = await fetch("/api/ai-ppt", {method:"POST", signal: AbortSignal.timeout ? AbortSignal.timeout(150000) : undefined, headers:{"Content-Type":"application/json"}, body: JSON.stringify({
       topic, slides: +slidesIn.value, language: opts.language, tone: opts.tone,
       audience: $("#audience").value.trim(), extra: $("#extra").value.trim(), source: sourceText, website: $("#website").value
     })});
@@ -343,7 +343,7 @@ $("#genForm").addEventListener("submit", async e => {
     save(); openEditor();
     fetchImages();
   } catch (err) {
-    show("step1"); $("#err").textContent = err.message || "Network error. Dobara try karein.";
+    show("step1"); $("#err").textContent = err && err.name === "TimeoutError" ? "Bahut der lag gayi. Kam slides chunkar dobara try karein." : (err.message || "Network error. Dobara try karein.");
   } finally { clearInterval(tick); $("#genBtn").disabled = false; }
 });
 
