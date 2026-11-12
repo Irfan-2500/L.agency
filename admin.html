@@ -1105,6 +1105,7 @@ async function demoCall(a, d) {
     case "adminCustomSave": { const c = Object.assign((D.cust || (D.cust = {}))[d.id] || { id: d.id, payment: "" }, { price: d.price }, d.file ? { file: d.file, fileName: d.fileName, slides: d.slides, demo: (d.refs || []).map(r => DEMO_IMG[r] || r) } : {});
       D.cust[d.id] = c; const o = D.orders.find(x => x.id === d.id); let st = o && o.status; if (o && (o.status === "New" || o.status === "In Progress")) st = o.status = "Done"; return ok({ item: JSON.parse(JSON.stringify(c)), status: st }); }
     case "adminCustomRemove": if (D.cust) delete D.cust[d.id]; return ok();
+    case "adminCustomPdf": return { ok: false, error: "Demo mein PDF nahi banti" };
     case "adminPptFile": { const t = btoa("demo file " + d.file); return ok(d.start ? { data: "", total: t.length } : { data: t, total: atob(t).length }); }
     case "chunk": return d.start + 8388608 >= d.total ? ok({ done: true, id: "demo-file-" + Date.now() }) : ok({ next: d.start + 8388608 });
     case "adminPptSave": {
@@ -1442,8 +1443,9 @@ function finHtml(o) {
   if (c && c.file) {
     const paid = !!c.payment || o.status === "Paid";
     return `<div class="fin-box ${paid ? "paid" : ""}"><div class="fin-t">${ic("i-book")}<div><b>${esc(c.fileName)}</b><small>${c.slides ? c.slides + " slides · " : ""}${c.demo.length} demo slides · <b>₹${esc(c.price)}</b>${paid ? ` · ✅ Paid${c.payment ? " (" + esc(c.payment) + ")" : ""}` : " · customer Track page par pay karke download karega"}</small></div></div>
+      ${c.demo.length ? "" : `<div class="note" style="color:var(--warn)">⚠ Demo slides nahi hain, customer ko sirf pay ka option dikhega. "${FIN_DEMO} demo slides banao" dabaiye.</div>`}
       ${c.demo.length ? `<div class="fin-th">${c.demo.slice(0, 5).map(u => `<img src="${esc(u)}" alt="" loading="lazy">`).join("")}${c.demo.length > 5 ? `<span>+${c.demo.length - 5}</span>` : ""}</div>` : ""}
-      ${c.payment ? "" : `<div class="row" style="gap:6px;flex-wrap:wrap">${finWa(o) ? `<a class="btn sm wa" href="${finWa(o)}" target="_blank" rel="noopener">${ic("i-msg")} Customer ko WhatsApp par batayein</a>` : ""}<button class="btn sm" data-fin-up>${ic("i-upload")} File badlo</button><button class="btn sm" data-fin-price>₹ Daam badlo</button><button class="btn sm danger" data-fin-del>${ic("i-trash")} Hatao</button></div>`}
+      ${c.payment ? "" : `<div class="row" style="gap:6px;flex-wrap:wrap">${finWa(o) ? `<a class="btn sm wa" href="${finWa(o)}" target="_blank" rel="noopener">${ic("i-msg")} Customer ko WhatsApp par batayein</a>` : ""}${c.demo.length ? "" : `<button class="btn sm pri" data-fin-demo>${ic("i-image")} ${FIN_DEMO} demo slides banao</button>`}<button class="btn sm" data-fin-up>${ic("i-upload")} File badlo</button><button class="btn sm" data-fin-price>₹ Daam badlo</button><button class="btn sm danger" data-fin-del>${ic("i-trash")} Hatao</button></div>`}
       <div data-fin-form></div></div>`;
   }
   return `<div class="fin-empty"><button class="btn sm pri" data-fin-up>${ic("i-upload")} Final PPT upload karein</button><span class="note">Customer Track page par ${FIN_DEMO} slide ka demo dekhega, Razorpay se pay karega aur turant download karega.</span></div><div data-fin-form></div>`;
@@ -1452,6 +1454,9 @@ function bindFin(box) {
   const id = box.dataset.fin, o = ORD.find(x => String(x.id) === id), form = () => box.querySelector("[data-fin-form]");
   const up = box.querySelector("[data-fin-up]"), pr = box.querySelector("[data-fin-price]"), del = box.querySelector("[data-fin-del]");
   if (up) up.onclick = () => finForm(box, o, form(), false);
+  const dm = box.querySelector("[data-fin-demo]");
+  if (dm) dm.onclick = async () => { dm.disabled = true; const st = form(); st.innerHTML = `<div class="note" data-st></div>`;
+    try { await finDemo(box, o, t => st.querySelector("[data-st]").textContent = t); } catch (err) { dm.disabled = false; st.querySelector("[data-st]").textContent = "⚠ " + err.message; toast(err.message, true); } };
   if (pr) pr.onclick = () => finForm(box, o, form(), true);
   if (del) del.onclick = () => {
     form().innerHTML = `<div class="confirm" style="margin-top:6px">Final PPT hatayein? <button class="btn sm danger" data-yes>Yes</button><button class="btn sm" data-no>No</button></div>`;
@@ -1459,6 +1464,29 @@ function bindFin(box) {
     form().querySelector("[data-yes]").onclick = async e => { e.target.disabled = true; const r = await call("adminCustomRemove", { id });
       if (!r.ok) { e.target.disabled = false; return toast(r.error, true); } delete CUST[id]; box.innerHTML = finHtml(o); bindFin(box); toast("Final PPT hata di"); };
   };
+}
+/* Demo slides: Google se PPT ki PDF (badi / mushkil PPT par bhi), phir PDF ke pehle 10 page ki photo */
+async function finDemo(box, o, set) {
+  const id = String(o.id), c = CUST[id];
+  set("Google PPT ki PDF bana raha hai (badi PPT mein 1-2 minute)…");
+  const p = await call("adminCustomPdf", { id });
+  if (!p.ok) throw new Error(/Unknown admin action/.test(p.error || "") ? "Google Script update chahiye" : p.error);
+  const parts = []; let start = 0, total = 1;
+  while (start < total) {
+    const r = await call("adminCustomFile", { file: p.pdf, start, len: 8 * 1048576 });
+    if (!r.ok) throw new Error(r.error);
+    const b = Uint8Array.from(atob(r.data), ch => ch.charCodeAt(0)); total = r.total; if (!b.length) break;
+    parts.push(b); start += b.length; set(`PDF la rahe ${Math.min(100, Math.round(start / total * 100))}%…`);
+  }
+  const pdf = new File(parts, "demo.pdf", { type: "application/pdf" });
+  set("Demo slides ki photo ban rahi hai…");
+  const x = await pdfShots(pdf, Array.from({ length: FIN_DEMO }, (_, i) => i + 1), set, null);
+  if (!x.refs.length) throw new Error("PDF se photo nahi bani");
+  set("Save ho raha hai…");
+  const r = await call("adminCustomSave", { id, price: c.price, slides: c.slides || x.count, refs: x.refs, tmp: p.keep ? "" : p.pdf });
+  if (!r.ok) throw new Error(r.error);
+  CUST[id] = r.item; box.innerHTML = finHtml(o); bindFin(box);
+  toast(`✅ ${x.refs.length} demo slides ban gayi`);
 }
 function finForm(box, o, el, priceOnly) {
   if (!CUST_ON) return toast("Google Script mein CustomPay.gs ka update abhi baaki hai", true);
@@ -1496,12 +1524,13 @@ function finForm(box, o, el, priceOnly) {
           else if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); slides = m ? m.slides : 0; refs = await pptxShots(file, FIN_DEMO, set, null); }
         } catch (x) { console.error(x); }
         Object.assign(body, { file: fileId, fileName: file.name, slides, refs });
-        if (!refs.length) toast("Demo slides nahi ban payin, customer ko sirf pay ka option dikhega", true);
+        if (!refs.length && /\.pptx?$/i.test(file.name)) body.later = true;   // browser se nahi bani → Google se PDF bana kar
       } else Object.assign(body, { slides: c.slides });
       set("Save ho raha hai…");
       const r = await call("adminCustomSave", body);
       if (!r.ok) throw new Error(r.error);
       CUST[String(o.id)] = r.item;
+      if (body.later) { try { await finDemo(box, o, set); } catch (err) { toast("Demo slides nahi ban payin: " + err.message, true); } }
       if (r.status && r.status !== o.status) { o.status = r.status; drawOrders(); } else { box.innerHTML = finHtml(o); bindFin(box); }
       toast(file ? "Final PPT save ✅ Ab 'WhatsApp par batayein' dabakar customer ko link bhejein" : "Daam save ✅");
 

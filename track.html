@@ -148,7 +148,7 @@ html.light .rd-h .pill{color:#a16207}
 .paybox h3 b{color:var(--gold)} html.light .paybox h3 b{color:#a16207}
 .qr-wrap{display:grid;justify-items:center;gap:6px}
 .qr{width:200px;max-width:100%;aspect-ratio:1;background:#fff;border-radius:12px;padding:6px;display:grid;place-items:center;overflow:hidden}
-.qr img{width:100%;height:100%;object-fit:contain}
+.qr img,.qr svg{width:100%;height:100%;object-fit:contain;display:block}
 .qr .wait{color:#555;font-size:.8rem;font-weight:600;text-align:center;padding:10px}
 .live{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;color:var(--muted)}
 .live::before{content:"";width:8px;height:8px;border-radius:50%;background:#22c55e;animation:blink 1.2s infinite}
@@ -336,11 +336,18 @@ async function makeQr(){
   const r = await api("customPayQr", WHO);
   if (!CUR || !$("#qrImg")) return;
   if (r.ok && r.paid) return paidNow(r);
-  if (!r.ok || !r.image) { $("#qrWrap").hidden = true; $("#qrOr").hidden = true; return; }   /* QR feature band ho to sirf app buttons */
+  if (!r.ok || !(r.image || r.link)) { $("#qrWrap").hidden = true; $("#qrOr").hidden = true; return; }   /* QR na bane to sirf app buttons */
   QR.id = r.qrId; QR.until = Date.now() + 25 * 6e4;
-  $("#qrImg").innerHTML = `<img src="${esc(r.image)}" alt="UPI QR code, ${inr(r.amount / 100)}">`; $("#qrLive").hidden = false;
+  if (r.image) $("#qrImg").innerHTML = `<img src="${esc(r.image)}" alt="UPI QR code, ${inr(r.amount / 100)}">`;
+  else {   /* Razorpay payment link ka QR: scan karte hi phone par Razorpay page (amount fixed) */
+    try { await loadQrLib(); const q = qrcode(0, "M"); q.addData(r.link); q.make(); $("#qrImg").innerHTML = q.createSvgTag({ cellSize:4, margin:0, alt:`Payment QR, ${inr(r.amount / 100)}` }); }
+    catch(e) { $("#qrWrap").hidden = true; $("#qrOr").hidden = true; return; }
+    $("#qrLive").textContent = "Phone ke camera se scan karein, payment page khulega · intezaar";
+  }
+  $("#qrLive").hidden = false;
   pollQr();
 }
+function loadQrLib(){ return new Promise((ok, no) => { if (window.qrcode) return ok(); const sc = document.createElement("script"); sc.src = "js/qrcode.js"; sc.onload = ok; sc.onerror = no; document.head.appendChild(sc); }); }
 function pollQr(){
   clearTimeout(QR.timer);
   QR.timer = setTimeout(async () => {
