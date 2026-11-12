@@ -168,6 +168,11 @@ html.light .rd-h .pill{color:#a16207}
 .okbox .tick svg{width:32px;height:32px}
 .okbox h2{font-size:1.25rem} .okbox p{color:var(--muted);font-size:.86rem}
 .okbox .btn{max-width:360px}
+.live-n{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:.8rem}
+.live-n button{color:var(--cyan);font-weight:700;font-size:.8rem}
+#bell{white-space:normal;text-align:center;line-height:1.35}
+#res>*{min-width:0}
+#bell:disabled{opacity:.8;cursor:default;border-color:rgba(34,197,94,.45);color:#22c55e}
 /* Theme sirf Home page par chuni jaati hai; baaki pages wahi theme follow karte hain */
 .theme-sw{display:none!important}
 </style>
@@ -229,7 +234,7 @@ html.light .rd-h .pill{color:#a16207}
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const LA = window.LA_CONFIG || {}, SCRIPT = String(LA.orderUrl || "").trim(), WA = String(LA.whatsapp || "919711069435");
-const STEPS = [["New", "Order mil gaya", "Hum aapka order dekh rahe hain"], ["In Progress", "PPT ban rahi hai", "Designer aapki PPT par kaam kar raha hai"], ["Done", "PPT ready hai", "WhatsApp / Email par bhej di jayegi"], ["Paid", "Order complete", "Payment mil gaya. Dhanyavaad! 🙏"]];
+const STEPS = [["New", "Order mil gaya", "Hum aapka order dekh rahe hain"], ["In Progress", "PPT ban rahi hai", "Designer aapki PPT par kaam kar raha hai"], ["Done", "PPT ready hai", "Ready hote hi yahin demo, payment aur download milega"], ["Paid", "Order complete", "Payment mil gaya. Dhanyavaad! 🙏"]];
 const DEMO = { id:"12", time:new Date(Date.now() - 5 * 36e5).toISOString(), name:"Rahul", topic:"Physics Class 12 — Electric Charges", theme:"Blue Science", slides:"25", status:"Done",
   ppt:{ price:250, slides:25, type:"pptx", payments:true, demo:["dark-chalk-physics-1","dark-chalk-physics-2","dark-chalk-physics-3","dark-chalk-physics-4","formula-board-maths-1","formula-board-maths-2","formula-board-maths-3","formula-board-maths-4","blue-red-gradient-1","blue-red-gradient-2"].map(n => `uploads/themes/samples/${n}.webp`) } };
 const isDemo = () => !!(LA.previewDemo || window.claude || !SCRIPT);
@@ -265,7 +270,6 @@ function show(o){
   const steps = STEPS.map(s => s.slice());
   if (o.ppt) steps[2][2] = "Neeche demo dekhein, pay karein aur turant download karein 👇";
   if (o.download) steps[3][2] = "Payment mil gaya. PPT download karein 🙏";
-  const big = !!(o.ppt || o.download);
   $("#res").classList.toggle("wide", !!o.ppt);
   $("#res").innerHTML = `<div><h1 style="font-size:1.3rem">Order #${esc(o.id)}</h1><p>Namaste ${esc(o.name)} · ${esc(when)}</p></div>
     <div class="kv"><div><span>PPT:</span> ${esc(o.topic)}</div>${o.theme && o.theme !== "—" ? `<div><span>Theme:</span> ${esc(o.theme)}</div>` : ""}${o.slides && o.slides !== "—" ? `<div><span>Slides:</span> ${esc(o.slides)}</div>` : ""}</div>
@@ -273,10 +277,12 @@ function show(o){
     ${o.status === "Cancelled" ? `<div class="cancel">❌ Ye order cancel ho gaya hai. Koi sawaal ho to WhatsApp karein.</div>`
       : `<div class="steps">${steps.map((s, i) => `<div class="st ${i < k || (i === k && i === STEPS.length - 1) ? "done" : i === k ? "now" : ""}"><span class="dot">${i < k || (i === k && i === STEPS.length - 1) ? "✓" : i + 1}</span><div><b>${s[1]}</b><small>${s[2]}</small></div></div>`).join("")}</div>`}
     ${o.ppt ? readyHtml(o) : ""}
-    <a class="btn btn-wa" href="${wa}" target="_blank" rel="noopener"><svg class="i"><use href="#i-msg"/></svg>WhatsApp par poochhein</a>`;
-  $("#res").hidden = false;
+    ${!o.download && !o.ppt && o.status !== "Cancelled" && o.status !== "Paid" ? `<button type="button" class="btn btn-ghost" id="bell"></button>` : ""}
+    <a class="btn btn-wa" href="${wa}" target="_blank" rel="noopener"><svg class="i"><use href="#i-msg"/></svg>WhatsApp par poochhein</a>
+    ${isDemo() ? "" : `<p class="live-n"><span class="live">Live: status apne aap update hota hai</span><button type="button" id="other">Doosra order dekhein</button></p>`}`;
+  $("#res").hidden = false; bellUi();
   if (o.ppt) { drawSlide(0); if (o.ppt.payments) makeQr(); }
-  if (!big || !show.done) $("#res").scrollIntoView({ behavior:"smooth", block:"start" });
+  if (!show.done) $("#res").scrollIntoView({ behavior:"smooth", block:"start" });
 }
 function doneHtml(o){
   return `<div class="okbox" id="okbox"><span class="tick">${icon("i-check")}</span>
@@ -379,27 +385,76 @@ document.addEventListener("click", async e => {
 function paidNow(r){
   stopQr();
   const o = Object.assign({}, CUR, { ppt:null, status:"Paid", download:r.download, paymentId:r.paymentId });
-  show.done = true; show(o); show.done = false;
+  show.done = true; show(o); show.done = false; LAST = sig(o);
   $("#okbox").scrollIntoView({ behavior:"smooth", block:"center" });
   toast("🎉 Payment successful! Download shuru ho raha hai…");
   setTimeout(() => { const a = $("#dlBtn"); if (a && !isDemo()) a.click(); }, 1200);
 }
 let toastT; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 3200); }
-$("#fTrack").onsubmit = async e => {
+/* Order khula rahe: number + mobile is phone par yaad, refresh / dobara aane par seedha status */
+const SAVE = "la_track";
+const sig = o => [o.status, o.ppt ? o.ppt.price + "|" + (o.ppt.demo || []).length + "|" + o.ppt.payments : "", o.download || ""].join("~");
+async function open_(id, phone, quiet){
+  const b = $("#tBtn"); if (!quiet) { b.disabled = true; b.textContent = "Dhoondh rahe hain…"; }
+  const r = await track(id, phone); b.disabled = false; b.textContent = "Status dekhein / Track";
+  if (!r.ok) { if (quiet && r.net) return setTimeout(() => open_(id, phone, true), 8000);   /* net nahi → thodi der baad */
+    $("#find").hidden = false; $("#res").hidden = true; $("#msg").textContent = r.error; return; }
+  try { localStorage.setItem(SAVE, JSON.stringify({ id, phone })); } catch(e) {}
+  WHO = { id, phone }; LAST = sig(r); $("#find").hidden = true; show.done = quiet; show(r); show.done = false; live();
+}
+$("#fTrack").onsubmit = e => {
   e.preventDefault();
   const id = $("#tId").value.replace(/\D/g, ""), phone = $("#tPhone").value.replace(/\D/g, "").replace(/^(91|0)(?=\d{10}$)/, "");
   if (!id) { $("#msg").textContent = "Order number daalein (jaise 12)."; $("#tId").focus(); return; }
   if (!/^[6-9]\d{9}$/.test(phone)) { $("#msg").textContent = "Sahi 10-digit mobile number daalein."; $("#tPhone").focus(); return; }
-  $("#msg").textContent = ""; const b = $("#tBtn"); b.disabled = true; b.textContent = "Dhoondh rahe hain…";
-  const r = await track(id, phone); b.disabled = false; b.textContent = "Status dekhein / Track";
-  if (!r.ok) { $("#res").hidden = true; $("#msg").textContent = r.error; return; }
-  try { localStorage.setItem("la_track", JSON.stringify({ id, phone })); } catch(e) {}
-  WHO = { id, phone }; show(r);
+  $("#msg").textContent = ""; open_(id, phone);
 };
+/* Doosra order: form wapas */
+document.addEventListener("click", e => { if (!e.target.closest("#other")) return;
+  stopLive(); stopQr(); WHO = null; CUR = null; try { localStorage.removeItem(SAVE); } catch(x) {}
+  $("#res").hidden = true; $("#find").hidden = false; $("#tId").value = ""; $("#tPhone").value = ""; $("#tId").focus(); });
+
+/* Live: har 15 sec (page khula ho tab) admin ka badlaav yahan apne aap */
+let LAST = "", LT = 0;
+const stopLive = () => clearTimeout(LT);
+function live(){
+  stopLive(); if (!WHO || isDemo()) return;
+  LT = setTimeout(async () => {
+    if (document.hidden || !WHO) return live();
+    const r = await track(WHO.id, WHO.phone);
+    if (r.ok && WHO && sig(r) !== LAST) {
+      const was = CUR ? CUR.status : "", s2 = sig(r); LAST = s2;
+      if (!(CUR && CUR.download && !r.download)) { show.done = true; show(r); show.done = false; }
+      if ((r.ppt || r.status === "Done") && was !== "Done" && was !== "Paid") ping("🎉 Aapki PPT ready hai!", `Order #${r.id}: demo dekhein aur pay karke download karein.`);
+      else if (r.status !== was) ping("Order #" + r.id + " update", STEPS.concat([["Cancelled", "Order cancel ho gaya"]]).find(x => x[0] === r.status)?.[1] || r.status);
+    }
+    live();
+  }, 15000);
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden && WHO && !isDemo()) { stopLive(); liveNow(); } });
+async function liveNow(){ const r = await track(WHO.id, WHO.phone); if (r.ok && sig(r) !== LAST) { LAST = sig(r); if (!(CUR && CUR.download && !r.download)) { show.done = true; show(r); show.done = false; } } live(); }
+
+/* Notification: PPT ready / status badle to phone par alert (page band na ho, background tab bhi chalega) */
+const canNotify = () => "Notification" in window;
+function ping(title, body){
+  toast(title);
+  try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch(e) {}
+  try { if (canNotify() && Notification.permission === "granted") { const n = new Notification(title, { body, icon:"/uploads/brand/icon-192.png", tag:"la-track" }); n.onclick = () => { window.focus(); n.close(); }; } } catch(e) {}
+  const t0 = document.title; let k = 0; clearInterval(ping.t); ping.t = setInterval(() => { document.title = k++ % 2 ? t0 : "🔔 " + title; if (!document.hidden && k > 6) { clearInterval(ping.t); document.title = t0; } }, 1000);
+}
+document.addEventListener("click", async e => { const b = e.target.closest("#bell"); if (!b) return;
+  if (!canNotify()) return toast("Is browser mein notification nahi chalta. Page khula rakhein, status apne aap badlega.");
+  const p = await Notification.requestPermission(); bellUi();
+  toast(p === "granted" ? "🔔 Ho gaya! PPT ready hote hi notification aayega." : "Notification band hai. Browser settings se Allow karein."); });
+function bellUi(){ const b = $("#bell"); if (!b) return; const on = canNotify() && Notification.permission === "granted";
+  b.innerHTML = on ? "🔔 Notification chalu hai: PPT ready hote hi bataenge" : "🔔 PPT ready hone par notification paayein"; b.disabled = on; }
+
 (function(){
   const h = new URLSearchParams(location.hash.slice(1)); let s = {};
-  try { s = JSON.parse(localStorage.getItem("la_track") || "{}"); } catch(e) {}
-  $("#tId").value = (h.get("id") || s.id || "").replace(/\D/g, ""); if (s.phone) $("#tPhone").value = s.phone;
+  try { s = JSON.parse(localStorage.getItem(SAVE) || "{}"); } catch(e) {}
+  const hid = (h.get("id") || "").replace(/\D/g, "");
+  $("#tId").value = (hid || s.id || "").replace(/\D/g, ""); if (s.phone) $("#tPhone").value = s.phone;
+  if (s.id && s.phone && (!hid || hid === String(s.id))) { $("#find").hidden = true; $("#res").hidden = false; $("#res").innerHTML = `<p style="text-align:center;color:var(--muted)">Order #${esc(s.id)} khul raha hai…</p>`; open_(String(s.id), String(s.phone), true); }
 })();
 </script>
 <script>/* Theme switch: homepage wali choice (la_theme) har page par same */

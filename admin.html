@@ -1430,13 +1430,20 @@ function drawOrders() {
 }
 /* ---------- Custom order: final PPT upload → customer Track page par demo + pay + download ---------- */
 const FIN_DEMO = 10;
+/* Customer ko "PPT ready" message: Track page ka link ke saath (ek click, WhatsApp khulta hai) */
+function finWa(o) {
+  const m = String(o.mobile || "").replace(/\D/g, "").slice(-10); if (!/^[6-9]\d{9}$/.test(m)) return "";
+  const c = CUST[String(o.id)] || {}, site = /localhost|127\.|vercel\.app|^$/.test(location.hostname) ? "https://www.pptstore.in" : location.origin;
+  const t = `Namaste ${String(o.name || "").split(" ")[0]}! 🎉 Aapki PPT "${o.topic}" ready hai (Order #${o.id}).\n\n👀 ${c.demo && c.demo.length ? c.demo.length + " slides ka demo dekhein" : "Dekhein"}, ₹${c.price || ""} pay karein aur turant download karein:\n${site}/track.html#id=${o.id}\n\n(Wahi mobile number daalein jo order mein diya tha.)\n— PPT Store`;
+  return `https://wa.me/91${m}?text=${encodeURIComponent(t)}`;
+}
 function finHtml(o) {
   const c = CUST[String(o.id)];
   if (c && c.file) {
     const paid = !!c.payment || o.status === "Paid";
     return `<div class="fin-box ${paid ? "paid" : ""}"><div class="fin-t">${ic("i-book")}<div><b>${esc(c.fileName)}</b><small>${c.slides ? c.slides + " slides · " : ""}${c.demo.length} demo slides · <b>₹${esc(c.price)}</b>${paid ? ` · ✅ Paid${c.payment ? " (" + esc(c.payment) + ")" : ""}` : " · customer Track page par pay karke download karega"}</small></div></div>
       ${c.demo.length ? `<div class="fin-th">${c.demo.slice(0, 5).map(u => `<img src="${esc(u)}" alt="" loading="lazy">`).join("")}${c.demo.length > 5 ? `<span>+${c.demo.length - 5}</span>` : ""}</div>` : ""}
-      ${c.payment ? "" : `<div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn sm" data-fin-up>${ic("i-upload")} File badlo</button><button class="btn sm" data-fin-price>₹ Daam badlo</button><button class="btn sm danger" data-fin-del>${ic("i-trash")} Hatao</button></div>`}
+      ${c.payment ? "" : `<div class="row" style="gap:6px;flex-wrap:wrap">${finWa(o) ? `<a class="btn sm wa" href="${finWa(o)}" target="_blank" rel="noopener">${ic("i-msg")} Customer ko WhatsApp par batayein</a>` : ""}<button class="btn sm" data-fin-up>${ic("i-upload")} File badlo</button><button class="btn sm" data-fin-price>₹ Daam badlo</button><button class="btn sm danger" data-fin-del>${ic("i-trash")} Hatao</button></div>`}
       <div data-fin-form></div></div>`;
   }
   return `<div class="fin-empty"><button class="btn sm pri" data-fin-up>${ic("i-upload")} Final PPT upload karein</button><span class="note">Customer Track page par ${FIN_DEMO} slide ka demo dekhega, Razorpay se pay karega aur turant download karega.</span></div><div data-fin-form></div>`;
@@ -1496,7 +1503,8 @@ function finForm(box, o, el, priceOnly) {
       if (!r.ok) throw new Error(r.error);
       CUST[String(o.id)] = r.item;
       if (r.status && r.status !== o.status) { o.status = r.status; drawOrders(); } else { box.innerHTML = finHtml(o); bindFin(box); }
-      toast(file ? "Final PPT save ✅ Customer ab Track page par demo dekh kar pay kar sakta hai" : "Daam save ✅");
+      toast(file ? "Final PPT save ✅ Ab 'WhatsApp par batayein' dabakar customer ko link bhejein" : "Daam save ✅");
+
     } catch (err) { btn.disabled = false; set("⚠ " + err.message); toast(err.message, true); }
   };
 }
