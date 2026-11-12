@@ -82,7 +82,7 @@ input:focus-visible{outline:none}
 .box .msg{font-size:.84rem;font-weight:600;color:#ef4444;min-height:1.2em}
 .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
 .top h1{font-size:1.6rem} .top p{color:var(--muted);font-size:.9rem}
-.top .btn{width:auto;margin-left:auto}
+.top .acts{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto} .top .btn{width:auto}
 .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 .item{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:grid}
 .thumb{aspect-ratio:16/9;background:var(--card2) center/cover}
@@ -170,6 +170,7 @@ input:focus-visible{outline:none}
       <div class="links"><button type="button" id="changeNo">← बदलें / Change</button><button type="button" id="resend" disabled>OTP दोबारा भेजें</button></div>
     </form>
     <p class="msg" id="msg" role="alert"></p>
+    <a class="btn btn-ghost" href="track.html">📦 Custom PPT order track करें / Track order</a>
   </section>
 
   <!-- My PPTs -->
@@ -177,7 +178,7 @@ input:focus-visible{outline:none}
     <div class="congrats" id="congrats" hidden><span>🎉</span><div><b>बधाई हो! पेमेंट सफल रहा। / Payment successful</b><p>आपकी PPT नीचे तैयार है, <b>Download PPT</b> दबाएँ। यह पेज कभी भी "My PPTs" में मोबाइल या ईमेल से दोबारा खोल सकते हैं।<span class="en">Your PPT is ready below. Open it anytime from My PPTs.</span></p></div></div>
     <div class="top">
       <div><h1>My PPTs 📂</h1><p id="who"></p></div>
-      <button class="btn btn-ghost btn-sm" id="logout">Logout</button>
+      <div class="acts"><a class="btn btn-gold btn-sm" href="track.html">📦 PPT Order Track करें</a><button class="btn btn-ghost btn-sm" id="logout">Logout</button></div>
     </div>
     <div class="list" id="list"></div>
   </section>
