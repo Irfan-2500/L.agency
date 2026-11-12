@@ -372,6 +372,9 @@ label.f span{font-weight:500;color:var(--dim)}
 .drop .up.done b{color:var(--ok)}
 @media(max-width:560px){.bars.b30 .b span{display:none}}
 .rtbl{overflow-x:auto}
+.vth{flex-wrap:wrap;gap:8px}.vtnav{margin-left:auto;display:flex;gap:6px;align-items:center}.vtnav input{width:auto;padding:6px 8px}.vtnav .btn:disabled{opacity:.4}
+.vtsum{margin:0 0 8px}.vtl{margin:16px 0 6px;font-size:.9rem}.vtl small{color:var(--dim);font-weight:500}
+.vtlist{max-height:360px;overflow:auto}.vtlist td:not(:first-child),.vtlist th:not(:first-child){text-align:left}
 .rtbl table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:tabular-nums}
 .rtbl th,.rtbl td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
 .rtbl th:first-child,.rtbl td:first-child{text-align:left}
@@ -1061,6 +1064,14 @@ async function demoCall(a, d) {
         allTime: tot(span(first, t0), "visits"), daily, first: key(first), sheetUrl: "#",
         range: Object.assign({ from: key(from), to: key(to), visits: tot(rd, "visits"), visitors: Math.round(tot(rd, "visitors") * .8), daily: rd }, lists),
         prev: { visits: tot(pr, "visits"), visitors: Math.round(tot(pr, "visitors") * .8) } }, lists));
+    }
+    case "adminVisitTimes": {
+      const pages = ["/", "/ready-ppts", "/order", "/about", "/contact"], src = ["Google", "Direct", "WhatsApp", "Instagram"], pl = ["Patna, Bihar", "Delhi, Delhi", "Lucknow, Uttar Pradesh", "Jaipur, Rajasthan"];
+      let x = [...String(d.day)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) & 0x7fffffff, 7); const rnd = () => (x = (x * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+      const hours = Array.from({ length: 24 }, (_, h) => { const w = h < 7 ? .2 : h < 10 ? 1.4 : h < 17 ? 2.4 : h < 22 ? 3 : 1; const v = Math.round(rnd() * w * 2); return { visits: v, visitors: Math.max(0, v - (v > 1 ? 1 : 0)) }; });
+      const list = []; for (let h = 23; h >= 0; h--) for (let i = 0; i < hours[h].visits; i++) list.push({ t: String(h).padStart(2, "0") + ":" + String(Math.floor(rnd() * 60)).padStart(2, "0"), who: Math.floor(rnd() * 65535).toString(16).toUpperCase().padStart(4, "0"), page: pages[Math.floor(rnd() * 5)], src: src[Math.floor(rnd() * 4)], place: pl[Math.floor(rnd() * 4)], device: rnd() < .75 ? "Mobile" : "Computer", browser: "Chrome" });
+      list.sort((a, b) => a.t < b.t ? 1 : -1);
+      return ok({ day: d.day, visitors: hours.reduce((s, h) => s + h.visitors, 0), hours, list });
     }
     case "adminSales": {
       if (!D._more) { D._more = 1; const T = ["Class 10 Science — Light", "Class 9 Maths — Polynomials", "Hindi Vyakaran — Sandhi", "Business Pitch Deck", "Class 12 Physics Notes"];
@@ -2074,6 +2085,9 @@ function drawStats(D) {
   </div>
   <section class="card" style="margin-bottom:16px" aria-labelledby="st30"><div class="ch"><h3 id="st30">${ic("i-chart", "color:var(--accent)")} Visitors &amp; page views</h3><button class="btn sm" data-big="visitors" style="margin-left:auto">${ic("i-max")} Expand</button></div>
     ${comboChart("sChart", B.map(b => b.lab), { name: "Visitors", vals: METRICS.visitors.bucket(D, B), col: "var(--accent)" }, { name: "Page views", vals: METRICS.views.bucket(D, B), col: "var(--cyan)" }, { full: B.map(b => b.full) })}</section>
+  <section class="card" style="margin-bottom:16px" aria-labelledby="vtH"><div class="ch vth"><h3 id="vtH">${ic("i-clock", "color:var(--warn)")} Visits by time</h3>
+    <div class="vtnav"><button class="btn sm" data-vt="-1" aria-label="Previous day">‹</button><input type="date" id="vtDay" aria-label="Day" value="${vtDay(R)}" max="${ymd(day0(0))}"><button class="btn sm" data-vt="1" aria-label="Next day">›</button></div></div>
+    <div id="vtBody"><p class="note">Loading…</p></div></section>
   <div class="dgrid">
     <section class="card"><div class="ch"><h3>${ic("i-book", "color:var(--accent)")} Top pages</h3></div>${toplist((r.pages || []).map(([k, n]) => [PAGE_NAMES[k] || k, n]), tot)}</section>
     <section class="card"><div class="ch"><h3>${ic("i-ext", "color:var(--cyan)")} Traffic sources</h3></div>${toplist(r.sources, tot, "var(--cyan)")}</section>
@@ -2094,7 +2108,49 @@ function drawStats(D) {
       <ul class="notes"><li>Click any card to open it full screen with its own chart and table.</li><li>% change compares with the same number of days just before.</li><li>A visitor who reopens the same page within 30 minutes is counted once.</li><li>Gender and age can't be detected by a website, so they aren't shown.</li></ul></section>
   </div>`);
   bindRange($("#view"), () => stats());
-  liveTag(false); if (y) window.scrollTo(0, y);
+  bindVT(); liveTag(false); if (y) window.scrollTo(0, y);
+}
+
+/* ---------- Visits by time: ek din ke har ghante ke visits + har visit ka time (IST) ---------- */
+let VT_DAY = "", VT_RG = "";
+const VT = {};
+function vtDay(R) {   // range badle to range ka aakhri din; warna jo din chuna tha
+  const k = ymd(R.from) + "|" + ymd(R.to), today = ymd(day0(0));
+  if (k !== VT_RG || !VT_DAY) { VT_RG = k; VT_DAY = ymd(R.to) > today ? today : ymd(R.to); }
+  return VT_DAY;
+}
+const hLab = h => h === 0 ? "12am" : h < 12 ? h + "am" : h === 12 ? "12pm" : (h - 12) + "pm";
+function bindVT() {
+  const inp = $("#vtDay"); if (!inp) return;
+  const go = k => { if (!k || k > ymd(day0(0))) return; VT_DAY = k; inp.value = k; loadVT(); };
+  inp.onchange = () => go(inp.value);
+  $$("[data-vt]").forEach(b => b.onclick = () => { const d = pday(VT_DAY); d.setDate(d.getDate() + +b.dataset.vt); go(ymd(d)); });
+  loadVT();
+}
+async function loadVT() {
+  const day = VT_DAY, el = $("#vtBody"); if (!el) return;
+  const nx = $('[data-vt="1"]'); if (nx) nx.disabled = day >= ymd(day0(0));
+  const c = VT[day], live = day === ymd(day0(0));
+  let r = c && (!live || Date.now() - c.at < 30000) ? c.r : null;
+  if (!r) {
+    if (!c) el.innerHTML = `<p class="note">Loading…</p>`;
+    r = await call("adminVisitTimes", { day });
+    if (r.ok) VT[day] = { r, at: Date.now() };
+  }
+  const el2 = $("#vtBody");
+  if (VT_DAY !== day || !el2) return;
+  if (!r.ok) return el2.innerHTML = /Unknown admin action/i.test(r.error || "")
+    ? `<div class="empty"><b>🔧</b>Visit ka time dekhne ke liye Google Script mein chhota sa update chahiye.<br><small>Ask Claude for VisitTimes.gs steps.</small></div>`
+    : `<p class="note">${esc(r.error || "Could not load")}</p>`;
+  const hs = r.hours || [], tot = sum(hs.map(h => +h.visits || 0)), full = hs.map((_, h) => `${hLab(h)} – ${hLab((h + 1) % 24)}`);
+  const peak = tot ? hs.reduce((b, h, i) => (+h.visits || 0) > (+hs[b].visits || 0) ? i : b, 0) : -1;
+  const list = r.list || [];
+  const tm = s => { const [hh, mm] = String(s || "").split(":").map(Number); return isNaN(hh) ? esc(s) : `${(hh % 12) || 12}:${String(mm).padStart(2, "0")} ${hh < 12 ? "am" : "pm"}`; };
+  el2.innerHTML = `<p class="note vtsum"><b>${nf(tot)}</b> page views · <b>${nf(r.visitors)}</b> visitors on ${esc(fmtD(pday(day), 1))}${peak >= 0 ? ` · busiest hour <b>${esc(full[peak])}</b>` : ""} <small>(India time)</small></p>
+    ${tot ? comboChart("vtChart", hs.map((_, h) => hLab(h)), { name: "Page views", vals: hs.map(h => +h.visits || 0), col: "var(--warn)" }, null, { bars: 1, full, h: 200 }) : `<p class="note">No visits on this day.</p>`}
+    ${list.length ? `<h4 class="vtl">Every visit with time <small>(newest first)</small></h4><div class="rtbl vtlist"><table><thead><tr><th>Time</th><th>Page</th><th>Came from</th><th>Place</th><th>Device</th><th>Visitor</th></tr></thead><tbody>${list.map(x =>
+      `<tr><td><b>${tm(x.t)}</b></td><td>${esc(PAGE_NAMES[x.page] || x.page)}</td><td>${esc(x.src || "Direct")}</td><td>${esc(x.place || "—")}</td><td>${esc([x.device, x.browser].filter(Boolean).join(" · "))}</td><td><span class="pill" title="Same code = same visitor">#${esc(x.who)}</span></td></tr>`).join("")}</tbody></table></div>
+      ${list.length >= 500 ? `<p class="note">Showing the latest 500 visits.</p>` : ""}` : ""}`;
 }
 
 /* ---------- Revenue report (koi bhi date range) ---------- */
