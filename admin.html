@@ -222,6 +222,14 @@ label.f span{font-weight:500;color:var(--dim)}
 .order .side2{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 .order .side2 .row{gap:6px;justify-content:flex-end}
 .order select{width:auto;padding:7px 10px;font-weight:600}
+.order .fin{grid-column:1/-1;font-size:.84rem;min-width:0}
+.fin .note{color:var(--muted);font-size:.8rem}
+.fin-empty{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fin-box{display:grid;gap:8px;background:var(--bg2);border:1px dashed var(--line2);border-radius:10px;padding:10px 12px}
+.fin-box.paid{border-style:solid;border-color:color-mix(in srgb,#22c55e 55%,transparent)}
+.fin-t{display:flex;gap:10px;align-items:flex-start;min-width:0}.fin-t b{overflow-wrap:anywhere}.fin-t small{display:block;color:var(--muted)}
+.fin-th{display:flex;gap:6px;align-items:center;overflow:hidden}.fin-th img{width:72px;aspect-ratio:16/9;object-fit:cover;border-radius:6px;background:#fff;flex:none}.fin-th span{font-size:.78rem;color:var(--muted);font-weight:700}
+.fin-form{display:grid;gap:8px;margin-top:8px;max-width:420px}.fin-form label{display:grid;gap:4px;font-weight:600;font-size:.8rem}
 .kv{display:flex;flex-wrap:wrap;gap:6px;font-size:.82rem;grid-column:1/-1}
 .kv div{padding:4px 10px;border-radius:8px;background:var(--card2);border:1px solid var(--line)}
 .kv span{color:var(--dim)}
@@ -1092,6 +1100,11 @@ async function demoCall(a, d) {
     case "adminSaleResend": return ok({ to: "r***@example.com" });
     case "adminPpts": return ok({ ppts: D.ppts.map(p => JSON.parse(JSON.stringify(p))), payments: D.pay.on, folderUrl: "#" });
     case "adminPptStart": return ok({ session: "demo" });
+    case "adminCustomList": return ok({ items: Object.values(D.cust || (D.cust = { [D.orders[3].id]: { id: D.orders[3].id, price: 250, file: "demo-file", fileName: "Biology Cell Structure.pptx", slides: 32, demo: ["dark-chalk-physics-1","dark-chalk-physics-2","dark-chalk-physics-3","formula-board-maths-1","formula-board-maths-2","blue-red-gradient-1"].map(n => "uploads/themes/samples/" + n + ".webp"), payment: "" } })), payments: true });
+    case "adminCustomStart": return ok({ session: "demo" });
+    case "adminCustomSave": { const c = Object.assign((D.cust || (D.cust = {}))[d.id] || { id: d.id, payment: "" }, { price: d.price }, d.file ? { file: d.file, fileName: d.fileName, slides: d.slides, demo: (d.refs || []).map(r => DEMO_IMG[r] || r) } : {});
+      D.cust[d.id] = c; const o = D.orders.find(x => x.id === d.id); let st = o && o.status; if (o && (o.status === "New" || o.status === "In Progress")) st = o.status = "Done"; return ok({ item: JSON.parse(JSON.stringify(c)), status: st }); }
+    case "adminCustomRemove": if (D.cust) delete D.cust[d.id]; return ok();
     case "adminPptFile": { const t = btoa("demo file " + d.file); return ok(d.start ? { data: "", total: t.length } : { data: t, total: atob(t).length }); }
     case "chunk": return d.start + 8388608 >= d.total ? ok({ done: true, id: "demo-file-" + Date.now() }) : ok({ next: d.start + 8388608 });
     case "adminPptSave": {
@@ -1323,11 +1336,12 @@ async function dash() {
 }
 
 /* ---------- Orders ---------- */
-let ORD = [], STAT = [], OQ = "", OST = "", OSORT = "new";
+let ORD = [], STAT = [], OQ = "", OST = "", OSORT = "new", CUST = {}, CUST_ON = false, CUST_PAY = false;
 async function orders() {
   loading();
-  const r = await call("adminOrders"); if (!r.ok) return fail(r.error);
+  const [r, cu] = await Promise.all([call("adminOrders"), call("adminCustomList")]); if (!r.ok) return fail(r.error);
   ORD = r.orders; STAT = r.statuses;
+  CUST = {}; CUST_ON = !!cu.ok; CUST_PAY = !!cu.payments; if (cu.ok) cu.items.forEach(c => CUST[String(c.id)] = c);
   badge("#nOrders", ORD.filter(o => String(o.status).split(" ")[0] === "New").length);
   V(head("Orders", "Every custom PPT order. Changing a status also updates the Google Sheet.", `<button class="btn sm" id="oCsv">${ic("i-down")} Export CSV</button>`) + `
   <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="oq" placeholder="Search name, mobile, topic, order ID…" aria-label="Search orders"></label>
@@ -1390,6 +1404,7 @@ function drawOrders() {
       <div class="det">${esc(o.details)}</div>
       ${files ? `<div class="files">${files}</div>` : ""}
       ${o.failed && o.failed !== "—" ? `<div class="files" style="color:var(--warn)">⚠ Not uploaded: ${esc(o.failed)}</div>` : ""}
+      ${o.status === "Cancelled" ? "" : `<div class="fin" data-fin="${esc(o.id)}">${finHtml(o)}</div>`}
     </article>`;
   }).join("") : `<div class="empty"><b>📭</b>${ORD.length ? "No orders match this filter." : "No orders yet."}</div>`;
   $$("#olist [data-pick]").forEach(c => c.onchange = () => { c.checked ? OSEL.add(c.dataset.pick) : OSEL.delete(c.dataset.pick); c.closest(".order").classList.toggle("sel", c.checked); drawBulk(); });
@@ -1400,6 +1415,7 @@ function drawOrders() {
     box.querySelector("[data-yes]").onclick = e => delOrders([{ row: +row, id }], e.target);
   });
   drawBulk();
+  $$("#olist [data-fin]").forEach(bindFin);
   $$("#olist select").forEach(s => s.onchange = async () => {
     s.disabled = true;
     const r = await call("adminOrderStatus", { row: +s.dataset.row, id: s.dataset.id, status: s.value });
@@ -1407,9 +1423,82 @@ function drawOrders() {
     if (!r.ok) return toast(r.error, true);
     const o = ORD.find(x => x.row === +s.dataset.row); if (o) o.status = s.value;
     s.closest(".order").className = "order s-" + s.value.split(" ")[0];
+    const fb = s.closest(".order").querySelector("[data-fin]"); if (fb && o) { fb.innerHTML = finHtml(o); bindFin(fb); }
     drawChips(); badge("#nOrders", ORD.filter(o => String(o.status).split(" ")[0] === "New").length);
     toast("Status: " + s.value);
   });
+}
+/* ---------- Custom order: final PPT upload → customer Track page par demo + pay + download ---------- */
+const FIN_DEMO = 10;
+function finHtml(o) {
+  const c = CUST[String(o.id)];
+  if (c && c.file) {
+    const paid = !!c.payment || o.status === "Paid";
+    return `<div class="fin-box ${paid ? "paid" : ""}"><div class="fin-t">${ic("i-book")}<div><b>${esc(c.fileName)}</b><small>${c.slides ? c.slides + " slides · " : ""}${c.demo.length} demo slides · <b>₹${esc(c.price)}</b>${paid ? ` · ✅ Paid${c.payment ? " (" + esc(c.payment) + ")" : ""}` : " · customer Track page par pay karke download karega"}</small></div></div>
+      ${c.demo.length ? `<div class="fin-th">${c.demo.slice(0, 5).map(u => `<img src="${esc(u)}" alt="" loading="lazy">`).join("")}${c.demo.length > 5 ? `<span>+${c.demo.length - 5}</span>` : ""}</div>` : ""}
+      ${c.payment ? "" : `<div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn sm" data-fin-up>${ic("i-upload")} File badlo</button><button class="btn sm" data-fin-price>₹ Daam badlo</button><button class="btn sm danger" data-fin-del>${ic("i-trash")} Hatao</button></div>`}
+      <div data-fin-form></div></div>`;
+  }
+  return `<div class="fin-empty"><button class="btn sm pri" data-fin-up>${ic("i-upload")} Final PPT upload karein</button><span class="note">Customer Track page par ${FIN_DEMO} slide ka demo dekhega, Razorpay se pay karega aur turant download karega.</span></div><div data-fin-form></div>`;
+}
+function bindFin(box) {
+  const id = box.dataset.fin, o = ORD.find(x => String(x.id) === id), form = () => box.querySelector("[data-fin-form]");
+  const up = box.querySelector("[data-fin-up]"), pr = box.querySelector("[data-fin-price]"), del = box.querySelector("[data-fin-del]");
+  if (up) up.onclick = () => finForm(box, o, form(), false);
+  if (pr) pr.onclick = () => finForm(box, o, form(), true);
+  if (del) del.onclick = () => {
+    form().innerHTML = `<div class="confirm" style="margin-top:6px">Final PPT hatayein? <button class="btn sm danger" data-yes>Yes</button><button class="btn sm" data-no>No</button></div>`;
+    form().querySelector("[data-no]").onclick = () => form().innerHTML = "";
+    form().querySelector("[data-yes]").onclick = async e => { e.target.disabled = true; const r = await call("adminCustomRemove", { id });
+      if (!r.ok) { e.target.disabled = false; return toast(r.error, true); } delete CUST[id]; box.innerHTML = finHtml(o); bindFin(box); toast("Final PPT hata di"); };
+  };
+}
+function finForm(box, o, el, priceOnly) {
+  if (!CUST_ON) return toast("Google Script mein CustomPay.gs ka update abhi baaki hai", true);
+  const c = CUST[String(o.id)];
+  el.innerHTML = `<div class="fin-form">
+    ${priceOnly ? "" : `<label>PPT / PDF file<input type="file" data-f accept=".pptx,.pdf,.ppt,.zip"></label>`}
+    <label>Daam (₹)<input type="number" min="1" step="1" inputmode="numeric" data-p value="${c ? esc(c.price) : ""}" placeholder="jaise 250"></label>
+    <div class="row" style="gap:6px"><button class="btn sm pri" data-go>${priceOnly ? "Save" : "Upload &amp; save"}</button><button class="btn sm" data-x>Cancel</button></div>
+    <div class="note" data-st>${priceOnly ? "" : `PPTX / PDF ki pehli ${FIN_DEMO} slides ki photo apne aap ban jayegi (customer ka demo). Save karte hi order "Done" ho jayega.`}</div>
+    ${CUST_PAY ? "" : `<div class="note" style="color:var(--warn)">⚠ Razorpay keys Settings mein nahi hain, isliye customer online pay nahi kar payega.</div>`}</div>`;
+  el.querySelector("[data-x]").onclick = () => el.innerHTML = "";
+  el.querySelector("[data-go]").onclick = async e => {
+    const btn = e.target.closest("button"), st = el.querySelector("[data-st]"), price = +el.querySelector("[data-p]").value;
+    const file = priceOnly ? null : (el.querySelector("[data-f]").files || [])[0];
+    if (!priceOnly && !file) return toast("PPT file chunein", true);
+    if (!(price >= 1)) return toast("Daam likhein (kam se kam ₹1)", true);
+    btn.disabled = true;
+    const set = t => st.textContent = t;
+    try {
+      const body = { id: String(o.id), price };
+      if (file) {
+        const s0 = await call("adminCustomStart", { id: String(o.id), name: file.name, size: file.size, mime: file.type || "application/octet-stream" });
+        if (!s0.ok) throw new Error(s0.error);
+        let start = 0, fileId = "";
+        while (!fileId) {
+          const part = file.slice(start, Math.min(file.size, start + 8 * 1048576)); let r, tries = 0;
+          do { r = await call("chunk", { session: s0.session, start, total: file.size, data: await b64(part) }); } while (!r.ok && !r.stop && ++tries < 4);
+          if (!r.ok) throw new Error(r.error);
+          if (r.done) fileId = r.id; else { start = r.next || start + part.size; set(`Upload ${Math.min(99, Math.round(start / file.size * 100))}%…`); }
+        }
+        set("Demo slides ki photo ban rahi hai…");
+        let refs = [], slides = 0;
+        try {
+          if (/\.pdf$/i.test(file.name)) { const x = await pdfShots(file, Array.from({ length: FIN_DEMO }, (_, i) => i + 1), set, null); refs = x.refs; slides = x.count; }
+          else if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); slides = m ? m.slides : 0; refs = await pptxShots(file, FIN_DEMO, set, null); }
+        } catch (x) { console.error(x); }
+        Object.assign(body, { file: fileId, fileName: file.name, slides, refs });
+        if (!refs.length) toast("Demo slides nahi ban payin, customer ko sirf pay ka option dikhega", true);
+      } else Object.assign(body, { slides: c.slides });
+      set("Save ho raha hai…");
+      const r = await call("adminCustomSave", body);
+      if (!r.ok) throw new Error(r.error);
+      CUST[String(o.id)] = r.item;
+      if (r.status && r.status !== o.status) { o.status = r.status; drawOrders(); } else { box.innerHTML = finHtml(o); bindFin(box); }
+      toast(file ? "Final PPT save ✅ Customer ab Track page par demo dekh kar pay kar sakta hai" : "Daam save ✅");
+    } catch (err) { btn.disabled = false; set("⚠ " + err.message); toast(err.message, true); }
+  };
 }
 function exportCsv() {
   const cols = [["id", "Order ID"], ["time", "Time"], ["name", "Name"], ["mobile", "Mobile"], ["status", "Status"], ["topic", "PPT"], ["theme", "Theme"], ["slides", "Slides"], ["language", "Language"], ["details", "Details"], ["files", "Files"], ["from", "From"]];
