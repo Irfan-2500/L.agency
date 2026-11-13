@@ -1102,7 +1102,7 @@ async function demoCall(a, d) {
     case "adminPptStart": return ok({ session: "demo" });
     case "adminCustomList": return ok({ items: Object.values(D.cust || (D.cust = { [D.orders[3].id]: { id: D.orders[3].id, price: 250, file: "demo-file", fileName: "Biology Cell Structure.pptx", slides: 32, demo: ["dark-chalk-physics-1","dark-chalk-physics-2","dark-chalk-physics-3","formula-board-maths-1","formula-board-maths-2","blue-red-gradient-1"].map(n => "uploads/themes/samples/" + n + ".webp"), payment: "" } })), payments: true });
     case "adminCustomStart": return ok({ session: "demo" });
-    case "adminCustomSave": { const c = Object.assign((D.cust || (D.cust = {}))[d.id] || { id: d.id, payment: "" }, { price: d.price }, d.file ? { file: d.file, fileName: d.fileName, slides: d.slides, demo: (d.refs || []).map(r => DEMO_IMG[r] || r) } : {});
+    case "adminCustomSave": { const c = Object.assign((D.cust || (D.cust = {}))[d.id] || { id: d.id, payment: "" }, { price: d.price }, d.file ? { file: d.file, fileName: d.fileName, slides: d.slides, demo: (d.refs || []).map(r => DEMO_IMG[r] || r) } : {}, d.lock ? { locked: d.lock.map(r => DEMO_IMG[r] || r) } : {});
       D.cust[d.id] = c; const o = D.orders.find(x => x.id === d.id); let st = o && o.status; if (o && (o.status === "New" || o.status === "In Progress")) st = o.status = "Done"; return ok({ item: JSON.parse(JSON.stringify(c)), status: st }); }
     case "adminCustomRemove": if (D.cust) delete D.cust[d.id]; return ok();
     case "adminCustomPdf": return { ok: false, error: "Demo mein PDF nahi banti" };
@@ -1430,7 +1430,7 @@ function drawOrders() {
   });
 }
 /* ---------- Custom order: final PPT upload → customer Track page par demo + pay + download ---------- */
-const FIN_DEMO = 10;
+const FIN_DEMO = 10, FIN_LOCK = 300;
 /* Customer ko "PPT ready" message: Track page ka link ke saath (ek click, WhatsApp khulta hai) */
 function finWa(o) {
   const m = String(o.mobile || "").replace(/\D/g, "").slice(-10); if (!/^[6-9]\d{9}$/.test(m)) return "";
@@ -1441,11 +1441,13 @@ function finWa(o) {
 function finHtml(o) {
   const c = CUST[String(o.id)];
   if (c && c.file) {
+    const noLock = c.demo.length && c.slides > FIN_DEMO && !(c.locked || []).length;
     const paid = !!c.payment || o.status === "Paid";
-    return `<div class="fin-box ${paid ? "paid" : ""}"><div class="fin-t">${ic("i-book")}<div><b>${esc(c.fileName)}</b><small>${c.slides ? c.slides + " slides · " : ""}${c.demo.length} demo slides · <b>₹${esc(c.price)}</b>${paid ? ` · ✅ Paid${c.payment ? " (" + esc(c.payment) + ")" : ""}` : " · customer Track page par pay karke download karega"}</small></div></div>
+    return `<div class="fin-box ${paid ? "paid" : ""}"><div class="fin-t">${ic("i-book")}<div><b>${esc(c.fileName)}</b><small>${c.slides ? c.slides + " slides · " : ""}${c.demo.length} demo${(c.locked || []).length ? " + " + c.locked.length + " locked" : ""} slides · <b>₹${esc(c.price)}</b>${paid ? ` · ✅ Paid${c.payment ? " (" + esc(c.payment) + ")" : ""}` : " · customer Track page par pay karke download karega"}</small></div></div>
       ${c.demo.length ? "" : `<div class="note" style="color:var(--warn)">⚠ Demo slides nahi hain, customer ko sirf pay ka option dikhega. "${FIN_DEMO} demo slides banao" dabaiye.</div>`}
+      ${noLock && !c.payment ? `<div class="note" style="color:var(--warn)">⚠ Baaki slides ki locked (dhundhli) photo nahi bani, customer ko ${FIN_DEMO} ke baad wahi slides dobara dikhengi. "Saari slides ki photo banao" dabaiye.</div>` : ""}
       ${c.demo.length ? `<div class="fin-th">${c.demo.slice(0, 5).map(u => `<img src="${esc(u)}" alt="" loading="lazy">`).join("")}${c.demo.length > 5 ? `<span>+${c.demo.length - 5}</span>` : ""}</div>` : ""}
-      ${c.payment ? "" : `<div class="row" style="gap:6px;flex-wrap:wrap">${finWa(o) ? `<a class="btn sm wa" href="${finWa(o)}" target="_blank" rel="noopener">${ic("i-msg")} Customer ko WhatsApp par batayein</a>` : ""}${c.demo.length ? "" : `<button class="btn sm pri" data-fin-demo>${ic("i-image")} ${FIN_DEMO} demo slides banao</button>`}<button class="btn sm" data-fin-up>${ic("i-upload")} File badlo</button><button class="btn sm" data-fin-price>₹ Daam badlo</button><button class="btn sm danger" data-fin-del>${ic("i-trash")} Hatao</button></div>`}
+      ${c.payment ? "" : `<div class="row" style="gap:6px;flex-wrap:wrap">${finWa(o) ? `<a class="btn sm wa" href="${finWa(o)}" target="_blank" rel="noopener">${ic("i-msg")} Customer ko WhatsApp par batayein</a>` : ""}${!c.demo.length || noLock ? `<button class="btn sm pri" data-fin-demo>${ic("i-image")} ${c.demo.length ? "Saari slides ki photo banao" : FIN_DEMO + " demo slides banao"}</button>` : ""}<button class="btn sm" data-fin-up>${ic("i-upload")} File badlo</button><button class="btn sm" data-fin-price>₹ Daam badlo</button><button class="btn sm danger" data-fin-del>${ic("i-trash")} Hatao</button></div>`}
       <div data-fin-form></div></div>`;
   }
   return `<div class="fin-empty"><button class="btn sm pri" data-fin-up>${ic("i-upload")} Final PPT upload karein</button><span class="note">Customer Track page par ${FIN_DEMO} slide ka demo dekhega, Razorpay se pay karega aur turant download karega.</span></div><div data-fin-form></div>`;
@@ -1482,11 +1484,20 @@ async function finDemo(box, o, set) {
   set("Demo slides ki photo ban rahi hai…");
   const x = await pdfShots(pdf, Array.from({ length: FIN_DEMO }, (_, i) => i + 1), set, null);
   if (!x.refs.length) throw new Error("PDF se photo nahi bani");
+  const lock = await finLockShots(pdf, x.count, set);
   set("Save ho raha hai…");
-  const r = await call("adminCustomSave", { id, price: c.price, slides: c.slides || x.count, refs: x.refs, tmp: p.keep ? "" : p.pdf });
+  const r = await call("adminCustomSave", { id, price: c.price, slides: c.slides || x.count, refs: x.refs, lock, tmp: p.keep ? "" : p.pdf });
   if (!r.ok) throw new Error(r.error);
   CUST[id] = r.item; box.innerHTML = finHtml(o); bindFin(box);
-  toast(`✅ ${x.refs.length} demo slides ban gayi`);
+  toast(`✅ ${x.refs.length} demo + ${lock.length} locked slides ki photo ban gayi`);
+}
+/* Baaki (locked) slides: chhoti dhundhli photo, Track page par lock ke saath poori PPT dikhe */
+async function finLockShots(pdf, count, set) {
+  const n = Math.min(count, FIN_DEMO + FIN_LOCK) - FIN_DEMO;
+  if (n < 1) return [];
+  const pages = Array.from({ length: n }, (_, i) => FIN_DEMO + 1 + i);
+  const x = await pdfShots(pdf, pages, t => set(`Locked slides ki photo: ${t.replace(/[^\d]/g, "")} / ${FIN_DEMO + n}…`), null, 150);
+  return x.refs;
 }
 function finForm(box, o, el, priceOnly) {
   if (!CUST_ON) return toast("Google Script mein CustomPay.gs ka update abhi baaki hai", true);
@@ -1520,11 +1531,11 @@ function finForm(box, o, el, priceOnly) {
         set("Demo slides ki photo ban rahi hai…");
         let refs = [], slides = 0;
         try {
-          if (/\.pdf$/i.test(file.name)) { const x = await pdfShots(file, Array.from({ length: FIN_DEMO }, (_, i) => i + 1), set, null); refs = x.refs; slides = x.count; }
-          else if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); slides = m ? m.slides : 0; refs = await pptxShots(file, FIN_DEMO, set, null); }
+          if (/\.pdf$/i.test(file.name)) { const x = await pdfShots(file, Array.from({ length: FIN_DEMO }, (_, i) => i + 1), set, null); refs = x.refs; slides = x.count; body.lock = await finLockShots(file, x.count, set); }
+          else if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); slides = m ? m.slides : 0; }
         } catch (x) { console.error(x); }
         Object.assign(body, { file: fileId, fileName: file.name, slides, refs });
-        if (!refs.length && /\.pptx?$/i.test(file.name)) body.later = true;   // browser se nahi bani → Google se PDF bana kar
+        if (!refs.length && /\.pptx?$/i.test(file.name)) body.later = true;   // PPT → Google se PDF → demo + locked slides ki photo
       } else Object.assign(body, { slides: c.slides });
       set("Save ho raha hai…");
       const r = await call("adminCustomSave", body);
@@ -3248,8 +3259,16 @@ async function pdfMeta(file, pe) {
     if (isNote(pe) && Math.abs(r - 1.414) > .04) toast("⚠️ Ye PDF A4 size ki nahi lagti. Notes A4 (210 × 297 mm) mein ho to print achha aata hai.", true);
   } catch (e) {}
 }
+// Locked slide: chhoti karke wapas badi (photo hi dhundhli bane, CSS hata kar bhi padh na sake)
+function blurShot(c, w) {
+  const W = 640, H = Math.round(c.height * W / c.width), sm = document.createElement("canvas"), o = document.createElement("canvas");
+  sm.width = w; sm.height = Math.max(1, Math.round(c.height * w / c.width)); o.width = W; o.height = H;
+  const a = sm.getContext("2d"), b = o.getContext("2d"); a.imageSmoothingQuality = b.imageSmoothingQuality = "high";
+  a.drawImage(c, 0, 0, sm.width, sm.height); b.drawImage(sm, 0, 0, W, H);
+  return o;
+}
 // PDF ke kuch page ki preview photo (background job mein)
-async function pdfShots(file, pages, tick, each) {
+async function pdfShots(file, pages, tick, each, blurW) {
   const lib = await loadPdfJs(), doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise, refs = [];
   const list = (pages || Array.from({ length: PV_AUTO }, (_, i) => i + 1)).filter(n => n <= doc.numPages), ups = [];
   let chain = Promise.resolve();   // photo banate jao, upload peeche saath-saath (3 ek saath); kram wahi rahe
@@ -3260,7 +3279,8 @@ async function pdfShots(file, pages, tick, each) {
       c.width = Math.round(vp.width); c.height = Math.round(vp.height);
       const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
       await page.render({ canvasContext: g, viewport: vp }).promise;
-      const up = shotUpload(c, file.name.replace(/\.\w+$/, "").slice(0, 60) + "-p" + n).catch(() => null);
+      const out = blurW ? blurShot(c, blurW) : c;
+      const up = shotUpload(out, file.name.replace(/\.\w+$/, "").slice(0, 60) + "-p" + n).catch(() => null);
       ups.push(up); chain = chain.then(() => up).then(r => { if (r && each) each(r); });
       if (ups.length >= 3) await ups[ups.length - 3];
     } catch (e) {}

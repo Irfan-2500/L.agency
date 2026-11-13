@@ -141,7 +141,7 @@ html.light .rd-h .pill{color:#a16207}
 .thumbs button{flex:none;width:76px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:2px solid transparent;background:#fff;opacity:.65;padding:0}
 .thumbs button.on{border-color:var(--violet);opacity:1}
 .thumbs img{width:100%;height:100%;object-fit:cover}
-.stage.lk img{filter:blur(1.5px);transform:scale(1.02)}
+.stage.lk img{filter:blur(1.5px);transform:scale(1.02)} .stage.lk.lr img{filter:none;transform:none}
 .lk-cta{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:6px;text-align:center;padding:14px;background:rgba(7,8,12,.02);color:#fff}
 .lk-cta .lk-ic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;border:2px solid rgba(255,255,255,.7);font-size:1.3rem}
 .lk-cta b{font-size:1rem;background:rgba(7,8,12,.7);padding:4px 12px;border-radius:10px} .lk-cta small{font-size:.8rem;background:rgba(7,8,12,.7);padding:3px 10px;border-radius:8px}
@@ -151,7 +151,7 @@ html.light .rd-h .pill{color:#a16207}
 @media(max-width:520px){.lk-cta{gap:4px;padding:8px}.lk-cta small{display:none}.lk-cta .lk-ic{width:36px;height:36px;font-size:1rem}.lk-cta b{font-size:.9rem}.lk-cta .btn{padding:7px 12px;font-size:.78rem}}
 .thumbs button{position:relative}
 .thumbs button span{position:absolute;right:3px;bottom:3px;background:rgba(7,8,12,.7);color:#fff;font-size:.6rem;font-weight:700;padding:1px 5px;border-radius:5px}
-.thumbs button.lk img{filter:blur(.5px)}
+.thumbs button.lk img{filter:blur(.5px)} .thumbs button.lr img{filter:none}
 .thumbs button.lk span{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);font-size:.8rem;background:rgba(7,8,12,.75)}
 .lock-n{font-size:.8rem;color:var(--muted);text-align:center}
 .paybox{display:grid;gap:12px;background:var(--bg2);border:1px solid var(--line2);border-radius:16px;padding:16px}
@@ -310,7 +310,7 @@ function readyHtml(o){
         <div class="lk-cta" id="lkCta" hidden><span class="lk-ic">🔒</span><b id="lkT"></b><small>${inr(p.price)} pay karke poori PPT paayein</small><button type="button" class="btn btn-gold" id="lkPay">Pay karke unlock karein</button></div>
         <button type="button" class="nav-b l" id="sPrev" aria-label="Pichhli slide">${icon("i-left")}</button><button type="button" class="nav-b r" id="sNext" aria-label="Agli slide">${icon("i-right")}</button>
         <span class="cnt" id="sCnt"></span></div>
-      <div class="thumbs" id="thumbs">${slots(p).map((x, i) => `<button type="button" data-i="${i}" class="${x.lock ? "lk" : ""}" aria-label="${x.lock ? `Slide ${i + 1} locked` : `Slide ${i + 1}`}"><img src="${esc(x.src)}" alt="" loading="lazy"><span>${x.lock ? "🔒" : i + 1}</span></button>`).join("")}</div>
+      <div class="thumbs" id="thumbs">${slots(p).map((x, i) => `<button type="button" data-i="${i}" class="${x.lock ? "lk" : ""}${x.real ? " lr" : ""}" aria-label="${x.lock ? `Slide ${i + 1} locked` : `Slide ${i + 1}`}"><img src="${esc(x.src)}" alt="" loading="lazy"><span>${x.lock ? "🔒" : i + 1}</span></button>`).join("")}</div>
       <p class="lock-n">🔒 ${d.length} slides free demo${slots(p).length > d.length ? ` · baaki ${slots(p).length - d.length} slides lock hain (kul ${slots(p).length})` : ""}. Payment ke baad poori PPT turant download hogi.</p></div>` : ""}
     <div class="paybox" id="paybox">
       ${p.payments ? `<h3>Pay <b>${inr(p.price)}</b> aur PPT turant download karein</h3>
@@ -326,12 +326,13 @@ function readyHtml(o){
 let SI = 0;
 /* Pehli slides khuli, baaki sab dikhti hain par lock (dhundhli). Locked par asli photo kabhi nahi, sirf free wali dhundhli */
 function slots(p){ const d = p.demo || [], N = Math.max(d.length, Math.min(Number(p.slides) || 0, 300));
-  return Array.from({ length:N }, (_, k) => k < d.length ? { src:d[k], lock:false } : { src:d[k % d.length], lock:true }); }
+  const L = p.locked || [];   // baaki slides ki asli (pehle se dhundhli) photo; na ho to free wali dobara
+  return Array.from({ length:N }, (_, k) => k < d.length ? { src:d[k], lock:false } : L[k - d.length] ? { src:L[k - d.length], lock:true, real:true } : { src:d[k % d.length], lock:true }); }
 function drawSlide(i){
   const p = CUR && CUR.ppt, d = (p && p.demo) || []; if (!d.length || !$("#sImg")) return;
   const S = slots(p); SI = Math.max(0, Math.min(S.length - 1, i)); const x = S[SI];
   $("#sImg").src = x.src; $("#sCnt").textContent = `Slide ${SI + 1} / ${S.length}`;
-  $("#stage").classList.toggle("lk", x.lock); $("#lkCta").hidden = !x.lock; if (x.lock) $("#lkT").textContent = `Slide ${SI + 1} locked`;
+  $("#stage").classList.toggle("lk", x.lock); $("#stage").classList.toggle("lr", !!x.real); $("#lkCta").hidden = !x.lock; if (x.lock) $("#lkT").textContent = `Slide ${SI + 1} locked`;
   $("#sPrev").disabled = SI === 0; $("#sNext").disabled = SI === S.length - 1;
   document.querySelectorAll("#thumbs button").forEach((b, j) => b.classList.toggle("on", j === SI));
   const t = document.querySelector(`#thumbs button[data-i="${SI}"]`); if (t) t.scrollIntoView({ block:"nearest", inline:"nearest" });
