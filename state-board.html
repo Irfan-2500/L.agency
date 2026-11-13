@@ -274,7 +274,8 @@ function render(){
  $("stSel").value=s.st;$("crSt").textContent=GRP?sbLabel(s.st):s.st;
  $("ttl").textContent=sbLabel(s.st);
  document.querySelector(".hic").textContent=GRP?(GCAT&&GCAT.e)||"📁":IC[s.st]||"🗺️";
- const all=SUBJ(s.c),k=s.q.trim().toLowerCase(),subs=all.filter(x=>!k||x.toLowerCase().includes(k));
+ const base=SUBJ(s.c),ext=[...new Set(Object.keys(window.STATE_FILES||{}).map(q=>q.split("|")).filter(p=>p[0]===s.st&&(p[1]===s.t||(s.t===PYQ&&p[1]===CPYQ))&&+p[2]===s.c&&p[3]===s.m&&p[4]&&p[4]!=="-"&&p[4]!=="Poori Class"&&!base.includes(p[4])).map(p=>p[4]))].sort();   /* admin ne joda naya subject (Home Science…) */
+ const all=base.concat(ext),k=s.q.trim().toLowerCase(),subs=all.filter(x=>!k||x.toLowerCase().includes(k));
  /* PYQ tab: Year-wise / Chapter-wise switch */
  let pmEl=$("pm");if(!pmEl){pmEl=document.createElement("div");pmEl.id="pm";pmEl.className="pm";pmEl.setAttribute("role","group");pmEl.setAttribute("aria-label","PYQ dekhne ka tareeka");$("list").before(pmEl);
   pmEl.onclick=e=>{const b=e.target.closest("button");if(b){s.pm=b.dataset.v;render();}};}
