@@ -24,7 +24,7 @@ const ALIAS = { "Bihar":"Bihar Board (BSEB)", "UP":"UP Board (UPMSP)", "Andhra P
   "Jharkhand":"Jharkhand Board (JAC)", "Telangana":"Telangana Board (TS BSE)", "CISCE":"CISCE (ICSE / ISC)", "NIOS":"NIOS", "Odisha":"Odisha Board (BSE / CHSE)",
   "Assam":"Assam Board (SEBA / AHSEC)", "Jammu & Kashmir":"JK Board (JKBOSE)" };
 const STATIC = [["", "1.0"], ["cbse-date-sheet-2027.html", "0.9"], ["bihar-board-class-10-syllabus.html", "0.9"], ["bihar-board-class-12-syllabus.html", "0.9"], ["ready-ppts.html", "0.9"], ["study-material", "0.9"], ["state-books.html", "0.8"], ["order.html", "0.8"], ["educational-ppt.html", "0.8"], ["ready-made-ppt.html", "0.8"],
-  ["custom-ppt-design.html", "0.8"], ["student-ppt.html", "0.8"], ["study-notes-pdf.html", "0.8"], ["cbse-icse-state-board-ppt.html", "0.8"], ["lecture-recording-video-editing.html", "0.7"],
+  ["ai-ppt.html", "0.8"], ["custom-ppt-design.html", "0.8"], ["student-ppt.html", "0.8"], ["study-notes-pdf.html", "0.8"], ["cbse-icse-state-board-ppt.html", "0.8"], ["lecture-recording-video-editing.html", "0.7"],
   ["about.html", "0.5"], ["service.html", "0.5"], ["contact.html", "0.4"], ["privacy.html", "0.2"], ["terms.html", "0.2"], ["refund.html", "0.2"], ["delivery.html", "0.2"]];
 
 const slug = t => String(t || "").toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
@@ -67,6 +67,7 @@ const sbLink = (k, v) => {   // website ka asli page jahan file khulti hai
   return "/view.html?" + qs({ ...base, f });
 };
 /* Menu item ki apni bani hui page ho to wahi khulti hai */
+const LEVEL_ALIAS = { Bihar: { 10: "Matric", 12: "Inter" }, UP: { 10: "High School", 12: "Intermediate" }, Jharkhand: { 10: "Matric", 12: "Inter" } };
 const BOARD_PAGES = { Bihar: [["/bihar-board-class-10-syllabus.html", "Class 10 Syllabus 2026-27"], ["/bihar-board-class-12-syllabus.html", "Class 12 Syllabus 2026-27"]] };
 const ITEM_PAGE = { "/topic/cbse/cbse-exam-date-sheet-2027": "/cbse-date-sheet-2027.html" };
 /* Admin → menu item me upload hui files (key "CBSE › CBSE Exam Date Sheet 2027|...") */
@@ -226,13 +227,19 @@ function boardFilePage(D, ss, fs) {
   const x = sbParts(k), v = D.files[k] || {}, nm = ALIAS[st] || st + " Board", url = sbUrl(k), t = sbTitle(k);
   const fmts = ["pdf", "word", "ppt"].filter(f => v[f]).map(f => f === "pdf" ? "PDF" : f === "word" ? "Word" : "PPT");
   const chapters = arr(v.chapters).map(c => c && c.name).filter(Boolean);
-  const title = fit(t, ` – ${fmts.length ? fmts.join(", ") : "PDF"} Download`);
-  const desc = clip(`${nm} Class ${x.c} ${x.sub} ${x.t}${x.y ? " " + x.y : ""} (${x.m || "Hindi & English"} medium). ${chapters.length ? chapters.length + " chapters: " + chapters.slice(0, 4).join(", ") + ". " : ""}${v.sets ? arr(v.sets).length + " sets. " : ""}View and download online.`, 158);
+  const isPYQ = x.t === "Previous Year Questions", lvl = LEVEL_ALIAS[st] && LEVEL_ALIAS[st][x.c];   // Bihar: Matric / Inter
+  const stN = ALIAS[st] ? st + " Board" : st, enM = /english/i.test(x.m || "") ? " English Medium" : "";
+  const title = isPYQ ? fit(`${stN} Class ${x.c} ${x.sub} Question Paper ${x.y || ""}`.trim() + enM, ` PDF${lvl ? " (" + lvl + " PYQ)" : " (PYQ)"}`)
+    : fit(t, ` – ${fmts.length ? fmts.join(", ") : "PDF"} Download`);
+  const desc = isPYQ
+    ? clip(`${nm} Class ${x.c}${lvl ? " (" + lvl + ")" : ""} ${x.sub} previous year question paper ${x.y || ""} PDF, ${x.m || "Hindi & English"} medium. ${v.sets ? arr(v.sets).length + " sets. " : ""}Real board exam paper (PYQ) for practice – view and download free on PPT Store.`, 158)
+    : clip(`${nm} Class ${x.c} ${x.sub} ${x.t}${x.y ? " " + x.y : ""} (${x.m || "Hindi & English"} medium). ${chapters.length ? chapters.length + " chapters: " + chapters.slice(0, 4).join(", ") + ". " : ""}${v.sets ? arr(v.sets).length + " sets. " : ""}View and download online.`, 158);
   const crumb = [["Home", "/"], [nm, `/board/${ss}`], [t]];
   const sibs = Object.keys(D.files).filter(o => o !== k && sbParts(o).st === st && sbParts(o).c === x.c).slice(0, 12);
   const body = `${crumbs(crumb)}<h1>${E(t)}</h1>
 <div class="facts">${[nm, "Class " + x.c, x.sub, x.t, x.y, x.m && x.m + " Medium", ...fmts].filter(Boolean).map(s => `<span>${E(s)}</span>`).join("")}</div>
 <p class="txt">${E(nm)} Class ${E(x.c)} ${E(x.sub)} ${E(x.t)}${x.y ? " " + E(x.y) : ""}${x.m ? " in " + E(x.m) + " medium" : ""}. Open it online on PPT Store${fmts.length ? " in " + E(fmts.join(", ")) : ""}.</p>
+${isPYQ ? `<p class="txt">Ye ${E(st)} Board ${lvl ? E(lvl) + " (Class " + E(x.c) + ")" : "Class " + E(x.c)} ${E(x.sub)} ka ${x.y ? E(x.y) + " ka " : ""}asli board exam question paper hai. Pichhle saal ke paper solve karne se exam pattern, important questions aur marks distribution samajh aata hai.</p>` : ""}
 ${chapters.length ? `<h2>Chapters</h2><ol style="padding-left:20px;color:var(--muted)">${chapters.map(c => `<li>${E(c)}</li>`).join("")}</ol>` : ""}
 <div class="btns"><a class="btn p" href="${E(sbLink(k, v))}">Open &amp; Download</a><a class="btn" href="/board/${ss}">All ${E(nm)} files</a></div>
 ${sibs.length ? `<h2>More ${E(st)} Board Class ${E(x.c)}</h2><ul class="list">${sibs.map(o => { const y = sbParts(o); return `<li><a href="${E(sbUrl(o))}"><b>${E([y.sub, y.t, y.y].filter(Boolean).join(" · "))}</b><small>${E(y.m ? y.m + " Medium" : "")}</small></a></li>`; }).join("")}</ul>` : ""}`;
