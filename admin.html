@@ -2971,7 +2971,7 @@ async function sbzFlush(key) {
   while (q.rows.length) {
     const batch = q.rows.splice(0), kind = sbKind(batch[0].r.t), rec = sbNorm(SB[key], kind);
     batch.forEach(({ r }) => {
-      if (kind === "one") rec[r.fmt] = r.id;
+      if (kind === "one") { rec[r.fmt] = r.id; if (r.fmt === "pdf" || !rec.name) rec.name = r.file.slice(0, 160); }
       else if (kind === "sets") { while (rec.sets.length < r.set) rec.sets.push({}); rec.sets[r.set - 1][r.fmt] = r.id; }
       else { while (rec.chapters.length < r.ch) rec.chapters.push({ name: "" }); const c = rec.chapters[r.ch - 1]; c[r.fmt] = r.id; if (!String(c.name || "").trim()) c.name = (r.chn || "Chapter " + r.ch).slice(0, 120); }
     });
@@ -3033,10 +3033,11 @@ async function sbPicked() {
   delete SBUP[uk];
   if (!r.ok) { if ($("#sbEd")) sbDraw(); return toast("Upload nahi hua: " + r.error, true); }
   const ref = "drive:" + r.v;
-  if ($("#sbEd") && sbKey() === key && sbObj(p)) { sbObj(p)[k] = ref; sbDraw(); return sbSave(true); }
+  const nm = file.name.replace(/\.[^.]+$/, "").slice(0, 160);   // file ka title (website list mein)
+  if ($("#sbEd") && sbKey() === key && sbObj(p)) { sbObj(p)[k] = ref; if (p === "" && (k === "pdf" || !sbObj(p).name)) sbObj(p).name = nm; sbDraw(); return sbSave(true); }
   // user doosre page / doosri jagah chala gaya → seedha us jagah ka record update
   const rec = sbNorm(SB[key], kind), t = p === "" ? rec : p[0] === "s" ? (rec.sets[+p.slice(1)] = rec.sets[+p.slice(1)] || {}) : (rec.chapters[+p.slice(1)] = rec.chapters[+p.slice(1)] || { name: "Chapter " + (+p.slice(1) + 1) });
-  t[k] = ref;
+  t[k] = ref; if (p === "" && (k === "pdf" || !t.name)) t.name = nm;
   const sv = await call("adminSbSave", { key, rec });
   if (!sv.ok) return toast("File upload hui par save nahi hui: " + sv.error, true);
   SB[key] = sv.rec || rec; if ($("#sbList")) sbList();
