@@ -129,6 +129,19 @@ h1{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;line-height:1.15}
  .help{flex-wrap:wrap}.help a{width:100%;text-align:center}
 }
 @media (min-width:1000px){.list{display:grid;grid-template-columns:1fr 1fr;gap:12px}.q{width:220px}}
+/* Model Paper: numbered cards (subject rang, saal ka badge, file buttons) */
+.list.mp{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:1000px){.list.mp{grid-template-columns:1fr 1fr}}
+.it.mp{position:relative;overflow:hidden;cursor:pointer;gap:14px;padding:14px 14px 14px 18px;border-radius:18px;background:linear-gradient(100deg,color-mix(in srgb,var(--sc) 9%,var(--card)) 0%,var(--card) 55%)}
+.it.mp::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 4px 4px 0;background:var(--sc)}
+.it.mp .num{position:absolute;right:-6px;bottom:-22px;font:800 4.6rem/1 'Space Grotesk',sans-serif;color:var(--sc);opacity:.08;pointer-events:none}
+.it.mp .si{position:relative}
+.it.mp .si b{position:absolute;top:-7px;left:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;display:grid;place-items:center;background:var(--sc);color:#fff;font:800 .68rem 'Space Grotesk',sans-serif;box-shadow:0 0 0 2px var(--card)}
+.it.mp .nm b{font-size:1.05rem}
+.it.mp .nm small{display:flex!important;flex-wrap:wrap;align-items:center;gap:6px;margin-top:4px;font-size:.74rem;font-weight:600}
+.it.mp .yb{padding:2px 8px;border-radius:99px;background:var(--sc);color:#fff;font-weight:800;font-size:.68rem;letter-spacing:.02em}
+.it.mp .fs{gap:4px;padding:4px;border-radius:14px;background:var(--card2);border:1px solid var(--line);position:relative}
+@media (max-width:640px){.it.mp{gap:10px;padding:12px 10px 12px 14px}.it.mp .nm small .md{display:none}.it.mp .num{font-size:3.6rem;bottom:-16px}}
 @media (prefers-reduced-motion:reduce){.it{animation:none}}
 </style>
 </head>
@@ -198,6 +211,7 @@ const SUBJ=c=>c<=5?["English","Hindi","Maths","EVS","Computer","General Knowledg
  :["English","Hindi","Physics","Chemistry","Maths","Biology","Accountancy","Business Studies","Economics","History","Political Science","Geography","Computer Science"];
 /* Pichhle 10 saal (board exam March me hota hai) */
 const _d=new Date(),LAST=_d.getMonth()>=2?_d.getFullYear():_d.getFullYear()-1,YEARS=Array.from({length:10},(_,i)=>LAST-i);
+const MP="Model Paper",MPY=_d.getMonth()>=2?_d.getFullYear()+1:_d.getFullYear();   /* agla board exam ka saal */
 const PYQ="Previous Year Questions",CPYQ="Chapter-wise PYQ",CHT=["Notes"];   /* in tabs me subject dabane par chapters ki list */
 const NEWTAB=window.self===window.top?' target="_blank" rel="noopener"':"";
 const FMT=[["PDF","gP","PDF"],["Word","gW","W"],["PPT","gT","P"]];
@@ -268,10 +282,12 @@ function render(){
  pmEl.innerHTML=[["year","📅 Year-wise"],["ch","📑 Chapter-wise"]].map(([v,l])=>`<button type="button" data-v="${v}" aria-pressed="${s.pm===v}">${l}</button>`).join("");
  const chT=s.t===PYQ&&s.pm==="ch"?CPYQ:CHT.includes(s.t)?s.t:"";
  document.querySelector(".legend").style.visibility=(s.t===PYQ||chT)?"hidden":"";
- $("cnt").innerHTML=`<b>${subs.length}</b> subjects · Class ${s.c}`;
+ $("cnt").innerHTML=`<b>${subs.length}</b> ${s.t===MP?"model papers":"subjects"} · Class ${s.c}`;
+ $("list").classList.toggle("mp",s.t===MP);
  $("list").innerHTML=subs.length?subs.map((x,i)=>{const [e,c]=SI[x]||["📘","#f97316"];
   if(chT){const n=(((window.STATE_FILES||{})[[s.st,chT,s.c,s.m,x].join("|")]||{}).chapters||[]).length;
    return `<a class="it ch" style="--sc:${c};animation-delay:${i*35}ms" href="chapters.html?${new URLSearchParams({s:s.st,t:chT,c:s.c,m:s.m,sub:x})}" data-ui="state_chapters"><span class="si">${e}</span><div class="nm"><b>${esc(x)}</b><small>${n?n+" chapters":chT===CPYQ?"Chapter wise PYQ":"Chapter wise notes"}</small></div><span class="go"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span></a>`;}
+  if(s.t===MP)return `<div class="it mp" style="--sc:${c};animation-delay:${i*35}ms"><span class="num" aria-hidden="true">${String(i+1).padStart(2,"0")}</span><span class="si">${e}<b>${i+1}</b></span><div class="nm"><b>${esc(x)}</b><small><span class="yb">${MPY}</span>Model Paper<span class="md">· ${s.m==="Hindi"?"हिंदी":"English"} Medium</span></small></div><div class="fs">${FMT.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m,sub:x,f:f[0]})}" title="${esc(x)} ${MPY} Model Paper — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`;
   if(s.t===PYQ)return `<div class="it py" style="--sc:${c};animation-delay:${i*35}ms"><span class="si">${e}</span><div class="nm"><b>${esc(x)}</b></div><div class="yrs">${YEARS.map(y=>`<a class="yr" href="papers.html?${new URLSearchParams({s:s.st,c:s.c,m:s.m,sub:x,y})}" data-ui="state_pyq_year">${y}</a>`).join("")}</div></div>`;
   return `<div class="it" style="--sc:${c};animation-delay:${i*35}ms"><span class="si">${e}</span><div class="nm"><b>${esc(x)}</b></div><div class="fs">${FMT.map(f=>`<a class="f"${NEWTAB} href="view.html?${new URLSearchParams({s:s.st,t:s.t,c:s.c,m:s.m,sub:x,f:f[0]})}" title="${esc(x)} — ${f[0]==="PPT"?"PowerPoint":f[0]}" data-ui="state_file">${icon(f)}<em>${f[0].toUpperCase()}</em></a>`).join("")}</div></div>`}).join("")
   :`<div class="none">"${esc(s.q)}" naam ka subject nahi mila.</div>`;
@@ -285,6 +301,7 @@ $("cls").onclick=e=>{const b=e.target.closest(".cl");if(b){s.c=+b.dataset.v;rend
 $("med").onclick=e=>{const b=e.target.closest("button");if(b){s.m=b.dataset.v;render();}};
 $("stSel").onchange=e=>{s.st=e.target.value;render();};
 $("q").oninput=e=>{s.q=e.target.value;render();};
+$("list").addEventListener("click",e=>{if(e.target.closest("a"))return;const r=e.target.closest(".it.mp"),f=r&&r.querySelector("a.f");if(f)f.click();});   /* Model Paper: poori line par click = PDF */
 document.addEventListener("sbdata",render);
 render();
 const a=document.querySelector('.cl[aria-pressed="true"]');if(a)a.scrollIntoView({inline:"center",block:"nearest"});
