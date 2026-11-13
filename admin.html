@@ -402,7 +402,15 @@ label.f span{font-weight:500;color:var(--dim)}
 @media(max-width:560px){.bars.b30 .b span{display:none}}
 .rtbl{overflow-x:auto}
 .vth{flex-wrap:wrap;gap:8px}.vtnav{margin-left:auto;display:flex;gap:6px;align-items:center}.vtnav input{width:auto;padding:6px 8px}.vtnav .btn:disabled{opacity:.4}
-.vtsum{margin:0 0 8px}.vtl{margin:16px 0 6px;font-size:.9rem}.vtl small{color:var(--dim);font-weight:500}
+.vtsum{margin:0 0 8px}.vtmode{margin:0 0 10px}
+.mtool{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}.mtool .seg button{padding:5px 11px;font-size:.8rem}.mtool .vtnav .note{margin:0;font-size:.8rem;white-space:nowrap}
+.msum{margin:0 0 6px}.msum small{display:block;color:var(--dim);margin-top:2px}
+.mchart svg{touch-action:pan-y;cursor:crosshair}.mchart svg:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:6px}
+.mchart .mov{fill:transparent}.mchart .mcur{stroke:var(--line2);stroke-dasharray:3 3;pointer-events:none}
+.mchart rect[data-m]{pointer-events:none}.mchart rect.hl{filter:brightness(1.25);stroke:var(--text);stroke-width:1}
+.mchart .mfut{fill:var(--bg2);opacity:.55;pointer-events:none}.mchart .mnow{stroke:var(--bad);stroke-width:1.2;stroke-dasharray:2 3}
+.ctip .mpg{font-size:.72rem;color:var(--dim);padding-left:15px}
+.bmin{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}.bmin .ch{margin-bottom:8px}.vtl{margin:16px 0 6px;font-size:.9rem}.vtl small{color:var(--dim);font-weight:500}
 .vtlist{max-height:360px;overflow:auto}.vtlist td:not(:first-child),.vtlist th:not(:first-child){text-align:left}
 .rtbl table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:tabular-nums}
 .rtbl th,.rtbl td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
@@ -1098,7 +1106,7 @@ async function demoCall(a, d) {
       const pages = ["/", "/ready-ppts", "/order", "/about", "/contact"], src = ["Google", "Direct", "WhatsApp", "Instagram"], pl = ["Patna, Bihar", "Delhi, Delhi", "Lucknow, Uttar Pradesh", "Jaipur, Rajasthan"];
       let x = [...String(d.day)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) & 0x7fffffff, 7); const rnd = () => (x = (x * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
       const hours = Array.from({ length: 24 }, (_, h) => { const w = h < 7 ? .2 : h < 10 ? 1.4 : h < 17 ? 2.4 : h < 22 ? 3 : 1; const v = Math.round(rnd() * w * 2); return { visits: v, visitors: Math.max(0, v - (v > 1 ? 1 : 0)) }; });
-      const list = []; for (let h = 23; h >= 0; h--) for (let i = 0; i < hours[h].visits; i++) list.push({ t: String(h).padStart(2, "0") + ":" + String(Math.floor(rnd() * 60)).padStart(2, "0"), who: Math.floor(rnd() * 65535).toString(16).toUpperCase().padStart(4, "0"), page: pages[Math.floor(rnd() * 5)], src: src[Math.floor(rnd() * 4)], place: pl[Math.floor(rnd() * 4)], device: rnd() < .75 ? "Mobile" : "Computer", browser: "Chrome" });
+      const list = []; let lm = 0; for (let h = 23; h >= 0; h--) for (let i = 0; i < hours[h].visits; i++) list.push({ t: String(h).padStart(2, "0") + ":" + String(i && rnd() < .35 ? lm : (lm = Math.floor(rnd() * 60))).padStart(2, "0"), who: Math.floor(rnd() * 65535).toString(16).toUpperCase().padStart(4, "0"), page: pages[Math.floor(rnd() * 5)], src: src[Math.floor(rnd() * 4)], place: pl[Math.floor(rnd() * 4)], device: rnd() < .75 ? "Mobile" : "Computer", browser: "Chrome" });
       list.sort((a, b) => a.t < b.t ? 1 : -1);
       return ok({ day: d.day, visitors: hours.reduce((s, h) => s + h.visitors, 0), hours, list });
     }
@@ -2193,6 +2201,7 @@ async function openBig(m) {
   const g = granOf(R, RG.g), B = mkBuckets(R, g), vals = M.bucket(D, B), tot = M.tot(D), ptot = M.tot(D, 1);
   const best = vals.length ? vals.indexOf(Math.max(...vals)) : -1, avg = vals.length ? sum(vals) / vals.length : 0;
   const per = ({ day: "day", week: "week", month: "month", year: "year" })[g];
+  const mins = (m === "visitors" || m === "views") && !!D.st;   // in dono ke liye har minute ka graph bhi
   $("#bigB").innerHTML = rangeBar(R) + rangeNote(D) + `
     <div class="bigk">
       <div><small>${M.ratio ? "Overall" : "Total"}</small><b>${M.fmt(tot)}</b>${R.k === "all" ? "" : delta(tot, ptot, "prev. period")}</div>
@@ -2200,8 +2209,10 @@ async function openBig(m) {
       <div><small>Average per ${per}</small><b>${M.fmt(M.ratio ? Math.round(avg * 10) / 10 : Math.round(avg * 10) / 10)}</b></div>
       <div><small>Best ${per}</small><b>${best >= 0 && vals[best] ? M.fmt(vals[best]) : "—"}</b><span class="note">${best >= 0 && vals[best] ? esc(B[best].full) : ""}</span></div>
     </div>
-    ${comboChart("bigChart", B.map(b => b.lab), { name: M.name, vals, col: M.col, fmt: M.fmt }, null, { h: 300, full: B.map(b => b.full), bars: true })}`;
+    ${mins && B.length === 1 ? "" : comboChart("bigChart", B.map(b => b.lab), { name: M.name, vals, col: M.col, fmt: M.fmt }, null, { h: 300, full: B.map(b => b.full), bars: true })}
+    ${mins ? bigMinuteHTML(R) : ""}`;
   bindRange($("#bigB"), () => openBig(m));
+  if (mins) bindBigMinute(m === "visitors" ? "u" : "v");
 }
 let BIG_BACK = null;
 function closeBig() { $("#bigM").hidden = true; BIG = null; document.body.classList.remove("noscroll"); if (BIG_BACK && BIG_BACK.focus) BIG_BACK.focus(); }
@@ -2270,7 +2281,7 @@ function drawStats(D) {
 }
 
 /* ---------- Visits by time: ek din ke har ghante ke visits + har visit ka time (IST) ---------- */
-let VT_DAY = "", VT_RG = "";
+let VT_DAY = "", VT_RG = "", VT_MODE = "min";
 const VT = {};
 function vtDay(R) {   // range badle to range ka aakhri din; warna jo din chuna tha
   const k = ymd(R.from) + "|" + ymd(R.to), today = ymd(day0(0));
@@ -2288,13 +2299,8 @@ function bindVT() {
 async function loadVT() {
   const day = VT_DAY, el = $("#vtBody"); if (!el) return;
   const nx = $('[data-vt="1"]'); if (nx) nx.disabled = day >= ymd(day0(0));
-  const c = VT[day], live = day === ymd(day0(0));
-  let r = c && (!live || Date.now() - c.at < 30000) ? c.r : null;
-  if (!r) {
-    if (!c) el.innerHTML = `<p class="note">Loading…</p>`;
-    r = await call("adminVisitTimes", { day });
-    if (r.ok) VT[day] = { r, at: Date.now() };
-  }
+  if (!VT[day]) el.innerHTML = `<p class="note">Loading…</p>`;
+  const r = await getVT(day);
   const el2 = $("#vtBody");
   if (VT_DAY !== day || !el2) return;
   if (!r.ok) return el2.innerHTML = /Unknown admin action/i.test(r.error || "")
@@ -2305,10 +2311,105 @@ async function loadVT() {
   const list = r.list || [];
   const tm = s => { const [hh, mm] = String(s || "").split(":").map(Number); return isNaN(hh) ? esc(s) : `${(hh % 12) || 12}:${String(mm).padStart(2, "0")} ${hh < 12 ? "am" : "pm"}`; };
   el2.innerHTML = `<p class="note vtsum"><b>${nf(tot)}</b> page views · <b>${nf(r.visitors)}</b> visitors on ${esc(fmtD(pday(day), 1))}${peak >= 0 ? ` · busiest hour <b>${esc(full[peak])}</b>` : ""} <small>(India time)</small></p>
-    ${tot ? comboChart("vtChart", hs.map((_, h) => hLab(h)), { name: "Page views", vals: hs.map(h => +h.visits || 0), col: "var(--warn)" }, null, { bars: 1, full, h: 200 }) : `<p class="note">No visits on this day.</p>`}
+    ${tot ? `<div class="seg vtmode" role="radiogroup" aria-label="Graph">${[["min", "Per minute"], ["hour", "Per hour"]].map(([k, l]) => `<button type="button" role="radio" aria-checked="${VT_MODE === k}" class="${VT_MODE === k ? "on" : ""}" data-vtm="${k}">${l}</button>`).join("")}</div>` +
+      (VT_MODE === "min" ? `<div id="vtMin"></div>` : comboChart("vtChart", hs.map((_, h) => hLab(h)), { name: "Page views", vals: hs.map(h => +h.visits || 0), col: "var(--warn)" }, null, { bars: 1, full, h: 200 })) : `<p class="note">No visits on this day.</p>`}
     ${list.length ? `<h4 class="vtl">Every visit with time <small>(newest first)</small></h4><div class="rtbl vtlist"><table><thead><tr><th>Time</th><th>Page</th><th>Came from</th><th>Place</th><th>Device</th><th>Visitor</th></tr></thead><tbody>${list.map(x =>
       `<tr><td><b>${tm(x.t)}</b></td><td>${esc(PAGE_NAMES[x.page] || x.page)}</td><td>${esc(x.src || "Direct")}</td><td>${esc(x.place || "—")}</td><td>${esc([x.device, x.browser].filter(Boolean).join(" · "))}</td><td><span class="pill" title="Same code = same visitor">#${esc(x.who)}</span></td></tr>`).join("")}</tbody></table></div>
       ${list.length >= 500 ? `<p class="note">Showing the latest 500 visits.</p>` : ""}` : ""}`;
+  if (tot && VT_MODE === "min") mountMinute($("#vtMin"), r, day, { col: "var(--warn)", h: 220 });
+  $$("[data-vtm]").forEach(b => b.onclick = () => { VT_MODE = b.dataset.vtm; loadVT(); });
+}
+
+/* ---------- Per minute graph: jis minute mein visit hua wahin bar, khaali minute blank, hover par ginti ---------- */
+async function getVT(day) {
+  const c = VT[day], live = day === ymd(day0(0));
+  if (c && (!live || Date.now() - c.at < 30000)) return c.r;
+  const r = await call("adminVisitTimes", { day });
+  if (r.ok) VT[day] = { r, at: Date.now() };
+  return r.ok || !c ? r : c.r;
+}
+const istMin = () => { const n = new Date(Date.now() + 330 * 60000); return n.getUTCHours() * 60 + n.getUTCMinutes(); };
+const mTime = m => { const h = Math.floor(m / 60) % 24, mm = m % 60; return `${(h % 12) || 12}:${String(mm).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`; };
+const mTick = m => { const h = Math.floor(m / 60) % 24, mm = m % 60; return `${(h % 12) || 12}${mm ? ":" + String(mm).padStart(2, "0") : ""}${h < 12 ? "am" : "pm"}`; };
+const MZOOM = [[1440, "Full day"], [180, "3 hours"], [60, "1 hour"], [30, "30 min"]];
+const MZ = {};   // har chart ka zoom: { z, a, day }
+function mountMinute(el, r, day, opt) {
+  if (!el) return; opt = opt || {};
+  const id = el.id + "C", unit = "Visits";
+  const per = Array.from({ length: 1440 }, () => ({ v: 0, w: {}, p: {} }));
+  (r.list || []).forEach(x => { const [h, m] = String(x.t || "").split(":").map(Number); const s = per[h * 60 + m]; if (!s || isNaN(h) || isNaN(m)) return; s.v++; s.w[x.who || Math.random()] = 1; const pg = PAGE_NAMES[x.page] || x.page || "/"; s.p[pg] = (s.p[pg] || 0) + 1; });
+  const cnt = i => per[i].v, uniq = i => Object.keys(per[i].w).length;
+  const live = day === ymd(day0(0)), nowM = live ? istMin() : 1439;
+  let lastV = -1; for (let i = 1439; i >= 0; i--) if (per[i].v) { lastV = i; break; }
+  let st = MZ[el.id]; if (!st || st.day !== day) st = MZ[el.id] = { z: MZ[el.id] ? MZ[el.id].z : 1440, a: null, day };
+  const z = st.z;
+  if (z >= 1440) st.a = 0;
+  else if (st.a == null) st.a = (live ? nowM + 1 : Math.max(lastV + 1, z)) - z;
+  st.a = Math.max(0, Math.min(1440 - z, st.a));
+  const a = st.a, b = a + z;
+  const sm = innerWidth < 600, W = sm ? 420 : 720, H = (opt.h || 240) * (sm ? .9 : 1), L = sm ? 30 : 38, R = 10, T = 14, B = 26, iw = W - L - R, ih = H - T - B, pxm = iw / z;
+  let mx = 0, tot = 0, busy = 0; const ppl = {}; for (let i = a; i < b; i++) { const c = cnt(i); if (c) { busy++; tot += c; if (c > mx) mx = c; Object.assign(ppl, per[i].w); } }
+  const top = mx <= 4 ? Math.max(2, mx) : Math.ceil(mx / 4) * 4, steps = top <= 4 ? top : 4;
+  const x = m => L + (m - a + .5) * pxm, y = v => T + ih - v / top * ih, bw = Math.max(1.6, Math.min(16, pxm * .72));
+  const grid = Array.from({ length: steps + 1 }, (_, k) => { const v = top / steps * k, yy = y(v).toFixed(1); return `<line x1="${L}" x2="${W - R}" y1="${yy}" y2="${yy}" class="gl"/><text x="${L - 6}" y="${(+yy + 3).toFixed(1)}" class="ax" text-anchor="end">${Math.round(v * 10) / 10}</text>`; }).join("");
+  const tstep = z >= 1440 ? (sm ? 360 : 180) : z >= 180 ? (sm ? 60 : 30) : z >= 60 ? (sm ? 15 : 10) : 5;
+  let xl = ""; for (let m = Math.ceil(a / tstep) * tstep; m <= b; m += tstep) { const xx = L + (m - a) * pxm; xl += `<line x1="${xx.toFixed(1)}" x2="${xx.toFixed(1)}" y1="${T + ih}" y2="${T + ih + 4}" class="gl"/><text x="${xx.toFixed(1)}" y="${H - 6}" class="ax" text-anchor="${m === a ? "start" : m === b ? "end" : "middle"}">${mTick(m)}</text>`; }
+  let bars = ""; for (let i = a; i < b; i++) { const c = cnt(i); if (c) bars += `<rect x="${(x(i) - bw / 2).toFixed(1)}" y="${y(c).toFixed(1)}" width="${bw.toFixed(1)}" height="${(T + ih - y(c)).toFixed(1)}" rx="${bw > 4 ? 2 : .6}" style="fill:${opt.col || "var(--info)"}" data-m="${i}"/>`; }
+  const fut = live && nowM + 1 < b ? `<rect x="${(L + (Math.max(a, nowM + 1) - a) * pxm).toFixed(1)}" y="${T}" width="${((b - Math.max(a, nowM + 1)) * pxm).toFixed(1)}" height="${ih}" class="mfut"/>` +
+    (nowM >= a ? `<line x1="${x(nowM).toFixed(1)}" x2="${x(nowM).toFixed(1)}" y1="${T}" y2="${T + ih}" class="mnow"/><text x="${x(nowM).toFixed(1)}" y="${T - 3}" class="ax" text-anchor="middle">now</text>` : "") : "";
+  const rows = []; for (let i = 1439; i >= 0; i--) if (per[i].v) rows.push(i);
+  const pages = i => Object.entries(per[i].p).sort((p, q) => q[1] - p[1]);
+  el.innerHTML = `<div class="mtool"><div class="seg" role="radiogroup" aria-label="Zoom">${MZOOM.map(([k, l]) => `<button type="button" role="radio" aria-checked="${z === k}" class="${z === k ? "on" : ""}" data-mz="${k}">${l}</button>`).join("")}</div>
+      ${z < 1440 ? `<div class="vtnav"><button class="btn sm" data-mp="-1" aria-label="Earlier" ${a <= 0 ? "disabled" : ""}>‹</button><span class="note">${mTime(a)} – ${mTime(b % 1440)}</span><button class="btn sm" data-mp="1" aria-label="Later" ${b >= 1440 ? "disabled" : ""}>›</button></div>` : ""}</div>
+    <p class="note msum">${tot ? `<b>${nf(tot)}</b> visit${tot > 1 ? "s" : ""} in <b>${nf(busy)}</b> minute${busy > 1 ? "s" : ""}${z < 1440 ? " (this window)" : ""} by <b>${nf(Object.keys(ppl).length)}</b> visitor${Object.keys(ppl).length > 1 ? "s" : ""} · most in one minute: <b>${nf(mx)}</b>` : "No visits in this time."} <small>Har bar = 1 minute · mouse le jaao, ginti dikhegi (India time)</small></p>
+    <div class="combo mchart" id="${id}"><svg viewBox="0 0 ${W} ${H}" tabindex="0" role="img" aria-label="${unit} per minute, ${mTime(a)} to ${mTime(b % 1440)}: ${tot} ${unit.toLowerCase()} in ${busy} minutes. Use left and right arrow keys to move between minutes with visits.">
+      ${grid}${fut}${bars}${xl}<line class="mcur" x1="0" x2="0" y1="${T}" y2="${T + ih}" style="opacity:0"/><rect class="mov" x="${L}" y="${T}" width="${iw}" height="${ih}"/></svg><div class="ctip" id="${id}Tip" hidden></div></div>
+    ${rows.length ? `<details class="ctbl"><summary>View as table (every minute with visits)</summary><div class="rtbl"><table><thead><tr><th>Time</th><th>Visits</th><th>Visitors</th><th>Pages</th></tr></thead><tbody>${rows.map(i => `<tr><td><b>${mTime(i)}</b></td><td>${per[i].v}</td><td>${uniq(i)}</td><td>${esc(pages(i).map(([p, n]) => n > 1 ? p + " ×" + n : p).join(", "))}</td></tr>`).join("")}</tbody></table></div></details>` : ""}`;
+  const redraw = () => mountMinute(el, r, day, opt);
+  el.querySelectorAll("[data-mz]").forEach(bt => bt.onclick = () => { const nz = +bt.dataset.mz; if (nz === st.z) return; const mid = st.z >= 1440 ? null : st.a + st.z / 2; st.z = nz; st.a = mid == null ? null : Math.round(mid - nz / 2); redraw(); });
+  el.querySelectorAll("[data-mp]").forEach(bt => bt.onclick = () => { st.a += +bt.dataset.mp * Math.round(z * .75); redraw(); });
+  const root = document.getElementById(id), svg = root.querySelector("svg"), tp = document.getElementById(id + "Tip"), cur = svg.querySelector(".mcur");
+  let on = -1;
+  const pick = m => { if (on >= 0) { const o = svg.querySelector(`rect[data-m="${on}"]`); if (o) o.classList.remove("hl"); } on = m;
+    if (m < 0) { tp.hidden = true; cur.style.opacity = 0; return; }
+    const br = svg.querySelector(`rect[data-m="${m}"]`); if (br) br.classList.add("hl");
+    cur.setAttribute("x1", x(m).toFixed(1)); cur.setAttribute("x2", x(m).toFixed(1)); cur.style.opacity = 1;
+    const ps = pages(m);
+    tp.innerHTML = `<b>${mTime(m)}</b><span><i style="background:${opt.col || "var(--info)"}"></i>${per[m].v} visit${per[m].v > 1 ? "s" : ""}</span><span><i style="background:var(--line2)"></i>${uniq(m)} visitor${uniq(m) > 1 ? "s" : ""}</span>${ps.slice(0, 4).map(([p, n]) => `<span class="mpg">${esc(p)}${n > 1 ? " ×" + n : ""}</span>`).join("")}${ps.length > 4 ? `<span class="mpg">+${ps.length - 4} more</span>` : ""}`;
+    tp.hidden = false; const rr = root.getBoundingClientRect(), sx = rr.left + x(m) / W * rr.width;
+    tp.style.left = Math.min(rr.width - tp.offsetWidth - 4, Math.max(4, sx - rr.left - tp.offsetWidth / 2)) + "px"; };
+  const near = ev => { const rr = svg.getBoundingClientRect(), vx = (ev.clientX - rr.left) / rr.width * W, m = a + Math.floor((vx - L) / pxm);
+    const tol = Math.max(0, Math.ceil(9 / pxm)); let best = -1;
+    for (let d = 0; d <= tol; d++) { if (m - d >= a && m - d < b && cnt(m - d)) { best = m - d; break; } if (m + d >= a && m + d < b && cnt(m + d)) { best = m + d; break; } }
+    pick(best); };
+  svg.addEventListener("pointermove", near); svg.addEventListener("pointerdown", near);
+  svg.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") pick(-1); });
+  const vis = []; for (let i = a; i < b; i++) if (cnt(i)) vis.push(i);
+  svg.addEventListener("keydown", e => { if (!vis.length || !/Arrow(Left|Right)|Home|End/.test(e.key)) return; e.preventDefault();
+    const k = vis.indexOf(on); let n = e.key === "Home" ? 0 : e.key === "End" ? vis.length - 1 : k < 0 ? (e.key === "ArrowLeft" ? vis.length - 1 : 0) : k + (e.key === "ArrowLeft" ? -1 : 1);
+    pick(vis[Math.max(0, Math.min(vis.length - 1, n))]); });
+  svg.addEventListener("blur", () => pick(-1));
+}
+/* Bada view (Visitors / Page views) ke andar: kisi bhi din ka per-minute graph */
+let BM_DAY = "", BM_RG = "";
+function bigMinuteHTML(R) {
+  const k = ymd(R.from) + "|" + ymd(R.to), today = ymd(day0(0));
+  if (k !== BM_RG || !BM_DAY) { BM_RG = k; BM_DAY = ymd(R.to) > today ? today : ymd(R.to); }
+  return `<section class="bmin" aria-labelledby="bmH"><div class="ch vth"><h3 id="bmH">${ic("i-clock", "color:var(--info)")} Visits per minute</h3>
+    <div class="vtnav"><button class="btn sm" data-bm="-1" aria-label="Previous day">‹</button><input type="date" id="bmDay" aria-label="Day" value="${BM_DAY}" max="${today}"><button class="btn sm" data-bm="1" aria-label="Next day" ${BM_DAY >= today ? "disabled" : ""}>›</button></div></div>
+    <div id="bmBody"><p class="note">Loading…</p></div></section>`;
+}
+function bindBigMinute(metric) {
+  const inp = $("#bmDay"); if (!inp) return;
+  const go = k => { if (!k || k > ymd(day0(0))) return; BM_DAY = k; inp.value = k; const nx = $('[data-bm="1"]'); if (nx) nx.disabled = k >= ymd(day0(0)); load(); };
+  const load = async () => { const day = BM_DAY, el = $("#bmBody"); if (!el) return; if (!VT[day]) el.innerHTML = `<p class="note">Loading…</p>`;
+    const r = await getVT(day); const el2 = $("#bmBody"); if (BM_DAY !== day || !el2) return;
+    if (!r.ok) return el2.innerHTML = /Unknown admin action/i.test(r.error || "") ? `<div class="empty"><b>🔧</b>Visit ka time dekhne ke liye Google Script mein chhota sa update chahiye.<br><small>Ask Claude for VisitTimes.gs steps.</small></div>` : `<p class="note">${esc(r.error || "Could not load")}</p>`;
+    mountMinute(el2, r, day, { metric, col: metric === "u" ? "var(--info)" : "var(--cyan)", h: 260 });
+    if ((r.list || []).length >= 500) el2.insertAdjacentHTML("beforeend", `<p class="note">Showing the latest 500 visits of this day.</p>`); };
+  inp.onchange = () => go(inp.value);
+  $$("[data-bm]").forEach(b => b.onclick = () => { const d = pday(BM_DAY); d.setDate(d.getDate() + +b.dataset.bm); go(ymd(d)); });
+  load();
 }
 
 /* ---------- Revenue report (koi bhi date range) ---------- */
