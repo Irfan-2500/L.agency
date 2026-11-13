@@ -241,9 +241,30 @@ label.f span{font-weight:500;color:var(--dim)}
 .tcard.hid{opacity:.55}
 .tcard .pic{aspect-ratio:16/9;background:var(--bg2);position:relative;max-width:100%}
 .tcard .pic img{width:100%;height:100%;object-fit:cover;display:block}
-.tgrid.notes{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
-.tgrid.notes .pic{aspect-ratio:210/297}
-.tgrid.notes .pic img{object-position:top}
+/* Study notes: 2 view — thumbnail grid ya list (".notes" naam analytics ki list se takrata tha, isliye nview / nlist) */
+.vtog{display:flex;gap:4px;padding:3px;border:1px solid var(--line2);border-radius:11px;background:var(--bg2);flex:none}
+.vtog button{display:flex;align-items:center;gap:6px;padding:6px 12px;border:0;border-radius:8px;background:none;color:var(--muted);font-weight:600;font-size:.84rem}
+.vtog button.on{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.vtog svg{width:15px;height:15px}
+.tgrid.nview{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.tgrid.nview .pic{aspect-ratio:4/3}
+.tgrid.nview .pic img{object-position:top}
+.tcard .lmeta{display:none}
+.tgrid.nlist{grid-template-columns:1fr;gap:8px}
+.tgrid.nlist .tcard{flex-direction:row;align-items:center;border-radius:12px}
+.tgrid.nlist .tcard:hover{transform:none}
+.tgrid.nlist .pic{width:112px;aspect-ratio:4/3;flex:none;margin:8px 0 8px 8px;border-radius:8px;overflow:hidden}
+.tgrid.nlist .pic img{object-position:top}
+.tgrid.nlist .pic .cnt{display:none}
+.tgrid.nlist .pic .nopic{font-size:.8rem}
+.tgrid.nlist .body{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:10px 12px;min-width:0}
+.tgrid.nlist .body>b{flex:1 1 260px;min-width:0;overflow-wrap:anywhere}
+.tgrid.nlist .lmeta{display:block;font-size:.8rem;color:var(--muted);font-weight:600;white-space:nowrap}
+.tgrid.nlist .tags{flex:1 1 100%;order:3}
+.tgrid.nlist .acts{margin:0;order:2}
+.tgrid.nlist .cf{flex:1 1 100%;order:4}
+.tgrid.nlist .cf:empty{display:none}
+@media(max-width:560px){.tgrid.nview{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}.tgrid.nview .body{padding:10px}.tgrid.nview .tcard b{font-size:.86rem}.tgrid.nlist .tcard{align-items:flex-start}.tgrid.nlist .pic{width:84px}.tgrid.nlist .body>b{flex-basis:100%}.fbar .vtog{margin-left:auto}}
 .tcard .pic .cnt{position:absolute;right:8px;top:8px;background:rgba(0,0,0,.65);color:#fff;padding:2px 8px;border-radius:7px;font-size:.72rem;font-weight:700}
 .tcard .body{padding:12px 14px;display:flex;flex-direction:column;gap:9px;flex:1}
 .tcard b{font-size:.94rem}
@@ -2494,6 +2515,7 @@ function drawCus() {
 }
 
 /* ---------- Ready PPTs (PPT / PDF upload) ---------- */
+let NVIEW = "grid"; try { NVIEW = localStorage.getItem("la_admin_nview") === "list" ? "list" : "grid"; } catch (e) {}
 let PP = [], PQ = "", PE = null, PPAY = false, KIND = "ppt", PFOLDER = "#";
 const NOTE_TAG = "Study Notes";   // purana Google Script "notes" category nahi rakhta, isliye class list mein ye tag bhi jata hai
 const isNote = p => p.cat === "notes" || (p.level || []).includes(NOTE_TAG);
@@ -2935,8 +2957,9 @@ async function pptView() {
     <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-cart")}</span><b>${nf(sold)}</b><small>Total biki</small></div>
     <div class="stat" style="--c:${PPAY ? "var(--ok)" : "var(--bad)"}"><span class="ic">₹</span><b>${PPAY ? "ON" : "OFF"}</b><small>Online payment (Razorpay)</small></div>
   </div>
-  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="pq" placeholder="Search ${w.one} name, class, subject…" aria-label="Search"></label></div>
-  <div class="tgrid${KIND === "notes" ? " notes" : ""}" id="pgrid"></div>`);
+  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="pq" placeholder="Search ${w.one} name, class, subject…" aria-label="Search"></label>${KIND === "notes" ? `<div class="vtog" role="group" aria-label="View"><button type="button" data-nv="grid" title="Badi thumbnail photo">▦ Thumbnail</button><button type="button" data-nv="list" title="Chhoti list">☰ List</button></div>` : ""}</div>
+  <div class="tgrid" id="pgrid"></div>`);
+  $$("[data-nv]").forEach(b => b.onclick = () => { NVIEW = b.dataset.nv; try { localStorage.setItem("la_admin_nview", NVIEW); } catch (e) {} drawPpts(); });
   $("#pq").value = PQ; $("#pq").oninput = () => { PQ = $("#pq").value; drawPpts(); };
   $("#addPpt").onclick = () => editPpt(null);
   if ($("#addZip")) $("#addZip").onclick = () => { editPpt(null); $("#peZipIn").click(); };
@@ -2950,10 +2973,12 @@ function drawPpts() {
   const vis = PP.map((p, i) => [p, i]).filter(([p]) => isNote(p) === (KIND === "notes") && (!q || [p.title, p.subject, ...p.level, ...p.board].join(" ").toLowerCase().includes(q)));
   const mine = PP.filter(p => isNote(p) === (KIND === "notes")).length, w = KW();
   const ml = PP.filter(p => isNote(p) === (KIND === "notes"));
+  $("#pgrid").className = "tgrid" + (KIND === "notes" ? (NVIEW === "list" ? " nlist" : " nview") : "");
+  $$("[data-nv]").forEach(b => { const on = b.dataset.nv === NVIEW; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
   if ($("#pTot")) { $("#pTot").textContent = ml.length; $("#pTotL").textContent = `Total ${KIND === "notes" ? "Notes" : "PPTs"} · ${ml.filter(p => p.show).length} live`; }
   $("#pgrid").innerHTML = vis.length ? vis.map(([p, i]) => `<div class="tcard ${p.show ? "" : "hid"}">
     <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
-    <div class="body"><b>${esc(p.title)}</b>
+    <div class="body"><b>${esc(p.title)}</b><span class="lmeta">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.6">${rs(p.mrp)}</s>` : ""} · 🛒 ${nf(p.sold)} sold</span>
       <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.filter(x => x !== NOTE_TAG).slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
       <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : slideRefs(p).length && /\.(pptx|pdf)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm" data-pr="${i}" title="Shuru ke 8 page / slides ki photo dobara banayein">🔄 Photo dobara</button>` : ""}</div>
       <div class="cf" data-pcf="${i}"></div>
