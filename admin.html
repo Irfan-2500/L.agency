@@ -714,7 +714,10 @@ body.noscroll{overflow:hidden}
 .sbzt tr.nomatch td{background:color-mix(in srgb,#dc2626 7%,transparent)}
 .sbzt tr.nomatch td.miss select,.sbzt tr.nomatch td.miss input{border-color:#dc2626;background:color-mix(in srgb,#dc2626 12%,transparent)}
 .pill.bad{background:color-mix(in srgb,#dc2626 14%,transparent);color:#dc2626;white-space:nowrap}
-.sbzt .fn{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sbzt .fn{max-width:320px;min-width:200px;white-space:normal;word-break:break-word;line-height:1.3}
+.sbzt .zr{margin-top:3px;font-size:.7rem;font-weight:700;line-height:1.3}
+.sbzt .zr.bad{color:#dc2626}.sbzt .zr.warn{color:#b45309}
+.sbzt .zn{margin-top:2px;font-size:.66rem;font-weight:800;color:#16a34a}
 .sbzt .fx{display:inline-grid;place-items:center;min-width:26px;height:20px;padding:0 4px;margin-right:6px;border-radius:5px;color:#fff;font-size:.62rem;font-weight:800;background:#e5484d}
 .sbzt .fx-word{background:#2b6cde}.sbzt .fx-ppt{background:#e8590c}
 .sbzt tr.ok td{background:color-mix(in srgb,var(--ok) 8%,transparent)}
@@ -2635,10 +2638,16 @@ const sbStates = () => {
 const sbOpt = v => sbStates().map(x => `<option value="${esc(x)}"${x === v ? " selected" : ""}>${esc(sbLbl(x))}</option>`).join("");
 const sbInGrp = k => { const s0 = k.split("|")[0], g = sbGrp(); return g ? s0.startsWith(g.n + " › ") : !s0.includes(" › "); };
 const SB_T = ["Syllabus", "Previous Year Questions", "Chapter-wise PYQ", "Model Paper", "Notes", "Practice Questions", "Book & Answers"];
-const SB_SUBJ = c => c <= 5 ? ["English","Hindi","Maths","EVS","Computer","General Knowledge"]
+const SB_SUBJ0 = c => c <= 5 ? ["English","Hindi","Maths","EVS","Computer","General Knowledge"]
   : c <= 8 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science","Computer"]
   : c <= 10 ? ["English","Hindi","Sanskrit","Maths","Science","Social Science"]
   : ["English","Hindi","Physics","Chemistry","Maths","Biology","Accountancy","Business Studies","Economics","History","Political Science","Geography","Computer Science"];
+/* Custom subject (list me nahi tha, file ke naam se aaya): pehle se upload wale + is baar ZIP se jude */
+const SB_CUST = {};   // class -> Set
+const SB_SUBJ = c => { const base = SB_SUBJ0(c), ex = new Set(SB_CUST[c] || []);
+  Object.keys(typeof SB === "object" && SB ? SB : {}).forEach(k => { const p = k.split("|"); if (+p[2] === +c && p[4] && p[4] !== "-" && p[4] !== SB_ALL && !base.includes(p[4])) ex.add(p[4]); });
+  return base.concat([...ex].sort()); };
+const sbAddSubj = (c, x) => { (SB_CUST[c] = SB_CUST[c] || new Set()).add(x); };
 const SB_ALL = "Poori Class";   // poori class ki ek file (sab subjects) — jaise Bihar Class 10 Syllabus
 const SB_DIRECT = "Seedha file";   // menu item ki ek seedhi file (Date Sheet, Syllabus…) — class / subject nahi
 const SB_PYQ = "Previous Year Questions", SB_CPYQ = "Chapter-wise PYQ", SB_CHT = ["Notes", SB_CPYQ];
@@ -2795,7 +2804,20 @@ const SBZ_SUBJ = [["social science", "Social Science"], ["sst", "Social Science"
   ["computer science", "Computer Science"], ["business studies", "Business Studies"], ["business study", "Business Studies"], ["general knowledge", "General Knowledge"], ["gk", "General Knowledge"],
   ["mathematics", "Maths"], ["maths", "Maths"], ["math", "Maths"], ["ganit", "Maths"], ["science", "Science"], ["vigyan", "Science"], ["physics", "Physics"], ["chemistry", "Chemistry"], ["biology", "Biology"], ["bio", "Biology"],
   ["accountancy", "Accountancy"], ["accounts", "Accountancy"], ["economics", "Economics"], ["arthshastra", "Economics"], ["history", "History"], ["itihas", "History"], ["geography", "Geography"], ["bhugol", "Geography"],
-  ["computer", "Computer"], ["evs", "EVS"], ["environmental", "EVS"], ["sanskrit", "Sanskrit"], ["english", "English"], ["angrezi", "English"], ["hindi", "Hindi"]];
+  ["computer", "Computer"], ["evs", "EVS"], ["environmental", "EVS"], ["sanskrit", "Sanskrit"], ["english", "English"], ["angrezi", "English"], ["hindi", "Hindi"],
+  ["home science", "Home Science"], ["grih vigyan", "Home Science"], ["psychology", "Psychology"], ["manovigyan", "Psychology"], ["sociology", "Sociology"], ["samajshastra", "Sociology"], ["philosophy", "Philosophy"],
+  ["physical education", "Physical Education"], ["informatics practices", "Informatics Practices"], ["entrepreneurship", "Entrepreneurship"], ["agriculture", "Agriculture"], ["krishi vigyan", "Agriculture"], ["krishi", "Agriculture"], ["statistics", "Statistics"],
+  ["music", "Music"], ["sangeet", "Music"], ["fine arts", "Fine Arts"], ["drawing", "Drawing"], ["urdu", "Urdu"], ["maithili", "Maithili"], ["bhojpuri", "Bhojpuri"], ["magahi", "Magahi"], ["bengali", "Bengali"],
+  ["bangla", "Bengali"], ["arabic", "Arabic"], ["persian", "Persian"], ["pali", "Pali"], ["prakrit", "Prakrit"], ["marathi", "Marathi"], ["gujarati", "Gujarati"], ["punjabi", "Punjabi"], ["odia", "Odia"], ["tamil", "Tamil"],
+  ["telugu", "Telugu"], ["kannada", "Kannada"], ["malayalam", "Malayalam"], ["assamese", "Assamese"], ["nepali", "Nepali"], ["french", "French"], ["german", "German"]];
+const SBZ_SUBJ_L = SBZ_SUBJ.slice().sort((a, b) => b[0].length - a[0].length);   // lamba pehle: "home science" se pehle "science" na pakde
+/* naam me se state / class / board jaise shabd hata kar jo bacha, wahi subject (jaise "Home Science") */
+const SBZ_NOISE = new Set("board bseb cbse ncert exam exams examination question questions paper papers model modal sample set sets pdf doc docx ppt pptx inter intermediate matric matriculation secondary senior higher annual final new latest important imp with without solution solutions answer answers ans key and of for the in on medium class std kaksha part vol volume objective subjective full complete copy version v hd normal print printable free download by www com pariksha prashn patra varshik sabhi all subject subjects wise level state govt government school".split(" "));
+function sbzGuessSubj(t) {
+  const w = t.trim().split(/\s+/).filter(x => x && !SBZ_NOISE.has(x) && !/^\d+$/.test(x) && !/^(i|ii|iii|iv|v|vi|vii|viii|ix|x|xi|xii)$/.test(x) && !/^\d+(st|nd|rd|th)$/.test(x));
+  if (!w.length || w.length > 4 || w.join(" ").length < 3) return "";
+  return w.map(x => x[0].toUpperCase() + x.slice(1)).join(" ").slice(0, 40);
+}
 function sbzParse(path) {
   const base = path.split("/").pop().replace(/\.[^.]+$/, ""), ext = (path.split(".").pop() || "").toLowerCase();
   let t = " " + path.replace(/\.[^.]+$/, "").toLowerCase().replace(/&/g, " and ").replace(/[_\-.+()\[\]{},/\\|]+/g, " ").replace(/\s+/g, " ") + " ";
@@ -2826,7 +2848,9 @@ function sbzParse(path) {
   const cm = t.match(/\s(?:class|cls|std|kaksha|grade)\s?(\d{1,2}|xii|xi|x|ix|viii|vii|vi|v|iv|iii|ii|i)\s/) || t.match(/\s(\d{1,2})(?:st|nd|rd|th)\s/);
   if (cm) { const v = /\d/.test(cm[1]) ? +cm[1] : SBZ_ROMAN[cm[1]]; if (v >= 1 && v <= 12) { r.c = v; cut(new RegExp("\\s" + cm[0].trim() + "\\s")); } }
   // subject (class ke hisaab se list)
-  for (const [k, v] of SBZ_SUBJ) if (new RegExp("\\s" + k + "\\s").test(t)) { r.sub = v; break; }
+  for (const [k, v] of SBZ_SUBJ_L) if (new RegExp("\\s" + k + "\\s").test(t)) { r.sub = v; break; }
+  if (!r.sub) { sbStates().forEach(x => sbLbl(x).toLowerCase().split(/\s+/).forEach(wd => { if (wd.length > 1) t = t.split(" " + wd + " ").join(" "); }));
+    const g = sbzGuessSubj(t); if (g) { r.sub = g; r.guess = true; } }
   return r;
 }
 function sbzFill(r) {   // jo naam me nahi mila → upar ke dropdown se
@@ -2836,7 +2860,10 @@ function sbzFill(r) {   // jo naam me nahi mila → upar ke dropdown se
   if (!r.t) { r.t = SBS.t; r.miss.push("Category"); }
   if (!r.c) { r.c = SBS.c; r.miss.push("Class"); }
   if (!r.m) { r.m = SBS.m; r.miss.push("Medium"); }
-  const L = SB_SUBJ(r.c); if (!L.includes(r.sub)) { r.miss.push("Subject"); r.sub = L.includes(SBS.sub) ? SBS.sub : L[0]; }
+  const L = SB_SUBJ(r.c);
+  if (r.sub && !L.includes(r.sub)) { sbAddSubj(r.c, r.sub); r.newSub = true; }   // list me nahi tha -> naya subject jud gaya
+  if (!r.sub) { r.miss.push("Subject"); r.sub = L.includes(SBS.sub) ? SBS.sub : L[0]; }
+  else if (r.guess) r.miss.push("Subject?");
   if (r.t === SB_PYQ && !r.y) { r.y = SBS.y; r.miss.push("Year"); }
   return r;
 }
@@ -2872,6 +2899,19 @@ async function sbzRead(files) {
   else { const nb = SBZ.rows.filter(r => !r.st && sbzBad(r).length).length; if (nb) toast(`${nb} file match nahi hui (laal) — wo upload nahi hongi`, true); }
   sbzDraw();
 }
+/* har file ke neeche saaf likha: kya nahi mila / kya andaza lagaya */
+const SBZ_WHY = { State: "State / board", Category: "Category (Model Paper, PYQ…)", Class: "Class", Subject: "Subject", Medium: "Medium", Year: "Year", "Subject?": "Subject" };
+function sbzWhy(r) {
+  if (r.st === "ok" || r.st === "up") return "";
+  if (r.st === "bad") return `<div class="zr bad">❌ ${esc(r.err || "Upload nahi hui")}</div>`;
+  const bad = sbzBad(r), warn = r.miss.filter(x => !bad.includes(x));
+  if (bad.length) return `<div class="zr bad">❌ File ke naam mein ${esc(bad.map(x => SBZ_WHY[x] || x).join(", "))} nahi mila — box mein chunein, tab upload hogi</div>`;
+  const msg = [];
+  if (r.newSub) msg.push(`Naya subject "${esc(r.sub)}" list mein joda`);
+  else if (warn.includes("Subject?")) msg.push(`Subject "${esc(r.sub)}" naam se andaza`);
+  const w2 = warn.filter(x => x !== "Subject?" && x !== "Set"); if (w2.length) msg.push(`${esc(w2.map(x => SBZ_WHY[x] || x).join(", "))} naam mein nahi, upar ke box se liya`);
+  return msg.length ? `<div class="zr warn">⚠ ${msg.join(" · ")}</div>` : "";
+}
 function sbzDraw() {
   const box = $("#sbZ"); if (!box || !SBZ) return;
   const rows = SBZ.rows, on = rows.filter(r => r.on && !r.st), done = rows.filter(r => r.st === "ok").length;
@@ -2884,12 +2924,12 @@ function sbzDraw() {
       const w = f => r.miss.includes(f) ? " class=\"miss\"" : "", dis = SBZ.busy || r.st === "ok" ? " disabled" : "";
       const nb = !r.st && sbzBad(r);
       return `<tr class="${r.st === "ok" ? "ok" : r.st === "bad" ? "bad" : nb && nb.length ? "nomatch" : ""}"><td><input type="checkbox" data-zon="${i}" ${r.on ? "checked" : ""}${dis} aria-label="Upload ${esc(r.file)}"></td>
-        <td class="fn"><span class="fx fx-${r.fmt}">${r.fmt === "word" ? "W" : r.fmt === "ppt" ? "P" : "PDF"}</span>${esc(r.path.split("/").pop())}</td>
+        <td class="fn" title="${esc(r.path)}"><span class="fx fx-${r.fmt}">${r.fmt === "word" ? "W" : r.fmt === "ppt" ? "P" : "PDF"}</span>${esc(r.path.split("/").pop())}${sbzWhy(r)}</td>
         <td${w("State")}><select data-z="${i}|s"${dis}>${sbOpt(r.s)}</select></td>
         <td${w("Category")}><select data-z="${i}|t"${dis}>${opt(SB_T, r.t)}</select></td>
         <td${w("Class")}><select data-z="${i}|c"${dis}>${opt([1,2,3,4,5,6,7,8,9,10,11,12], r.c)}</select></td>
         <td${w("Medium")}><select data-z="${i}|m"${dis}>${opt(["Hindi", "English"], r.m)}</select></td>
-        <td${w("Subject")}><select data-z="${i}|sub"${dis}>${opt(SB_SUBJ(r.c), r.sub)}</select></td>
+        <td${w("Subject") || w("Subject?")}>${r.typing ? `<input type="text" data-zt="${i}" value="${esc(r.sub)}" placeholder="Subject likhein" maxlength="40" style="padding:5px 6px;font-size:.78rem;width:130px">` : `<select data-z="${i}|sub"${dis}>${opt(SB_SUBJ(r.c), r.sub)}<option value="__new">✏️ Naya subject likhein…</option></select>`}${r.newSub ? `<div class="zn">+ naya subject</div>` : ""}</td>
         <td${w("Year")}>${r.t === SB_PYQ ? `<select data-z="${i}|y"${dis}>${opt(sbYears(), r.y)}</select>` : "—"}</td>
         <td${w("Set")}>${r.t === SB_PYQ ? `<input type="number" min="1" max="20" data-z="${i}|set" value="${r.set}"${dis} aria-label="Set">` : sbKind(r.t) === "chapters" ? `<input type="number" min="1" max="80" data-z="${i}|ch" value="${r.ch}"${dis} aria-label="Chapter number" title="${esc(r.chn)}">` : "—"}</td>
         <td class="zs">${r.st === "ok" ? "✅" : r.st === "bad" ? `❌ ${esc(r.err || "")}` : r.st === "up" ? `⏳ ${r.pc || 0}%` : sbzBad(r).length ? `<span class="pill bad" title="File ke naam me nahi mila: ${esc(sbzBad(r).join(", "))} — ye file upload nahi hogi">❌ Match nahi · ${esc(sbzBad(r).join(", "))}</span>` : r.miss.length ? `<span class="pill warn" title="Naam me nahi mila: ${esc(r.miss.join(", "))}">check</span>` : `<span class="pill ok">✓</span>`}</td></tr>`; }).join("")}</tbody></table>`
@@ -2902,11 +2942,17 @@ function sbzDraw() {
   $$("#sbZ [data-zon]").forEach(el => el.onchange = () => { const r = rows[+el.dataset.zon];
     if (el.checked && sbzBad(r).length) { el.checked = false; return toast(`Ye file match nahi hui (${sbzBad(r).join(", ")}) — pehle us row me sahi chunein`, true); }
     r.on = el.checked; sbzDraw(); });
+  $$("#sbZ [data-zt]").forEach(el => { el.focus(); const go = () => { const r = rows[+el.dataset.zt], v = el.value.replace(/[|<>"]/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
+    r.typing = false; if (v) { const hit = SB_SUBJ(r.c).find(x => x.toLowerCase() === v.toLowerCase()); r.sub = hit || v; r.newSub = !hit; if (!hit) sbAddSubj(r.c, r.sub);
+      const bad = sbzBad(r).length; r.miss = r.miss.filter(x => x !== "Subject" && x !== "Subject?"); if (bad && !sbzBad(r).length && !r.st) r.on = true; }
+    sbzDraw(); }; el.onblur = go; el.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); el.onblur = null; go(); } }; });
   $$("#sbZ [data-z]").forEach(el => el.onchange = () => {
+    if (el.value === "__new") { rows[+el.dataset.z.split("|")[0]].typing = true; return sbzDraw(); }
     const [i, f] = el.dataset.z.split("|"), r = rows[+i], v = el.value, badBefore = sbzBad(r).length > 0;
     r[f] = ["c", "y", "set", "ch"].includes(f) ? Math.max(1, +v || 1) : v;
-    r.miss = r.miss.filter(x => x !== ({ s: "State", t: "Category", c: "Class", m: "Medium", sub: "Subject", y: "Year", set: "Set" })[f]);
-    if (f === "c" && !SB_SUBJ(r.c).includes(r.sub)) { r.sub = SB_SUBJ(r.c)[0]; r.miss.push("Subject"); }
+    r.miss = r.miss.filter(x => x !== ({ s: "State", t: "Category", c: "Class", m: "Medium", sub: "Subject", y: "Year", set: "Set" })[f] && !(f === "sub" && x === "Subject?"));
+    if (f === "sub") r.newSub = false;
+    if (f === "c" && !SB_SUBJ(r.c).includes(r.sub)) { if (r.newSub) sbAddSubj(r.c, r.sub); else { r.sub = SB_SUBJ(r.c)[0]; r.miss.push("Subject"); } }
     if (badBefore && !sbzBad(r).length && !r.st) r.on = true;   // theek kar di → ab upload hogi
     if (f === "t" && r.t === SB_PYQ && !r.y) r.y = SBS.y;
     if (f === "t" && r.t === SB_PYQ && !r.set) r.set = 1;
