@@ -1502,6 +1502,7 @@ function bindFin(box) {
 /* Demo slides: Google se PPT ki PDF (badi / mushkil PPT par bhi), phir PDF ke pehle 10 page ki photo */
 async function finDemo(box, o, set) {
   const id = String(o.id), c = CUST[id];
+  if (/\.zip$/i.test(c.fileName || "")) throw new Error('ZIP ki demo photo ke liye "File badlo" se ZIP dobara upload karein');
   set("Google PPT ki PDF bana raha hai (badi PPT mein 1-2 minute)…");
   const p = await call("adminCustomPdf", { id });
   if (!p.ok) throw new Error(/Unknown admin action/.test(p.error || "") ? "Google Script update chahiye" : p.error);
@@ -1531,14 +1532,51 @@ async function finLockShots(pdf, count, set) {
   const x = await pdfShots(pdf, pages, t => set(`Locked slides ki photo: ${t.replace(/[^\d]/g, "")} / ${FIN_DEMO + n}…`), null, 150);
   return x.refs;
 }
+/* ZIP (kai chapter ek saath): andar ki PPTX / PDF naam ke kram mein; pehle chapter(s) se demo, aage ke chapters se locked photo */
+const FIN_ZIP_LOCK = 60;   // ZIP mein locked photo ki seema (bahut saare chapter par bhi jaldi ho)
+async function finZipShots(zip, set) {
+  const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(zip);
+  const ents = Object.values(z.files).filter(e => !e.dir && !/(^|\/)(__MACOSX|\.)/.test(e.name) && /\.(pptx|pdf)$/i.test(e.name))
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
+  if (!ents.length) throw new Error("ZIP mein koi PPTX / PDF file nahi mili");
+  const out = { refs: [], lock: [], slides: 0, files: ents.length };
+  const docs = [];
+  for (let i = 0; i < ents.length; i++) {   // pehle saari files ki slides gino
+    set(`ZIP padh rahe: ${i + 1} / ${ents.length} file…`);
+    const e = ents[i], nm = e.name.split("/").pop(), pdf = /\.pdf$/i.test(nm);
+    const f = new File([await e.async("blob")], nm, { type: pdf ? "application/pdf" : "application/vnd.openxmlformats-officedocument.presentationml.presentation" });
+    let n = 0;
+    try { if (pdf) { const lib = await loadPdfJs(); n = (await lib.getDocument({ data: await f.arrayBuffer() }).promise).numPages; } else { const m = await pptxMeta(f); n = m ? m.slides : 0; } } catch (x) {}
+    out.slides += n; docs.push({ f, pdf, n });
+  }
+  for (const d of docs) {
+    const needD = FIN_DEMO - out.refs.length, needL = FIN_ZIP_LOCK - out.lock.length;
+    if (needD <= 0 && needL <= 0) break;
+    const take = Math.min(d.n || PV_AUTO, Math.max(needD, 0) + Math.max(needL, 0)); if (take < 1) continue;
+    let pdf = d.f;
+    if (!d.pdf) {   // PPTX → zaroori slides ki chhoti copy → Google Slides se PDF
+      try {
+        set(`${d.f.name}: Google se PDF ban rahi…`);
+        const b = await trimPptx(d.f, take), tmp = new File([b], "zip-src-" + Date.now() + ".pptx", { type: b.type }), key = "tmp-" + Date.now();
+        const src = await sendFile(tmp, pc => set(`${d.f.name}: bhej rahe ${pc}%`), { key }); dropJob({ key });
+        const r = await call("adminPptThumbs", { src }); if (!r.ok) throw new Error(r.error);
+        pdf = new File([Uint8Array.from(atob(r.pdf), c => c.charCodeAt(0))], d.f.name.replace(/\.\w+$/, "") + ".pdf", { type: "application/pdf" });
+      } catch (x) { console.error(x); continue; }
+    }
+    const dN = Math.min(Math.max(needD, 0), take), all = Array.from({ length: take }, (_, i) => i + 1);
+    if (dN) out.refs.push(...(await pdfShots(pdf, all.slice(0, dN), t => set(`${d.f.name}: demo ${t}`), null)).refs);
+    if (take > dN && needL > 0) out.lock.push(...(await pdfShots(pdf, all.slice(dN, dN + needL), t => set(`${d.f.name}: locked ${t}`), null, 150)).refs);
+  }
+  return out;
+}
 function finForm(box, o, el, priceOnly) {
   if (!CUST_ON) return toast("Google Script mein CustomPay.gs ka update abhi baaki hai", true);
   const c = CUST[String(o.id)];
   el.innerHTML = `<div class="fin-form">
-    ${priceOnly ? "" : `<label>PPT / PDF file<input type="file" data-f accept=".pptx,.pdf,.ppt,.zip"></label>`}
+    ${priceOnly ? "" : `<label>PPT / PDF / ZIP file<input type="file" data-f accept=".pptx,.pdf,.ppt,.zip"></label>`}
     <label>Daam (₹)<input type="number" min="1" step="1" inputmode="numeric" data-p value="${c ? esc(c.price) : ""}" placeholder="jaise 250"></label>
     <div class="row" style="gap:6px"><button class="btn sm pri" data-go>${priceOnly ? "Save" : "Upload &amp; save"}</button><button class="btn sm" data-x>Cancel</button></div>
-    <div class="note" data-st>${priceOnly ? "" : `PPTX / PDF ki pehli ${FIN_DEMO} slides ki photo apne aap ban jayegi (customer ka demo). Save karte hi order "Done" ho jayega.`}</div>
+    <div class="note" data-st>${priceOnly ? "" : `PPTX / PDF ki pehli ${FIN_DEMO} slides ki photo apne aap ban jayegi (customer ka demo). Kai chapter hain to sab PPT / PDF ek ZIP mein daal kar upload karein: customer ko poori ZIP milegi, demo pehle chapter se banega. Save karte hi order "Done" ho jayega.`}</div>
     ${CUST_PAY ? "" : `<div class="note" style="color:var(--warn)">⚠ Razorpay keys Settings mein nahi hain, isliye customer online pay nahi kar payega.</div>`}</div>`;
   el.querySelector("[data-x]").onclick = () => el.innerHTML = "";
   el.querySelector("[data-go]").onclick = async e => {
@@ -1565,6 +1603,7 @@ function finForm(box, o, el, priceOnly) {
         try {
           if (/\.pdf$/i.test(file.name)) { const x = await pdfShots(file, Array.from({ length: FIN_DEMO }, (_, i) => i + 1), set, null); refs = x.refs; slides = x.count; body.lock = await finLockShots(file, x.count, set); }
           else if (/\.pptx$/i.test(file.name)) { const m = await pptxMeta(file); slides = m ? m.slides : 0; }
+          else if (/\.zip$/i.test(file.name)) { const x = await finZipShots(file, set); refs = x.refs; slides = x.slides; body.lock = x.lock; }
         } catch (x) { console.error(x); }
         Object.assign(body, { file: fileId, fileName: file.name, slides, refs });
         if (!refs.length && /\.pptx?$/i.test(file.name)) body.later = true;   // PPT → Google se PDF → demo + locked slides ki photo
