@@ -3421,7 +3421,7 @@ async function dlPpt(p, b) {
 async function dlTheme(t, b) {
   const h = b.innerHTML; b.disabled = true;
   try {
-    const Pptx = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js", "PptxGenJS");
+    const Pptx = await loadLib("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", "PptxGenJS");
     const toJpg = async blob => { const im = await createImageBitmap(blob), c = document.createElement("canvas"); c.width = im.width; c.height = im.height;
       const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0); return { d: c.toDataURL("image/jpeg", 0.92), w: im.width, h: im.height }; };
     const pres = new Pptx(); pres.layout = "LAYOUT_WIDE"; let n = 0;
@@ -3429,7 +3429,7 @@ async function dlTheme(t, b) {
       b.textContent = `⬇ ${k + 1}/${t.slides.length}`;
       let blob = null;
       try { const r = await fetch(t.slides[k]); if (r.ok) blob = await r.blob(); } catch (e) {}
-      if (!blob && t.refs && t.refs[k]) { try { const r = await call("adminPptFile", { file: t.refs[k], start: 0, len: 8 * 1048576 }); if (r.ok && r.data) blob = new Blob([Uint8Array.from(atob(r.data), c => c.charCodeAt(0))]); } catch (e) {} }
+      if (!blob && t.refs && t.refs[k]) { try { const r = await call("adminPptFile", { file: String(t.refs[k]).replace(/^drive:/, ""), start: 0, len: 8 * 1048576 }); if (r.ok && r.data) blob = new Blob([Uint8Array.from(atob(r.data), c => c.charCodeAt(0))]); } catch (e) {} }
       if (!blob) continue;
       const im = await toJpg(blob), W = 13.333, H = 7.5, s = Math.min(W / im.w, H / im.h), w = im.w * s, hh = im.h * s;
       pres.addSlide().addImage({ data: im.d, x: (W - w) / 2, y: (H - hh) / 2, w, h: hh }); n++;
