@@ -1656,10 +1656,11 @@ function drawThemes() {
     <div class="pic">${t.slides[0] ? `<img src="${esc(t.slides[0])}" alt="" loading="lazy">` : ""}<span class="cnt">${t.slides.length} slide${t.slides.length > 1 ? "s" : ""}</span><span class="cnt" style="left:8px;right:auto">👁 ${(+t.views || 0).toLocaleString("en-IN")} views</span></div>
     <div class="body"><b>${esc(t.name)}</b>
       <div class="tags"><span class="pill ${t.show ? "ok" : "off"}">${t.show ? "● Live" : "Hidden"}</span><span class="pill">${esc(t.tone)}</span><span class="pill">${esc(t.type)}</span><span class="pill">${esc(langName(t.lang))}</span>${(t.subjects || []).slice(0, 2).map(x => `<span class="pill info">📖 ${esc(x)}</span>`).join("")}${(t.classes || []).length ? `<span class="pill info">🎓 ${t.classes.length > 2 ? esc(t.classes[0]) + " – " + esc(t.classes[t.classes.length - 1]) : esc(t.classes.join(", "))}</span>` : ""}</div>
-      <div class="acts"><button class="btn sm" data-e="${i}">✏️ Edit</button><button class="btn sm" data-v="${i}">${t.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-d="${i}" aria-label="Delete">🗑</button></div>
+      <div class="acts"><button class="btn sm" data-e="${i}">✏️ Edit</button><button class="btn sm" data-v="${i}">${t.show ? "🙈 Hide" : "👁 Show"}</button>${t.slides.length ? `<button class="btn sm" data-tdl="${i}" title="Theme ki slides ki PPT download karein">⬇ Download</button>` : ""}<button class="btn sm danger" data-d="${i}" aria-label="Delete">🗑</button></div>
       <div class="cf" data-cf="${i}"></div>
     </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>🎨</b>${TH.length ? "Is filter mein koi theme nahi." : `Koi theme nahi. "+ Add Theme" dabayein.`}</div>`;
   $$("[data-e]").forEach(b => b.onclick = () => editTheme(TH[+b.dataset.e]));
+  $$("[data-tdl]").forEach(b => b.onclick = () => dlTheme(TH[+b.dataset.tdl], b));
   $$("[data-v]").forEach(b => b.onclick = async () => {
     const t = TH[+b.dataset.v]; b.disabled = true;
     const r = await call("adminThemeSave", { id: t.id, name: t.name, tone: t.tone, type: t.type, lang: t.lang, slides: t.refs, order: t.order, show: !t.show, classes: t.classes || [], subjects: t.subjects || [] });
@@ -3167,10 +3168,11 @@ function drawPpts() {
     <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
     <div class="body"><b>${esc(p.title)}</b><span class="lmeta">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.6">${rs(p.mrp)}</s>` : ""} · 🛒 ${nf(p.sold)} sold</span>
       <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.filter(x => x !== NOTE_TAG).slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
-      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button><button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : slideRefs(p).length && /\.(pptx|pdf)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm" data-pr="${i}" title="Shuru ke 8 page / slides ki photo dobara banayein">🔄 Photo dobara</button>` : ""}</div>
+      <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button>${p.file ? `<button class="btn sm" data-pdl="${i}" title="${esc(p.fileName)} download karein">⬇ Download</button>` : ""}<button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : slideRefs(p).length && /\.(pptx|pdf)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm" data-pr="${i}" title="Shuru ke 8 page / slides ki photo dobara banayein">🔄 Photo dobara</button>` : ""}</div>
       <div class="cf" data-pcf="${i}"></div>
     </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.`}</div>`;
   $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
+  $$("[data-pdl]").forEach(b => b.onclick = () => dlPpt(PP[+b.dataset.pdl], b));
   $$("[data-pa]").forEach(b => b.onclick = () => { pvJob(PP[+b.dataset.pa]); drawPpts(); });
   $$("[data-pr]").forEach(b => b.onclick = () => { pvJob(PP[+b.dataset.pr], true); drawPpts(); });
   const np = ml.filter(needPv).length; if ($("#autoPv")) { $("#autoPv").hidden = !np; $("#autoPv").textContent = `🖼 Auto Preview (${np})`; }
@@ -3403,6 +3405,41 @@ const PV_AUTO = 8;
 // purani PPT / PDF jinki preview photo nahi hai: file Drive se laakar shuru ki 8 slides ki photo
 const needPv = p => !slideRefs(p).length && p.file && /\.(pdf|pptx)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad");
 const pvJob = (p, again) => { const pe = JSON.parse(JSON.stringify(p)); if (again) pe.refs = joinRefs(cardRefs(p), []); /* card ki photo rehne do, sirf slides nayi */ enqueue({ name: p.title, pe, pv: p.id, msg: "Line mein (preview)…" }); };
+/* Admin card ka "⬇ Download": asli file Drive se (Ready PPTs, Study notes, Category files) */
+function saveBlob(blob, name) {
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name || "file";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+async function dlPpt(p, b) {
+  if (!p || !p.file) return toast("Is card ki file nahi mili", true);
+  const h = b.innerHTML; b.disabled = true;
+  try { const f = await fetchFile(p, (t, pc) => b.textContent = "⬇ " + (pc != null ? pc + "%" : "…")); saveBlob(f, p.fileName || p.title); toast("⬇ " + (p.fileName || p.title) + " download ho gayi"); }
+  catch (e) { toast("Download nahi hua: " + e.message, true); }
+  b.disabled = false; b.innerHTML = h;
+}
+/* Theme ki slides (photo) → ek PPTX, har slide par ek photo (16:9) */
+async function dlTheme(t, b) {
+  const h = b.innerHTML; b.disabled = true;
+  try {
+    const Pptx = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js", "PptxGenJS");
+    const toJpg = async blob => { const im = await createImageBitmap(blob), c = document.createElement("canvas"); c.width = im.width; c.height = im.height;
+      const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0); return { d: c.toDataURL("image/jpeg", 0.92), w: im.width, h: im.height }; };
+    const pres = new Pptx(); pres.layout = "LAYOUT_WIDE"; let n = 0;
+    for (let k = 0; k < t.slides.length; k++) {
+      b.textContent = `⬇ ${k + 1}/${t.slides.length}`;
+      let blob = null;
+      try { const r = await fetch(t.slides[k]); if (r.ok) blob = await r.blob(); } catch (e) {}
+      if (!blob && t.refs && t.refs[k]) { try { const r = await call("adminPptFile", { file: t.refs[k], start: 0, len: 8 * 1048576 }); if (r.ok && r.data) blob = new Blob([Uint8Array.from(atob(r.data), c => c.charCodeAt(0))]); } catch (e) {} }
+      if (!blob) continue;
+      const im = await toJpg(blob), W = 13.333, H = 7.5, s = Math.min(W / im.w, H / im.h), w = im.w * s, hh = im.h * s;
+      pres.addSlide().addImage({ data: im.d, x: (W - w) / 2, y: (H - hh) / 2, w, h: hh }); n++;
+    }
+    if (!n) throw new Error("slides ki photo nahi mil payin");
+    await pres.writeFile({ fileName: (t.name || "theme").replace(/[\\/:*?"<>|]+/g, " ").trim() + " - theme.pptx" });
+    toast(`⬇ Theme PPT (${n} slides) download ho gayi`);
+  } catch (e) { toast("Download nahi hua: " + e.message, true); }
+  b.disabled = false; b.innerHTML = h;
+}
 async function fetchFile(p, set) {
   const parts = []; let start = 0, total = 1;
   while (start < total) {
@@ -4005,7 +4042,7 @@ function cfDraw() {
       <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}</span></div>
       <div class="body"><b>${esc(p.title)}</b>
         <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span><span class="pill">${isNote(p) ? "📝 Notes" : "📊 PPT"}</span>${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}</div>
-        <div class="acts"><button class="btn sm" data-ce="${i}">✏️ Edit</button><button class="btn sm" data-cr="${i}" title="Sirf is item se hatayein — file delete nahi hogi">✕ Is item se hatayein</button></div></div></div>`).join("")
+        <div class="acts"><button class="btn sm" data-ce="${i}">✏️ Edit</button>${p.file ? `<button class="btn sm" data-cdl="${i}" title="${esc(p.fileName)} download karein">⬇ Download</button>` : ""}<button class="btn sm" data-cr="${i}" title="Sirf is item se hatayein — file delete nahi hogi">✕ Is item se hatayein</button></div></div></div>`).join("")
     : `<div class="empty" style="grid-column:1/-1"><b>📂</b>Is item me abhi koi file nahi.<br><small>“Upload PPT / PDF” dabayein, ya neeche se pehle se bani file jodein.</small></div>`;
   const rows = its.map(l => [l, cfCount(catnavKey(c.n, l))]).filter(([, n]) => n), tot = rows.reduce((s, [, n]) => s + n, 0);
   $("#cfCnt").textContent = `${tot} file${tot === 1 ? "" : "s"} · ${rows.length} / ${its.length} items`;
@@ -4014,6 +4051,7 @@ function cfDraw() {
   const up = kind => { KIND = kind; editPpt(null); if (!PE.board.includes(k)) PE.board.push(k); if (BOARDS.includes(c.n) && !PE.board.includes(c.n)) PE.board.push(c.n); ED = PE; mseg($("#peBoard"), BOARDS, "board"); drawPeMenu(); };
   $("#cfUp").onclick = () => up("ppt");
   $("#cfUpN").onclick = () => up("notes");
+  $$("#cfGrid [data-cdl]").forEach(b => b.onclick = () => dlPpt(PP[+b.dataset.cdl], b));
   $$("#cfGrid [data-ce]").forEach(b => b.onclick = () => { KIND = isNote(PP[+b.dataset.ce]) ? "notes" : "ppt"; editPpt(PP[+b.dataset.ce]); });
   $$("#cfGrid [data-cr]").forEach(b => b.onclick = () => cfRetag(b, +b.dataset.cr, false));
   cfAddDraw();
