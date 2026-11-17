@@ -1312,7 +1312,6 @@ async function dash() {
   SUM = s; setWho(); badge("#nOrders", s.newOrders);
   const list = o.ok ? o.orders : [], stats = o.ok ? o.statuses : [], sales = sl.ok ? sl.sales : [];
   if (o.ok) { ORD = list; STAT = stats; }
-  const hr = new Date().getHours(), greet = hr < 12 ? "Good morning" : hr < 17 ? "Good afternoon" : "Good evening";
   const today = new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   // 30 din ka data
   const days = [...Array(30)].map((_, k) => day0(29 - k));
@@ -1331,7 +1330,7 @@ async function dash() {
     [s.pendingReviews, "Reviews hidden from site", "reviews", "i-star", "#f59e0b"],
     [s.themes - s.liveThemes, "Themes hidden from site", "themes", "i-image", "var(--cyan)"]
   ].filter(x => x[0] > 0);
-  V(`<div class="dhead"><div><h1 tabindex="-1">${greet}${SUM.user ? ", " + esc(SUM.user) : ""}</h1><p>${today} · Here's how your store is doing.</p></div>
+  V(`<div class="dhead"><div><h1 tabindex="-1">Hello${SUM.user ? ", " + esc(SUM.user) : ""}</h1><p>${today}</p></div>
     <div class="acts"><button class="btn sm" data-go="ppts">${ic("i-upload")} Upload PPT</button><button class="btn sm" data-go="themes" data-add="1">${ic("i-plus")} Add theme</button><a class="btn sm pri" href="./" target="_blank" rel="noopener">${ic("i-ext")} View site</a></div></div>
   ${s.newOrders ? `<button class="alertbar" data-go="orders">${ic("i-zap")}<span><b>${s.newOrders} new order${s.newOrders > 1 ? "s" : ""}</b> waiting for confirmation</span><span class="sp"></span><span class="go">Review →</span></button>` : ""}
   <div class="kpis">
