@@ -352,6 +352,45 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 /* Theme sirf Home page par chuni jaati hai; baaki pages wahi theme follow karte hain */
 .theme-sw{display:none!important}
 @media(max-width:420px){.nav .my-btn{margin-left:auto}}
+/* ===== SUBJECT BUNDLES: ek subject ke saare chapters ek saath (2 card ek line mein) ===== */
+.bundles{margin:22px 0 6px}.bundles[hidden]{display:none}
+.b-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.b-head h2{font-family:'Space Grotesk','Hind';font-size:1.35rem;font-weight:800}.b-head p{color:var(--muted);font-size:.86rem}
+.bgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.bcard{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:.25s}
+.bcard:hover{border-color:var(--line2);box-shadow:var(--shadow)}
+.bstage{position:relative;aspect-ratio:16/8.4;overflow:hidden;perspective:1100px;cursor:pointer;border:0;width:100%;display:block;
+  background:radial-gradient(120% 90% at 30% 20%,rgba(139,44,255,.35),transparent 60%),radial-gradient(90% 80% at 90% 100%,rgba(6,182,212,.28),transparent 60%),linear-gradient(135deg,#140c2b,#0b1324)}
+.bstk{position:absolute;inset:12% 22% 13% 9%;transform-style:preserve-3d}
+.bsl{position:absolute;inset:0;border-radius:10px;background-size:cover;background-position:center;box-shadow:0 18px 40px -12px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.12);
+  transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .9s,filter .9s;opacity:0;transform:translate3d(0,0,-260px);display:flex;align-items:flex-end;padding:10px 12px}
+.bsl .gt{font:700 .95rem 'Space Grotesk','Hind';color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.bsl[data-p="0"]{opacity:1;transform:translate3d(0,0,0) rotateY(-14deg);z-index:5}
+.bsl[data-p="1"]{opacity:.92;transform:translate3d(13%,-6%,-90px) rotateY(-14deg);z-index:4;filter:brightness(.8)}
+.bsl[data-p="2"]{opacity:.78;transform:translate3d(25%,-12%,-180px) rotateY(-14deg);z-index:3;filter:brightness(.62)}
+.bsl[data-p="3"]{opacity:.55;transform:translate3d(36%,-18%,-270px) rotateY(-14deg);z-index:2;filter:brightness(.48)}
+.bsl[data-p="out"]{opacity:0;transform:translate3d(-70%,8%,60px) rotateY(-30deg);z-index:6}
+.bbadges{position:absolute;top:12px;left:12px;display:flex;gap:6px;z-index:9}
+.bbadges span{font-size:.62rem;font-weight:800;letter-spacing:.06em;padding:4px 8px;border-radius:6px;color:#fff;background:linear-gradient(135deg,#8b2cff,#ec4899)}
+.bbadges .bv{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+.bpos{position:absolute;right:12px;bottom:12px;z-index:9;font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:8px;background:rgba(0,0,0,.62);color:#fff;max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bbody{padding:16px 18px 18px;display:flex;flex-direction:column;gap:11px;flex:1}
+.bbody h3{font-family:'Space Grotesk','Hind';font-size:1.15rem;font-weight:800;line-height:1.25}
+.bsub{color:var(--muted);font-size:.84rem;font-weight:600}
+.bspec{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;margin:0;font-size:.82rem;border:1px solid var(--line);border-radius:12px;padding:6px 12px;background:var(--card2)}
+.bspec div{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.bspec div:nth-last-child(-n+2){border-bottom:0}
+.bspec dt{color:var(--dim)}.bspec dd{margin:0;font-weight:700;text-align:right}
+.bsave{font-size:.74rem;font-weight:800;padding:3px 8px;border-radius:7px;color:#052e16;background:#4ade80;align-self:center}
+.bacts{display:grid;grid-template-columns:auto 44px 44px 1fr;gap:8px}.bacts>*{min-width:0}
+.bacts .add,.bacts .ed{padding-inline:0}.bacts .ed{color:#fff;background:linear-gradient(135deg,#ec4899,#f97316);border:0}
+.chs{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.ch{display:grid;grid-template-columns:28px 88px 1fr auto;gap:10px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:12px;background:var(--card2);text-align:left;color:inherit;font:inherit;cursor:pointer}
+.ch:hover{border-color:var(--line2)}.ch i{font-style:normal;font-weight:800;color:var(--dim);text-align:center}
+.ch .mini{width:88px}.ch b{font-size:.88rem;display:block}.ch small{color:var(--dim);font-size:.74rem}
+@media(max-width:760px){.bgrid{grid-template-columns:1fr}.bspec{grid-template-columns:1fr}.bspec div:nth-last-child(2){border-bottom:1px dashed var(--line)}
+  .bacts{grid-template-columns:1fr 44px 44px}.bacts .btn-gold{grid-column:1/-1}.ch{grid-template-columns:22px 64px 1fr}.ch .mini{width:64px}.ch>span:last-child{grid-column:3}}
+@media(prefers-reduced-motion:reduce){.bsl{transition:none}}
 </style>
 <script src="js/protect.js"></script>
 </head>
@@ -420,6 +459,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .mnf[hidden]{display:none}.mnf button{margin-left:auto;border:1px solid currentColor;background:none;color:inherit;font:inherit;font-size:.8rem;padding:4px 10px;border-radius:99px;cursor:pointer;opacity:.8}</style>
 
 <main class="container">
+  <section class="bundles" id="bundles" aria-label="Complete subject bundles" hidden></section>
   <div class="result"><span id="resultTxt"></span><button class="clear" id="clear" hidden>Clear all filters ✕</button></div>
   <div class="grid" id="grid"></div>
   <div class="more"><button class="btn btn-ghost" id="more" hidden>Load more PPTs</button></div>
@@ -737,6 +777,104 @@ function card(p){
       </div>
     </div></article>`;
 }
+/* ---------- SUBJECT BUNDLES ----------
+   Ek hi Class + Subject + Language ki 2 ya zyada PPT apne aap "Complete Subject" bundle ban jaati hain.
+   Daam = saare chapters ka jod (server bhi wahi leta hai), MRP = saare MRP ka jod. */
+let BUNDLES = [];
+function makeBundles(){
+  if (NOTES) return [];
+  const g = {};
+  VIEW().forEach(p => {
+    if (p.type === "zip" || p.type === "pdf" || !p.subject) return;
+    const cls = lv(p).find(l => /^class\s*\d+/i.test(l)); if (!cls) return;
+    const k = [cls, p.subject, p.lang].join("|");
+    (g[k] = g[k] || { cls, subject:p.subject, lang:p.lang, items:[] }).items.push(p);
+  });
+  return Object.values(g).filter(b => b.items.length >= 2).map(b => {
+    b.items.sort((a, c) => (a.added || a.id || 0) - (c.added || c.id || 0));
+    b.ids = b.items.map(p => p.id);
+    b.price = b.items.reduce((s, p) => s + (+p.price || 0), 0);
+    b.mrp = b.items.reduce((s, p) => s + Math.max(+p.mrp || 0, +p.price || 0), 0);
+    b.slides = b.items.reduce((s, p) => s + (+p.slides || 0), 0);
+    b.boards = [...new Set(b.items.flatMap(brd))];
+    b.anim = b.items.some(p => p.anim);
+    b.sales = b.items.reduce((s, p) => s + (+p.sales || 0), 0);
+    b.title = `${b.cls} – Complete ${b.subject} PPT Bundle`;
+    return b;
+  }).sort((a, c) => c.items.length - a.items.length || c.sales - a.sales);
+}
+function bundleCard(b, k){
+  const off = b.mrp > b.price ? Math.round((1 - b.price / b.mrp) * 100) : 0;
+  const allIn = b.ids.every(id => cart.includes(id)), board = b.boards.join(" / ") || "—";
+  const covers = b.items.map((p, j) => `<span class="bsl" data-p="${j < 4 ? j : "x"}" style="${thumbStyle(p)}">${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}</span>`).join("");
+  const spec = [["Product Type","Complete Subject"],["Board",board],["Class",b.cls.replace(/^class\s*/i,"")],["Subject",b.subject],["Chapters",b.items.length],
+    ["Slides",b.slides ? b.slides.toLocaleString("en-IN") : "—"],["Language",langTxt(b.lang)],["Format","Editable PPT"]];
+  return `<article class="bcard">
+    <button class="bstage" data-bund="${k}" onclick="openBundle(${k})" aria-label="${esc(b.title)}: saare chapters dekhein">
+      <span class="bbadges"><span>COMPLETE SUBJECT</span>${off ? `<span class="bv">BEST VALUE</span>` : ""}</span>
+      <span class="bstk">${covers}</span>
+      <span class="bpos">1 / ${b.items.length} · ${esc(b.items[0].title)}</span>
+    </button>
+    <div class="bbody">
+      <h3>${esc(b.title)}</h3>
+      <div class="bsub">${esc(board)} | ${esc(langTxt(b.lang))} Medium | ${b.items.length} Chapters</div>
+      <div class="tags">${[`${b.items.length} Chapters`, b.slides ? `${b.slides} Slides` : "", "Editable Slides", b.anim ? "Animated" : ""].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      <dl class="bspec">${spec.map(([a, v]) => `<div><dt>${a}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+      <div class="price"><b>${inr(b.price)}</b>${off ? `<s>${inr(b.mrp)}</s><em>${off}% OFF</em><span class="bsave">Save ${inr(b.mrp - b.price)}</span>` : ""}</div>
+      <div class="bacts">
+        <button class="btn btn-ghost btn-sm" onclick="openBundle(${k})">${icon("i-layers","width:15px")}View All Chapters</button>
+        <button class="btn btn-ghost btn-sm add ${allIn ? "added" : ""}" onclick="bundleCart(${k})" aria-label="${allIn ? "Bundle cart se hatayein" : "Poora bundle cart mein daalein"}" title="${allIn ? "Cart mein hai" : "Add Bundle to Cart"}">${icon(allIn ? "i-check" : "i-bag","width:16px")}</button>
+        <a class="btn btn-sm ed" href="order.html?theme=${encodeURIComponent(b.title)}" title="Customize — kuch add ya change karwayein" aria-label="Customize ${esc(b.title)}">${icon("i-pen","width:15px")}</a>
+        <button class="btn btn-gold btn-sm" onclick="buyBundle(${k})">${icon("i-dl","width:15px")}Buy Complete Bundle</button>
+      </div>
+    </div></article>`;
+}
+function renderBundles(list){
+  const box = $("#bundles"), seen = new Set(list.map(p => p.id));
+  BUNDLES = makeBundles().filter(b => b.ids.some(id => seen.has(id)));
+  box.hidden = !BUNDLES.length;
+  box.innerHTML = BUNDLES.length ? `<div class="b-head"><h2>📚 Complete Subject Bundles</h2><p>Poore subject ke saare chapters ek saath, ek hi payment mein.</p></div>
+    <div class="bgrid">${BUNDLES.map(bundleCard).join("")}</div>` : "";
+  BSTK.k = {};
+}
+function bundleCart(k){
+  const b = BUNDLES[k]; if (!b) return;
+  if (b.ids.every(id => cart.includes(id))) { cart = cart.filter(id => !b.ids.includes(id)); toast("Bundle cart se hata diya"); }
+  else { b.ids.forEach(id => { if (!cart.includes(id)) cart.push(id); }); toast(`✓ ${b.items.length} chapters cart mein add ho gaye`); }
+  saveCart();
+}
+function buyBundle(k){
+  const b = BUNDLES[k]; if (!b) return;
+  b.ids.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart();
+  hideModal("previewModal"); openPay(b.ids);
+}
+function openBundle(k){
+  const b = BUNDLES[k]; if (!b) return;
+  const off = b.mrp > b.price ? Math.round((1 - b.price / b.mrp) * 100) : 0;
+  $("#previewBody").innerHTML = `<div class="m-info">
+    <span class="bbadges" style="position:static"><span>COMPLETE SUBJECT</span>${off ? `<span class="bv">BEST VALUE</span>` : ""}</span>
+    <h3>${esc(b.title)}</h3>
+    <p>${b.items.length} chapters · ${b.slides ? b.slides + " slides · " : ""}${esc(langTxt(b.lang))} Medium${b.boards.length ? " · " + esc(b.boards.join(" / ")) : ""}. Kisi bhi chapter par click karke uski slides dekhein.</p>
+    <div class="chs">${b.items.map((p, j) => `<button type="button" class="ch" onclick="openPreview(${p.id})"><i>${j + 1}</i><span class="mini" style="${thumbStyle(p)}"></span>
+      <span><b>${esc(p.title)}</b><small>${p.slides ? p.slides + " slides · " : ""}👁 Preview</small></span><span><small>${inr(p.price)}</small></span></button>`).join("")}</div>
+    <div class="m-buy">
+      <div class="price"><b>${inr(b.price)}</b>${off ? `<s>${inr(b.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
+      <div class="grow"><button class="btn btn-gold btn-sm" onclick="buyBundle(${k})">${icon("i-dl","width:15px")}Buy Complete Bundle</button></div>
+    </div></div>`;
+  showModal("previewModal");
+}
+/* Bundle preview: chapters ke cover 3D stack mein, har 2.6 sec aage wala cover udkar peeche chala jaata hai */
+const BSTK = { k:{} };
+function bundleTick(){
+  document.querySelectorAll(".bstage[data-bund]").forEach(el => {
+    const r = el.getBoundingClientRect(); if (r.bottom <= 0 || r.top >= innerHeight || el.matches(":hover")) return;
+    const sl = [...el.querySelectorAll(".bsl")], n = sl.length; if (n < 2) return;
+    const id = el.dataset.bund, k = BSTK.k[id] = ((BSTK.k[id] || 0) + 1) % n;
+    sl.forEach((s, j) => { const pos = (j - k + n) % n; s.dataset.p = pos < 4 ? pos : (pos === n - 1 ? "out" : "x"); });
+    const b = BUNDLES[id]; if (b) el.querySelector(".bpos").textContent = `${k + 1} / ${n} · ${b.items[k].title}`;
+  });
+}
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(() => { if (!document.hidden) bundleTick(); }, 2600);
 function render(){
   const mf = $("#mnf"); mf.hidden = !st.menu;
   if (st.menu) { mf.innerHTML = `<span>📂 ${esc(st.menuT || "Category")}</span><button type="button">✕ Show all</button>`; mf.querySelector("button").onclick = () => { st.menu = ""; render(); }; }
@@ -749,6 +887,7 @@ function render(){
   $("#grid").innerHTML = show.length ? show.map(card).join("")
     : NOTES ? `<div class="empty"><b>${V.length ? "Is filter mein koi Notes nahi mile" : "Notes jald aa rahe hain"}</b>Tab tak Ready PPTs dekhiye, ya WhatsApp par apne chapter ke notes maangiye. <button class="clear" type="button" onclick="setKind(false,true);render()">Ready PPTs dekhein →</button></div>`
     : `<div class="empty"><b>${V.length ? "Is filter mein koi PPT nahi mili" : "Ready PPTs jald aa rahi hain"}</b>Filter badal kar dekhiye, ya apni custom PPT banwaiye. <a class="clear" href="order.html">PPT Order Now →</a></div>`;
+  renderBundles(list);
   $("#more").hidden = list.length <= show.length;
   renderCart();
 }
