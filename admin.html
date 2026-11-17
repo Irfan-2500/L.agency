@@ -740,6 +740,33 @@ body.noscroll{overflow:hidden}
 @media(prefers-reduced-motion:reduce){.skip{transition:none}}
 @media(forced-colors:active){.nav button.on{outline:2px solid CanvasText}.kpi,.card{border:1px solid CanvasText}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== Clean UI: kam text, saaf cards ===== */
+.kpi{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:14px;min-height:0;padding:20px}
+.kpi .ic{width:48px;height:48px;border-radius:13px}.kpi .ic svg{width:22px;height:22px}
+.kpi .kt{display:flex;flex-direction:column;gap:6px;min-width:0}
+.kpi .kl{color:var(--muted);font-size:.86rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .kv{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.kpi .kv b{margin:0;font-size:1.95rem}
+.kpi .dl small,.kpi .ksub,.kpi .spark,.kpi .kx{display:none}
+.kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.btn.icon{padding-inline:8px}
+.ch .clegend.mini{margin:0 0 0 auto;border:0;padding:0}.ch .clegend.mini+.btn{margin-left:10px}
+.agrid2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+.agrid2>.card{margin:0}.rvis{margin:0 0 16px}
+.agrid2 .vth{flex-wrap:nowrap}.agrid2 .vtnav input{max-width:150px}
+.rvis .rtbl th,.rvis .rtbl td{text-align:left}.rvall{margin-top:10px}
+.agrid6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.agrid6>.card{margin:0;padding:16px}.agrid6 h3{font-size:.98rem;margin-bottom:14px}
+.agrid6 .toplist div{grid-template-columns:minmax(0,1fr) minmax(30px,.9fr) auto;gap:8px;font-size:.78rem}
+.agrid6 .toplist small{display:none}
+.agrid6 .donut{width:min(120px,80%);margin:0 auto 12px}.agrid6 .donut .dc b{font-size:1.05rem}.agrid6 .donut .dc small{font-size:.66rem}
+.agrid6 .legend{gap:6px}.agrid6 .legend div{font-size:.78rem}
+@media(max-width:1360px){.agrid6{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1100px){.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}.agrid2{grid-template-columns:1fr}}
+@media(max-width:640px){.agrid6{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi{padding:14px;gap:10px}.kpi .ic{width:38px;height:38px}.kpi .kv b{font-size:1.45rem}
+  .ch .clegend.mini{display:none}.ch .btn.icon{margin-left:auto}}
+@media(max-width:400px){.agrid6{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1230,7 +1257,7 @@ const loading = () => V(`<div class="loading"><i></i><i></i><i></i></div>`);
 const fail = msg => V(`<div class="empty"><b>⚠️</b>${esc(msg)}<div class="row" style="justify-content:center;margin-top:14px"><button class="btn sm" onclick="go(tab)">${ic("i-refresh")} Try again</button></div></div>`);
 const fmtTime = t => { const d = new Date(t); return isNaN(d) ? esc(t) : d.toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }); };
 const ago = t => { const d = new Date(t); if (isNaN(d)) return ""; const m = Math.round((Date.now() - d) / 60000); if (m < 1) return "just now"; if (m < 60) return m + " min ago"; const h = Math.round(m / 60); if (h < 24) return h + " hr ago"; const dd = Math.round(h / 24); return dd + " day" + (dd > 1 ? "s" : "") + " ago"; };
-const head = (title, sub, acts) => `<div class="pagehead"><div><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${acts ? `<div class="acts">${acts}</div>` : ""}</div>`;
+const head = (title, sub, acts) => `<div class="pagehead"><div><h1>${title}</h1></div>${acts ? `<div class="acts">${acts}</div>` : ""}</div>`;
 function setWho() { const u = SUM.user || "Admin"; $("#whoName").textContent = u; $("#whoAv").textContent = initials(u); }
 
 /* ---------- Chart helpers (SVG, no library) ---------- */
@@ -1258,15 +1285,14 @@ function spark(vals, col) {
 }
 function kpi(o) {
   return `<button class="kpi${o.hot ? " hot" : ""}" ${o.big ? `data-big="${o.big}"` : `data-go="${o.go}"`} style="--c:${o.col}" aria-label="${esc(o.label)}: ${esc(String(o.value))}. ${o.big ? "Open full view" : "Open " + esc(TITLES[o.go] || o.go)}" title="Click for full view">
-    <span class="kh"><span class="ic">${o.icon}</span><span class="kl">${esc(o.label)}</span></span>
-    <b>${o.value}</b>${o.d || ""}${o.sub ? `<small>${o.sub}</small>` : ""}${spark(o.sp, o.col)}${o.big ? `<span class="kx" aria-hidden="true">${ic("i-max")}</span>` : ""}</button>`;
+    <span class="ic">${o.icon}</span><span class="kt"><span class="kl">${esc(o.label)}</span><span class="kv"><b>${o.value}</b>${o.d || ""}</span></span>${o.sub ? `<small class="ksub">${o.sub}</small>` : ""}</button>`;
 }
 /* Area (left axis) + bars (right axis) chart, hover / keyboard tooltips + table for screen readers.
    labels: x-axis labels · opt.full: tooltip/table labels · opt.bars: primary series as bars · opt.h: height */
 function comboChart(id, labels, area, bars, opt) {
   opt = opt || {};
   const full = opt.full || labels, fA = area.fmt || nf, fB = (bars && bars.fmt) || nf, asBars = !!opt.bars && labels.length <= 60;
-  const sm = innerWidth < 600, W = sm ? 420 : 720, H = (opt.h || 250) * (sm ? .9 : 1), L = sm ? 36 : 44, R = bars ? 34 : 10, T = 14, B = 26, iw = W - L - R, ih = H - T - B, n = labels.length;
+  const sm = innerWidth < 600, W = opt.w || (sm ? 420 : 720), H = (opt.h || 250) * (sm ? .9 : 1), L = sm ? 36 : 44, R = bars ? 34 : 10, T = 14, B = 26, iw = W - L - R, ih = H - T - B, n = labels.length;
   const st = asBars ? iw / Math.max(1, n) : iw / Math.max(1, n - 1), bw = Math.max(2, Math.min(asBars ? 34 : 14, (iw / n) * (asBars ? .7 : .45)));
   const nice = m => { m = Math.max(1, m); const p = Math.pow(10, Math.floor(Math.log10(m))), f = m / p; return Math.max(1, ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find(x => f <= x) || 10) * p); };
   const mxA = Math.max(0, ...area.vals), mxB = bars ? Math.max(0, ...bars.vals) : 0;
@@ -1294,7 +1320,7 @@ function comboChart(id, labels, area, bars, opt) {
   return `<div class="combo${opt.h > 260 ? " tall" : ""}" id="${id}"><svg viewBox="0 0 ${W} ${H}" role="list" aria-label="${esc(area.name)}${bars ? " and " + esc(bars.name) : ""}, ${n} periods">
     <defs><linearGradient id="${id}G" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:${area.col};stop-opacity:.32"/><stop offset="1" style="stop-color:${area.col};stop-opacity:0"/></linearGradient></defs>
     ${grid}${bar}${prim}${xl}${hits}</svg><div class="ctip" id="${id}Tip" hidden></div></div>
-    <div class="clegend"><span><i style="background:${area.col}"></i>${esc(area.name)}</span>${bars ? `<span><i style="background:${bars.col}"></i>${esc(bars.name)} (right axis)</span>` : ""}</div>${tbl}`;
+    ${opt.bare ? "" : `<div class="clegend"><span><i style="background:${area.col}"></i>${esc(area.name)}</span>${bars ? `<span><i style="background:${bars.col}"></i>${esc(bars.name)} (right axis)</span>` : ""}</div>${tbl}`}`;
 }
 function donut(parts, total, label) {
   let off = 25; const t = total || 1;
@@ -1481,7 +1507,7 @@ function finHtml(o) {
       ${c.payment ? "" : `<div class="row" style="gap:6px;flex-wrap:wrap">${finWa(o) ? `<a class="btn sm wa" href="${finWa(o)}" target="_blank" rel="noopener">${ic("i-msg")} Customer ko WhatsApp par batayein</a>` : ""}${!c.demo.length || noLock ? `<button class="btn sm pri" data-fin-demo>${ic("i-image")} ${c.demo.length ? "Saari slides ki photo banao" : FIN_DEMO + " demo slides banao"}</button>` : ""}<button class="btn sm" data-fin-up>${ic("i-upload")} File badlo</button><button class="btn sm" data-fin-price>₹ Daam badlo</button><button class="btn sm danger" data-fin-del>${ic("i-trash")} Hatao</button></div>`}
       <div data-fin-form></div></div>`;
   }
-  return `<div class="fin-empty"><button class="btn sm pri" data-fin-up>${ic("i-upload")} Final PPT upload karein</button><span class="note">Customer Track page par ${FIN_DEMO} slide ka demo dekhega, Razorpay se pay karega aur turant download karega.</span></div><div data-fin-form></div>`;
+  return `<div class="fin-empty"><button class="btn sm pri" data-fin-up>${ic("i-upload")} Final PPT upload karein</button></div><div data-fin-form></div>`;
 }
 function bindFin(box) {
   const id = box.dataset.fin, o = ORD.find(x => String(x.id) === id), form = () => box.querySelector("[data-fin-form]");
@@ -2286,37 +2312,34 @@ function drawStats(D) {
   const y = window.scrollY, r = D.top, R = D.R, g = granOf(R, RG.g), B = mkBuckets(R, g);
   const DEV_COL = { Mobile: "var(--accent)", Computer: "var(--cyan)", Tablet: "var(--warn)" };
   const dev = sum((r.devices || []).map(x => x[1])) || 1, geo = splitGeo(r.states), tot = D.views || 1;
-  V(head("Analytics", "Who visits your website, where they come from and what they view. Visitors are counted anonymously — no names or numbers are stored.",
-      `${R.to >= day0(0) ? `<span class="st-live" id="stLive"></span>` : ""}<a class="btn sm" href="${esc(D.st.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Open sheet</a>`) + rangeBar(R) + rangeNote(D) + `
-  <div class="kpis">
-    ${kpiM("visitors", D, { icon: ic("i-users"), sub: `${nf(D.st.todayUnique)} today` })}
-    ${kpiM("views", D, { icon: ic("i-eye"), sub: `${nf(D.st.allTime)} all time` })}
+  const top5 = (rows, col) => toplist((rows || []).slice(0, 5), 0, col);
+  V(head("Analytics", "",
+      `${R.to >= day0(0) ? `<span class="st-live" id="stLive"></span>` : ""}<a class="btn sm" href="${esc(D.st.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Sheet</a>`) + rangeBar(R) + rangeNote(D) + `
+  <div class="kpis k4">
+    ${kpiM("visitors", D, { icon: ic("i-users") })}
+    ${kpiM("views", D, { icon: ic("i-eye") })}
     ${kpiM("ppv", D, { icon: ic("i-zap") })}
-    ${kpiM("conversion", D, { icon: ic("i-pie"), sub: "Orders ÷ visitors" })}
+    ${kpiM("conversion", D, { icon: ic("i-pie") })}
   </div>
-  <section class="card" style="margin-bottom:16px" aria-labelledby="st30"><div class="ch"><h3 id="st30">${ic("i-chart", "color:var(--accent)")} Visitors &amp; page views</h3><button class="btn sm" data-big="visitors" style="margin-left:auto">${ic("i-max")} Expand</button></div>
-    ${comboChart("sChart", B.map(b => b.lab), { name: "Visitors", vals: METRICS.visitors.bucket(D, B), col: "var(--accent)" }, { name: "Page views", vals: METRICS.views.bucket(D, B), col: "var(--cyan)" }, { full: B.map(b => b.full) })}</section>
-  <section class="card" style="margin-bottom:16px" aria-labelledby="vtH"><div class="ch vth"><h3 id="vtH">${ic("i-clock", "color:var(--warn)")} Visits by time</h3>
-    <div class="vtnav"><button class="btn sm" data-vt="-1" aria-label="Previous day">‹</button><input type="date" id="vtDay" aria-label="Day" value="${vtDay(R)}" max="${ymd(day0(0))}"><button class="btn sm" data-vt="1" aria-label="Next day">›</button></div></div>
-    <div id="vtBody"><p class="note">Loading…</p></div></section>
-  <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-book", "color:var(--accent)")} Top pages</h3></div>${toplist((r.pages || []).map(([k, n]) => [PAGE_NAMES[k] || k, n]), tot)}</section>
-    <section class="card"><div class="ch"><h3>${ic("i-ext", "color:var(--cyan)")} Traffic sources</h3></div>${toplist(r.sources, tot, "var(--cyan)")}</section>
+  <div class="agrid2">
+    <section class="card" aria-labelledby="st30"><div class="ch"><h3 id="st30">${ic("i-chart", "color:var(--accent)")} Visitors &amp; Page Views</h3>
+      <span class="clegend mini"><span><i style="background:var(--accent)"></i>Visitors</span><span><i style="background:var(--cyan)"></i>Page Views</span></span>
+      <button class="btn sm icon" data-big="visitors" aria-label="Expand" title="Expand">${ic("i-max")}</button></div>
+      ${comboChart("sChart", B.map(b => b.lab), { name: "Visitors", vals: METRICS.visitors.bucket(D, B), col: "var(--accent)" }, { name: "Page views", vals: METRICS.views.bucket(D, B), col: "var(--cyan)" }, { full: B.map(b => b.full), bare: 1 })}</section>
+    <section class="card" aria-labelledby="vtH"><div class="ch vth"><h3 id="vtH">${ic("i-clock", "color:var(--accent)")} Visits by Time</h3>
+      <div class="vtnav"><button class="btn sm" data-vt="-1" aria-label="Previous day">‹</button><input type="date" id="vtDay" aria-label="Day" value="${vtDay(R)}" max="${ymd(day0(0))}"><button class="btn sm" data-vt="1" aria-label="Next day">›</button></div></div>
+      <div id="vtBody"><p class="note">Loading…</p></div></section>
   </div>
-  <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-home", "color:var(--ok)")} States (India)</h3></div>${toplist(geo.states, tot, "var(--ok)")}</section>
-    <section class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--cyan)")} Countries</h3></div>${toplist(geo.countries, tot, "var(--cyan)")}</section>
-  </div>
-  <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-home", "color:var(--warn)")} Cities</h3></div>${toplist(r.cities, tot, "var(--warn)")}</section>
-    <section class="card"><div class="ch"><h3>${ic("i-phone", "color:var(--accent)")} Devices</h3></div>
+  <section class="card rvis" aria-labelledby="rvH"><div class="ch"><h3 id="rvH">${ic("i-book", "color:var(--accent)")} Recent Visits</h3></div><div id="rvBody"><p class="note">Loading…</p></div></section>
+  <div class="agrid6">
+    <section class="card"><h3>Top Pages</h3>${top5((r.pages || []).map(([k, n]) => [PAGE_NAMES[k] || k, n]), "var(--accent)")}</section>
+    <section class="card"><h3>Traffic Sources</h3>${top5(r.sources, "var(--info)")}</section>
+    <section class="card"><h3>States (India)</h3>${top5(geo.states, "var(--ok)")}</section>
+    <section class="card"><h3>Cities</h3>${top5(r.cities, "var(--warn)")}</section>
+    <section class="card"><h3>Devices</h3>
       ${(r.devices || []).length ? donut(r.devices.map(([k, n]) => [k, n, DEV_COL[k] || "var(--dim)"]), dev, "visits") : ""}
       <div class="legend">${(r.devices || []).map(([k, n]) => `<div><i style="background:${DEV_COL[k] || "var(--dim)"}"></i>${esc(k)}<b>${Math.round(n / dev * 100)}%</b></div>`).join("") || `<p class="note">No data yet.</p>`}</div></section>
-  </div>
-  <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--info)")} Browsers</h3></div>${toplist(r.browsers, tot, "var(--info)")}</section>
-    <section class="card"><div class="ch"><h3>${ic("i-clock", "color:var(--dim)")} About this data</h3></div>
-      <ul class="notes"><li>Click any card to open it full screen with its own chart and table.</li><li>% change compares with the same number of days just before.</li><li>A visitor who reopens the same page within 30 minutes is counted once.</li><li>Gender and age can't be detected by a website, so they aren't shown.</li></ul></section>
+    <section class="card"><h3>Browsers</h3>${top5(r.browsers, "var(--info)")}</section>
   </div>`);
   bindRange($("#view"), () => stats());
   bindVT(); liveTag(false); if (y) window.scrollTo(0, y);
@@ -2352,14 +2375,16 @@ async function loadVT() {
   const peak = tot ? hs.reduce((b, h, i) => (+h.visits || 0) > (+hs[b].visits || 0) ? i : b, 0) : -1;
   const list = r.list || [];
   const tm = s => { const [hh, mm] = String(s || "").split(":").map(Number); return isNaN(hh) ? esc(s) : `${(hh % 12) || 12}:${String(mm).padStart(2, "0")} ${hh < 12 ? "am" : "pm"}`; };
-  el2.innerHTML = `<p class="note vtsum"><b>${nf(tot)}</b> page views · <b>${nf(r.visitors)}</b> visitors on ${esc(fmtD(pday(day), 1))}${peak >= 0 ? ` · busiest hour <b>${esc(full[peak])}</b>` : ""} <small>(India time)</small></p>
-    ${tot ? `<div class="seg vtmode" role="radiogroup" aria-label="Graph">${[["min", "Per minute"], ["hour", "Per hour"]].map(([k, l]) => `<button type="button" role="radio" aria-checked="${VT_MODE === k}" class="${VT_MODE === k ? "on" : ""}" data-vtm="${k}">${l}</button>`).join("")}</div>` +
-      (VT_MODE === "min" ? `<div id="vtMin"></div>` : comboChart("vtChart", hs.map((_, h) => hLab(h)), { name: "Page views", vals: hs.map(h => +h.visits || 0), col: "var(--warn)" }, null, { bars: 1, full, h: 200 })) : `<p class="note">No visits on this day.</p>`}
-    ${list.length ? `<h4 class="vtl">Every visit with time <small>(newest first)</small></h4><div class="rtbl vtlist"><table><thead><tr><th>Time</th><th>Page</th><th>Came from</th><th>Place</th><th>Device</th><th>Visitor</th></tr></thead><tbody>${list.map(x =>
-      `<tr><td><b>${tm(x.t)}</b></td><td>${esc(PAGE_NAMES[x.page] || x.page)}</td><td>${esc(x.src || "Direct")}</td><td>${esc(x.place || "—")}</td><td>${esc([x.device, x.browser].filter(Boolean).join(" · "))}</td><td><span class="pill" title="Same code = same visitor">#${esc(x.who)}</span></td></tr>`).join("")}</tbody></table></div>
-      ${list.length >= 500 ? `<p class="note">Showing the latest 500 visits.</p>` : ""}` : ""}`;
-  if (tot && VT_MODE === "min") mountMinute($("#vtMin"), r, day, { col: "var(--warn)", h: 220 });
-  $$("[data-vtm]").forEach(b => b.onclick = () => { VT_MODE = b.dataset.vtm; loadVT(); });
+  el2.innerHTML = tot ? comboChart("vtChart", hs.map((_, h) => hLab(h)), { name: "Page views", vals: hs.map(h => +h.visits || 0), col: "var(--accent)" }, null, { bars: 1, full, h: 270, w: 440, bare: 1 })
+      + `<p class="note vtsum"><b>${nf(tot)}</b> views · <b>${nf(r.visitors)}</b> visitors${peak >= 0 ? ` · peak <b>${esc(full[peak])}</b>` : ""}</p>`
+    : `<p class="note">No visits on this day.</p>`;
+  const rv = $("#rvBody");
+  if (rv) { const N = 8, row = x => `<tr><td>${tm(x.t)}</td><td>${esc(PAGE_NAMES[x.page] || x.page)}</td><td>${esc(x.src || "Direct")}</td><td>${esc(x.place || "—")}</td></tr>`;
+    rv.innerHTML = list.length ? `<div class="rtbl"><table><thead><tr><th>Time</th><th>Page</th><th>Source</th><th>Location</th></tr></thead><tbody>${list.slice(0, N).map(row).join("")}</tbody>
+      ${list.length > N ? `<tbody class="rvmore" hidden>${list.slice(N).map(row).join("")}</tbody>` : ""}</table></div>
+      ${list.length > N ? `<button type="button" class="btn sm rvall">Show all ${nf(list.length)}</button>` : ""}` : `<p class="note">No visits on this day.</p>`;
+    const bt = rv.querySelector(".rvall"); if (bt) bt.onclick = () => { const m = rv.querySelector(".rvmore"); m.hidden = !m.hidden; bt.textContent = m.hidden ? `Show all ${nf(list.length)}` : "Show less"; }; }
+
 }
 
 /* ---------- Per minute graph: jis minute mein visit hua wahin bar, khaali minute blank, hover par ginti ---------- */
