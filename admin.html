@@ -3254,7 +3254,7 @@ function drawPeFile(prog) {
   if (PE.newFile) box.innerHTML = `<div class="up done"><b>✅ ${esc(PE.newFile.name)}</b><small>${PE.zipInfo && PE.newFile.name === PE.fileName && /\.zip$/i.test(PE.newFile.name) ? `📦 Bundle: ${PE.zipInfo.count} PPT, kul ${PE.zipInfo.slides} slides · customer ek payment mein poora ZIP download karega. ` : ""}Save dabate hi background mein upload hogi. Badalni ho to nayi file chunein.</small></div>`;
   else box.innerHTML = f ? `<div class="up done"><b>✅ ${esc(PE.fileName || "File")}</b><small>Upload ho gayi. Badalni ho to nayi file chunein.</small></div>`
     : isNote(PE) ? `<b>+ Notes ki PDF chunein</b><br><small>A4 size PDF · ye file customer ko payment ke baad milegi</small>`
-    : `<b>+ PPT / PDF file chunein</b><br><small>PPTX, PPT, PDF ya ZIP · 1 GB tak · ye file customer ko payment ke baad milegi<br>📦 ZIP daalein to wo ek bundle card banega: ek payment, saari PPT</small>`;
+    : `<b>+ PPT / PDF file chunein</b><br><small>PPTX, PPT, PDF ya ZIP · 100 GB tak · ye file customer ko payment ke baad milegi<br>📦 ZIP daalein to wo ek bundle card banega: ek payment, saari PPT</small>`;
 }
 function drawPeCard() {
   const c = PE.card;
