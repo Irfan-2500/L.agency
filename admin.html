@@ -848,6 +848,7 @@ body.noscroll{overflow:hidden}
         <button data-t="reviews"><svg class="i"><use href="#i-star"/></svg>Reviews<span class="n" id="nReviews" hidden></span></button>
         <span class="lbl">Catalog</span>
         <button data-t="ppts"><svg class="i"><use href="#i-upload"/></svg>Ready PPTs</button>
+        <button data-t="bundles"><svg class="i"><use href="#i-list"/></svg>Subject bundles</button>
         <button data-t="notes"><svg class="i"><use href="#i-book"/></svg>Study notes</button>
         <button data-t="cfiles"><svg class="i"><use href="#i-folder"/></svg>Category files</button>
         <button data-t="themes"><svg class="i"><use href="#i-image"/></svg>Themes</button>
@@ -1005,7 +1006,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Physical Education","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", sales: "Online sales", customers: "Customers", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", notes: "Study notes", cfiles: "Category files", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", sales: "Online sales", customers: "Customers", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", bundles: "Subject bundles", notes: "Study notes", cfiles: "Category files", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -1078,7 +1079,8 @@ const DEMO = (() => {
       {key:"9876500011",name:"Rahul Verma",email:"rahul@example.com",mobile:"9876500011",orders:1,spent:99,ppts:["Class 10 Science — Light"],first:iso(2),last:iso(2),logins:0,lastLogin:"",device:"",resetAt:"",blocked:false}],
     sales: [{time:iso(2),name:"Rahul Verma",email:"rahul@example.com",mobile:"9876500011",items:"Class 10 Science — Light",amount:99,payment:"pay_DemoA1",order:"order_DemoA1"},
       {time:iso(30),name:"Neha Singh",email:"neha@example.com",mobile:"9876500022",items:"Class 10 Science — Light, Business Pitch Deck",amount:298,payment:"pay_DemoB2",order:"order_DemoB2"}],
-    ppts: [{id:102,title:"Class 10 Science — Light",desc:"Reflection & refraction, 30 slides",price:99,mrp:199,cat:"edu",level:["Class 10"],subject:"Science",board:["CBSE"],lang:"English",theme:"Dark",slides:30,anim:true,badge:"best",refs:[],previews:[],file:"x",fileName:"light.pptx",show:true,sold:14,added:iso(200)},
+    ppts: [{id:150,title:"Class 10 Science — Full Package (All 3 Chapters)",desc:"All 3 chapters of Class 10 Science in one package. Includes: 1. Light; 2. Life Processes; 3. Electricity",price:249,mrp:599,cat:"edu",level:["Class 10"],subject:"Science",board:["CBSE"],lang:"English",theme:"Dark",slides:90,anim:true,badge:"",refs:[],previews:[],file:"x",fileName:"Class 10 Science - Full Package.zip",show:true,sold:3,added:iso(20)},
+      {id:102,title:"Class 10 Science — Light",desc:"Reflection & refraction, 30 slides",price:99,mrp:199,cat:"edu",level:["Class 10"],subject:"Science",board:["CBSE"],lang:"English",theme:"Dark",slides:30,anim:true,badge:"best",refs:[],previews:[],file:"x",fileName:"light.pptx",show:true,sold:14,added:iso(200)},
       {id:101,title:"Business Pitch Deck",desc:"Startup pitch template",price:199,mrp:0,cat:"biz",level:[],subject:"",board:[],lang:"English",theme:"Light",slides:20,anim:false,badge:"",refs:[],previews:[],file:"y",fileName:"pitch.pdf",show:false,sold:3,added:iso(400)}]
   };
 })();
@@ -1240,7 +1242,7 @@ function go(t, user) {
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   window.scrollTo(0, 0);
   const v = $("#view"); v.setAttribute("aria-busy", "true");
-  Promise.resolve(({ dash, stats, report, sales, customers, coupons, ppts, notes, books: stateBooks, cfiles, menu, orders, themes, prices, reviews, messages, site, settings })[t]()).finally(() => {
+  Promise.resolve(({ dash, stats, report, sales, customers, coupons, ppts, bundles, notes, books: stateBooks, cfiles, menu, orders, themes, prices, reviews, messages, site, settings })[t]()).finally(() => {
     v.setAttribute("aria-busy", "false");
     if (user && tab === t) { const h = $("#view h1"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
   });
@@ -2687,7 +2689,11 @@ let NVIEW = "grid"; try { NVIEW = localStorage.getItem("la_admin_nview") === "li
 let PP = [], PQ = "", PE = null, PPAY = false, KIND = "ppt", PFOLDER = "#";
 const NOTE_TAG = "Study Notes";   // purana Google Script "notes" category nahi rakhta, isliye class list mein ye tag bhi jata hai
 const isNote = p => p.cat === "notes" || (p.level || []).includes(NOTE_TAG);
-const KW = () => KIND === "notes" ? { one: "Notes", add: "Add Notes (PDF)", icon: "📝" } : { one: "PPT", add: "Add PPT / PDF", icon: "📊" };
+const KW = () => KIND === "notes" ? { one: "Notes", add: "Add Notes (PDF)", icon: "📝" } : KIND === "bundle" ? { one: "Bundle", add: "New bundle", icon: "🎁" } : { one: "PPT", add: "Add PPT / PDF", icon: "📊" };
+/* Subject bundle = ZIP wali PPT (saare chapter ek file mein, apna alag daam). Ready PPTs list mein nahi, "Subject bundles" mein dikhte hain */
+const isZipP = p => /\.zip$/i.test(p.fileName || "") || p.type === "zip";
+const inKind = p => KIND === "notes" ? isNote(p) : !isNote(p) && (KIND === "bundle") === isZipP(p);
+const KTAB = () => KIND === "notes" ? "notes" : KIND === "bundle" ? "bundles" : "ppts";
 const BOARDS = ["CBSE", "ICSE", "State Board", "NCERT", "Bihar Board", "UP Board", "Competitive", "SSC", "Railway", "Banking", "UPSC / State PSC", "CTET / TET", "JEE", "NEET", "Police / Defence", "Navodaya / Sainik"];
 const PCATS = [["edu", "📚 Educational"], ["biz", "💼 Business"], ["mkt", "📣 Marketing"]];
 const PBADGE = [["", "Koi nahi"], ["best", "🔥 Best Seller"], ["feat", "⭐ Featured"], ["new", "🆕 New"]];
@@ -3153,19 +3159,21 @@ function sbList() {
 }
 function notes() { KIND = "notes"; return pptView(); }
 function ppts() { KIND = "ppt"; return pptView(); }
+function bundles() { KIND = "bundle"; return pptView(); }
 async function pptView() {
   loading();
   const r = await call("adminPpts");
-  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], "") + NEW_SCRIPT) : fail(r.error);
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head(TITLES[KTAB()], "") + NEW_SCRIPT) : fail(r.error);
   PP = r.ppts; PPAY = r.payments; PFOLDER = r.folderUrl;
-  const mine = PP.filter(p => isNote(p) === (KIND === "notes")), live = mine.filter(p => p.show).length, sold = mine.reduce((s, p) => s + p.sold, 0), w = KW();
-  V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], KIND === "notes"
+  const mine = PP.filter(p => inKind(p)), live = mine.filter(p => p.show).length, sold = mine.reduce((s, p) => s + p.sold, 0), w = KW();
+  V(head(TITLES[KTAB()], KIND === "notes"
       ? `Upload A4 PDF notes. They appear on the Study Notes page instantly; customers pay and download automatically.`
       : `Upload PPT or PDF files. They appear on the Ready PPTs page instantly; customers pay and download automatically.`,
-      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "notes" ? "" : `<button class="btn" id="addPack">🎁 Create bundle</button><button class="btn" id="addZip">📦 ZIP Upload</button>`}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
+      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "bundle" ? `<a class="btn sm" href="ready-ppts.html" target="_blank" rel="noopener">${ic("i-ext")} View on site</a><button class="btn" id="addZip">📦 ZIP Upload</button><button class="btn pri" id="addPack">${ic("i-plus")} New bundle</button>` : `<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`}`) + `
+  ${KIND === "bundle" ? `<p class="note bnote">Class + subject chunein, chapters tick karein, apna daam likh kar Save. Website par ye "Complete Subject" card mein dikhega.</p>` : ""}
   ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}
   <div class="stats">
-    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic(KIND === "notes" ? "i-book" : "i-upload")}</span><b id="pTot">${mine.length}</b><small id="pTotL">Total ${KIND === "notes" ? "Notes" : "PPTs"} · ${live} live</small></div>
+    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic(KIND === "notes" ? "i-book" : "i-upload")}</span><b id="pTot">${mine.length}</b><small id="pTotL">Total ${w.one}s · ${live} live</small></div>
     <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-cart")}</span><b>${nf(sold)}</b><small>Total biki</small></div>
     <div class="stat" style="--c:${PPAY ? "var(--ok)" : "var(--bad)"}"><span class="ic">₹</span><b>${PPAY ? "ON" : "OFF"}</b><small>Online payment (Razorpay)</small></div>
   </div>
@@ -3173,28 +3181,28 @@ async function pptView() {
   <div class="tgrid" id="pgrid"></div>`);
   $$("[data-nv]").forEach(b => b.onclick = () => { NVIEW = b.dataset.nv; try { localStorage.setItem("la_admin_nview", NVIEW); } catch (e) {} drawPpts(); });
   $("#pq").value = PQ; $("#pq").oninput = () => { PQ = $("#pq").value; drawPpts(); };
-  $("#addPpt").onclick = () => editPpt(null);
+  if ($("#addPpt")) $("#addPpt").onclick = () => editPpt(null);
   if ($("#addZip")) $("#addZip").onclick = () => { editPpt(null); $("#peZipIn").click(); };
   if ($("#addPack")) $("#addPack").onclick = packOpen;
-  $("#autoPv").onclick = () => { const l = PP.filter(p => isNote(p) === (KIND === "notes") && needPv(p)); l.forEach(pvJob); toast(`🖼 ${l.length} ki preview photo ban rahi hai`); drawPpts(); };
+  $("#autoPv").onclick = () => { const l = PP.filter(p => inKind(p) && needPv(p)); l.forEach(pvJob); toast(`🖼 ${l.length} ki preview photo ban rahi hai`); drawPpts(); };
   $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
   drawPpts();
 }
 function drawPpts() {
   const q = PQ.toLowerCase().trim();
-  const vis = PP.map((p, i) => [p, i]).filter(([p]) => isNote(p) === (KIND === "notes") && (!q || [p.title, p.subject, ...p.level, ...p.board].join(" ").toLowerCase().includes(q)));
-  const mine = PP.filter(p => isNote(p) === (KIND === "notes")).length, w = KW();
-  const ml = PP.filter(p => isNote(p) === (KIND === "notes"));
+  const vis = PP.map((p, i) => [p, i]).filter(([p]) => inKind(p) && (!q || [p.title, p.subject, ...p.level, ...p.board].join(" ").toLowerCase().includes(q)));
+  const mine = PP.filter(p => inKind(p)).length, w = KW();
+  const ml = PP.filter(p => inKind(p));
   $("#pgrid").className = "tgrid" + (KIND === "notes" ? (NVIEW === "list" ? " nlist" : " nview") : "");
   $$("[data-nv]").forEach(b => { const on = b.dataset.nv === NVIEW; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
-  if ($("#pTot")) { $("#pTot").textContent = ml.length; $("#pTotL").textContent = `Total ${KIND === "notes" ? "Notes" : "PPTs"} · ${ml.filter(p => p.show).length} live`; }
+  if ($("#pTot")) { $("#pTot").textContent = ml.length; $("#pTotL").textContent = `Total ${w.one}s · ${ml.filter(p => p.show).length} live`; }
   $("#pgrid").innerHTML = vis.length ? vis.map(([p, i]) => `<div class="tcard ${p.show ? "" : "hid"}">
     <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
     <div class="body"><b>${esc(p.title)}</b><span class="lmeta">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.6">${rs(p.mrp)}</s>` : ""} · 🛒 ${nf(p.sold)} sold</span>
       <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.filter(x => x !== NOTE_TAG).slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
       <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button>${p.file ? `<button class="btn sm" data-pdl="${i}" title="${esc(p.fileName)} download karein">⬇ Download</button>` : ""}<button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : slideRefs(p).length && /\.(pptx|pdf)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm" data-pr="${i}" title="Shuru ke 8 page / slides ki photo dobara banayein">🔄 Photo dobara</button>` : ""}</div>
       <div class="cf" data-pcf="${i}"></div>
-    </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.`}</div>`;
+    </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.${KIND === "bundle" ? " Pehle Ready PPTs mein chapters upload hone chahiye." : ""}`}</div>`;
   $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
   $$("[data-pdl]").forEach(b => b.onclick = () => dlPpt(PP[+b.dataset.pdl], b));
   $$("[data-pa]").forEach(b => b.onclick = () => { pvJob(PP[+b.dataset.pa]); drawPpts(); });
@@ -3340,18 +3348,22 @@ function packOpen() {
   let box = $("#packModal"); if (box) box.remove();
   box = document.createElement("div"); box.className = "modal"; box.id = "packModal"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
   box.innerHTML = `<div class="mbox"><div class="row"><h2>🎁 Create bundle</h2><span class="sp"></span><button class="btn sm" data-x>✕ Close</button></div>
-    <p class="note">Class aur subject chunein. Us class-subject ki saari PPT neeche aa jayengi. Jo package mein nahi chahiye uska tick hata dein. Customer ek payment mein saare chapter (ek ZIP) download karega.</p>
+    <p class="note">Class + subject chunein, jo chapter nahi chahiye uska tick hatayein, aur bundle ka apna daam likhein.</p>
     <div class="row" style="gap:10px;flex-wrap:wrap"><label class="fl" style="flex:1;min-width:160px"><span class="phead">Class</span><select id="pkCls">${cl.map(c => `<option>${esc(c)}</option>`).join("")}</select></label>
       <label class="fl" style="flex:1;min-width:160px"><span class="phead">Subject</span><select id="pkSub">${sb.map(c => `<option>${esc(c)}</option>`).join("")}</select></label></div>
     <div id="pkList" style="display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow:auto"></div>
     <p class="note" id="pkSum"></p>
+    <div class="row" style="gap:10px;flex-wrap:wrap"><label class="fl" style="flex:1;min-width:140px"><span class="phead">Bundle ka daam (₹)</span><input type="number" id="pkPrice" min="1" step="1" placeholder="999"></label>
+      <label class="fl" style="flex:1;min-width:140px"><span class="phead">Asli daam / MRP (₹) · kata hua</span><input type="number" id="pkMrp" min="0" step="1" placeholder="1999"></label></div>
     <div class="row"><button class="btn pri" id="pkGo">🎁 Package banao</button><button class="btn" data-x>Cancel</button></div></div>`;
   document.body.appendChild(box);
   const close = () => box.remove(); box.querySelectorAll("[data-x]").forEach(b => b.onclick = close);
   const pick = () => all.filter(p => p.level.includes($("#pkCls").value) && p.subject === $("#pkSub").value)
     .sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: "base" }));
   const sum = () => { const on = [...$$("#pkList input:checked")].map(i => all.find(p => p.id == i.value)), sl = on.reduce((t, p) => t + (+p.slides || 0), 0);
-    $("#pkSum").textContent = on.length ? `${on.length} chapter · kul ${sl} slides · daam apne aap ₹${sl * PER_SLIDE} (kata hua ₹${sl * PER_SLIDE_MRP}) — baad mein badal sakte hain` : "Koi chapter nahi chuna"; $("#pkGo").disabled = on.length < 2; };
+    const chP = on.reduce((t, p) => t + (+p.price || 0), 0), chM = on.reduce((t, p) => t + Math.max(+p.mrp || 0, +p.price || 0), 0);
+    $("#pkSum").textContent = on.length ? `${on.length} chapter · ${sl} slides · alag-alag kharidne par ₹${chP}` : "Koi chapter nahi chuna";
+    $("#pkPrice").placeholder = chP || 999; $("#pkMrp").placeholder = chM || 1999; $("#pkGo").disabled = on.length < 2; };
   const draw = () => { const l = pick();
     $("#pkList").innerHTML = l.length ? l.map(p => `<label class="row" style="gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;cursor:pointer"><input type="checkbox" value="${p.id}" checked><span style="flex:1">${esc(p.title)}</span><small class="note">${p.slides ? p.slides + " slides" : ""}</small></label>`).join("")
       : `<p class="note">Is class + subject ki koi PPT nahi mili.</p>`;
@@ -3362,7 +3374,7 @@ function packOpen() {
   draw();
   $("#pkGo").onclick = async () => {
     const on = [...$$("#pkList input:checked")].map(i => all.find(p => p.id == i.value)); if (on.length < 2) return;
-    const cls = $("#pkCls").value, sub = $("#pkSub").value, btn = $("#pkGo"); btn.disabled = true;
+    const cls = $("#pkCls").value, sub = $("#pkSub").value, btn = $("#pkGo"), myP = +$("#pkPrice").value || 0, myM = +$("#pkMrp").value || 0; btn.disabled = true;
     try {
       const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = new JSZip(), dir = `${cls} ${sub} - Full Package`;
       for (let k = 0; k < on.length; k++) {
@@ -3383,7 +3395,9 @@ function packOpen() {
         if (!+$("#peSlides").value) { $("#peSlides").value = on.reduce((t, p) => t + (+p.slides || 0), 0) || ""; autoPrice(); }   // ZIP se slides na gini ja sakein to chapters ki slides jodo
         const sl = +$("#peSlides").value, list = on.map((p, k) => `${k + 1}. ${p.title.split(" — ")[0]}`).join("; "), ds = $("#peDesc");
         ds.value = (hiT ? `${cls} ${sub} के सभी ${on.length} अध्याय एक साथ${sl ? `, कुल ${sl} editable स्लाइड्स` : ""}। एक बार payment करें और पूरा package एक ZIP में डाउनलोड करें। शामिल: ${list}`
-          : `All ${on.length} chapters of ${cls} ${sub} in one package${sl ? `, ${sl} editable slides in total` : ""}. Pay once and download the full package in one ZIP. Includes: ${list}`).slice(0, 600); ds.dataset.auto = "1"; }
+          : `All ${on.length} chapters of ${cls} ${sub} in one package${sl ? `, ${sl} editable slides in total` : ""}. Pay once and download the full package in one ZIP. Includes: ${list}`).slice(0, 600); ds.dataset.auto = "1";
+        if (myP) { const pr = $("#pePrice"); pr.value = myP; delete pr.dataset.auto; }
+        if (myM) { const mr = $("#peMrp"); mr.value = myM; delete mr.dataset.auto; } }
       toast("🎁 Package ready — daam aur naam dekh kar Save dabayein");
     } catch (e) { btn.disabled = false; btn.textContent = "🎁 Package banao"; toast("Package nahi bana: " + e.message, true); }
   };
@@ -4234,9 +4248,9 @@ async function mnSave(reset) {
 
 /* ---------- Quick search (Ctrl+K / "/"): kisi bhi section par turant jaayein ---------- */
 const GROUP = { dash: "Overview", stats: "Overview", report: "Overview", orders: "Sales", sales: "Sales", customers: "Sales", coupons: "Sales", messages: "Engagement", reviews: "Engagement",
-  ppts: "Catalog", notes: "Catalog", books: "Catalog", cfiles: "Catalog", themes: "Catalog", prices: "Catalog", menu: "Website", site: "Website", settings: "Website" };
+  ppts: "Catalog", bundles: "Catalog", notes: "Catalog", books: "Catalog", cfiles: "Catalog", themes: "Catalog", prices: "Catalog", menu: "Website", site: "Website", settings: "Website" };
 const PAL_EXTRA = { dash: "home overview kpi", stats: "visitors traffic analytics", report: "revenue kamai monthly", orders: "custom ppt", sales: "razorpay payments", customers: "login users", coupons: "discount code",
-  messages: "tickets contact inbox", reviews: "ratings testimonials", ppts: "upload ready ppt pdf", notes: "pdf notes study", books: "state board syllabus pyq", cfiles: "category menu files upload ncert cbse jee neet cuet", themes: "designs slides", prices: "smart board pricing",
+  messages: "tickets contact inbox", reviews: "ratings testimonials", ppts: "upload ready ppt pdf", bundles: "bundle package complete subject chapters zip price", notes: "pdf notes study", books: "state board syllabus pyq", cfiles: "category menu files upload ncert cbse jee neet cuet", themes: "designs slides", prices: "smart board pricing",
   menu: "category bar ncert cbse jee neet cuet cat nda clat ug ca quiz state books", site: "website controls buttons social logos", settings: "password razorpay contact theme" };
 let PALI = 0, PALL = [], PAL_BACK = null;
 function palOpen() {
