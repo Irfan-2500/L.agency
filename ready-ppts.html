@@ -779,19 +779,39 @@ function card(p){
     </div></article>`;
 }
 /* ---------- SUBJECT BUNDLES ----------
-   Ek hi Class + Subject + Language ki 2 ya zyada PPT apne aap "Complete Subject" bundle ban jaati hain.
-   Daam = saare chapters ka jod (server bhi wahi leta hai), MRP = saare MRP ka jod. */
+   1) Admin panel ke "Subject bundles" mein banaya bundle (ZIP, apna alag daam) — ye pehle dikhte hain.
+   2) Jis Class + Subject + Language ka admin bundle nahi hai, uski 2+ PPT apne aap bundle ban jaati hain
+      (daam = saare chapters ka jod, server bhi wahi leta hai). */
 let BUNDLES = [];
+const clsOf = p => lv(p).find(l => /^class\s*\d+/i.test(l)) || "";
+const normT = t => String(t || "").toLowerCase().replace(/[_\s]+/g, " ").replace(/[^\p{L}\p{N} ]/gu, "").trim();
+function adminBundles(){
+  const all = VIEW();
+  return all.filter(p => p.type === "zip").map(p => {
+    const cls = clsOf(p) || lv(p)[0] || "";
+    const m = String(p.desc || "").match(/(?:Includes|शामिल)\s*:\s*(.+)$/);
+    const names = m ? m[1].split(/;\s*/).map(x => x.replace(/^\d+\.\s*/, "").trim()).filter(Boolean) : [];
+    const pics = arr(p.previews).length ? arr(p.previews) : cardPics(p);
+    const peers = all.filter(q => q.type !== "zip" && q.subject === p.subject && (!cls || lv(q).includes(cls)));
+    const items = (names.length ? names : [p.title]).map((t, j) => {
+      const n = normT(t), q = peers.find(q => { const qt = normT(String(q.title).split(" — ")[0]); return qt && (qt === n || qt.startsWith(n) || n.startsWith(qt)); });
+      return { id: q ? q.id : 0, title: t, thumb: pics[j] || (q && q.thumb) || (pics.length ? pics[j % pics.length] : p.thumb), slides: q ? q.slides : 0, colors: ["#4c1d95", "#a855f7"] };
+    });
+    return { manual: true, pid: p.id, cls, subject: p.subject, lang: p.lang, items, ids: [p.id], price: +p.price || 0, mrp: Math.max(+p.mrp || 0, +p.price || 0),
+      slides: +p.slides || 0, boards: brd(p), anim: !!p.anim, sales: +p.sales || 0, title: p.title };
+  });
+}
 function makeBundles(){
   if (NOTES) return [];
+  const own = adminBundles(), taken = new Set(own.map(b => [b.cls, b.subject, b.lang].join("|")));
   const g = {};
   VIEW().forEach(p => {
     if (p.type === "zip" || p.type === "pdf" || !p.subject) return;
     const cls = lv(p).find(l => /^class\s*\d+/i.test(l)); if (!cls) return;
-    const k = [cls, p.subject, p.lang].join("|");
+    const k = [cls, p.subject, p.lang].join("|"); if (taken.has(k)) return;
     (g[k] = g[k] || { cls, subject:p.subject, lang:p.lang, items:[] }).items.push(p);
   });
-  return Object.values(g).filter(b => b.items.length >= 2).map(b => {
+  const auto = Object.values(g).filter(b => b.items.length >= 2).map(b => {
     b.items.sort((a, c) => (a.added || a.id || 0) - (c.added || c.id || 0));
     b.ids = b.items.map(p => p.id);
     b.price = b.items.reduce((s, p) => s + (+p.price || 0), 0);
@@ -803,12 +823,13 @@ function makeBundles(){
     b.title = `${b.cls} – Complete ${b.subject} PPT Bundle`;
     return b;
   }).sort((a, c) => c.items.length - a.items.length || c.sales - a.sales);
+  return own.sort((a, c) => c.sales - a.sales).concat(auto);
 }
 function bundleCard(b, k){
   const off = b.mrp > b.price ? Math.round((1 - b.price / b.mrp) * 100) : 0;
   const allIn = b.ids.every(id => cart.includes(id)), board = b.boards.join(" / ") || "—";
   const covers = b.items.map((p, j) => `<span class="bsl" data-p="${j < 4 ? j : "x"}" style="${thumbStyle(p)}">${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}</span>`).join("");
-  const spec = [["Product Type","Complete Subject"],["Board",board],["Class",b.cls.replace(/^class\s*/i,"")],["Subject",b.subject],["Chapters",b.items.length],
+  const spec = [["Product Type","Complete Subject"],["Board",board],["Class",b.cls.replace(/^class\s*/i,"") || "—"],["Subject",b.subject],["Chapters",b.items.length],
     ["Slides",b.slides ? b.slides.toLocaleString("en-IN") : "—"],["Language",langTxt(b.lang)],["Format","Editable PPT"]];
   return `<article class="bcard">
     <button class="bstage" data-bund="${k}" onclick="openBundle(${k})" aria-label="${esc(b.title)}: saare chapters dekhein">
@@ -841,7 +862,7 @@ function renderBundles(list){
 function bundleCart(k){
   const b = BUNDLES[k]; if (!b) return;
   if (b.ids.every(id => cart.includes(id))) { cart = cart.filter(id => !b.ids.includes(id)); toast("Bundle cart se hata diya"); }
-  else { b.ids.forEach(id => { if (!cart.includes(id)) cart.push(id); }); toast(`✓ ${b.items.length} chapters cart mein add ho gaye`); }
+  else { b.ids.forEach(id => { if (!cart.includes(id)) cart.push(id); }); toast(b.manual ? "✓ Bundle cart mein add ho gaya" : `✓ ${b.items.length} chapters cart mein add ho gaye`); }
   saveCart();
 }
 function buyBundle(k){
@@ -856,8 +877,8 @@ function openBundle(k){
     <span class="bbadges" style="position:static"><span>COMPLETE SUBJECT</span>${off ? `<span class="bv">BEST VALUE</span>` : ""}</span>
     <h3>${esc(b.title)}</h3>
     <p>${b.items.length} chapters · ${b.slides ? b.slides + " slides · " : ""}${esc(langTxt(b.lang))} Medium${b.boards.length ? " · " + esc(b.boards.join(" / ")) : ""}. Kisi bhi chapter par click karke uski slides dekhein.</p>
-    <div class="chs">${b.items.map((p, j) => `<button type="button" class="ch" onclick="openPreview(${p.id})"><i>${j + 1}</i><span class="mini" style="${thumbStyle(p)}"></span>
-      <span><b>${esc(p.title)}</b><small>${p.slides ? p.slides + " slides · " : ""}👁 Preview</small></span><span><small>${inr(p.price)}</small></span></button>`).join("")}</div>
+    <div class="chs">${b.items.map((p, j) => `<button type="button" class="ch" onclick="openPreview(${p.id || b.pid})"><i>${j + 1}</i><span class="mini" style="${thumbStyle(p)}"></span>
+      <span><b>${esc(String(p.title).replace(/_/g, " "))}</b><small>${p.slides ? p.slides + " slides · " : ""}👁 Preview</small></span><span>${b.manual ? "" : `<small>${inr(p.price)}</small>`}</span></button>`).join("")}</div>
     <div class="m-buy">
       <div class="price"><b>${inr(b.price)}</b>${off ? `<s>${inr(b.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
       <div class="grow"><button class="btn btn-gold btn-sm" onclick="buyBundle(${k})">${icon("i-dl","width:15px")}Buy Complete Bundle</button></div>
@@ -885,7 +906,8 @@ function render(){
   const show = list;   // saare cards ek saath, "Load more" button nahi
   $("#grid").classList.toggle("notes", NOTES);
   $("#resultTxt").textContent = V.length ? "K-12" : "";
-  $("#grid").innerHTML = show.length ? show.map(card).join("")
+  const grid = NOTES ? show : show.filter(p => p.type !== "zip");
+  $("#grid").innerHTML = grid.length ? grid.map(card).join("") : show.length ? ""
     : NOTES ? `<div class="empty"><b>${V.length ? "Is filter mein koi Notes nahi mile" : "Notes jald aa rahe hain"}</b>Tab tak Ready PPTs dekhiye, ya WhatsApp par apne chapter ke notes maangiye. <button class="clear" type="button" onclick="setKind(false,true);render()">Ready PPTs dekhein →</button></div>`
     : `<div class="empty"><b>${V.length ? "Is filter mein koi PPT nahi mili" : "Ready PPTs jald aa rahi hain"}</b>Filter badal kar dekhiye, ya apni custom PPT banwaiye. <a class="clear" href="order.html">PPT Order Now →</a></div>`;
   renderBundles(list);
