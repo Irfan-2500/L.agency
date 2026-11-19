@@ -3089,7 +3089,18 @@ function renderThemes(){
   $("#thGrid").innerHTML = rows.length ? rows.map(([h, arr]) => `<div class="th-sec"><div class="th-sh"><h3 class="th-k12">${h} <small>${arr.length}</small></h3><button type="button" class="th-all" data-tone="all">View All <span>→</span></button></div><div class="th-row">${arr.map(([t,i]) => thCard(t,i)).join("")}</div></div>`).join("")
     : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>${String(thState.q||"").trim() ? `No theme found for "${esc(thState.q.trim())}". Try another word — or <a href="#custom" class="js-custom" style="color:var(--cyan)">request a custom PPT</a>.` : "No theme matches these filters. Try another combination."}</p></div>`;
   $("#thMore").parentNode.style.display = "none";
+  thHash();
 }
+/* Share kiya link (pptstore.in/#themes-all / -dark / -light) seedha theme list kholta hai */
+let thHashDone = false;
+function thHash(force){
+  if ((thHashDone && !force) || !THEMES.length) return;
+  const m = location.hash.match(/^#themes-(all|dark|light)$/); thHashDone = true; if (!m) return;
+  if ($("#thPage").classList.contains("on")) return;
+  history.replaceState(null, "", location.pathname + location.search);   // Back dabane par home page par aayein
+  openThPage(m[1], true);
+}
+addEventListener("hashchange", () => thHash(true));
 $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
 /* Ready to Use PPT: Ready PPTs page wali list (admin panel ki PPTs, warna built-in) ek line mein; click par theme jaisa popup */
 let RD_LIST = [], NT_LIST = [];
