@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Login · PPT Store</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07080c">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<script>(function(){var m="system";try{m=localStorage.getItem("la_theme")||"system"}catch(e){}
+var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);document.documentElement.classList.toggle("light",l);})();</script>
+<style>
+:root{--bg:#07080c;--card:#0f121b;--card2:#151927;--line:rgba(255,255,255,.1);--line2:rgba(255,255,255,.18);--text:#f4f5fb;--muted:#9aa1b8;--accent:#a855f7;--accent2:#c084fc;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;--blue:#38bdf8}
+html.light{--bg:#f5f5fa;--card:#fff;--card2:#f4f2fb;--line:rgba(0,0,0,.09);--line2:rgba(0,0,0,.16);--text:#14151c;--muted:#5b6070;--accent:#7c3aed;--accent2:#7c3aed}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent2)}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 60px}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:10px;padding-top:12px;padding-bottom:12px}
+.brand{font-weight:800;letter-spacing:.01em;text-decoration:none;color:var(--text)}.brand span{color:var(--accent2)}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line2);background:var(--card);border-radius:10px;padding:9px 14px;cursor:pointer;font-weight:600;font-size:.9rem;text-decoration:none;color:var(--text);white-space:nowrap;transition:background .15s,border-color .15s}
+.btn:hover{border-color:var(--accent)}.btn:disabled{opacity:.55;cursor:default}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.sm{padding:6px 10px;font-size:.82rem;border-radius:8px}.btn.ghost{background:transparent}
+.btn.bad{color:var(--bad)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.login{max-width:380px;margin:12vh auto 0;display:flex;flex-direction:column;gap:14px}
+.login h1{font-size:1.5rem}.login p{color:var(--muted);font-size:.9rem}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:.82rem;color:var(--muted);font-weight:600}
+input[type=text],input[type=password],input[type=search],input[type=number],select,textarea{background:var(--card2);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;width:100%;font-size:.95rem;color:var(--text)}
+textarea{resize:vertical;min-height:70px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.err{color:var(--bad);font-size:.88rem;min-height:1.2em}
+.tabs{display:flex;gap:6px;margin:16px 0;overflow-x:auto;scrollbar-width:none}
+.tabs button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-weight:600;font-size:.88rem;cursor:pointer;white-space:nowrap}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabs em{font-style:normal;margin-left:6px;background:rgba(255,255,255,.18);border-radius:999px;padding:0 7px;font-size:.78rem}
+.list{display:grid;gap:12px}
+.task{display:grid;gap:8px;cursor:pointer;border-left:4px solid var(--line2);transition:border-color .15s,transform .15s}
+.task:hover{transform:translateY(-1px)}
+.task h3{font-size:1rem;line-height:1.35}
+.meta{display:flex;flex-wrap:wrap;gap:6px 12px;color:var(--muted);font-size:.82rem}
+.pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:.75rem;font-weight:700;background:var(--card2);border:1px solid var(--line)}
+.s-Assigned{--c:var(--blue)}.s-Accepted{--c:var(--accent2)}.s-Working{--c:var(--warn)}.s-Changes{--c:var(--bad)}.s-Review{--c:var(--accent)}.s-Approved{--c:var(--ok)}.s-Unassigned,.s-Cancelled{--c:var(--muted)}
+.task[class*=s-]{border-left-color:var(--c)}.pill[class*=s-]{color:var(--c);border-color:color-mix(in srgb,var(--c) 45%,transparent)}
+.late{color:var(--bad);font-weight:700}.soon{color:var(--warn);font-weight:700}
+.task.red{background:color-mix(in srgb,var(--bad) 9%,var(--card));border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.empty{text-align:center;color:var(--muted);padding:40px 10px}.empty b{display:block;font-size:2rem;margin-bottom:6px}
+.modal{position:fixed;inset:0;background:rgba(3,4,10,.65);z-index:20;display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;padding:24px 12px}
+.mbox{background:var(--card);border:1px solid var(--line2);border-radius:18px;width:min(760px,100%);padding:18px;display:grid;gap:14px;animation:up .2s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+.mbox h2{font-size:1.15rem;line-height:1.3}
+.sec{display:grid;gap:8px}.sec>b{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.kv div{background:var(--card2);border-radius:10px;padding:8px 10px;font-size:.88rem}.kv span{display:block;color:var(--muted);font-size:.74rem}
+.det{white-space:pre-wrap;background:var(--card2);border-radius:10px;padding:10px 12px;font-size:.9rem}
+.chk label{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;background:var(--card2);cursor:pointer;font-size:.9rem}
+.chk input{width:18px;height:18px;accent-color:var(--accent)}.chk .on span{text-decoration:line-through;color:var(--muted)}
+.notes{display:grid;gap:8px;max-height:260px;overflow:auto}
+.nt{background:var(--card2);border-radius:12px;padding:8px 12px;font-size:.88rem;max-width:88%}
+.nt.me{justify-self:end;background:color-mix(in srgb,var(--accent) 18%,var(--card2))}.nt.ad{border:1px solid color-mix(in srgb,var(--warn) 50%,transparent)}
+.nt small{display:block;color:var(--muted);font-size:.72rem}
+.hist{font-size:.8rem;color:var(--muted);display:grid;gap:4px;max-height:200px;overflow:auto}
+.drop{border:2px dashed var(--line2);border-radius:14px;padding:18px;text-align:center;cursor:pointer;color:var(--muted);font-size:.9rem;transition:border-color .15s,background .15s}
+.drop.over,.drop:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.bar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s}
+.prog{display:grid;gap:6px;font-size:.84rem;color:var(--muted)}
+.file{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:10px;padding:10px 12px;font-size:.9rem}.file b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.lib{display:grid;gap:8px;align-content:start}.lib h3{font-size:.98rem}.lib p{font-size:.85rem;color:var(--muted);white-space:pre-wrap;max-height:4.5em;overflow:hidden}
+.fbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.fbar input{flex:1;min-width:180px}.fbar select{width:auto;min-width:120px}
+.sim{display:grid;gap:8px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:.9rem;z-index:40;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.toast.bad{background:var(--bad);color:#fff}
+.hello{display:flex;align-items:center;gap:12px;margin-top:18px}.hello h1{font-size:1.3rem}.hello small{color:var(--muted)}
+.av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--blue));display:grid;place-items:center;color:#fff;font-weight:800;flex:none}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}.stats b{display:block;font-size:1.4rem}.stats span{font-size:.78rem;color:var(--muted)}
+@media(max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.top .who{display:none}.mbox{padding:14px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="index.html">PPT <span>Store</span> · Team</a><span class="sp"></span><span class="who" id="who"></span><span id="topActs"></span></div></header>
+<main class="wrap" id="app"><div class="empty"><b>⏳</b>Loading…</div></main>
+<script src="config.js"></script>
+<script>
+"use strict";
+const LA = window.LA_CONFIG || {}, SCRIPT = LA.orderUrl || "";
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+const esc = t => String(t == null ? "" : t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const CHUNK = 8 * 1048576;
+let TT = ""; try { TT = localStorage.getItem("la_team") || ""; } catch (e) { }
+let ME = null, TASKS = [], LIB = null, TAB = "now", OPEN = "", NOW_OFF = 0, ACCEPT_MIN = 60;
+
+/* ---------- server ---------- */
+let demoReady = null;
+function demo() {   // sirf preview: Team.gs browser mein hi chalta hai
+  return demoReady || (demoReady = (async () => {
+    await new Promise((ok, no) => { const s = document.createElement("script"); s.src = "js/gas-shim.js"; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+    (0, eval)(await (await fetch("google-script/Team.gs")).text());
+  })());
+}
+async function api(action, data) {
+  const body = Object.assign({ action, tt: TT }, data || {});
+  try {
+    let j;
+    if (LA.previewDemo) { await demo(); await new Promise(r => setTimeout(r, 120)); j = (window.GAS_DEMO_LOAD(), window.team_)(JSON.parse(JSON.stringify(body))); }
+    else {
+      if (!SCRIPT) return { ok: false, error: "Server set nahi hai" };
+      const r = await fetch(SCRIPT, { method: "POST", body: JSON.stringify(body), headers: { "Content-Type": "text/plain;charset=utf-8" } });
+      j = await r.json();
+    }
+    if (j && j.auth && action !== "teamLogin") { logout(true); }
+    return j || { ok: false, error: "Empty reply" };
+  } catch (e) { return { ok: false, error: "Internet / server problem. Dobara try karein." }; }
+}
+function toast(m, bad) { $$(".toast").forEach(x => x.remove()); const t = document.createElement("div"); t.className = "toast" + (bad ? " bad" : ""); t.textContent = m; t.setAttribute("role", "status"); document.body.appendChild(t); setTimeout(() => t.remove(), bad ? 5000 : 2600); }
+const fmt = t => { const d = new Date(t); return isNaN(d) ? "" : d.toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "numeric", minute: "2-digit" }); };
+const mb = n => (n / 1048576).toFixed(n > 10485760 ? 0 : 1) + " MB";
+const now = () => Date.now() + NOW_OFF;
+function left(t) {
+  const d = new Date(t) - now(); if (isNaN(d)) return "";
+  const a = Math.abs(d), h = Math.floor(a / 36e5), m = Math.round((a % 36e5) / 6e4), s = h >= 48 ? Math.round(h / 24) + " din" : h ? h + " ghante " + m + " min" : m + " min";
+  return d < 0 ? s + " late" : s + " baaki";
+}
+/* deadline se 2 ghante pehle tak kaam shuru nahi hua → laal */
+const isRed = t => t.deadline && !/^(Approved|Cancelled|Review)$/.test(t.status) && (new Date(t.deadline) - now() < 0 || (!t.startedAt && new Date(t.deadline) - now() < 2 * 36e5));
+const ST = { Assigned: "Naya · Accept karein", Accepted: "Accepted", Working: "Kaam chal raha", Changes: "Changes chahiye", Review: "Admin check kar rahe", Approved: "Ho gaya ✓", Unassigned: "Wapas gaya", Cancelled: "Cancel" };
+
+/* ---------- login ---------- */
+function loginView(msg) {
+  $("#who").textContent = ""; $("#topActs").innerHTML = "";
+  $("#app").innerHTML = `<form class="card login" id="lf" autocomplete="on">
+    <h1>👋 Team Login</h1><p>Apna Login ID aur password daalein. Ye admin ne diya hai.</p>
+    <label class="f">Login ID<input type="text" id="lu" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+    <label class="f">Password<input type="password" id="lp" autocomplete="current-password" required></label>
+    <div class="err" id="le" role="alert">${esc(msg || "")}</div>
+    <button class="btn pri" id="lb">Login</button>
+    <p style="font-size:.8rem">Password bhool gaye? Admin se naya password lijiye.</p></form>`;
+  $("#lu").focus();
+  $("#lf").onsubmit = async e => {
+    e.preventDefault(); const b = $("#lb"); b.disabled = true; b.textContent = "Checking…"; $("#le").textContent = "";
+    const r = await api("teamLogin", { login: $("#lu").value.trim(), password: $("#lp").value });
+    b.disabled = false; b.textContent = "Login";
+    if (!r.ok) return $("#le").textContent = r.error;
+    TT = r.tt; try { localStorage.setItem("la_team", TT); } catch (x) { }
+    ME = r.me; load();
+  };
+}
+function logout(expired) { TT = ""; ME = null; try { localStorage.removeItem("la_team"); } catch (e) { } closeModal(); loginView(expired ? "Login expire ho gaya, dobara login karein." : ""); }
+
+/* ---------- main ---------- */
+async function load(quiet) {
+  if (!TT) return loginView();
+  if (!quiet && !ME) $("#app").innerHTML = `<div class="empty"><b>⏳</b>Loading…</div>`;
+  const r = await api("teamMe");
+  if (!r.ok) { if (!TT) return; if (!quiet) $("#app").innerHTML = `<div class="empty"><b>⚠️</b>${esc(r.error)}<br><br><button class="btn" onclick="load()">Dobara try karein</button></div>`; return; }
+  const before = new Set(TASKS.map(t => t.id + t.status));
+  ME = r.me; TASKS = r.tasks; NOW_OFF = new Date(r.now) - Date.now(); ACCEPT_MIN = r.acceptMin || 60;
+  if (quiet && TASKS.some(t => t.status === "Assigned" && !before.has(t.id + t.status))) { toast("🔔 Naya task aaya hai"); try { navigator.vibrate && navigator.vibrate(200); } catch (e) { } }
+  $("#who").innerHTML = `${esc(ME.name)} · ${esc(ME.role)}&nbsp;`;
+  $("#topActs").innerHTML = `<button class="btn sm ghost" id="pwB">🔑</button> <button class="btn sm" id="loB">Logout</button>`;
+  $("#pwB").title = "Password badlein"; $("#pwB").onclick = passView; $("#loB").onclick = () => logout();
+  draw();
+  if (OPEN) { const t = TASKS.find(x => x.id === OPEN); if (t && !document.querySelector(".mbox [data-busy]")) openTask(t.id, true); }
+}
+const ACTIVE = /^(Assigned|Accepted|Working|Changes|Review)$/;
+function draw() {
+  const act = TASKS.filter(t => ACTIVE.test(t.status)), done = TASKS.filter(t => t.status === "Approved");
+  const ord = t => ({ Assigned: 0, Changes: 1, Working: 2, Accepted: 3, Review: 4 })[t.status] ?? 5;
+  act.sort((a, b) => ord(a) - ord(b) || String(a.deadline || "9").localeCompare(String(b.deadline || "9")));
+  done.sort((a, b) => String(b.doneAt).localeCompare(String(a.doneAt)));
+  const late = done.filter(t => t.deadline && t.submittedAt > t.deadline).length;
+  document.title = (act.filter(t => t.status === "Assigned").length ? `(${act.filter(t => t.status === "Assigned").length}) ` : "") + "Team · PPT Store";
+  $("#app").innerHTML = `<div class="hello"><span class="av">${esc((ME.name || "?")[0].toUpperCase())}</span><div><h1>Namaste, ${esc(String(ME.name).split(" ")[0])}</h1><small>${esc(ME.role)} team</small></div><span class="sp"></span><button class="btn sm" id="rf">↻ Refresh</button></div>
+    <div class="stats"><div><b>${act.length}</b><span>Abhi ka kaam</span></div><div><b>${act.filter(isRed).length}</b><span>Late hone wale</span></div><div><b>${done.length}</b><span>Ho gaye</span></div><div><b>${done.length - late}</b><span>Time par</span></div></div>
+    <nav class="tabs" role="tablist"><button data-tab="now" class="${TAB === "now" ? "on" : ""}">Mera kaam<em>${act.length}</em></button><button data-tab="done" class="${TAB === "done" ? "on" : ""}">Ho gaya<em>${done.length}</em></button><button data-tab="lib" class="${TAB === "lib" ? "on" : ""}">📚 Project Library</button></nav>
+    <section id="pane"></section>`;
+  $("#rf").onclick = () => load();
+  $$(".tabs button").forEach(b => b.onclick = () => { TAB = b.dataset.tab; draw(); });
+  if (TAB === "lib") return libView();
+  const list = TAB === "done" ? done : act;
+  $("#pane").innerHTML = list.length ? `<div class="list">${list.map(card).join("")}</div>` : `<div class="empty"><b>${TAB === "done" ? "🗂️" : "☕"}</b>${TAB === "done" ? "Abhi koi kaam poora nahi hua." : "Abhi koi kaam nahi hai. Naya task aate hi yahan dikhega."}</div>`;
+  $$("#pane [data-t]").forEach(c => { c.onclick = e => { if (!e.target.closest("button")) openTask(c.dataset.t); }; c.onkeydown = e => { if (e.key === "Enter") openTask(c.dataset.t); }; });
+  $$("#pane [data-qa]").forEach(b => b.onclick = () => act1(b.dataset.id, b.dataset.qa, b));
+}
+function card(t) {
+  const d = t.data || {}, red = isRed(t), acc = t.status === "Assigned" && t.assignedAt ? Math.max(0, ACCEPT_MIN - Math.floor((now() - new Date(t.assignedAt)) / 6e4)) : null;
+  return `<article class="card task s-${esc(t.status)}${red ? " red" : ""}" data-t="${esc(t.id)}" tabindex="0">
+    <div class="row"><span class="pill s-${esc(t.status)}">${esc(ST[t.status] || t.status)}</span><span class="pill">${esc(d.kind || "PPT")}</span>${t.orderId ? `<span class="meta">#${esc(t.orderId)}</span>` : ""}</div>
+    <h3>${esc(d.topic)}</h3>
+    <div class="meta">${d.slides ? `<span>📄 ${esc(d.slides)}</span>` : ""}${d.lang ? `<span>🗣 ${esc(d.lang)}</span>` : ""}${d.theme ? `<span>🎨 ${esc(d.theme)}</span>` : ""}
+      ${t.deadline ? `<span class="${red ? "late" : ""}">⏰ ${fmt(t.deadline)}${t.status !== "Approved" ? " · " + left(t.deadline) : ""}</span>` : ""}${(t.notes || []).length ? `<span>💬 ${t.notes.length}</span>` : ""}</div>
+    ${acc != null ? `<div class="row"><button class="btn sm ok" data-qa="accept" data-id="${esc(t.id)}">✓ Accept</button><button class="btn sm bad" data-qa="decline" data-id="${esc(t.id)}">Mana karein</button><span class="meta soon">${acc} min mein accept karein, warna task wapas chala jayega</span></div>` : ""}
+  </article>`;
+}
+async function act1(id, act, btn, note) {
+  if (btn) btn.disabled = true;
+  const r = await api("teamAct", { id, act, note: note || "" });
+  if (btn) btn.disabled = false;
+  if (!r.ok) { toast(r.error, true); return load(true); }
+  upd(r.task);
+  toast({ accept: "✓ Task accept ho gaya", decline: "Task wapas bhej diya", start: "Kaam shuru 💪", submit: "✓ Review ke liye bhej diya" }[act] || "Done");
+  return r.task;
+}
+function upd(t) { const i = TASKS.findIndex(x => x.id === t.id); if (t.status === "Unassigned") { if (i >= 0) TASKS.splice(i, 1); closeModal(); } else if (i >= 0) TASKS[i] = t; else TASKS.push(t); draw(); if (OPEN === t.id) openTask(t.id, true); }
+
+/* ---------- task detail ---------- */
+function closeModal() { const m = $("#tm"); if (m) m.remove(); OPEN = ""; document.body.style.overflow = ""; }
+function openTask(id, keep) {
+  const t = TASKS.find(x => x.id === id); if (!t) return;
+  const d = t.data || {}, mine = /^(Accepted|Working|Changes)$/.test(t.status), locked = /^(Approved|Review)$/.test(t.status);
+  let m = $("#tm"), scroll = 0, draft = "";
+  if (m) { scroll = m.scrollTop; const nb = m.querySelector("#nx"); if (nb) draft = nb.value; }
+  if (m && $("#tm [data-busy]")) return;
+  if (!m) { m = document.createElement("div"); m.className = "modal"; m.id = "tm"; m.setAttribute("role", "dialog"); m.setAttribute("aria-modal", "true"); document.body.appendChild(m); document.body.style.overflow = "hidden";
+    m.onclick = e => { if (e.target === m) closeModal(); }; }
+  OPEN = id;
+  const red = isRed(t), ck = t.checklist || [];
+  m.innerHTML = `<div class="mbox">
+    <div class="row"><span class="pill s-${esc(t.status)}">${esc(ST[t.status] || t.status)}</span><span class="pill">${esc(d.kind || "PPT")}</span><span class="sp"></span><button class="btn sm" data-x>✕ Close</button></div>
+    <h2>${esc(d.topic)}</h2>
+    ${t.deadline ? `<div class="${red ? "late" : "meta"}">⏰ Deadline: ${fmt(t.deadline)} · ${left(t.deadline)}${red && !t.startedAt && t.status !== "Assigned" ? " · Jaldi shuru karein!" : ""}</div>` : ""}
+    ${t.status === "Changes" ? `<div class="det" style="border:1px solid var(--bad)">✏️ Admin ne changes maange hain. Neeche notes dekhein, file theek karke dobara upload karein.</div>` : ""}
+    <div class="row">${t.status === "Assigned" ? `<button class="btn ok" data-a="accept">✓ Accept</button><button class="btn bad" data-a="decline">Mana karein</button>` : ""}
+      ${/^(Accepted|Changes)$/.test(t.status) ? `<button class="btn pri" data-a="start">▶ Kaam shuru karein</button>` : ""}
+      ${mine && t.file ? `<button class="btn ok" data-a="submit">📤 Review ke liye bhejein</button>` : ""}</div>
+    <div class="kv">${[["Slides", d.slides], ["Language", d.lang], ["Theme", d.theme], ["Class", d.cls], ["Subject", d.subject], ["Order", t.orderId ? "#" + t.orderId : ""]].filter(x => x[1]).map(([k, v]) => `<div><span>${k}</span>${esc(v)}</div>`).join("")}</div>
+    ${d.brief ? `<div class="sec"><b>Admin ka message</b><div class="det">${esc(d.brief)}</div></div>` : ""}
+    ${d.details ? `<div class="sec"><b>Customer ki details</b><div class="det">${esc(d.details)}</div></div>` : ""}
+    ${(t.refs || []).length ? `<div class="sec"><b>Customer ki files</b>${t.refs.map(r => `<div class="file">📎 <b>${esc(r.name)}</b><button class="btn sm" data-dl="${esc(r.id)}" data-n="${esc(r.name)}">⬇ Download</button></div>`).join("")}</div>` : ""}
+    <div class="sec" id="simSec"></div>
+    ${ck.length ? `<div class="sec chk"><b>Checklist · ${ck.filter(c => c.on).length}/${ck.length}</b>${ck.map((c, i) => `<label class="${c.on ? "on" : ""}"><input type="checkbox" data-ck="${i}" ${c.on ? "checked" : ""} ${locked ? "disabled" : ""}><span>${esc(c.x)}</span></label>`).join("")}</div>` : ""}
+    <div class="sec"><b>Final file</b>
+      ${t.file ? `<div class="file">✅ <b>${esc(t.fileName)}</b><span class="meta">${t.fileSize ? mb(t.fileSize) : ""}${t.slides ? " · " + t.slides + " slides" : ""}</span><button class="btn sm" data-dl="${esc(t.file)}" data-n="${esc(t.fileName)}">⬇</button></div>` : ""}
+      ${mine ? `<div class="drop" id="drop" tabindex="0" role="button">📤 <b>${t.file ? "Nayi file se badlein" : "Final file upload karein"}</b><br><small>PPTX / PDF / ZIP / design file · yahan khinch kar chhodein ya click karein</small></div><input type="file" id="fi" hidden>
+        <div class="prog" id="pg" hidden><div class="bar"><i id="pgb"></i></div><span id="pgt"></span></div>` : ""}
+      ${!mine && !t.file ? `<div class="meta">${t.status === "Assigned" ? "Pehle task accept karein." : "File abhi nahi hai."}</div>` : ""}
+    </div>
+    <div class="sec"><b>Notes · Admin se baat</b><div class="notes" id="nts">${(t.notes || []).map(n => `<div class="nt ${n.admin ? "ad" : n.by === ME.name ? "me" : ""}"><small>${esc(n.by)} · ${fmt(n.t)}</small>${esc(n.x)}</div>`).join("") || `<div class="meta">Koi sawal ho to yahan likhein. Admin ko dikhega.</div>`}</div>
+      ${t.status !== "Approved" ? `<div class="row"><input type="text" id="nx" placeholder="Note / sawal likhein…" maxlength="1000" style="flex:1;min-width:0"><button class="btn" id="nb">Bhejein</button></div>` : ""}</div>
+    ${t.status === "Approved" && !t.lib ? `<div class="row"><button class="btn" id="toLib">📚 Library mein save karein</button></div>` : ""}
+    <details class="sec"><summary class="meta" style="cursor:pointer">🕘 History (${(t.hist || []).length})</summary><div class="hist">${(t.hist || []).slice().reverse().map(h => `<div>${fmt(h.t)} · <b>${esc(h.by)}</b>: ${esc(h.x)}</div>`).join("")}</div></details>
+  </div>`;
+  m.scrollTop = keep ? scroll : 0; const nx = m.querySelector("#nx"); if (nx && draft) nx.value = draft;
+  m.querySelector("[data-x]").onclick = closeModal;
+  m.querySelectorAll("[data-a]").forEach(b => b.onclick = () => act1(t.id, b.dataset.a, b));
+  m.querySelectorAll("[data-dl]").forEach(b => b.onclick = () => download(b.dataset.dl, b.dataset.n, b));
+  m.querySelectorAll("[data-ck]").forEach(c => c.onchange = async () => {
+    const list = ck.map((x, i) => ({ x: x.x, on: i === +c.dataset.ck ? c.checked : x.on }));
+    c.closest("label").classList.toggle("on", c.checked);
+    const r = await api("teamCheck", { id: t.id, checklist: list }); if (r.ok) { const i = TASKS.findIndex(x => x.id === t.id); TASKS[i] = r.task; } else toast(r.error, true);
+  });
+  const nb = m.querySelector("#nb");
+  if (nb) { const send = async () => { const x = $("#nx").value.trim(); if (!x) return; nb.disabled = true; const r = await api("teamNote", { id: t.id, text: x }); nb.disabled = false;
+      if (!r.ok) return toast(r.error, true); $("#nx").value = ""; upd(r.task); };
+    nb.onclick = send; $("#nx").onkeydown = e => { if (e.key === "Enter") send(); }; }
+  const nts = m.querySelector("#nts"); nts.scrollTop = nts.scrollHeight;
+  const tl = m.querySelector("#toLib"); if (tl) tl.onclick = () => libForm(null, t);
+  const drop = m.querySelector("#drop");
+  if (drop) {
+    const fi = m.querySelector("#fi"), pick = f => f && uploadFinal(t, f);
+    drop.onclick = () => fi.click(); drop.onkeydown = e => { if (e.key === "Enter" || e.key === " ") fi.click(); };
+    fi.onchange = () => pick(fi.files[0]);
+    drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); }; drop.ondragleave = () => drop.classList.remove("over");
+    drop.ondrop = e => { e.preventDefault(); drop.classList.remove("over"); pick(e.dataTransfer.files[0]); };
+  }
+  similar(t);
+}
+/* pehle bane milte-julte project (Library se) — idea ke liye */
+async function similar(t) {
+  const box = $("#simSec"); if (!box) return;
+  if (!LIB) { const r = await api("teamLib"); LIB = r.ok ? r.lib : []; }
+  const d = t.data || {}, words = String(d.topic + " " + (d.subject || "")).toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(w => w.length > 2);
+  const score = l => { const hay = [l.title, l.topic, l.subject, l.cls, l.tags, l.theme].join(" ").toLowerCase(); let s = words.filter(w => hay.includes(w)).length * 2;
+    if (d.subject && l.subject === d.subject) s += 3; if (d.cls && l.cls === d.cls) s += 2; if (d.kind && l.kind === d.kind) s += 1; return s; };
+  const list = LIB.filter(l => l.task !== t.id).map(l => [score(l), l]).filter(x => x[0] >= 3).sort((a, b) => b[0] - a[0]).slice(0, 3).map(x => x[1]);
+  if (!list.length || !$("#simSec")) return;
+  $("#simSec").innerHTML = `<b>💡 Pehle bane milte-julte project</b><div class="sim">${list.map(l => `<div class="file">📚 <b title="${esc(l.note)}">${esc(l.title)}</b><span class="meta">${l.slides ? l.slides + " slides" : ""}${l.minutes ? " · " + hrs(l.minutes) : ""}</span><button class="btn sm" data-dl="${esc(l.file)}" data-n="${esc(l.fileName)}">⬇</button></div>${l.note ? `<div class="meta" style="padding:0 4px">📝 ${esc(l.note)}</div>` : ""}`).join("")}</div>`;
+  $$("#simSec [data-dl]").forEach(b => b.onclick = () => download(b.dataset.dl, b.dataset.n, b));
+}
+const hrs = m => m >= 60 ? Math.floor(m / 60) + " ghante" + (m % 60 ? " " + m % 60 + " min" : "") : m + " min";
+
+/* ---------- fast upload: browser seedha Google Drive par; na chale to 8 MB ke tukdon mein ---------- */
+function putDirect(url, file, prog) {
+  return new Promise((ok, no) => {
+    const x = new XMLHttpRequest(); x.open("PUT", url);
+    x.upload.onprogress = e => e.lengthComputable && prog(e.loaded);
+    x.onload = () => { if (x.status === 200 || x.status === 201) { try { ok(JSON.parse(x.responseText).id); } catch (e) { no(e); } } else no(new Error("HTTP " + x.status)); };
+    x.onerror = () => no(new Error("network")); x.ontimeout = () => no(new Error("timeout"));
+    x.send(file);
+  });
+}
+const b64 = blob => new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(",")[1]); fr.onerror = no; fr.readAsDataURL(blob); });
+async function sendFile(file, opts, set) {
+  const t0 = Date.now(), prog = n => { const p = Math.min(99, Math.round(n / file.size * 100)), s = n / Math.max(1, (Date.now() - t0) / 1000);
+    set(p, `${p}% · ${mb(n)} / ${mb(file.size)} · ${mb(s)}/s`); };
+  const start = async origin => { const s = await api("teamUpStart", Object.assign({ name: file.name, size: file.size, mime: file.type || "application/octet-stream", origin }, opts)); if (!s.ok) throw new Error(s.error); return s; };
+  let s = await start(location.origin), id = "";
+  if (s.url) { try { id = await putDirect(s.url, file, prog); } catch (e) { console.warn("direct upload failed, fallback", e); s = await start(""); } }
+  if (!id) {
+    let at = 0;
+    while (!id) {
+      const part = file.slice(at, Math.min(file.size, at + CHUNK)); let r, tries = 0;
+      const data = await b64(part);
+      do { r = await api("teamUpChunk", { sid: s.sid, start: at, total: file.size, data }); if (!r.ok && !r.stop) await new Promise(x => setTimeout(x, 800 * (tries + 1))); } while (!r.ok && !r.stop && ++tries < 4);
+      if (!r.ok) throw new Error(r.error);
+      if (r.done) id = r.id; else { at = r.next || at + part.size; prog(at); }
+    }
+  }
+  set(100, "Save ho raha hai…");
+  return { sid: s.sid, file: id };
+}
+/* PPTX ki slides ginti: ZIP ki file list (central directory) padh kar, poori file khole bina */
+async function countSlides(file) {
+  try {
+    if (/\.pdf$/i.test(file.name) && file.size < 40 * 1048576) { const t = await file.text(); return (t.match(/\/Type\s*\/Page[^s]/g) || []).length; }
+    if (!/\.pptx$/i.test(file.name)) return 0;
+    const tail = new Uint8Array(await file.slice(Math.max(0, file.size - 65558)).arrayBuffer()); let e = -1;
+    for (let i = tail.length - 22; i >= 0; i--) if (tail[i] === 0x50 && tail[i + 1] === 0x4b && tail[i + 2] === 5 && tail[i + 3] === 6) { e = i; break; }
+    if (e < 0) return 0;
+    const dv = new DataView(tail.buffer), size = dv.getUint32(e + 12, true), off = dv.getUint32(e + 16, true);
+    const cd = new Uint8Array(await file.slice(off, off + size).arrayBuffer()), cv = new DataView(cd.buffer), dec = new TextDecoder(); let n = 0;
+    for (let p = 0; p + 46 <= cd.length && cv.getUint32(p, true) === 0x02014b50;) { const nl = cv.getUint16(p + 28, true), el = cv.getUint16(p + 30, true), cl = cv.getUint16(p + 32, true);
+      if (/^ppt\/slides\/slide\d+\.xml$/.test(dec.decode(cd.subarray(p + 46, p + 46 + nl)))) n++; p += 46 + nl + el + cl; }
+    return n;
+  } catch (e) { return 0; }
+}
+async function uploadFinal(t, file) {
+  if (file.size > 2 * 1024 * 1048576) return toast("File 2 GB se chhoti honi chahiye", true);
+  const pg = $("#pg"), drop = $("#drop"); pg.hidden = false; drop.hidden = true; pg.dataset.busy = "1";
+  const set = (p, txt) => { $("#pgb").style.width = p + "%"; $("#pgt").textContent = txt; };
+  set(0, "Shuru ho raha hai…");
+  try {
+    const [up, slides] = await Promise.all([sendFile(file, { id: t.id }, set), countSlides(file)]);
+    const r = await api("teamUpDone", { sid: up.sid, file: up.file, slides });
+    if (!r.ok) throw new Error(r.error);
+    delete pg.dataset.busy; upd(r.task); toast("✓ File upload ho gayi. Ab 'Review ke liye bhejein' dabayein.");
+  } catch (e) { delete pg.dataset.busy; set(0, "⚠ " + e.message); drop.hidden = false; toast(e.message, true); }
+}
+/* download: 8 MB ke 3 tukde ek saath */
+async function download(id, name, btn) {
+  const old = btn.textContent; btn.disabled = true;
+  try {
+    const first = await api("teamFile", { file: id, start: 0, len: CHUNK }); if (!first.ok) throw new Error(first.error);
+    const total = first.total, parts = [Uint8Array.from(atob(first.data), c => c.charCodeAt(0))]; let next = parts[0].length, got = next;
+    const offs = []; for (let s = next; s < total; s += CHUNK) offs.push(s);
+    const work = async () => { while (offs.length) { const s = offs.shift(), i = Math.round(s / CHUNK); let r, k = 0;
+        do { r = await api("teamFile", { file: id, start: s, len: CHUNK }); } while (!r.ok && ++k < 3);
+        if (!r.ok) throw new Error(r.error); parts[i] = Uint8Array.from(atob(r.data), c => c.charCodeAt(0)); got += parts[i].length; btn.textContent = Math.round(got / total * 100) + "%"; } };
+    await Promise.all([work(), work(), work()]);
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(parts)); a.download = name || "file"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  } catch (e) { toast(e.message, true); }
+  btn.disabled = false; btn.textContent = old;
+}
+
+/* ---------- Project Library ---------- */
+let LQ = "", LK = "", LS2 = "";
+async function libView() {
+  const pane = $("#pane");
+  if (!LIB) { pane.innerHTML = `<div class="empty"><b>⏳</b>Library khul rahi hai…</div>`; const r = await api("teamLib"); if (!r.ok) return pane.innerHTML = `<div class="empty"><b>⚠️</b>${esc(r.error)}</div>`; LIB = r.lib; }
+  if (TAB !== "lib") return;
+  const subs = [...new Set(LIB.map(l => l.subject).filter(Boolean))].sort();
+  pane.innerHTML = `<div class="fbar"><input type="search" id="lq" placeholder="Search: topic, class, subject, theme…" value="${esc(LQ)}"><select id="lk"><option value="">Sab type</option><option>PPT</option><option>Design</option></select>
+    <select id="ls"><option value="">Sab subject</option>${subs.map(s => `<option>${esc(s)}</option>`).join("")}</select><button class="btn pri" id="ladd">+ Apna project</button></div><div id="lres"></div>`;
+  $("#lk").value = LK; $("#ls").value = LS2;
+  const go = () => { LQ = $("#lq").value; LK = $("#lk").value; LS2 = $("#ls").value; const q = LQ.toLowerCase().split(/\s+/).filter(Boolean);
+    const res = LIB.filter(l => (!LK || (l.kind || "PPT") === LK) && (!LS2 || l.subject === LS2) && q.every(w => [l.title, l.topic, l.cls, l.subject, l.theme, l.tags, l.note, l.byName].join(" ").toLowerCase().includes(w)));
+    $("#lres").innerHTML = res.length ? `<div class="lgrid">${res.map(l => `<article class="card lib"><div class="row"><span class="pill">${esc(l.kind || "PPT")}</span>${l.cls ? `<span class="pill">${esc(l.cls)}</span>` : ""}${l.subject ? `<span class="pill">${esc(l.subject)}</span>` : ""}</div>
+      <h3>${esc(l.title)}</h3><div class="meta">${l.slides ? `<span>📄 ${l.slides} slides</span>` : ""}${l.minutes ? `<span>⏱ ${hrs(l.minutes)}</span>` : ""}${l.theme ? `<span>🎨 ${esc(l.theme)}</span>` : ""}<span>👤 ${esc(l.byName || "")}</span></div>
+      ${l.note ? `<p>📝 ${esc(l.note)}</p>` : ""}<div class="row"><button class="btn sm" data-dl="${esc(l.file)}" data-n="${esc(l.fileName)}">⬇ Download</button>${l.by === ME.id ? `<button class="btn sm ghost" data-le="${esc(l.id)}">✎ Edit</button>` : ""}</div></article>`).join("")}</div>`
+      : `<div class="empty"><b>📚</b>${LIB.length ? "Kuch nahi mila, doosra shabd try karein." : "Library khaali hai. Approve hua kaam yahan apne aap aata hai, ya '+ Apna project' se daalein."}</div>`;
+    $$("#lres [data-dl]").forEach(b => b.onclick = () => download(b.dataset.dl, b.dataset.n, b));
+    $$("#lres [data-le]").forEach(b => b.onclick = () => libForm(LIB.find(l => l.id === b.dataset.le)));
+  };
+  $("#lq").oninput = go; $("#lk").onchange = go; $("#ls").onchange = go; $("#ladd").onclick = () => libForm(null); go();
+}
+function libForm(l, fromTask) {
+  closeModal();
+  const d = fromTask ? fromTask.data || {} : {}, v = l || { title: d.topic, kind: d.kind || "PPT", cls: d.cls, subject: d.subject, theme: d.theme, slides: fromTask ? fromTask.slides : "", lang: d.lang };
+  const m = document.createElement("div"); m.className = "modal"; m.id = "tm"; document.body.appendChild(m); document.body.style.overflow = "hidden";
+  m.innerHTML = `<form class="mbox" id="lfm"><div class="row"><h2>${l ? "Project badlein" : "📚 Library mein project daalein"}</h2><span class="sp"></span><button type="button" class="btn sm" data-x>✕</button></div>
+    <p class="meta">Customer ka naam / number mat likhein. Sirf kaam ki baat: kya banaya, kaise banaya, kitna time laga.</p>
+    <label class="f">Project ka naam<input type="text" id="lt" required maxlength="200" value="${esc(v.title || "")}"></label>
+    <div class="kv" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))"><label class="f">Type<select id="lkd"><option>PPT</option><option>Design</option></select></label>
+      <label class="f">Class<input type="text" id="lc" maxlength="40" value="${esc(v.cls || "")}" placeholder="Class 10"></label>
+      <label class="f">Subject<input type="text" id="lsb" maxlength="60" value="${esc(v.subject || "")}" placeholder="Science"></label>
+      <label class="f">Theme<input type="text" id="lth" maxlength="60" value="${esc(v.theme || "")}"></label>
+      <label class="f">Slides<input type="number" id="lsl" min="0" value="${esc(v.slides || "")}"></label>
+      <label class="f">Kitna time laga (min)<input type="number" id="lmn" min="0" value="${esc(v.minutes || "")}"></label></div>
+    <label class="f">Tags<input type="text" id="ltg" maxlength="200" value="${esc(v.tags || "")}" placeholder="animation, hindi, quiz"></label>
+    <label class="f">Note · agli baar kya dhyan rakhein<textarea id="lnt" maxlength="2000" placeholder="Jaise: is theme mein formula slides alag rakhi, animation 'Fade' use kiya…">${esc(v.note || "")}</textarea></label>
+    ${l ? "" : fromTask && fromTask.file ? `<div class="file">✅ <b>${esc(fromTask.fileName)}</b><span class="meta">is task ki file</span></div><input type="hidden" id="useTask" value="1">`
+      : `<div class="drop" id="ldrop" tabindex="0" role="button">📤 <b>File chunein</b><br><small>PPTX / PDF / ZIP / design file</small></div><input type="file" id="lfi" hidden><div class="prog" id="pg" hidden><div class="bar"><i id="pgb"></i></div><span id="pgt"></span></div>`}
+    <div class="err" id="lerr"></div><div class="row"><button class="btn pri" id="lgo">Save</button><button type="button" class="btn" data-x>Cancel</button></div></form>`;
+  $("#lkd").value = v.kind || "PPT";
+  m.querySelectorAll("[data-x]").forEach(b => b.onclick = closeModal);
+  let file = null; const drop = $("#ldrop");
+  if (drop) { const fi = $("#lfi"), pick = f => { if (!f) return; file = f; drop.innerHTML = `✅ <b>${esc(f.name)}</b><br><small>${mb(f.size)} · badalne ke liye click karein</small>`; if (!$("#lt").value) $("#lt").value = f.name.replace(/\.\w+$/, "").replace(/[_-]+/g, " "); };
+    drop.onclick = () => fi.click(); fi.onchange = () => pick(fi.files[0]);
+    drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); }; drop.ondragleave = () => drop.classList.remove("over"); drop.ondrop = e => { e.preventDefault(); drop.classList.remove("over"); pick(e.dataTransfer.files[0]); }; }
+  $("#lfm").onsubmit = async e => {
+    e.preventDefault(); const b = $("#lgo"); $("#lerr").textContent = "";
+    const item = { id: l ? l.id : "", title: $("#lt").value.trim(), kind: $("#lkd").value, cls: $("#lc").value.trim(), subject: $("#lsb").value.trim(), theme: $("#lth").value.trim(), slides: +$("#lsl").value || 0, minutes: +$("#lmn").value || 0, tags: $("#ltg").value.trim(), note: $("#lnt").value.trim(), lang: v.lang || "" };
+    if (!item.title) return $("#lerr").textContent = "Naam likhein";
+    b.disabled = true;
+    try {
+      let r;
+      if (!l && $("#useTask")) { r = await api("teamLibTask", { id: fromTask.id, item }); if (r.ok) { const i = TASKS.findIndex(x => x.id === fromTask.id); if (i >= 0) TASKS[i] = r.task; } }
+      else {
+        if (!l) {
+          if (!file) throw new Error("File chunein");
+          $("#pg").hidden = false; drop.hidden = true;
+          const set = (p, t) => { $("#pgb").style.width = p + "%"; $("#pgt").textContent = t; };
+          const up = await sendFile(file, { lib: true }, set), r1 = await api("teamUpDone", { sid: up.sid, file: up.file });
+          if (!r1.ok) throw new Error(r1.error); item.file = r1.file;
+          if (!item.slides) item.slides = await countSlides(file);
+        }
+        r = await api("teamLibSave", { item });
+      }
+      if (!r.ok) throw new Error(r.error);
+      const i = LIB ? LIB.findIndex(x => x.id === r.item.id) : -1; if (LIB) { if (i >= 0) LIB[i] = r.item; else LIB.unshift(r.item); }
+      closeModal(); toast("✓ Library mein save ho gaya"); TAB = "lib"; draw();
+    } catch (err) {
+      b.disabled = false; $("#lerr").textContent = err.message; if (drop) { drop.hidden = false; $("#pg").hidden = true; }
+    }
+  };
+}
+
+/* ---------- password ---------- */
+function passView() {
+  closeModal(); const m = document.createElement("div"); m.className = "modal"; m.id = "tm"; document.body.appendChild(m);
+  m.innerHTML = `<form class="mbox" id="pf" style="max-width:420px"><h2>🔑 Password badlein</h2>
+    <label class="f">Purana password<input type="password" id="p0" autocomplete="current-password" required></label>
+    <label class="f">Naya password (6+ akshar)<input type="password" id="p1" autocomplete="new-password" minlength="6" required></label>
+    <div class="err" id="pe"></div><div class="row"><button class="btn pri">Save</button><button type="button" class="btn" data-x>Cancel</button></div></form>`;
+  m.querySelector("[data-x]").onclick = closeModal;
+  $("#pf").onsubmit = async e => { e.preventDefault(); const r = await api("teamPass", { old: $("#p0").value, password: $("#p1").value });
+    if (!r.ok) return $("#pe").textContent = r.error; TT = r.tt; try { localStorage.setItem("la_team", TT); } catch (x) { } closeModal(); toast("✓ Password badal gaya"); };
+}
+
+addEventListener("keydown", e => { if (e.key === "Escape" && $("#tm") && !$("#tm [data-busy]")) closeModal(); });
+/* har 60 sec naye task / admin ke note dekho (sirf jab page khula ho) */
+setInterval(() => { if (TT && document.visibilityState === "visible" && !$("#tm [data-busy]")) load(true); }, 60000);
+document.addEventListener("visibilitychange", () => { if (TT && document.visibilityState === "visible") load(true); });
+load();
+</script>
+</body>
+</html>

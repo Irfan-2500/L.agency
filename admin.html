@@ -70,7 +70,7 @@ svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke
 .btn.wa{background:#16a34a;border-color:transparent;color:#fff}
 .btn.wa:hover{filter:brightness(1.08)}
 .btn:disabled{opacity:.55;cursor:wait}
-input[type=text],input[type=password],input[type=email],input[type=tel],input[type=number],input[type=search],input[type=date],select,textarea{
+input[type=text],input[type=password],input[type=email],input[type=tel],input[type=number],input[type=search],input[type=date],input[type=datetime-local],input:not([type]),select,textarea{
   width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;outline:none;transition:.18s}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 label.f{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:700;color:var(--muted)}
@@ -740,6 +740,50 @@ body.noscroll{overflow:hidden}
 @media(prefers-reduced-motion:reduce){.skip{transition:none}}
 @media(forced-colors:active){.nav button.on{outline:2px solid CanvasText}.kpi,.card{border:1px solid CanvasText}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== Team ===== */
+.fl{display:flex;flex-direction:column;gap:6px;min-width:0}.fl>input,.fl>select,.fl>textarea{width:100%}
+#tmOp .mbox>.row:first-child{flex-wrap:nowrap}
+.tm-st{color:var(--c);border-color:color-mix(in srgb,var(--c) 45%,transparent);background:color-mix(in srgb,var(--c) 10%,transparent)}
+.tm-strip{display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:.84rem}
+.tm-red{border-color:color-mix(in srgb,var(--bad) 55%,transparent)!important;background:color-mix(in srgb,var(--bad) 7%,var(--card))}
+.tm-strip.tm-red{background:var(--bad-soft)}
+.tm-late{color:var(--bad);font-weight:700}
+.tm-row .meta{line-height:1.6}
+.tm-det{white-space:pre-wrap;background:var(--bg2);border-radius:10px;padding:10px 12px;font-size:.88rem;margin-top:4px}
+.tm-ck{display:grid;gap:4px;font-size:.86rem;margin-top:4px}
+.tm-notes{display:grid;gap:8px;max-height:240px;overflow:auto;margin-top:6px}
+.tm-nt{background:var(--bg2);border-radius:12px;padding:8px 12px;font-size:.86rem;max-width:88%}.tm-nt.me{justify-self:end;background:var(--accent-soft)}
+.tm-nt small{display:block;color:var(--dim);font-size:.72rem}
+.tm-hist{display:grid;gap:4px;font-size:.8rem;color:var(--muted);max-height:200px;overflow:auto;margin-top:6px}
+#tmTabs{margin:16px 0 12px}
+
+/* ===== Clean UI: kam text, saaf cards ===== */
+.kpi{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:14px;min-height:0;padding:20px}
+.kpi .ic{width:48px;height:48px;border-radius:13px}.kpi .ic svg{width:22px;height:22px}
+.kpi .kt{display:flex;flex-direction:column;gap:6px;min-width:0}
+.kpi .kl{color:var(--muted);font-size:.86rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi .kv{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.kpi .kv b{margin:0;font-size:1.95rem}
+.kpi .dl small,.kpi .ksub,.kpi .spark,.kpi .kx{display:none}
+.kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.btn.icon{padding-inline:8px}
+.ch .clegend.mini{margin:0 0 0 auto;border:0;padding:0}.ch .clegend.mini+.btn{margin-left:10px}
+.agrid2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+.agrid2>.card{margin:0}.rvis{margin:0 0 16px}
+.agrid2 .vth{flex-wrap:nowrap}.agrid2 .vtnav input{max-width:150px}
+.rvis .rtbl th,.rvis .rtbl td{text-align:left}.rvall{margin-top:10px}
+.agrid6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.agrid6>.card{margin:0;padding:16px}.agrid6 h3{font-size:.98rem;margin-bottom:14px}
+.agrid6 .toplist div{grid-template-columns:minmax(0,1fr) minmax(30px,.9fr) auto;gap:8px;font-size:.78rem}
+.agrid6 .toplist small{display:none}
+.agrid6 .donut{width:min(120px,80%);margin:0 auto 12px}.agrid6 .donut .dc b{font-size:1.05rem}.agrid6 .donut .dc small{font-size:.66rem}
+.agrid6 .legend{gap:6px}.agrid6 .legend div{font-size:.78rem}
+@media(max-width:1360px){.agrid6{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1100px){.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}.agrid2{grid-template-columns:1fr}}
+@media(max-width:640px){.agrid6{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi{padding:14px;gap:10px}.kpi .ic{width:38px;height:38px}.kpi .kv b{font-size:1.45rem}
+  .ch .clegend.mini{display:none}.ch .btn.icon{margin-left:auto}}
+@media(max-width:400px){.agrid6{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -813,6 +857,7 @@ body.noscroll{overflow:hidden}
         <button data-t="report"><svg class="i"><use href="#i-pie"/></svg>Revenue report</button>
         <span class="lbl">Sales</span>
         <button data-t="orders"><svg class="i"><use href="#i-cart"/></svg>Orders<span class="n" id="nOrders" hidden></span></button>
+        <button data-t="team"><svg class="i"><use href="#i-users"/></svg>Team<span class="n" id="nTeam" hidden></span></button>
         <button data-t="sales"><svg class="i"><use href="#i-rupee"/></svg>Online sales</button>
         <button data-t="customers"><svg class="i"><use href="#i-users"/></svg>Customers</button>
         <button data-t="coupons"><svg class="i"><use href="#i-tag"/></svg>Coupons</button>
@@ -821,6 +866,7 @@ body.noscroll{overflow:hidden}
         <button data-t="reviews"><svg class="i"><use href="#i-star"/></svg>Reviews<span class="n" id="nReviews" hidden></span></button>
         <span class="lbl">Catalog</span>
         <button data-t="ppts"><svg class="i"><use href="#i-upload"/></svg>Ready PPTs</button>
+        <button data-t="bundles"><svg class="i"><use href="#i-list"/></svg>Subject bundles</button>
         <button data-t="notes"><svg class="i"><use href="#i-book"/></svg>Study notes</button>
         <button data-t="cfiles"><svg class="i"><use href="#i-folder"/></svg>Category files</button>
         <button data-t="themes"><svg class="i"><use href="#i-image"/></svg>Themes</button>
@@ -978,7 +1024,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Physical Education","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", sales: "Online sales", customers: "Customers", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", notes: "Study notes", cfiles: "Category files", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", team: "Team", sales: "Online sales", customers: "Customers", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", bundles: "Subject bundles", notes: "Study notes", cfiles: "Category files", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -1051,13 +1097,15 @@ const DEMO = (() => {
       {key:"9876500011",name:"Rahul Verma",email:"rahul@example.com",mobile:"9876500011",orders:1,spent:99,ppts:["Class 10 Science — Light"],first:iso(2),last:iso(2),logins:0,lastLogin:"",device:"",resetAt:"",blocked:false}],
     sales: [{time:iso(2),name:"Rahul Verma",email:"rahul@example.com",mobile:"9876500011",items:"Class 10 Science — Light",amount:99,payment:"pay_DemoA1",order:"order_DemoA1"},
       {time:iso(30),name:"Neha Singh",email:"neha@example.com",mobile:"9876500022",items:"Class 10 Science — Light, Business Pitch Deck",amount:298,payment:"pay_DemoB2",order:"order_DemoB2"}],
-    ppts: [{id:102,title:"Class 10 Science — Light",desc:"Reflection & refraction, 30 slides",price:99,mrp:199,cat:"edu",level:["Class 10"],subject:"Science",board:["CBSE"],lang:"English",theme:"Dark",slides:30,anim:true,badge:"best",refs:[],previews:[],file:"x",fileName:"light.pptx",show:true,sold:14,added:iso(200)},
+    ppts: [{id:150,title:"Class 10 Science — Full Package (All 3 Chapters)",desc:"All 3 chapters of Class 10 Science in one package. Includes: 1. Light; 2. Life Processes; 3. Electricity",price:249,mrp:599,cat:"edu",level:["Class 10"],subject:"Science",board:["CBSE"],lang:"English",theme:"Dark",slides:90,anim:true,badge:"",refs:[],previews:[],file:"x",fileName:"Class 10 Science - Full Package.zip",show:true,sold:3,added:iso(20)},
+      {id:102,title:"Class 10 Science — Light",desc:"Reflection & refraction, 30 slides",price:99,mrp:199,cat:"edu",level:["Class 10"],subject:"Science",board:["CBSE"],lang:"English",theme:"Dark",slides:30,anim:true,badge:"best",refs:[],previews:[],file:"x",fileName:"light.pptx",show:true,sold:14,added:iso(200)},
       {id:101,title:"Business Pitch Deck",desc:"Startup pitch template",price:199,mrp:0,cat:"biz",level:[],subject:"",board:[],lang:"English",theme:"Light",slides:20,anim:false,badge:"",refs:[],previews:[],file:"y",fileName:"pitch.pdf",show:false,sold:3,added:iso(400)}]
   };
 })();
 async function demoCall(a, d) {
   await new Promise(r => setTimeout(r, 250));
   const D = DEMO, ok = o => { $("#lastSync").textContent = "Demo data"; return Object.assign({ ok: true }, o || {}); };
+  if (/^team/.test(a)) { await teamDemo(); return (window.GAS_DEMO_LOAD(), window.team_)(JSON.parse(JSON.stringify(Object.assign({}, d, { action: a, token: "demo" })))); }
   switch (a) {
     case "adminLogin": return d.user && d.password ? ok({ token: "demo", user: d.user }) : { ok: false, error: "Admin ID aur password daalein" };
     case "adminSummary": return ok({ user: D.user, newOrders: D.orders.filter(o => o.status === "New").length, orders: D.orders.length, themes: D.themes.length, liveThemes: D.themes.filter(t => t.show).length,
@@ -1213,7 +1261,7 @@ function go(t, user) {
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   window.scrollTo(0, 0);
   const v = $("#view"); v.setAttribute("aria-busy", "true");
-  Promise.resolve(({ dash, stats, report, sales, customers, coupons, ppts, notes, books: stateBooks, cfiles, menu, orders, themes, prices, reviews, messages, site, settings })[t]()).finally(() => {
+  Promise.resolve(({ dash, stats, report, sales, customers, coupons, ppts, bundles, notes, books: stateBooks, cfiles, menu, orders, team, themes, prices, reviews, messages, site, settings })[t]()).finally(() => {
     v.setAttribute("aria-busy", "false");
     if (user && tab === t) { const h = $("#view h1"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
   });
@@ -1230,7 +1278,7 @@ const loading = () => V(`<div class="loading"><i></i><i></i><i></i></div>`);
 const fail = msg => V(`<div class="empty"><b>⚠️</b>${esc(msg)}<div class="row" style="justify-content:center;margin-top:14px"><button class="btn sm" onclick="go(tab)">${ic("i-refresh")} Try again</button></div></div>`);
 const fmtTime = t => { const d = new Date(t); return isNaN(d) ? esc(t) : d.toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }); };
 const ago = t => { const d = new Date(t); if (isNaN(d)) return ""; const m = Math.round((Date.now() - d) / 60000); if (m < 1) return "just now"; if (m < 60) return m + " min ago"; const h = Math.round(m / 60); if (h < 24) return h + " hr ago"; const dd = Math.round(h / 24); return dd + " day" + (dd > 1 ? "s" : "") + " ago"; };
-const head = (title, sub, acts) => `<div class="pagehead"><div><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ""}</div>${acts ? `<div class="acts">${acts}</div>` : ""}</div>`;
+const head = (title, sub, acts) => `<div class="pagehead"><div><h1>${title}</h1></div>${acts ? `<div class="acts">${acts}</div>` : ""}</div>`;
 function setWho() { const u = SUM.user || "Admin"; $("#whoName").textContent = u; $("#whoAv").textContent = initials(u); }
 
 /* ---------- Chart helpers (SVG, no library) ---------- */
@@ -1258,15 +1306,14 @@ function spark(vals, col) {
 }
 function kpi(o) {
   return `<button class="kpi${o.hot ? " hot" : ""}" ${o.big ? `data-big="${o.big}"` : `data-go="${o.go}"`} style="--c:${o.col}" aria-label="${esc(o.label)}: ${esc(String(o.value))}. ${o.big ? "Open full view" : "Open " + esc(TITLES[o.go] || o.go)}" title="Click for full view">
-    <span class="kh"><span class="ic">${o.icon}</span><span class="kl">${esc(o.label)}</span></span>
-    <b>${o.value}</b>${o.d || ""}${o.sub ? `<small>${o.sub}</small>` : ""}${spark(o.sp, o.col)}${o.big ? `<span class="kx" aria-hidden="true">${ic("i-max")}</span>` : ""}</button>`;
+    <span class="ic">${o.icon}</span><span class="kt"><span class="kl">${esc(o.label)}</span><span class="kv"><b>${o.value}</b>${o.d || ""}</span></span>${o.sub ? `<small class="ksub">${o.sub}</small>` : ""}</button>`;
 }
 /* Area (left axis) + bars (right axis) chart, hover / keyboard tooltips + table for screen readers.
    labels: x-axis labels · opt.full: tooltip/table labels · opt.bars: primary series as bars · opt.h: height */
 function comboChart(id, labels, area, bars, opt) {
   opt = opt || {};
   const full = opt.full || labels, fA = area.fmt || nf, fB = (bars && bars.fmt) || nf, asBars = !!opt.bars && labels.length <= 60;
-  const sm = innerWidth < 600, W = sm ? 420 : 720, H = (opt.h || 250) * (sm ? .9 : 1), L = sm ? 36 : 44, R = bars ? 34 : 10, T = 14, B = 26, iw = W - L - R, ih = H - T - B, n = labels.length;
+  const sm = innerWidth < 600, W = opt.w || (sm ? 420 : 720), H = (opt.h || 250) * (sm ? .9 : 1), L = sm ? 36 : 44, R = bars ? 34 : 10, T = 14, B = 26, iw = W - L - R, ih = H - T - B, n = labels.length;
   const st = asBars ? iw / Math.max(1, n) : iw / Math.max(1, n - 1), bw = Math.max(2, Math.min(asBars ? 34 : 14, (iw / n) * (asBars ? .7 : .45)));
   const nice = m => { m = Math.max(1, m); const p = Math.pow(10, Math.floor(Math.log10(m))), f = m / p; return Math.max(1, ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find(x => f <= x) || 10) * p); };
   const mxA = Math.max(0, ...area.vals), mxB = bars ? Math.max(0, ...bars.vals) : 0;
@@ -1294,7 +1341,7 @@ function comboChart(id, labels, area, bars, opt) {
   return `<div class="combo${opt.h > 260 ? " tall" : ""}" id="${id}"><svg viewBox="0 0 ${W} ${H}" role="list" aria-label="${esc(area.name)}${bars ? " and " + esc(bars.name) : ""}, ${n} periods">
     <defs><linearGradient id="${id}G" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:${area.col};stop-opacity:.32"/><stop offset="1" style="stop-color:${area.col};stop-opacity:0"/></linearGradient></defs>
     ${grid}${bar}${prim}${xl}${hits}</svg><div class="ctip" id="${id}Tip" hidden></div></div>
-    <div class="clegend"><span><i style="background:${area.col}"></i>${esc(area.name)}</span>${bars ? `<span><i style="background:${bars.col}"></i>${esc(bars.name)} (right axis)</span>` : ""}</div>${tbl}`;
+    ${opt.bare ? "" : `<div class="clegend"><span><i style="background:${area.col}"></i>${esc(area.name)}</span>${bars ? `<span><i style="background:${bars.col}"></i>${esc(bars.name)} (right axis)</span>` : ""}</div>${tbl}`}`;
 }
 function donut(parts, total, label) {
   let off = 25; const t = total || 1;
@@ -1312,7 +1359,6 @@ async function dash() {
   SUM = s; setWho(); badge("#nOrders", s.newOrders);
   const list = o.ok ? o.orders : [], stats = o.ok ? o.statuses : [], sales = sl.ok ? sl.sales : [];
   if (o.ok) { ORD = list; STAT = stats; }
-  const hr = new Date().getHours(), greet = hr < 12 ? "Good morning" : hr < 17 ? "Good afternoon" : "Good evening";
   const today = new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   // 30 din ka data
   const days = [...Array(30)].map((_, k) => day0(29 - k));
@@ -1331,7 +1377,7 @@ async function dash() {
     [s.pendingReviews, "Reviews hidden from site", "reviews", "i-star", "#f59e0b"],
     [s.themes - s.liveThemes, "Themes hidden from site", "themes", "i-image", "var(--cyan)"]
   ].filter(x => x[0] > 0);
-  V(`<div class="dhead"><div><h1 tabindex="-1">${greet}${SUM.user ? ", " + esc(SUM.user) : ""}</h1><p>${today} · Here's how your store is doing.</p></div>
+  V(`<div class="dhead"><div><h1 tabindex="-1">Hello${SUM.user ? ", " + esc(SUM.user) : ""}</h1><p>${today}</p></div>
     <div class="acts"><button class="btn sm" data-go="ppts">${ic("i-upload")} Upload PPT</button><button class="btn sm" data-go="themes" data-add="1">${ic("i-plus")} Add theme</button><a class="btn sm pri" href="./" target="_blank" rel="noopener">${ic("i-ext")} View site</a></div></div>
   ${s.newOrders ? `<button class="alertbar" data-go="orders">${ic("i-zap")}<span><b>${s.newOrders} new order${s.newOrders > 1 ? "s" : ""}</b> waiting for confirmation</span><span class="sp"></span><span class="go">Review →</span></button>` : ""}
   <div class="kpis">
@@ -1369,10 +1415,10 @@ async function dash() {
 }
 
 /* ---------- Orders ---------- */
-let ORD = [], STAT = [], OQ = "", OST = "", OSORT = "new", CUST = {}, CUST_ON = false, CUST_PAY = false;
+let ORD = [], STAT = [], OQ = "", OST = "", OTM = "", OSORT = "new", CUST = {}, CUST_ON = false, CUST_PAY = false;
 async function orders() {
   loading();
-  const [r, cu] = await Promise.all([call("adminOrders"), call("adminCustomList")]); if (!r.ok) return fail(r.error);
+  const [r, cu] = await Promise.all([call("adminOrders"), call("adminCustomList"), loadTeam(true)]); if (!r.ok) return fail(r.error);
   ORD = r.orders; STAT = r.statuses;
   CUST = {}; CUST_ON = !!cu.ok; CUST_PAY = !!cu.payments; if (cu.ok) cu.items.forEach(c => CUST[String(c.id)] = c);
   badge("#nOrders", ORD.filter(o => String(o.status).split(" ")[0] === "New").length);
@@ -1391,13 +1437,22 @@ async function orders() {
 }
 function drawChips() {
   const all = [["", "All", ORD.length], ...STAT.map(s => [s, s, ORD.filter(o => o.status === s).length])];
-  $("#ochips").innerHTML = all.map(([v, l, n]) => `<button class="chip ${v === OST ? "on" : ""}" data-st="${esc(v)}">${esc(l)}<em>${n}</em></button>`).join("");
-  $$("#ochips .chip").forEach(b => b.onclick = () => { OST = b.dataset.st; drawOrders(); });
+  const tm = TEAM && TEAM.ok && TEAM.members.length ? [["team", "👥 Team ke paas"], ["me", "🙋 Mere paas"], ["review", "✅ Review"]].map(([k, l]) => [k, l, ORD.filter(o => tmOF(o, k)).length]) : [];
+  $("#ochips").innerHTML = all.map(([v, l, n]) => `<button class="chip ${v === OST && !OTM ? "on" : ""}" data-st="${esc(v)}">${esc(l)}<em>${n}</em></button>`).join("")
+    + tm.map(([k, l, n]) => `<button class="chip ${OTM === k ? "on" : ""}" data-tmf="${k}">${l}<em>${n}</em></button>`).join("");
+  $$("#ochips [data-st]").forEach(b => b.onclick = () => { OST = b.dataset.st; OTM = ""; drawOrders(); });
+  $$("#ochips [data-tmf]").forEach(b => b.onclick = () => { OTM = OTM === b.dataset.tmf ? "" : b.dataset.tmf; OST = ""; drawOrders(); });
 }
 function filteredOrders() {
   const q = OQ.toLowerCase();
-  const list = ORD.filter(o => (!OST || o.status === OST) && (!q || [o.name, o.mobile, o.topic, o.details, o.theme, String(o.id)].join(" ").toLowerCase().includes(q)));
+  const list = ORD.filter(o => (!OST || o.status === OST) && (!OTM || tmOF(o, OTM)) && (!q || [o.name, o.mobile, o.topic, o.details, o.theme, String(o.id)].join(" ").toLowerCase().includes(q)));
   return OSORT === "old" ? list.slice().reverse() : list;
+}
+/* Team filter: team ke paas (kisi member par chal raha), mere paas (kisi ko nahi diya), review (approve ka intezaar) */
+function tmOF(o, k) {
+  if (/^(Cancelled)$/.test(o.status)) return false;
+  const t = tmTaskOf(o.id), on = t && /^(Assigned|Accepted|Working|Changes|Review)$/.test(t.status);
+  return k === "team" ? !!on : k === "review" ? !!(t && t.status === "Review") : !on && !(t && t.status === "Approved") && !/^(Done|Paid)$/.test(String(o.status).split(" ")[0]);
 }
 /* Orders delete: ek-ek ya kai ek saath (test orders hatane ke liye) */
 const OSEL = new Set();
@@ -1437,6 +1492,7 @@ function drawOrders() {
       <div class="det">${esc(o.details)}</div>
       ${files ? `<div class="files">${files}</div>` : ""}
       ${o.failed && o.failed !== "—" ? `<div class="files" style="color:var(--warn)">⚠ Not uploaded: ${esc(o.failed)}</div>` : ""}
+      ${o.status === "Cancelled" || !TEAM || !TEAM.ok ? "" : `<div class="fin" data-tm="${esc(o.id)}">${tmStrip(o)}</div>`}
       ${o.status === "Cancelled" ? "" : `<div class="fin" data-fin="${esc(o.id)}">${finHtml(o)}</div>`}
     </article>`;
   }).join("") : `<div class="empty"><b>📭</b>${ORD.length ? "No orders match this filter." : "No orders yet."}</div>`;
@@ -1449,6 +1505,7 @@ function drawOrders() {
   });
   drawBulk();
   $$("#olist [data-fin]").forEach(bindFin);
+  $$("#olist [data-tm]").forEach(tmBindStrip);
   $$("#olist select").forEach(s => s.onchange = async () => {
     s.disabled = true;
     const r = await call("adminOrderStatus", { row: +s.dataset.row, id: s.dataset.id, status: s.value });
@@ -1461,6 +1518,287 @@ function drawOrders() {
     toast("Status: " + s.value);
   });
 }
+/* ---------- TEAM: members, task assign, review, Project Library (salary team — koi paisa nahi) ---------- */
+let TEAM = null, TM_TAB = "tasks", TM_ST = "active", TM_MEM = "", TM_LQ = "";
+const TM_ACTIVE = /^(Assigned|Accepted|Working|Changes|Review)$/;
+const TM_ST_L = { Unassigned: "Kisi ke paas nahi", Assigned: "Accept ka intezaar", Accepted: "Accepted", Working: "Kaam chal raha", Changes: "Changes par", Review: "Aapke review mein", Approved: "Approved ✓", Cancelled: "Cancelled" };
+const TM_COL = { Unassigned: "var(--dim)", Assigned: "var(--info)", Accepted: "var(--accent)", Working: "var(--warn)", Changes: "var(--bad)", Review: "var(--cyan)", Approved: "var(--ok)", Cancelled: "var(--dim)" };
+const TM_CHECK = { PPT: ["Customer ki saari details shamil", "Sahi theme / colours", "Spelling aur grammar check", "Slide order aur numbering", "Animation (agar maanga)", "Final file khol kar check ki"],
+  Design: ["Size / format sahi", "Brand colours aur font", "Spelling check", "High quality export (PNG / PDF)", "Source file bhi saath"] };
+let teamDemoP = null;
+function teamDemo() {
+  return teamDemoP || (teamDemoP = (async () => {
+    await new Promise((ok, no) => { const s = document.createElement("script"); s.src = "js/gas-shim.js"; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+    (0, eval)(await (await fetch("google-script/Team.gs")).text());
+  })());
+}
+async function loadTeam(force) {
+  if (TEAM && !force) return TEAM;
+  const r = await call("teamAdmin");
+  TEAM = r.ok ? r : { ok: false, error: r.error, members: [], tasks: [], lib: [], report: [] };
+  if (r.ok) badge("#nTeam", r.tasks.filter(t => t.status === "Review").length);
+  return TEAM;
+}
+const tmPill = s => `<span class="pill tm-st" style="--c:${TM_COL[s] || "var(--dim)"}">${esc(TM_ST_L[s] || s)}</span>`;
+const tmLeft = t => { const d = new Date(t) - Date.now(); if (isNaN(d)) return ""; const a = Math.abs(d), h = Math.floor(a / 36e5), m = Math.round(a % 36e5 / 6e4);
+  const s = h >= 48 ? Math.round(h / 24) + " din" : h ? h + "h " + m + "m" : m + " min"; return d < 0 ? s + " late" : s + " baaki"; };
+const tmRed = t => t.deadline && TM_ACTIVE.test(t.status) && t.status !== "Review" && (new Date(t.deadline) < Date.now() || (!t.startedAt && new Date(t.deadline) - Date.now() < 2 * 36e5));
+const tmHrs = m => !m ? "—" : m >= 60 ? Math.floor(m / 60) + "h " + (m % 60) + "m" : m + "m";
+const tmTaskOf = id => TEAM && TEAM.ok ? TEAM.tasks.filter(t => t.orderId === String(id) && t.status !== "Cancelled").pop() : null;
+const tmMember = id => (TEAM && TEAM.members || []).find(m => m.id === id);
+const tmSite = () => /localhost|127\.|vercel\.app|^$/.test(location.hostname) ? "https://www.pptstore.in" : location.origin;
+function tmWa(t, kind) {
+  const m = tmMember(t.member), n = String(m && m.wa || "").replace(/\D/g, "").slice(-10); if (!/^[6-9]\d{9}$/.test(n)) return "";
+  const d = t.data || {}, link = tmSite() + "/team.html";
+  const txt = kind === "changes" ? `${m.name.split(" ")[0]}, "${d.topic}" mein kuch changes chahiye. Team panel mein note dekhein aur nayi file upload karein:\n${link}`
+    : `${m.name.split(" ")[0]}, aapko naya kaam mila hai 🎯\n\n${d.kind || "PPT"}: ${d.topic}${d.slides ? "\nSlides: " + d.slides : ""}${t.deadline ? "\nDeadline: " + fmtTime(t.deadline) : ""}\n\n${TEAM.acceptMin || 60} minute mein Accept karein:\n${link}`;
+  return `https://wa.me/91${n}?text=${encodeURIComponent(txt)}`;
+}
+function tmBox(id, html) {
+  let box = $("#" + id); if (box) box.remove();
+  box = document.createElement("div"); box.className = "modal"; box.id = id; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+  box.innerHTML = `<div class="mbox">${html}</div>`; document.body.appendChild(box);
+  const close = () => box.remove(); box.querySelectorAll("[data-x]").forEach(b => b.onclick = close); box.onclick = e => { if (e.target === box && !box.querySelector("[data-busy]")) close(); };
+  return { box, close };
+}
+
+/* ---------- Team tab ---------- */
+async function team() {
+  loading();
+  const T = await loadTeam(true);
+  if (!T.ok) return fail(/Unknown action|Unknown team/.test(T.error || "") ? "Google Script mein Team.gs ka update abhi baaki hai" : T.error);
+  const act = T.tasks.filter(t => TM_ACTIVE.test(t.status));
+  V(head("Team", "", `<a class="btn sm" href="team.html" target="_blank" rel="noopener">${ic("i-ext")} Team panel</a><button class="btn sm" id="tmAddM">${ic("i-plus")} Member</button><button class="btn sm pri" id="tmAddT">${ic("i-plus")} Naya task</button>`) + `
+    <div class="kpis k4">${kpi({ label: "Active members", value: T.members.filter(m => m.active).length, icon: ic("i-users"), col: "var(--accent)", go: "team" })}
+      ${kpi({ label: "Chal rahe task", value: act.length, icon: ic("i-clock"), col: "var(--warn)", go: "team" })}
+      ${kpi({ label: "Review mein", value: act.filter(t => t.status === "Review").length, icon: ic("i-check"), col: "var(--cyan)", go: "team", hot: act.some(t => t.status === "Review") })}
+      ${kpi({ label: "Late / khatra", value: act.filter(tmRed).length, icon: ic("i-cal"), col: "var(--bad)", go: "team" })}</div>
+    <div class="chips" id="tmTabs">${[["tasks", "Tasks"], ["members", "Members & report"], ["lib", "📚 Project Library"]].map(([k, l]) => `<button class="chip ${TM_TAB === k ? "on" : ""}" data-k="${k}">${l}</button>`).join("")}</div>
+    <div id="tmPane"></div>`);
+  $$("#view .kpi").forEach(b => b.onclick = e => { e.preventDefault(); });
+  $("#tmAddM").onclick = () => tmMemberForm(null);
+  $("#tmAddT").onclick = () => tmAssign(null, null);
+  $$("#tmTabs .chip").forEach(b => b.onclick = () => { TM_TAB = b.dataset.k; $$("#tmTabs .chip").forEach(x => x.classList.toggle("on", x === b)); tmPane(); });
+  tmPane();
+}
+function tmPane() {
+  const p = $("#tmPane"); if (!p) return;
+  if (TM_TAB === "members") return tmMembers(p);
+  if (TM_TAB === "lib") return tmLib(p);
+  const T = TEAM, sts = [["active", "Chal rahe", t => TM_ACTIVE.test(t.status)], ["Review", "Review", t => t.status === "Review"], ["red", "Late / khatra", tmRed], ["Unassigned", "Kisi ke paas nahi", t => t.status === "Unassigned"], ["Approved", "Approved", t => t.status === "Approved"], ["all", "Sab", () => true]];
+  const f = (sts.find(s => s[0] === TM_ST) || sts[0])[2];
+  const list = T.tasks.filter(t => f(t) && (!TM_MEM || t.member === TM_MEM || t.doneBy === TM_MEM)).sort((a, b) => (b.status === "Review") - (a.status === "Review") || tmRed(b) - tmRed(a) || String(a.deadline || "9").localeCompare(String(b.deadline || "9")));
+  p.innerHTML = `<div class="fbar"><div class="chips" style="margin:0">${sts.map(([k, l, fn]) => `<button class="chip ${TM_ST === k ? "on" : ""}" data-s="${k}">${l}<em>${T.tasks.filter(fn).length}</em></button>`).join("")}</div>
+      <select id="tmMem" aria-label="Member"><option value="">Sab members</option>${T.members.map(m => `<option value="${esc(m.id)}">${esc(m.name)}</option>`).join("")}</select></div>
+    <div class="olist">${list.length ? list.map(tmRow).join("") : `<div class="empty"><b>🗂️</b>${T.members.length ? "Is filter mein koi task nahi." : "Pehle '+ Member' se team member jodein, phir Orders mein '👥 Team ko do' dabayein."}</div>`}</div>`;
+  $("#tmMem").value = TM_MEM; $("#tmMem").onchange = () => { TM_MEM = $("#tmMem").value; tmPane(); };
+  $$("#tmPane [data-s]").forEach(b => b.onclick = () => { TM_ST = b.dataset.s; tmPane(); });
+  $$("#tmPane [data-open]").forEach(b => b.onclick = () => tmOpen(b.dataset.open));
+}
+function tmRow(t) {
+  const d = t.data || {}, red = tmRed(t);
+  return `<article class="order tm-row${red ? " tm-red" : ""}" style="border-left-color:${TM_COL[t.status]}">
+    <div><h3>${esc(d.topic)}</h3><div class="meta">${esc(d.kind || "PPT")}${t.orderId ? " · #" + esc(t.orderId) : ""} · ${t.memberName ? "👤 " + esc(t.memberName) : "👤 —"}${t.deadline ? ` · <span class="${red ? "tm-late" : ""}">⏰ ${fmtTime(t.deadline)}${TM_ACTIVE.test(t.status) ? " · " + tmLeft(t.deadline) : ""}</span>` : ""}${(t.notes || []).length ? " · 💬 " + t.notes.length : ""}${t.changes ? " · ✏️ " + t.changes : ""}</div></div>
+    <div class="side2">${tmPill(t.status)}<button class="btn sm${t.status === "Review" ? " pri" : ""}" data-open="${esc(t.id)}">${t.status === "Review" ? "Check karein" : "Kholo"}</button></div></article>`;
+}
+
+/* ---------- members + report ---------- */
+function tmMembers(p) {
+  const T = TEAM, rep = id => T.report.find(r => r.id === id) || {};
+  p.innerHTML = T.members.length ? `<div class="card rtbl"><table class="ctbl"><thead><tr><th>Member</th><th>Role</th><th>Login</th><th>Abhi</th><th>Done</th><th>Time par</th><th>Late</th><th>Changes</th><th>Avg time</th><th></th></tr></thead><tbody>
+    ${T.members.map(m => { const r = rep(m.id); return `<tr${m.active ? "" : ` style="opacity:.55"`}><td><b>${esc(m.name)}</b><div class="note">${m.lastLogin ? "Last login " + ago(m.lastLogin) : "Kabhi login nahi"}</div></td><td>${esc(m.role)}</td><td>${esc(m.login)}${m.active ? "" : ` <span class="pill">Band</span>`}</td>
+      <td>${r.active || 0}</td><td>${r.done || 0}</td><td style="color:var(--ok)">${r.onTime || 0}</td><td style="color:${r.late ? "var(--bad)" : "inherit"}">${r.late || 0}</td><td>${r.changes || 0}</td><td>${tmHrs(r.avgMin)}</td>
+      <td><div class="row" style="gap:4px;flex-wrap:nowrap">${m.wa ? `<a class="btn sm wa" href="https://wa.me/91${esc(String(m.wa).slice(-10))}" target="_blank" rel="noopener" aria-label="WhatsApp">${ic("i-msg")}</a>` : ""}<button class="btn sm" data-em="${esc(m.id)}">Edit</button></div></td></tr>`; }).join("")}</tbody></table></div>
+    <p class="note" style="margin-top:8px">Time par = deadline se pehle review ke liye bheja. Avg time = kaam shuru se submit tak. Login band karte hi member turant logout ho jata hai.</p>`
+    : `<div class="empty"><b>👥</b>Abhi koi team member nahi. "+ Member" dabayein.</div>`;
+  $$("#tmPane [data-em]").forEach(b => b.onclick = () => tmMemberForm(TEAM.members.find(m => m.id === b.dataset.em)));
+}
+function tmMemberForm(m) {
+  const { box, close } = tmBox("tmMf", `<div class="row"><h2>${m ? "Member badlein" : "Naya team member"}</h2><span class="sp"></span><button class="btn sm" data-x>✕</button></div>
+    <div class="grid2"><label class="fl"><span class="phead">Naam</span><input id="mfN" maxlength="60" value="${esc(m ? m.name : "")}"></label>
+      <label class="fl"><span class="phead">WhatsApp number</span><input id="mfW" inputmode="numeric" maxlength="13" value="${esc(m ? m.wa : "")}" placeholder="98765 43210"></label>
+      <label class="fl"><span class="phead">Kaam</span><select id="mfR">${(TEAM.roles || ["PPT", "Design", "PPT + Design"]).map(r => `<option>${esc(r)}</option>`).join("")}</select></label>
+      <label class="fl"><span class="phead">Login ID</span><input id="mfL" maxlength="40" autocapitalize="none" spellcheck="false" value="${esc(m ? m.login : "")}" placeholder="rahul"></label>
+      <label class="fl"><span class="phead">${m ? "Naya password · khaali = jaisa hai" : "Password (6+ akshar)"}</span><input id="mfP" type="text" maxlength="60" autocomplete="off" placeholder="${m ? "••••••" : ""}"></label>
+      ${m ? `<label class="fl"><span class="phead">Login</span><select id="mfA"><option value="1">Chalu</option><option value="0">Band (turant logout)</option></select></label>` : ""}</div>
+    <div class="err" id="mfE"></div>
+    <div class="row"><button class="btn pri" id="mfGo">Save</button><button class="btn" data-x>Cancel</button><span class="sp"></span>${m ? `<button class="btn sm danger" id="mfDel">${ic("i-trash")} Hatao</button>` : ""}</div>
+    <div id="mfOk"></div>`);
+  if (m) { $("#mfR").value = m.role; $("#mfA").value = m.active ? "1" : "0"; } else $("#mfP").value = Math.random().toString(36).slice(2, 6) + Math.floor(1000 + Math.random() * 9000);
+  $("#mfGo").onclick = async () => {
+    const b = $("#mfGo"), pw = $("#mfP").value.trim(); b.disabled = true; $("#mfE").textContent = "";
+    const r = await call("teamMemberSave", { member: { id: m ? m.id : "", name: $("#mfN").value.trim(), wa: $("#mfW").value, role: $("#mfR").value, login: $("#mfL").value.trim(), password: pw, active: m ? $("#mfA").value === "1" : true } });
+    b.disabled = false; if (!r.ok) return $("#mfE").textContent = r.error;
+    await loadTeam(true); if (tab === "team") tmPane();
+    if (!pw) { close(); return toast("✓ Save ho gaya"); }
+    const n = String(r.member.wa || "").slice(-10), msg = `Namaste ${r.member.name.split(" ")[0]}! PPT Store team panel:\n${tmSite()}/team.html\n\nLogin ID: ${r.member.login}\nPassword: ${pw}\n\n(Login ke baad 🔑 se password badal lein.)`;
+    $("#mfOk").innerHTML = `<div class="warnbox" style="margin:0">✓ Save ho gaya. Login ID <b>${esc(r.member.login)}</b> · Password <b>${esc(pw)}</b><div class="row" style="margin-top:8px">${/^[6-9]\d{9}$/.test(n) ? `<a class="btn sm wa" href="https://wa.me/91${n}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${ic("i-msg")} Member ko WhatsApp par bhejein</a>` : ""}<button class="btn sm" data-x>Done</button></div></div>`;
+    $("#mfOk [data-x]").onclick = close;
+  };
+  const del = $("#mfDel");
+  if (del) del.onclick = async () => { if (del.dataset.sure !== "1") { del.dataset.sure = "1"; del.textContent = "Pakka hatayein?"; return; }
+    del.disabled = true; const r = await call("teamMemberDelete", { id: m.id }); del.disabled = false; if (!r.ok) return $("#mfE").textContent = r.error;
+    close(); toast("Member hata diya"); await loadTeam(true); if (tab === "team") tmPane(); };
+  box.querySelector("#mfN").focus();
+}
+
+/* ---------- assign (order se ya naya task) ---------- */
+const tmRefs = o => String(o && o.files || "").split("\n").map(l => { const p = l.split(" → "), u = p[1] || "", id = (/\/d\/([\w-]{10,})/.exec(u) || /[?&]id=([\w-]{10,})/.exec(u) || [])[1]; return id ? { id, name: p[0].trim() } : null; }).filter(Boolean);
+function tmLocal(iso) { const d = iso ? new Date(iso) : new Date(Date.now() + 864e5); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); }
+async function tmAssign(o, t) {
+  const T = await loadTeam(); if (!T.ok) return toast(/Unknown/.test(T.error || "") ? "Google Script mein Team.gs ka update abhi baaki hai" : T.error, true);
+  const act = T.members.filter(m => m.active); if (!act.length) { toast("Pehle Team mein member jodein", true); return go("team"); }
+  const d = t ? t.data || {} : o ? { kind: "PPT", topic: o.topic, theme: o.theme !== "—" ? o.theme : "", slides: o.slides !== "—" ? o.slides : "", lang: o.language !== "—" ? o.language : "", details: o.details } : { kind: "PPT" };
+  const load = id => T.tasks.filter(x => x.member === id && TM_ACTIVE.test(x.status)).length;
+  const { box, close } = tmBox("tmAs", `<div class="row"><h2>👥 ${t ? "Task badlein / kisi aur ko dein" : "Team ko kaam dein"}</h2><span class="sp"></span><button class="btn sm" data-x>✕</button></div>
+    ${o ? `<p class="note">Order #${esc(o.id)} · customer ka naam, mobile, email team ko <b>nahi</b> dikhega.</p>` : ""}
+    <div class="grid2"><label class="fl"><span class="phead">Member</span><select id="asM">${act.map(m => `<option value="${esc(m.id)}">${esc(m.name)} · ${esc(m.role)} · ${load(m.id)} kaam chal rahe</option>`).join("")}</select></label>
+      <label class="fl"><span class="phead">Deadline</span><input type="datetime-local" id="asD" value="${tmLocal(t && t.deadline)}"></label>
+      <label class="fl"><span class="phead">Type</span><select id="asK"><option>PPT</option><option>Design</option></select></label>
+      <label class="fl"><span class="phead">Topic</span><input id="asT" maxlength="200" value="${esc(d.topic || "")}"></label>
+      <label class="fl"><span class="phead">Class · optional</span><input id="asC" maxlength="40" value="${esc(d.cls || "")}" list="asCl"></label>
+      <label class="fl"><span class="phead">Subject · optional</span><input id="asS" maxlength="60" value="${esc(d.subject || "")}" list="asSl"></label></div>
+    <datalist id="asCl">${CLASSES.map(c => `<option>${esc(c)}</option>`).join("")}</datalist><datalist id="asSl">${SUBJECTS.map(c => `<option>${esc(c)}</option>`).join("")}</datalist>
+    ${o ? "" : `<div class="grid2"><label class="fl"><span class="phead">Slides</span><input id="asSl2" maxlength="40" value="${esc(d.slides || "")}"></label><label class="fl"><span class="phead">Theme</span><input id="asTh" maxlength="80" value="${esc(d.theme || "")}"></label></div>
+      <label class="fl"><span class="phead">Details</span><textarea id="asDt" rows="3" maxlength="4000">${esc(d.details || "")}</textarea></label>`}
+    <label class="fl"><span class="phead">Member ke liye message · optional</span><textarea id="asB" rows="2" maxlength="2000" placeholder="Jaise: pichhla wala Physics theme use karo, formula slides badi rakho">${esc(d.brief || "")}</textarea></label>
+    ${t && (t.checklist || []).length ? "" : `<label class="fl"><span class="phead">Checklist · ek line = ek point</span><textarea id="asCk" rows="4">${TM_CHECK.PPT.join("\n")}</textarea></label>`}
+    ${o && tmRefs(o).length ? `<p class="note">📎 Customer ki ${tmRefs(o).length} file team ko download ke liye milengi.</p>` : ""}
+    <div class="err" id="asE"></div>
+    <div class="row"><button class="btn pri" id="asGo">${ic("i-check")} Assign karein</button><button class="btn" data-x>Cancel</button></div><div id="asOk"></div>`);
+  $("#asK").value = d.kind || "PPT"; if (t && t.member && act.some(m => m.id === t.member)) $("#asM").value = t.member;
+  const ckEl = $("#asCk"); $("#asK").onchange = () => { if (ckEl && !ckEl.dataset.edited) ckEl.value = (TM_CHECK[$("#asK").value] || []).join("\n"); }; if (ckEl) ckEl.oninput = () => ckEl.dataset.edited = "1";
+  $("#asGo").onclick = async () => {
+    const b = $("#asGo"), dl = $("#asD").value; b.disabled = true; $("#asE").textContent = "";
+    const data = Object.assign({}, d, { kind: $("#asK").value, topic: $("#asT").value.trim(), cls: $("#asC").value.trim(), subject: $("#asS").value.trim(), brief: $("#asB").value.trim() });
+    if (!o) Object.assign(data, { slides: $("#asSl2").value.trim(), theme: $("#asTh").value.trim(), details: $("#asDt").value.trim() });
+    if (o) data.refs = tmRefs(o);
+    const r = await call("teamAssign", { task: { id: t ? t.id : "", orderId: o ? String(o.id) : t ? t.orderId : "", member: $("#asM").value, deadline: dl ? new Date(dl).toISOString() : "", data,
+      checklist: ckEl ? ckEl.value.split("\n").map(x => x.trim()).filter(Boolean) : undefined } });
+    b.disabled = false; if (!r.ok) return $("#asE").textContent = r.error;
+    await loadTeam(true); tmRefresh();
+    const wa = tmWa(r.task);
+    $("#asOk").innerHTML = `<div class="warnbox" style="margin:0">✓ ${esc(r.task.memberName)} ko assign ho gaya. ${TEAM.acceptMin} minute mein accept nahi kiya to wapas aa jayega.<div class="row" style="margin-top:8px">${wa ? `<a class="btn sm wa" href="${wa}" target="_blank" rel="noopener">${ic("i-msg")} ${esc(r.task.memberName.split(" ")[0])} ko WhatsApp par batayein</a>` : `<span class="note">Member ka WhatsApp number nahi hai.</span>`}<button class="btn sm" data-x>Done</button></div></div>`;
+    $("#asOk [data-x]").onclick = close; $("#asGo").hidden = true;
+  };
+}
+function tmRefresh() {
+  if (tab === "team") return tmPane();
+  if (tab === "orders") $$("#olist [data-tm]").forEach(el => { const o = ORD.find(x => String(x.id) === el.dataset.tm); if (o) { el.innerHTML = tmStrip(o); tmBindStrip(el); } });
+}
+
+/* ---------- Orders card par team strip ---------- */
+function tmStrip(o) {
+  if (!TEAM || !TEAM.ok || o.status === "Cancelled") return "";
+  const t = tmTaskOf(o.id);
+  if (!t) return TEAM.members.length ? `<button class="btn sm" data-tm-as>👥 Team ko do</button>` : "";
+  const red = tmRed(t);
+  return `<div class="tm-strip${red ? " tm-red" : ""}">${tmPill(t.status)}<span>👤 <b>${esc(t.memberName || "—")}</b>${t.deadline ? ` · <span class="${red ? "tm-late" : ""}">⏰ ${fmtTime(t.deadline)}${TM_ACTIVE.test(t.status) ? " · " + tmLeft(t.deadline) : ""}</span>` : ""}${(t.notes || []).length ? " · 💬 " + t.notes.length : ""}</span>
+    <span class="sp"></span>${t.status === "Unassigned" ? `<button class="btn sm pri" data-tm-as>👥 Kisi ko do</button>` : ""}<button class="btn sm${t.status === "Review" ? " pri" : ""}" data-tm-open="${esc(t.id)}">${t.status === "Review" ? "✅ Check & approve" : "Task kholo"}</button></div>`;
+}
+function tmBindStrip(el) {
+  const o = ORD.find(x => String(x.id) === el.dataset.tm), a = el.querySelector("[data-tm-as]"), op = el.querySelector("[data-tm-open]");
+  if (a) a.onclick = () => tmAssign(o, tmTaskOf(o.id));
+  if (op) op.onclick = () => tmOpen(op.dataset.tmOpen);
+}
+
+/* ---------- task detail (admin) ---------- */
+function tmOpen(id) {
+  const t = TEAM.tasks.find(x => x.id === id); if (!t) return;
+  const d = t.data || {}, o = t.orderId ? (ORD.find(x => String(x.id) === t.orderId) || (DATA.orders || []).find(x => String(x.id) === t.orderId)) : null;
+  const c = o ? CUST[String(o.id)] : null, undel = !!(o && t.status === "Approved" && t.file && CUST_ON && !(c && c.file === t.file) && !(c && c.payment));
+  const { box, close } = tmBox("tmOp", `<div class="row">${tmPill(t.status)}<span class="pill">${esc(d.kind || "PPT")}</span>${t.orderId ? `<span class="note">#${esc(t.orderId)}</span>` : ""}<span class="sp"></span><button class="btn sm" data-x>✕</button></div>
+    <h2 style="margin:0">${esc(d.topic)}</h2>
+    <div class="note">👤 ${esc(t.memberName || "Kisi ke paas nahi")}${t.deadline ? ` · ⏰ ${fmtTime(t.deadline)} · <span class="${tmRed(t) ? "tm-late" : ""}">${tmLeft(t.deadline)}</span>` : ""}${t.startedAt && t.submittedAt ? " · ⏱ " + tmHrs(Math.round((new Date(t.submittedAt) - new Date(t.startedAt)) / 6e4)) : ""}${t.changes ? " · ✏️ " + t.changes + " baar changes" : ""}</div>
+    ${t.file ? `<div class="fin-box"><div class="fin-t">${ic("i-book")}<div><b>${esc(t.fileName)}</b><small>${t.fileSize ? (t.fileSize / 1048576).toFixed(1) + " MB · " : ""}${t.slides ? t.slides + " slides · " : ""}upload ${ago(t.upAt)}</small></div></div><div class="row"><button class="btn sm" data-tdl>${ic("i-down")} Download karke dekhein</button></div></div>` : `<p class="note">Final file abhi upload nahi hui.</p>`}
+    ${t.status === "Review" || undel ? `<div class="card" style="padding:14px;display:grid;gap:10px;border-color:var(--cyan)">
+        <b>${undel ? "📤 Customer ko abhi file nahi mili" : "✅ Approve"}</b>${o ? `<label class="fl"><span class="phead">Customer ke liye daam (₹)</span><input type="number" id="tmPr" min="1" step="1" value="${esc(c && c.price || "")}" placeholder="jaise 250"></label>
+          <label class="check"><input type="checkbox" id="tmSend" checked> File customer ke Track page par daalein (demo + pay + download)</label>` : ""}
+        ${undel ? "" : `<label class="check"><input type="checkbox" id="tmLib" checked> Project Library mein save karein (team agli baar idea le sake)</label>`}
+        <div class="row"><button class="btn pri" id="tmAp">${ic("i-check")} ${undel ? "Customer ko bhejein" : "Approve" + (o ? " & customer ko bhejein" : "")}</button></div><div class="note" id="tmApS"></div></div>` : ""}
+    ${/^(Review|Approved)$/.test(t.status) ? `<div class="row"><input id="tmCh" placeholder="Kya badalna hai? (member ko dikhega)" maxlength="1000" style="flex:1;min-width:200px"><button class="btn danger" id="tmChB">✏️ Changes chahiye</button></div>` : ""}
+    <div class="grid2" style="font-size:.86rem">${[["Slides", d.slides], ["Language", d.lang], ["Theme", d.theme], ["Class", d.cls], ["Subject", d.subject]].filter(x => x[1]).map(([k, v]) => `<div><span class="phead">${k}</span><div>${esc(v)}</div></div>`).join("")}</div>
+    ${d.brief ? `<div><span class="phead">Aapka message</span><div class="det tm-det">${esc(d.brief)}</div></div>` : ""}
+    ${(t.checklist || []).length ? `<div><span class="phead">Checklist · ${t.checklist.filter(x => x.on).length}/${t.checklist.length}</span><div class="tm-ck">${t.checklist.map(x => `<div>${x.on ? "✅" : "⬜"} ${esc(x.x)}</div>`).join("")}</div></div>` : ""}
+    <div><span class="phead">Notes</span><div class="tm-notes">${(t.notes || []).map(n => `<div class="tm-nt${n.admin ? " me" : ""}"><small>${esc(n.by)} · ${fmtTime(n.t)}</small>${esc(n.x)}</div>`).join("") || `<div class="note">Koi note nahi.</div>`}</div>
+      <div class="row" style="margin-top:8px"><input id="tmNx" placeholder="Member ko note likhein…" maxlength="1000" style="flex:1;min-width:200px"><button class="btn" id="tmNb">Bhejein</button></div></div>
+    <details><summary class="note" style="cursor:pointer">🕘 History (${(t.hist || []).length})</summary><div class="tm-hist">${(t.hist || []).slice().reverse().map(h => `<div>${fmtTime(h.t)} · <b>${esc(h.by)}</b>: ${esc(h.x)}</div>`).join("")}</div></details>
+    <div class="row">${TM_ACTIVE.test(t.status) || t.status === "Unassigned" ? `<button class="btn sm" id="tmRe">👥 Kisi aur ko dein / badlein</button>` : ""}${tmWa(t) && TM_ACTIVE.test(t.status) ? `<a class="btn sm wa" href="${tmWa(t)}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}<span class="sp"></span>
+      ${t.status !== "Cancelled" && t.status !== "Approved" ? `<button class="btn sm danger" id="tmCa">Task cancel</button>` : ""}${t.status === "Cancelled" ? `<button class="btn sm" id="tmRo">Dobara kholo</button>` : ""}</div>`);
+  const after = async (r, msg) => { if (!r.ok) return toast(r.error, true); await loadTeam(true); tmRefresh(); toast(msg); if ($("#tmOp")) tmOpen(id); };
+  const dl = box.querySelector("[data-tdl]"); if (dl) dl.onclick = () => tmDownload(t.file, t.fileName, dl);
+  $("#tmNb").onclick = async () => { const x = $("#tmNx").value.trim(); if (!x) return; $("#tmNb").disabled = true; after(await call("teamNote", { id, text: x }), "Note bhej diya"); };
+  const ch = $("#tmChB");
+  if (ch) ch.onclick = async () => { const x = $("#tmCh").value.trim(); if (!x) return toast("Kya badalna hai, likhein", true); ch.disabled = true;
+    const r = await call("teamReview", { id, act: "changes", note: x }); await after(r, "Member ko changes bhej diye");
+    if (r.ok) { const wa = tmWa(r.task, "changes"); if (wa) toast("WhatsApp se bhi bata dein"), window.open(wa, "_blank", "noopener"); } };
+  const re = $("#tmRe"); if (re) re.onclick = () => { close(); tmAssign(o, t); };
+  const ca = $("#tmCa"); if (ca) ca.onclick = async () => { if (ca.dataset.sure !== "1") { ca.dataset.sure = "1"; ca.textContent = "Pakka cancel?"; return; } after(await call("teamReview", { id, act: "cancel" }), "Task cancel"); };
+  const ro = $("#tmRo"); if (ro) ro.onclick = async () => after(await call("teamReview", { id, act: "reopen" }), "Task dobara khula");
+  const ap = $("#tmAp");
+  if (ap) ap.onclick = async () => {
+    const send = o && $("#tmSend") && $("#tmSend").checked, price = o ? +$("#tmPr").value : 0, st = $("#tmApS"), set = x => st.textContent = x;
+    if (send && !(price >= 1)) return toast("Customer ka daam likhein", true);
+    if (send && !CUST_ON) return toast("Google Script mein CustomPay.gs ka update abhi baaki hai", true);
+    ap.disabled = true; ap.dataset.busy = "1"; set("Approve ho raha hai…");
+    try {
+      let tk = t;
+      if (!undel) { const r = await call("teamReview", { id, act: "approve", lib: $("#tmLib").checked }); if (!r.ok) throw new Error(r.error); tk = r.task; }
+      if (send) await tmDeliver(tk, o, price, set);
+      delete ap.dataset.busy; await loadTeam(true); close(); if (tab === "orders") drawOrders(); else tmRefresh();
+      toast(send ? "✅ Approve ho gaya, file customer ke Track page par hai. Ab customer ko WhatsApp karein." : "✅ Approve ho gaya");
+    } catch (e) { delete ap.dataset.busy; ap.disabled = false; set("⚠ " + e.message); toast(e.message, true); await loadTeam(true); tmRefresh(); }
+  };
+}
+/* approved file → customer ke custom order par (wahi flow jo "Final PPT upload" ka hai, bas upload dobara nahi) */
+async function tmDeliver(t, o, price, set) {
+  const id = String(o.id), body = { id, price, file: t.file, fileName: t.fileName, slides: t.slides || 0, refs: [] };
+  const name = t.fileName || "";
+  if (/\.(pdf|zip)$/i.test(name)) {
+    set("Demo slides ke liye file la rahe hain…");
+    const f = await tmFetch(t.file, name, p => set(`File la rahe ${p}%…`));
+    set("Demo slides ki photo ban rahi hai…");
+    if (/\.pdf$/i.test(name)) { const x = await pdfShots(f, Array.from({ length: FIN_DEMO }, (_, i) => i + 1), set, null); body.refs = x.refs; body.slides = x.count; body.lock = await finLockShots(f, x.count, set); }
+    else { const x = await finZipShots(f, set); body.refs = x.refs; body.slides = x.slides; body.lock = x.lock; }
+  } else if (/\.pptx?$/i.test(name)) body.later = true;
+  set("Customer ke order par save ho raha hai…");
+  const r = await call("adminCustomSave", body); if (!r.ok) throw new Error(r.error);
+  CUST[id] = r.item; if (r.status) o.status = r.status;
+  if (body.later) { const tmp = document.createElement("div"); try { await finDemo(tmp, o, set); } catch (e) { toast("Demo slides nahi ban payin: " + e.message + " · Orders mein '10 demo slides banao' dabayein", true); } }
+}
+/* team file download: 8 MB ke 3 tukde ek saath */
+async function tmFetch(id, name, prog) {
+  const C = 8 * 1048576, first = await call("teamFile", { file: id, start: 0, len: C }); if (!first.ok) throw new Error(first.error);
+  const total = first.total, parts = [Uint8Array.from(atob(first.data), ch => ch.charCodeAt(0))]; let got = parts[0].length;
+  const offs = []; for (let s = got; s < total; s += C) offs.push(s);
+  const work = async () => { while (offs.length) { const s = offs.shift(); let r, k = 0; do { r = await call("teamFile", { file: id, start: s, len: C }); } while (!r.ok && ++k < 3);
+    if (!r.ok) throw new Error(r.error); parts[Math.round(s / C)] = Uint8Array.from(atob(r.data), ch => ch.charCodeAt(0)); got += parts[Math.round(s / C)].length; prog && prog(Math.round(got / total * 100)); } };
+  await Promise.all([work(), work(), work()]);
+  return new File(parts, name || "file", { type: /\.pdf$/i.test(name) ? "application/pdf" : "application/octet-stream" });
+}
+async function tmDownload(id, name, btn) {
+  const old = btn.innerHTML; btn.disabled = true;
+  try { const f = await tmFetch(id, name, p => btn.textContent = p + "%"); const a = document.createElement("a"); a.href = URL.createObjectURL(f); a.download = name || "file"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+  catch (e) { toast(e.message, true); }
+  btn.disabled = false; btn.innerHTML = old;
+}
+
+/* ---------- Project Library (admin) ---------- */
+function tmLib(p) {
+  const L = TEAM.lib, q = TM_LQ.toLowerCase().split(/\s+/).filter(Boolean);
+  const res = L.filter(l => q.every(w => [l.title, l.topic, l.cls, l.subject, l.theme, l.tags, l.note, l.byName, l.kind].join(" ").toLowerCase().includes(w)));
+  p.innerHTML = `<div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="tmLq" placeholder="Search topic, class, subject…" value="${esc(TM_LQ)}"></label></div>
+    ${res.length ? `<div class="card rtbl"><table class="ctbl"><thead><tr><th>Project</th><th>Class · Subject</th><th>Slides</th><th>Time</th><th>Kisne</th><th></th></tr></thead><tbody>${res.map(l => `<tr><td><b>${esc(l.title)}</b><div class="note">${esc(l.kind || "PPT")}${l.theme ? " · " + esc(l.theme) : ""}${l.note ? " · 📝 " + esc(l.note.slice(0, 90)) : ""}</div></td>
+      <td>${esc([l.cls, l.subject].filter(Boolean).join(" · ") || "—")}</td><td>${l.slides || "—"}</td><td>${tmHrs(l.minutes)}</td><td>${esc(l.byName || "")}<div class="note">${ago(l.time)}</div></td>
+      <td><div class="row" style="gap:4px;flex-wrap:nowrap"><button class="btn sm" data-ld="${esc(l.id)}" aria-label="Download">${ic("i-down")}</button><button class="btn sm danger" data-lx="${esc(l.id)}" aria-label="Delete">${ic("i-trash")}</button></div></td></tr>`).join("")}</tbody></table></div>`
+      : `<div class="empty"><b>📚</b>${L.length ? "Kuch nahi mila." : "Library khaali hai. Task approve karte waqt 'Project Library mein save' tick rakhein, ya team apne purane project khud daal sakti hai."}</div>`}
+    <p class="note" style="margin-top:8px">Library mein customer ka naam / number nahi jaata. Kisi project ko Ready PPT banana ho to download karke "Ready PPTs → Add PPT" se upload karein.</p>`;
+  const q2 = $("#tmLq"); q2.oninput = () => { TM_LQ = q2.value; const pos = q2.selectionStart; tmLib(p); const n = $("#tmLq"); n.focus(); n.setSelectionRange(pos, pos); };
+  $$("#tmPane [data-ld]").forEach(b => b.onclick = () => { const l = L.find(x => x.id === b.dataset.ld); tmDownload(l.file, l.fileName, b); });
+  $$("#tmPane [data-lx]").forEach(b => b.onclick = async () => { if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Pakka?"; return; }
+    b.disabled = true; const r = await call("teamLibDelete", { id: b.dataset.lx }); if (!r.ok) { b.disabled = false; return toast(r.error, true); } await loadTeam(true); tmLib(p); toast("Library se hata diya"); });
+}
+
 /* ---------- Custom order: final PPT upload → customer Track page par demo + pay + download ---------- */
 const FIN_DEMO = 10, FIN_LOCK = 300;
 /* Customer ko "PPT ready" message: Track page ka link ke saath (ek click, WhatsApp khulta hai) */
@@ -1482,7 +1820,7 @@ function finHtml(o) {
       ${c.payment ? "" : `<div class="row" style="gap:6px;flex-wrap:wrap">${finWa(o) ? `<a class="btn sm wa" href="${finWa(o)}" target="_blank" rel="noopener">${ic("i-msg")} Customer ko WhatsApp par batayein</a>` : ""}${!c.demo.length || noLock ? `<button class="btn sm pri" data-fin-demo>${ic("i-image")} ${c.demo.length ? "Saari slides ki photo banao" : FIN_DEMO + " demo slides banao"}</button>` : ""}<button class="btn sm" data-fin-up>${ic("i-upload")} File badlo</button><button class="btn sm" data-fin-price>₹ Daam badlo</button><button class="btn sm danger" data-fin-del>${ic("i-trash")} Hatao</button></div>`}
       <div data-fin-form></div></div>`;
   }
-  return `<div class="fin-empty"><button class="btn sm pri" data-fin-up>${ic("i-upload")} Final PPT upload karein</button><span class="note">Customer Track page par ${FIN_DEMO} slide ka demo dekhega, Razorpay se pay karega aur turant download karega.</span></div><div data-fin-form></div>`;
+  return `<div class="fin-empty"><button class="btn sm pri" data-fin-up>${ic("i-upload")} Final PPT upload karein</button></div><div data-fin-form></div>`;
 }
 function bindFin(box) {
   const id = box.dataset.fin, o = ORD.find(x => String(x.id) === id), form = () => box.querySelector("[data-fin-form]");
@@ -2287,37 +2625,34 @@ function drawStats(D) {
   const y = window.scrollY, r = D.top, R = D.R, g = granOf(R, RG.g), B = mkBuckets(R, g);
   const DEV_COL = { Mobile: "var(--accent)", Computer: "var(--cyan)", Tablet: "var(--warn)" };
   const dev = sum((r.devices || []).map(x => x[1])) || 1, geo = splitGeo(r.states), tot = D.views || 1;
-  V(head("Analytics", "Who visits your website, where they come from and what they view. Visitors are counted anonymously — no names or numbers are stored.",
-      `${R.to >= day0(0) ? `<span class="st-live" id="stLive"></span>` : ""}<a class="btn sm" href="${esc(D.st.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Open sheet</a>`) + rangeBar(R) + rangeNote(D) + `
-  <div class="kpis">
-    ${kpiM("visitors", D, { icon: ic("i-users"), sub: `${nf(D.st.todayUnique)} today` })}
-    ${kpiM("views", D, { icon: ic("i-eye"), sub: `${nf(D.st.allTime)} all time` })}
+  const top5 = (rows, col) => toplist((rows || []).slice(0, 5), 0, col);
+  V(head("Analytics", "",
+      `${R.to >= day0(0) ? `<span class="st-live" id="stLive"></span>` : ""}<a class="btn sm" href="${esc(D.st.sheetUrl)}" target="_blank" rel="noopener">${ic("i-sheet")} Sheet</a>`) + rangeBar(R) + rangeNote(D) + `
+  <div class="kpis k4">
+    ${kpiM("visitors", D, { icon: ic("i-users") })}
+    ${kpiM("views", D, { icon: ic("i-eye") })}
     ${kpiM("ppv", D, { icon: ic("i-zap") })}
-    ${kpiM("conversion", D, { icon: ic("i-pie"), sub: "Orders ÷ visitors" })}
+    ${kpiM("conversion", D, { icon: ic("i-pie") })}
   </div>
-  <section class="card" style="margin-bottom:16px" aria-labelledby="st30"><div class="ch"><h3 id="st30">${ic("i-chart", "color:var(--accent)")} Visitors &amp; page views</h3><button class="btn sm" data-big="visitors" style="margin-left:auto">${ic("i-max")} Expand</button></div>
-    ${comboChart("sChart", B.map(b => b.lab), { name: "Visitors", vals: METRICS.visitors.bucket(D, B), col: "var(--accent)" }, { name: "Page views", vals: METRICS.views.bucket(D, B), col: "var(--cyan)" }, { full: B.map(b => b.full) })}</section>
-  <section class="card" style="margin-bottom:16px" aria-labelledby="vtH"><div class="ch vth"><h3 id="vtH">${ic("i-clock", "color:var(--warn)")} Visits by time</h3>
-    <div class="vtnav"><button class="btn sm" data-vt="-1" aria-label="Previous day">‹</button><input type="date" id="vtDay" aria-label="Day" value="${vtDay(R)}" max="${ymd(day0(0))}"><button class="btn sm" data-vt="1" aria-label="Next day">›</button></div></div>
-    <div id="vtBody"><p class="note">Loading…</p></div></section>
-  <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-book", "color:var(--accent)")} Top pages</h3></div>${toplist((r.pages || []).map(([k, n]) => [PAGE_NAMES[k] || k, n]), tot)}</section>
-    <section class="card"><div class="ch"><h3>${ic("i-ext", "color:var(--cyan)")} Traffic sources</h3></div>${toplist(r.sources, tot, "var(--cyan)")}</section>
+  <div class="agrid2">
+    <section class="card" aria-labelledby="st30"><div class="ch"><h3 id="st30">${ic("i-chart", "color:var(--accent)")} Visitors &amp; Page Views</h3>
+      <span class="clegend mini"><span><i style="background:var(--accent)"></i>Visitors</span><span><i style="background:var(--cyan)"></i>Page Views</span></span>
+      <button class="btn sm icon" data-big="visitors" aria-label="Expand" title="Expand">${ic("i-max")}</button></div>
+      ${comboChart("sChart", B.map(b => b.lab), { name: "Visitors", vals: METRICS.visitors.bucket(D, B), col: "var(--accent)" }, { name: "Page views", vals: METRICS.views.bucket(D, B), col: "var(--cyan)" }, { full: B.map(b => b.full), bare: 1 })}</section>
+    <section class="card" aria-labelledby="vtH"><div class="ch vth"><h3 id="vtH">${ic("i-clock", "color:var(--accent)")} Visits by Time</h3>
+      <div class="vtnav"><button class="btn sm" data-vt="-1" aria-label="Previous day">‹</button><input type="date" id="vtDay" aria-label="Day" value="${vtDay(R)}" max="${ymd(day0(0))}"><button class="btn sm" data-vt="1" aria-label="Next day">›</button></div></div>
+      <div id="vtBody"><p class="note">Loading…</p></div></section>
   </div>
-  <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-home", "color:var(--ok)")} States (India)</h3></div>${toplist(geo.states, tot, "var(--ok)")}</section>
-    <section class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--cyan)")} Countries</h3></div>${toplist(geo.countries, tot, "var(--cyan)")}</section>
-  </div>
-  <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-home", "color:var(--warn)")} Cities</h3></div>${toplist(r.cities, tot, "var(--warn)")}</section>
-    <section class="card"><div class="ch"><h3>${ic("i-phone", "color:var(--accent)")} Devices</h3></div>
+  <section class="card rvis" aria-labelledby="rvH"><div class="ch"><h3 id="rvH">${ic("i-book", "color:var(--accent)")} Recent Visits</h3></div><div id="rvBody"><p class="note">Loading…</p></div></section>
+  <div class="agrid6">
+    <section class="card"><h3>Top Pages</h3>${top5((r.pages || []).map(([k, n]) => [PAGE_NAMES[k] || k, n]), "var(--accent)")}</section>
+    <section class="card"><h3>Traffic Sources</h3>${top5(r.sources, "var(--info)")}</section>
+    <section class="card"><h3>States (India)</h3>${top5(geo.states, "var(--ok)")}</section>
+    <section class="card"><h3>Cities</h3>${top5(r.cities, "var(--warn)")}</section>
+    <section class="card"><h3>Devices</h3>
       ${(r.devices || []).length ? donut(r.devices.map(([k, n]) => [k, n, DEV_COL[k] || "var(--dim)"]), dev, "visits") : ""}
       <div class="legend">${(r.devices || []).map(([k, n]) => `<div><i style="background:${DEV_COL[k] || "var(--dim)"}"></i>${esc(k)}<b>${Math.round(n / dev * 100)}%</b></div>`).join("") || `<p class="note">No data yet.</p>`}</div></section>
-  </div>
-  <div class="dgrid">
-    <section class="card"><div class="ch"><h3>${ic("i-globe", "color:var(--info)")} Browsers</h3></div>${toplist(r.browsers, tot, "var(--info)")}</section>
-    <section class="card"><div class="ch"><h3>${ic("i-clock", "color:var(--dim)")} About this data</h3></div>
-      <ul class="notes"><li>Click any card to open it full screen with its own chart and table.</li><li>% change compares with the same number of days just before.</li><li>A visitor who reopens the same page within 30 minutes is counted once.</li><li>Gender and age can't be detected by a website, so they aren't shown.</li></ul></section>
+    <section class="card"><h3>Browsers</h3>${top5(r.browsers, "var(--info)")}</section>
   </div>`);
   bindRange($("#view"), () => stats());
   bindVT(); liveTag(false); if (y) window.scrollTo(0, y);
@@ -2353,14 +2688,16 @@ async function loadVT() {
   const peak = tot ? hs.reduce((b, h, i) => (+h.visits || 0) > (+hs[b].visits || 0) ? i : b, 0) : -1;
   const list = r.list || [];
   const tm = s => { const [hh, mm] = String(s || "").split(":").map(Number); return isNaN(hh) ? esc(s) : `${(hh % 12) || 12}:${String(mm).padStart(2, "0")} ${hh < 12 ? "am" : "pm"}`; };
-  el2.innerHTML = `<p class="note vtsum"><b>${nf(tot)}</b> page views · <b>${nf(r.visitors)}</b> visitors on ${esc(fmtD(pday(day), 1))}${peak >= 0 ? ` · busiest hour <b>${esc(full[peak])}</b>` : ""} <small>(India time)</small></p>
-    ${tot ? `<div class="seg vtmode" role="radiogroup" aria-label="Graph">${[["min", "Per minute"], ["hour", "Per hour"]].map(([k, l]) => `<button type="button" role="radio" aria-checked="${VT_MODE === k}" class="${VT_MODE === k ? "on" : ""}" data-vtm="${k}">${l}</button>`).join("")}</div>` +
-      (VT_MODE === "min" ? `<div id="vtMin"></div>` : comboChart("vtChart", hs.map((_, h) => hLab(h)), { name: "Page views", vals: hs.map(h => +h.visits || 0), col: "var(--warn)" }, null, { bars: 1, full, h: 200 })) : `<p class="note">No visits on this day.</p>`}
-    ${list.length ? `<h4 class="vtl">Every visit with time <small>(newest first)</small></h4><div class="rtbl vtlist"><table><thead><tr><th>Time</th><th>Page</th><th>Came from</th><th>Place</th><th>Device</th><th>Visitor</th></tr></thead><tbody>${list.map(x =>
-      `<tr><td><b>${tm(x.t)}</b></td><td>${esc(PAGE_NAMES[x.page] || x.page)}</td><td>${esc(x.src || "Direct")}</td><td>${esc(x.place || "—")}</td><td>${esc([x.device, x.browser].filter(Boolean).join(" · "))}</td><td><span class="pill" title="Same code = same visitor">#${esc(x.who)}</span></td></tr>`).join("")}</tbody></table></div>
-      ${list.length >= 500 ? `<p class="note">Showing the latest 500 visits.</p>` : ""}` : ""}`;
-  if (tot && VT_MODE === "min") mountMinute($("#vtMin"), r, day, { col: "var(--warn)", h: 220 });
-  $$("[data-vtm]").forEach(b => b.onclick = () => { VT_MODE = b.dataset.vtm; loadVT(); });
+  el2.innerHTML = tot ? comboChart("vtChart", hs.map((_, h) => hLab(h)), { name: "Page views", vals: hs.map(h => +h.visits || 0), col: "var(--accent)" }, null, { bars: 1, full, h: 270, w: 440, bare: 1 })
+      + `<p class="note vtsum"><b>${nf(tot)}</b> views · <b>${nf(r.visitors)}</b> visitors${peak >= 0 ? ` · peak <b>${esc(full[peak])}</b>` : ""}</p>`
+    : `<p class="note">No visits on this day.</p>`;
+  const rv = $("#rvBody");
+  if (rv) { const N = 8, row = x => `<tr><td>${tm(x.t)}</td><td>${esc(PAGE_NAMES[x.page] || x.page)}</td><td>${esc(x.src || "Direct")}</td><td>${esc(x.place || "—")}</td></tr>`;
+    rv.innerHTML = list.length ? `<div class="rtbl"><table><thead><tr><th>Time</th><th>Page</th><th>Source</th><th>Location</th></tr></thead><tbody>${list.slice(0, N).map(row).join("")}</tbody>
+      ${list.length > N ? `<tbody class="rvmore" hidden>${list.slice(N).map(row).join("")}</tbody>` : ""}</table></div>
+      ${list.length > N ? `<button type="button" class="btn sm rvall">Show all ${nf(list.length)}</button>` : ""}` : `<p class="note">No visits on this day.</p>`;
+    const bt = rv.querySelector(".rvall"); if (bt) bt.onclick = () => { const m = rv.querySelector(".rvmore"); m.hidden = !m.hidden; bt.textContent = m.hidden ? `Show all ${nf(list.length)}` : "Show less"; }; }
+
 }
 
 /* ---------- Per minute graph: jis minute mein visit hua wahin bar, khaali minute blank, hover par ginti ---------- */
@@ -2663,7 +3000,11 @@ let NVIEW = "grid"; try { NVIEW = localStorage.getItem("la_admin_nview") === "li
 let PP = [], PQ = "", PE = null, PPAY = false, KIND = "ppt", PFOLDER = "#";
 const NOTE_TAG = "Study Notes";   // purana Google Script "notes" category nahi rakhta, isliye class list mein ye tag bhi jata hai
 const isNote = p => p.cat === "notes" || (p.level || []).includes(NOTE_TAG);
-const KW = () => KIND === "notes" ? { one: "Notes", add: "Add Notes (PDF)", icon: "📝" } : { one: "PPT", add: "Add PPT / PDF", icon: "📊" };
+const KW = () => KIND === "notes" ? { one: "Notes", add: "Add Notes (PDF)", icon: "📝" } : KIND === "bundle" ? { one: "Bundle", add: "New bundle", icon: "🎁" } : { one: "PPT", add: "Add PPT / PDF", icon: "📊" };
+/* Subject bundle = ZIP wali PPT (saare chapter ek file mein, apna alag daam). Ready PPTs list mein nahi, "Subject bundles" mein dikhte hain */
+const isZipP = p => /\.zip$/i.test(p.fileName || "") || p.type === "zip";
+const inKind = p => KIND === "notes" ? isNote(p) : !isNote(p) && (KIND === "bundle") === isZipP(p);
+const KTAB = () => KIND === "notes" ? "notes" : KIND === "bundle" ? "bundles" : "ppts";
 const BOARDS = ["CBSE", "ICSE", "State Board", "NCERT", "Bihar Board", "UP Board", "Competitive", "SSC", "Railway", "Banking", "UPSC / State PSC", "CTET / TET", "JEE", "NEET", "Police / Defence", "Navodaya / Sainik"];
 const PCATS = [["edu", "📚 Educational"], ["biz", "💼 Business"], ["mkt", "📣 Marketing"]];
 const PBADGE = [["", "Koi nahi"], ["best", "🔥 Best Seller"], ["feat", "⭐ Featured"], ["new", "🆕 New"]];
@@ -3129,19 +3470,21 @@ function sbList() {
 }
 function notes() { KIND = "notes"; return pptView(); }
 function ppts() { KIND = "ppt"; return pptView(); }
+function bundles() { KIND = "bundle"; return pptView(); }
 async function pptView() {
   loading();
   const r = await call("adminPpts");
-  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], "") + NEW_SCRIPT) : fail(r.error);
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head(TITLES[KTAB()], "") + NEW_SCRIPT) : fail(r.error);
   PP = r.ppts; PPAY = r.payments; PFOLDER = r.folderUrl;
-  const mine = PP.filter(p => isNote(p) === (KIND === "notes")), live = mine.filter(p => p.show).length, sold = mine.reduce((s, p) => s + p.sold, 0), w = KW();
-  V(head(TITLES[KIND === "notes" ? "notes" : "ppts"], KIND === "notes"
+  const mine = PP.filter(p => inKind(p)), live = mine.filter(p => p.show).length, sold = mine.reduce((s, p) => s + p.sold, 0), w = KW();
+  V(head(TITLES[KTAB()], KIND === "notes"
       ? `Upload A4 PDF notes. They appear on the Study Notes page instantly; customers pay and download automatically.`
       : `Upload PPT or PDF files. They appear on the Ready PPTs page instantly; customers pay and download automatically.`,
-      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "notes" ? "" : `<button class="btn" id="addPack">🎁 Create bundle</button><button class="btn" id="addZip">📦 ZIP Upload</button>`}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`) + `
+      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "bundle" ? `<a class="btn sm" href="ready-ppts.html" target="_blank" rel="noopener">${ic("i-ext")} View on site</a><button class="btn" id="addZip">📦 ZIP Upload</button><button class="btn pri" id="addPack">${ic("i-plus")} New bundle</button>` : `<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`}`) + `
+  ${KIND === "bundle" ? `<p class="note bnote">Class + subject chunein, chapters tick karein, apna daam likh kar Save. Website par ye "Complete Subject" card mein dikhega.</p>` : ""}
   ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}
   <div class="stats">
-    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic(KIND === "notes" ? "i-book" : "i-upload")}</span><b id="pTot">${mine.length}</b><small id="pTotL">Total ${KIND === "notes" ? "Notes" : "PPTs"} · ${live} live</small></div>
+    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic(KIND === "notes" ? "i-book" : "i-upload")}</span><b id="pTot">${mine.length}</b><small id="pTotL">Total ${w.one}s · ${live} live</small></div>
     <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-cart")}</span><b>${nf(sold)}</b><small>Total biki</small></div>
     <div class="stat" style="--c:${PPAY ? "var(--ok)" : "var(--bad)"}"><span class="ic">₹</span><b>${PPAY ? "ON" : "OFF"}</b><small>Online payment (Razorpay)</small></div>
   </div>
@@ -3149,28 +3492,28 @@ async function pptView() {
   <div class="tgrid" id="pgrid"></div>`);
   $$("[data-nv]").forEach(b => b.onclick = () => { NVIEW = b.dataset.nv; try { localStorage.setItem("la_admin_nview", NVIEW); } catch (e) {} drawPpts(); });
   $("#pq").value = PQ; $("#pq").oninput = () => { PQ = $("#pq").value; drawPpts(); };
-  $("#addPpt").onclick = () => editPpt(null);
+  if ($("#addPpt")) $("#addPpt").onclick = () => editPpt(null);
   if ($("#addZip")) $("#addZip").onclick = () => { editPpt(null); $("#peZipIn").click(); };
   if ($("#addPack")) $("#addPack").onclick = packOpen;
-  $("#autoPv").onclick = () => { const l = PP.filter(p => isNote(p) === (KIND === "notes") && needPv(p)); l.forEach(pvJob); toast(`🖼 ${l.length} ki preview photo ban rahi hai`); drawPpts(); };
+  $("#autoPv").onclick = () => { const l = PP.filter(p => inKind(p) && needPv(p)); l.forEach(pvJob); toast(`🖼 ${l.length} ki preview photo ban rahi hai`); drawPpts(); };
   $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
   drawPpts();
 }
 function drawPpts() {
   const q = PQ.toLowerCase().trim();
-  const vis = PP.map((p, i) => [p, i]).filter(([p]) => isNote(p) === (KIND === "notes") && (!q || [p.title, p.subject, ...p.level, ...p.board].join(" ").toLowerCase().includes(q)));
-  const mine = PP.filter(p => isNote(p) === (KIND === "notes")).length, w = KW();
-  const ml = PP.filter(p => isNote(p) === (KIND === "notes"));
+  const vis = PP.map((p, i) => [p, i]).filter(([p]) => inKind(p) && (!q || [p.title, p.subject, ...p.level, ...p.board].join(" ").toLowerCase().includes(q)));
+  const mine = PP.filter(p => inKind(p)).length, w = KW();
+  const ml = PP.filter(p => inKind(p));
   $("#pgrid").className = "tgrid" + (KIND === "notes" ? (NVIEW === "list" ? " nlist" : " nview") : "");
   $$("[data-nv]").forEach(b => { const on = b.dataset.nv === NVIEW; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
-  if ($("#pTot")) { $("#pTot").textContent = ml.length; $("#pTotL").textContent = `Total ${KIND === "notes" ? "Notes" : "PPTs"} · ${ml.filter(p => p.show).length} live`; }
+  if ($("#pTot")) { $("#pTot").textContent = ml.length; $("#pTotL").textContent = `Total ${w.one}s · ${ml.filter(p => p.show).length} live`; }
   $("#pgrid").innerHTML = vis.length ? vis.map(([p, i]) => `<div class="tcard ${p.show ? "" : "hid"}">
     <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
     <div class="body"><b>${esc(p.title)}</b><span class="lmeta">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.6">${rs(p.mrp)}</s>` : ""} · 🛒 ${nf(p.sold)} sold</span>
       <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${p.level.filter(x => x !== NOTE_TAG).slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) ? "pages" : "slides"}` : ""}</span></div>
       <div class="acts"><button class="btn sm" data-pe="${i}">✏️ Edit</button><button class="btn sm" data-pv="${i}">${p.show ? "🙈 Hide" : "👁 Show"}</button>${p.file ? `<button class="btn sm" data-pdl="${i}" title="${esc(p.fileName)} download karein">⬇ Download</button>` : ""}<button class="btn sm danger" data-pd="${i}" aria-label="Delete">🗑</button>${needPv(p) ? `<button class="btn sm" data-pa="${i}">🖼 Preview banao</button>` : slideRefs(p).length && /\.(pptx|pdf)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm" data-pr="${i}" title="Shuru ke 8 page / slides ki photo dobara banayein">🔄 Photo dobara</button>` : ""}</div>
       <div class="cf" data-pcf="${i}"></div>
-    </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.`}</div>`;
+    </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `Is search mein koi ${w.one} nahi.` : `Abhi koi ${w.one} nahi. "+ ${w.add}" dabayein.${KIND === "bundle" ? " Pehle Ready PPTs mein chapters upload hone chahiye." : ""}`}</div>`;
   $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
   $$("[data-pdl]").forEach(b => b.onclick = () => dlPpt(PP[+b.dataset.pdl], b));
   $$("[data-pa]").forEach(b => b.onclick = () => { pvJob(PP[+b.dataset.pa]); drawPpts(); });
@@ -3316,18 +3659,22 @@ function packOpen() {
   let box = $("#packModal"); if (box) box.remove();
   box = document.createElement("div"); box.className = "modal"; box.id = "packModal"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
   box.innerHTML = `<div class="mbox"><div class="row"><h2>🎁 Create bundle</h2><span class="sp"></span><button class="btn sm" data-x>✕ Close</button></div>
-    <p class="note">Class aur subject chunein. Us class-subject ki saari PPT neeche aa jayengi. Jo package mein nahi chahiye uska tick hata dein. Customer ek payment mein saare chapter (ek ZIP) download karega.</p>
+    <p class="note">Class + subject chunein, jo chapter nahi chahiye uska tick hatayein, aur bundle ka apna daam likhein.</p>
     <div class="row" style="gap:10px;flex-wrap:wrap"><label class="fl" style="flex:1;min-width:160px"><span class="phead">Class</span><select id="pkCls">${cl.map(c => `<option>${esc(c)}</option>`).join("")}</select></label>
       <label class="fl" style="flex:1;min-width:160px"><span class="phead">Subject</span><select id="pkSub">${sb.map(c => `<option>${esc(c)}</option>`).join("")}</select></label></div>
     <div id="pkList" style="display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow:auto"></div>
     <p class="note" id="pkSum"></p>
+    <div class="row" style="gap:10px;flex-wrap:wrap"><label class="fl" style="flex:1;min-width:140px"><span class="phead">Bundle ka daam (₹)</span><input type="number" id="pkPrice" min="1" step="1" placeholder="999"></label>
+      <label class="fl" style="flex:1;min-width:140px"><span class="phead">Asli daam / MRP (₹) · kata hua</span><input type="number" id="pkMrp" min="0" step="1" placeholder="1999"></label></div>
     <div class="row"><button class="btn pri" id="pkGo">🎁 Package banao</button><button class="btn" data-x>Cancel</button></div></div>`;
   document.body.appendChild(box);
   const close = () => box.remove(); box.querySelectorAll("[data-x]").forEach(b => b.onclick = close);
   const pick = () => all.filter(p => p.level.includes($("#pkCls").value) && p.subject === $("#pkSub").value)
     .sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: "base" }));
   const sum = () => { const on = [...$$("#pkList input:checked")].map(i => all.find(p => p.id == i.value)), sl = on.reduce((t, p) => t + (+p.slides || 0), 0);
-    $("#pkSum").textContent = on.length ? `${on.length} chapter · kul ${sl} slides · daam apne aap ₹${sl * PER_SLIDE} (kata hua ₹${sl * PER_SLIDE_MRP}) — baad mein badal sakte hain` : "Koi chapter nahi chuna"; $("#pkGo").disabled = on.length < 2; };
+    const chP = on.reduce((t, p) => t + (+p.price || 0), 0), chM = on.reduce((t, p) => t + Math.max(+p.mrp || 0, +p.price || 0), 0);
+    $("#pkSum").textContent = on.length ? `${on.length} chapter · ${sl} slides · alag-alag kharidne par ₹${chP}` : "Koi chapter nahi chuna";
+    $("#pkPrice").placeholder = chP || 999; $("#pkMrp").placeholder = chM || 1999; $("#pkGo").disabled = on.length < 2; };
   const draw = () => { const l = pick();
     $("#pkList").innerHTML = l.length ? l.map(p => `<label class="row" style="gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;cursor:pointer"><input type="checkbox" value="${p.id}" checked><span style="flex:1">${esc(p.title)}</span><small class="note">${p.slides ? p.slides + " slides" : ""}</small></label>`).join("")
       : `<p class="note">Is class + subject ki koi PPT nahi mili.</p>`;
@@ -3338,7 +3685,7 @@ function packOpen() {
   draw();
   $("#pkGo").onclick = async () => {
     const on = [...$$("#pkList input:checked")].map(i => all.find(p => p.id == i.value)); if (on.length < 2) return;
-    const cls = $("#pkCls").value, sub = $("#pkSub").value, btn = $("#pkGo"); btn.disabled = true;
+    const cls = $("#pkCls").value, sub = $("#pkSub").value, btn = $("#pkGo"), myP = +$("#pkPrice").value || 0, myM = +$("#pkMrp").value || 0; btn.disabled = true;
     try {
       const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = new JSZip(), dir = `${cls} ${sub} - Full Package`;
       for (let k = 0; k < on.length; k++) {
@@ -3359,7 +3706,9 @@ function packOpen() {
         if (!+$("#peSlides").value) { $("#peSlides").value = on.reduce((t, p) => t + (+p.slides || 0), 0) || ""; autoPrice(); }   // ZIP se slides na gini ja sakein to chapters ki slides jodo
         const sl = +$("#peSlides").value, list = on.map((p, k) => `${k + 1}. ${p.title.split(" — ")[0]}`).join("; "), ds = $("#peDesc");
         ds.value = (hiT ? `${cls} ${sub} के सभी ${on.length} अध्याय एक साथ${sl ? `, कुल ${sl} editable स्लाइड्स` : ""}। एक बार payment करें और पूरा package एक ZIP में डाउनलोड करें। शामिल: ${list}`
-          : `All ${on.length} chapters of ${cls} ${sub} in one package${sl ? `, ${sl} editable slides in total` : ""}. Pay once and download the full package in one ZIP. Includes: ${list}`).slice(0, 600); ds.dataset.auto = "1"; }
+          : `All ${on.length} chapters of ${cls} ${sub} in one package${sl ? `, ${sl} editable slides in total` : ""}. Pay once and download the full package in one ZIP. Includes: ${list}`).slice(0, 600); ds.dataset.auto = "1";
+        if (myP) { const pr = $("#pePrice"); pr.value = myP; delete pr.dataset.auto; }
+        if (myM) { const mr = $("#peMrp"); mr.value = myM; delete mr.dataset.auto; } }
       toast("🎁 Package ready — daam aur naam dekh kar Save dabayein");
     } catch (e) { btn.disabled = false; btn.textContent = "🎁 Package banao"; toast("Package nahi bana: " + e.message, true); }
   };
@@ -4209,10 +4558,10 @@ async function mnSave(reset) {
 }
 
 /* ---------- Quick search (Ctrl+K / "/"): kisi bhi section par turant jaayein ---------- */
-const GROUP = { dash: "Overview", stats: "Overview", report: "Overview", orders: "Sales", sales: "Sales", customers: "Sales", coupons: "Sales", messages: "Engagement", reviews: "Engagement",
-  ppts: "Catalog", notes: "Catalog", books: "Catalog", cfiles: "Catalog", themes: "Catalog", prices: "Catalog", menu: "Website", site: "Website", settings: "Website" };
-const PAL_EXTRA = { dash: "home overview kpi", stats: "visitors traffic analytics", report: "revenue kamai monthly", orders: "custom ppt", sales: "razorpay payments", customers: "login users", coupons: "discount code",
-  messages: "tickets contact inbox", reviews: "ratings testimonials", ppts: "upload ready ppt pdf", notes: "pdf notes study", books: "state board syllabus pyq", cfiles: "category menu files upload ncert cbse jee neet cuet", themes: "designs slides", prices: "smart board pricing",
+const GROUP = { dash: "Overview", stats: "Overview", report: "Overview", orders: "Sales", team: "Sales", sales: "Sales", customers: "Sales", coupons: "Sales", messages: "Engagement", reviews: "Engagement",
+  ppts: "Catalog", bundles: "Catalog", notes: "Catalog", books: "Catalog", cfiles: "Catalog", themes: "Catalog", prices: "Catalog", menu: "Website", site: "Website", settings: "Website" };
+const PAL_EXTRA = { dash: "home overview kpi", stats: "visitors traffic analytics", report: "revenue kamai monthly", orders: "custom ppt", team: "team members staff assign task library design", sales: "razorpay payments", customers: "login users", coupons: "discount code",
+  messages: "tickets contact inbox", reviews: "ratings testimonials", ppts: "upload ready ppt pdf", bundles: "bundle package complete subject chapters zip price", notes: "pdf notes study", books: "state board syllabus pyq", cfiles: "category menu files upload ncert cbse jee neet cuet", themes: "designs slides", prices: "smart board pricing",
   menu: "category bar ncert cbse jee neet cuet cat nda clat ug ca quiz state books", site: "website controls buttons social logos", settings: "password razorpay contact theme" };
 let PALI = 0, PALL = [], PAL_BACK = null;
 function palOpen() {
