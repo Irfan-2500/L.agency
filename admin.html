@@ -744,6 +744,16 @@ body.noscroll{overflow:hidden}
 /* ===== Team ===== */
 .fl{display:flex;flex-direction:column;gap:6px;min-width:0}.fl>input,.fl>select,.fl>textarea{width:100%}
 #tmOp .mbox>.row:first-child{flex-wrap:nowrap}
+.ld.unread{border-color:color-mix(in srgb,var(--info) 55%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--info) 12%,transparent)}
+.ld-dot{color:var(--info);font-size:.7rem;vertical-align:middle}
+.ld p{margin:0;white-space:pre-wrap;word-break:break-word}
+.ld-note{background:var(--bg2);border-radius:8px;padding:6px 9px}
+.ld-acts{gap:6px;flex-wrap:wrap}.ld-acts select{width:auto;padding:6px 8px;font-size:.82rem}
+.ld-msgs{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow:auto;padding:2px}
+.ld-m{align-self:flex-start;max-width:85%;background:var(--bg2);border:1px solid var(--line);border-radius:12px 12px 12px 4px;padding:7px 10px}
+.ld-m.me{align-self:flex-end;border-radius:12px 12px 4px 12px;background:color-mix(in srgb,var(--accent) 10%,var(--card))}
+.ld-m p{margin:0;white-space:pre-wrap;word-break:break-word}.ld-m small{color:var(--dim);font-size:.72rem}
+.ld-steps{margin:12px 0;padding-left:20px;display:flex;flex-direction:column;gap:7px;font-size:.88rem;line-height:1.45}
 .tm-st{color:var(--c);border-color:color-mix(in srgb,var(--c) 45%,transparent);background:color-mix(in srgb,var(--c) 10%,transparent)}
 .tm-strip{display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:.84rem}
 .tm-red{border-color:color-mix(in srgb,var(--bad) 55%,transparent)!important;background:color-mix(in srgb,var(--bad) 7%,var(--card))}
@@ -857,6 +867,7 @@ body.noscroll{overflow:hidden}
         <button data-t="report"><svg class="i"><use href="#i-pie"/></svg>Revenue report</button>
         <span class="lbl">Sales</span>
         <button data-t="orders"><svg class="i"><use href="#i-cart"/></svg>Orders<span class="n" id="nOrders" hidden></span></button>
+        <button data-t="leads"><svg class="i"><use href="#i-phone"/></svg>Leads<span class="n" id="nLeads" hidden></span></button>
         <button data-t="team"><svg class="i"><use href="#i-users"/></svg>Team<span class="n" id="nTeam" hidden></span></button>
         <button data-t="sales"><svg class="i"><use href="#i-rupee"/></svg>Online sales</button>
         <button data-t="customers"><svg class="i"><use href="#i-users"/></svg>Customers</button>
@@ -1024,7 +1035,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Physical Education","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", team: "Team", sales: "Online sales", customers: "Customers", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", bundles: "Subject bundles", notes: "Study notes", cfiles: "Category files", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", leads: "Leads", team: "Team", sales: "Online sales", customers: "Customers", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", bundles: "Subject bundles", notes: "Study notes", cfiles: "Category files", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -1105,6 +1116,7 @@ const DEMO = (() => {
 async function demoCall(a, d) {
   await new Promise(r => setTimeout(r, 250));
   const D = DEMO, ok = o => { $("#lastSync").textContent = "Demo data"; return Object.assign({ ok: true }, o || {}); };
+  if (/^leads/.test(a)) return leadsDemoCall(a, d);
   if (/^team/.test(a)) { await teamDemo(); return (window.GAS_DEMO_LOAD(), window.team_)(JSON.parse(JSON.stringify(Object.assign({}, d, { action: a, token: "demo" })))); }
   switch (a) {
     case "adminLogin": return d.user && d.password ? ok({ token: "demo", user: d.user }) : { ok: false, error: "Admin ID aur password daalein" };
@@ -1261,7 +1273,7 @@ function go(t, user) {
   try { history.replaceState(null, "", "#" + t); } catch (e) {}
   window.scrollTo(0, 0);
   const v = $("#view"); v.setAttribute("aria-busy", "true");
-  Promise.resolve(({ dash, stats, report, sales, customers, coupons, ppts, bundles, notes, books: stateBooks, cfiles, menu, orders, team, themes, prices, reviews, messages, site, settings })[t]()).finally(() => {
+  Promise.resolve(({ dash, stats, report, sales, customers, coupons, ppts, bundles, notes, books: stateBooks, cfiles, menu, orders, leads, team, themes, prices, reviews, messages, site, settings })[t]()).finally(() => {
     v.setAttribute("aria-busy", "false");
     if (user && tab === t) { const h = $("#view h1"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
   });
@@ -1271,6 +1283,7 @@ async function startApp() {
   const h = (location.hash || "").slice(1);
   go(Object.keys(TITLES).includes(h) || h === "books" ? h : "dash");
   resumeUQ();
+  setTimeout(leadsPing, 1500);
 }
 function badge(id, n) { const el = $(id); el.hidden = !n; el.textContent = n || ""; }
 const V = html => { $("#view").innerHTML = html; };
@@ -1517,6 +1530,177 @@ function drawOrders() {
     drawChips(); badge("#nOrders", ORD.filter(o => String(o.status).split(" ")[0] === "New").length);
     toast("Status: " + s.value);
   });
+}
+/* ---------- LEADS: WhatsApp par aaye message → yahan list, Call / WhatsApp button, status, notes ---------- */
+let LEADS = null, LD_ST = "open", LD_Q = "", LD_TIMER = 0, LD_UNREAD = -1;
+const LD_COL = { New: "var(--info)", Called: "var(--warn)", Interested: "var(--accent)", Converted: "var(--ok)", "Not interested": "var(--dim)" };
+const LD_HI = { New: "Nayi", Called: "Call kiya", Interested: "Interested", Converted: "Converted ✓", "Not interested": "Interest nahi" };
+const LD_OPEN = /^(New|Called|Interested)$/;
+const ldPill = s => `<span class="pill tm-st" style="--c:${LD_COL[s] || "var(--dim)"}">${esc(LD_HI[s] || s)}</span>`;
+const ldNum = id => /^91\d{10}$/.test(id) ? id.slice(2, 7) + " " + id.slice(7) : "+" + id;
+const ldName = l => l.name || "WhatsApp user";
+const ldWa = l => `https://wa.me/${l.id}?text=${encodeURIComponent(`Namaste ${String(l.name || "").split(" ")[0]}! PPT Store se baat kar rahe hain. `.replace("Namaste !", "Namaste!"))}`;
+const ldHot = l => l.unread || l.status === "New";
+let leadsDemoP = null;
+async function leadsDemoCall(a, d) {
+  await (leadsDemoP || (leadsDemoP = (async () => {
+    if (!window.GAS_DEMO_LOAD) await new Promise((ok, no) => { const s = document.createElement("script"); s.src = "js/gas-shim.js"; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+    (0, eval)(await (await fetch("google-script/Leads.gs")).text());
+    window.GAS_DEMO_LOAD();
+    if (!window.lAll_().length) ldDemoSeed();
+  })()));
+  window.GAS_DEMO_LOAD();
+  return window.leads_(JSON.parse(JSON.stringify(Object.assign({}, d, { action: a, token: "demo" }))));
+}
+/* Preview ke liye nakli WhatsApp message — bilkul waisa jaisa Meta bhejta hai */
+function ldDemoMsg(from, name, text, minsAgo) {
+  return { object: "whatsapp_business_account", entry: [{ id: "demo", changes: [{ field: "messages", value: { messaging_product: "whatsapp",
+    contacts: [{ wa_id: from, profile: { name } }], messages: [{ from, id: "wamid.demo" + Math.random().toString(36).slice(2), timestamp: String(Math.floor(Date.now() / 1000 - minsAgo * 60)), type: "text", text: { body: text } }] } }] }] };
+}
+function ldDemoSeed() {
+  [["919876543210", "Rohit Sharma", "Hello sir, Class 10 Science ki saari chapters ki PPT chahiye. Kitne ki milegi?", 600],
+   ["918210456789", "Priya Verma", "Mujhe 25 slides ki PPT chahiye Hindi mein, kal tak mil jayegi?", 240],
+   ["917004112233", "Anjali Kumari", "Bihar board class 12 notes PDF available hai?", 95],
+   ["919934567812", "Sunil Kumar", "Hi", 30], ["919934567812", "Sunil Kumar", "School ke liye 50 teachers ka package chahiye", 28],
+   ["916203998877", "", "Price list bhej dijiye please", 6]].forEach(x => window.waIn_(ldDemoMsg(...x)));
+  const all = window.lAll_(), p = all.find(l => l.id === "919876543210"), a = all.find(l => l.id === "917004112233");
+  Object.assign(p, { status: "Converted", unread: false, calls: 1, calledAt: new Date(Date.now() - 5 * 36e5).toISOString(), notes: "₹499 wala Science bundle le liya, UPI se pay kiya." }); window.lPut_(p);
+  Object.assign(a, { status: "Called", unread: false, calls: 1, calledAt: new Date(Date.now() - 80 * 6e4).toISOString(), notes: "Shaam ko dobara call karna hai." }); window.lPut_(a);
+}
+async function loadLeads() {
+  const r = await call("leadsAdmin");
+  if (r.ok) {
+    LEADS = r; const n = r.leads.filter(ldHot).length; badge("#nLeads", n);
+    if (LD_UNREAD >= 0 && r.leads.filter(l => l.unread).length > LD_UNREAD) toast("🔔 WhatsApp par nayi lead aayi");
+    LD_UNREAD = r.leads.filter(l => l.unread).length;
+  }
+  return r;
+}
+/* Login ke baad: badge + har 1 minute mein nayi lead check */
+function leadsPing() {
+  loadLeads();
+  clearInterval(LD_TIMER);
+  LD_TIMER = setInterval(async () => {
+    if (document.hidden || !TOKEN) return;
+    const r = await loadLeads();
+    if (r.ok && tab === "leads" && !$("#ldM") && !$("#ldAdd") && !$("#ldSet") && document.activeElement !== $("#ldq")) ldDraw();
+  }, 60000);
+}
+async function leads() {
+  loading();
+  const r = await loadLeads();
+  if (!r.ok) return fail(/Unknown action|Unknown leads/.test(r.error || "") ? "Google Script mein Leads.gs ka update abhi baaki hai" : r.error);
+  const L = r.leads, cnt = s => L.filter(l => l.status === s).length, hooked = r.wa.lastHook || r.wa.verified;
+  V(head("Leads", "", `<button class="btn sm${hooked ? "" : " pri"}" id="ldSetB">${ic("i-msg")} ${hooked ? "WhatsApp setup" : "WhatsApp jodein"}</button><button class="btn sm pri" id="ldAddB">${ic("i-plus")} Lead</button>`) + `
+    ${hooked ? "" : `<div class="warnbox">📲 WhatsApp abhi juda nahi hai. <b>WhatsApp jodein</b> dabakar 6 aasaan steps dekhein. Tab tak aap <b>+ Lead</b> se khud bhi lead daal sakte hain.</div>`}
+    <div class="kpis k4">${kpi({ label: "Nayi leads", value: cnt("New"), icon: ic("i-msg"), col: "var(--info)", go: "leads", hot: cnt("New") > 0 })}
+      ${kpi({ label: "Call kiya", value: cnt("Called"), icon: ic("i-phone"), col: "var(--warn)", go: "leads" })}
+      ${kpi({ label: "Interested", value: cnt("Interested"), icon: ic("i-star"), col: "var(--accent)", go: "leads" })}
+      ${kpi({ label: "Converted", value: cnt("Converted"), icon: ic("i-check"), col: "var(--ok)", go: "leads" })}</div>
+    <div class="chips" id="ldTabs"></div>
+    <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="ldq" placeholder="Naam, number ya message se dhoondhein…" aria-label="Search leads"></label></div>
+    <div class="list" id="ldList"></div>`);
+  $$("#view .kpi").forEach((b, i) => b.onclick = e => { e.preventDefault(); LD_ST = ["New", "Called", "Interested", "Converted"][i]; ldDraw(); });
+  $("#ldq").value = LD_Q; $("#ldq").oninput = () => { LD_Q = $("#ldq").value; ldDraw(); };
+  $("#ldSetB").onclick = ldSetup; $("#ldAddB").onclick = ldAddForm;
+  ldDraw();
+}
+function ldDraw() {
+  if (!LEADS || tab !== "leads" || !$("#ldList")) return;
+  const L = LEADS.leads, q = LD_Q.toLowerCase().trim(), qd = q.replace(/\D/g, "");
+  const tabs = [["open", "Chalu", L.filter(l => LD_OPEN.test(l.status)).length]].concat(LEADS.statuses.map(s => [s, LD_HI[s] || s, L.filter(l => l.status === s).length]), [["all", "Sab", L.length]]);
+  $("#ldTabs").innerHTML = tabs.map(([k, l, n]) => `<button class="chip ${LD_ST === k ? "on" : ""}" data-k="${esc(k)}">${esc(l)} <small>${n}</small></button>`).join("");
+  $$("#ldTabs .chip").forEach(b => b.onclick = () => { LD_ST = b.dataset.k; ldDraw(); });
+  const vis = L.filter(l => (LD_ST === "all" || (LD_ST === "open" ? LD_OPEN.test(l.status) : l.status === LD_ST))
+    && (!q || [l.name, l.last, l.notes].join(" ").toLowerCase().includes(q) || (qd && l.id.includes(qd))));
+  $("#ldList").innerHTML = vis.length ? vis.map(l => `<div class="rv ld${l.unread ? " unread" : ""}" data-id="${esc(l.id)}">
+      <div class="row"><span class="av">${esc(initials(ldName(l)))}</span><div style="min-width:0"><b>${esc(ldName(l))}</b>${l.unread ? ` <span class="ld-dot" title="Naya message">●</span>` : ""}
+        <div class="note">📞 ${esc(ldNum(l.id))} · ${ago(l.lastAt || l.createdAt)}${l.src === "Manual" ? " · khud joda" : ""}${l.count > 1 ? ` · ${l.count} message` : ""}</div></div><span class="sp"></span>${ldPill(l.status)}</div>
+      ${l.last ? `<p>${esc(l.last)}</p>` : ""}
+      ${l.notes ? `<div class="note ld-note">📝 ${esc(l.notes.length > 140 ? l.notes.slice(0, 140) + "…" : l.notes)}</div>` : ""}
+      <div class="row ld-acts">${l.calls ? `<span class="note">☎ ${l.calls} baar · ${ago(l.calledAt)}</span>` : ""}<span class="sp"></span>
+        <a class="btn sm pri" href="tel:+${esc(l.id)}" data-lcall title="Phone Link / mobile se call">${ic("i-phone")} Call</a>
+        <a class="btn sm wa" href="${ldWa(l)}" target="_blank" rel="noopener" data-lcall title="WhatsApp Desktop mein chat kholein, wahan se call bhi">${ic("i-msg")} WhatsApp</a>
+        <select class="ld-st" aria-label="Status">${LEADS.statuses.map(s => `<option value="${esc(s)}"${s === l.status ? " selected" : ""}>${esc(LD_HI[s] || s)}</option>`).join("")}</select>
+        <button class="btn sm" data-lopen>Details</button></div>
+    </div>`).join("") : `<div class="empty"><b>📲</b>${L.length ? "Is filter mein koi lead nahi." : "Abhi tak koi lead nahi. WhatsApp jodne ke baad naye message yahan apne aap aayenge."}</div>`;
+  $$("#ldList .ld").forEach(card => {
+    const l = L.find(x => x.id === card.dataset.id);
+    card.querySelectorAll("[data-lcall]").forEach(a => a.addEventListener("click", () => ldCalled(l)));
+    card.querySelector(".ld-st").onchange = e => ldSave(l, { status: e.target.value }, "✓ Status: " + (LD_HI[e.target.value] || e.target.value));
+    card.querySelector("[data-lopen]").onclick = () => ldOpen(l);
+  });
+}
+function ldMerge(n) { const i = LEADS.leads.findIndex(x => x.id === n.id); if (i >= 0) LEADS.leads[i] = n; else LEADS.leads.unshift(n); badge("#nLeads", LEADS.leads.filter(ldHot).length); LD_UNREAD = LEADS.leads.filter(l => l.unread).length; }
+async function ldCalled(l) {   // Call / WhatsApp dabate hi gina jaata hai, "Nayi" → "Call kiya"
+  const r = await call("leadsCall", { id: l.id }); if (r.ok) { ldMerge(r.lead); if (!$("#ldM")) ldDraw(); }
+}
+async function ldSave(l, patch, msg) {
+  const r = await call("leadsSave", { lead: Object.assign({ id: l.id }, patch) });
+  if (!r.ok) { toast(r.error, true); return null; }
+  ldMerge(r.lead); ldDraw(); if (msg) toast(msg); return r.lead;
+}
+function ldOpen(l) {
+  const msgs = (l.msgs || []).slice().reverse();
+  const { close } = tmBox("ldM", `<div class="row"><div><h2 style="margin:0">${esc(ldName(l))}</h2><div class="note">📞 ${esc(ldNum(l.id))} · pehla message ${fmtTime(l.createdAt)}</div></div><span class="sp"></span><button class="btn sm" data-x>✕</button></div>
+    <div class="row" style="gap:6px;flex-wrap:wrap"><a class="btn pri" href="tel:+${esc(l.id)}" data-lcall>${ic("i-phone")} Call</a><a class="btn wa" href="${ldWa(l)}" target="_blank" rel="noopener" data-lcall>${ic("i-msg")} WhatsApp</a><button class="btn" data-copy="${esc(l.id.replace(/^91(?=\d{10}$)/, ""))}">${ic("i-copy")} Number copy</button></div>
+    <div class="grid2"><label class="fl"><span class="phead">Naam</span><input id="ldN" maxlength="80" value="${esc(l.name || "")}" placeholder="Customer ka naam"></label>
+      <label class="fl"><span class="phead">Status</span><select id="ldS">${LEADS.statuses.map(s => `<option value="${esc(s)}">${esc(LD_HI[s] || s)}</option>`).join("")}</select></label>
+      <label class="fl"><span class="phead">Dobara call kab</span><input id="ldF" type="date" value="${esc(l.followUp || "")}"></label></div>
+    <label class="fl"><span class="phead">Notes (kya baat hui)</span><textarea id="ldT" rows="3" maxlength="3000" placeholder="Jaise: Class 10 Science bundle chahiye, kal shaam call karna hai">${esc(l.notes || "")}</textarea></label>
+    <div class="err" id="ldE"></div>
+    <div class="row"><button class="btn pri" id="ldGo">Save</button><button class="btn" data-x>Cancel</button><span class="sp"></span><button class="btn sm danger" id="ldDel">${ic("i-trash")} Hatao</button></div>
+    <h3 style="margin:14px 0 6px">💬 Messages (${msgs.length})</h3>
+    <div class="ld-msgs">${msgs.length ? msgs.map(m => `<div class="ld-m${m.by === "note" ? " me" : ""}"><p>${esc(m.text)}</p><small>${fmtTime(m.t)}${m.by === "note" ? " · aapne likha" : ""}</small></div>`).join("") : `<div class="note">Koi message nahi.</div>`}</div>`);
+  $("#ldS").value = l.status;
+  $$("#ldM [data-lcall]").forEach(a => a.addEventListener("click", () => ldCalled(l)));
+  if (l.unread) ldSave(l, { seen: true });
+  $("#ldGo").onclick = async () => {
+    const b = $("#ldGo"); b.disabled = true;
+    const n = await ldSave(l, { name: $("#ldN").value, status: $("#ldS").value, notes: $("#ldT").value, followUp: $("#ldF").value, seen: true });
+    b.disabled = false; if (n) { close(); toast("✓ Save ho gaya"); }
+  };
+  const del = $("#ldDel");
+  del.onclick = async () => { if (del.dataset.sure !== "1") { del.dataset.sure = "1"; del.textContent = "Pakka hatayein?"; return; }
+    del.disabled = true; const r = await call("leadsDelete", { id: l.id }); del.disabled = false; if (!r.ok) return $("#ldE").textContent = r.error;
+    LEADS.leads = LEADS.leads.filter(x => x.id !== l.id); badge("#nLeads", LEADS.leads.filter(ldHot).length); close(); ldDraw(); toast("Lead hata di"); };
+}
+function ldAddForm() {
+  const { close } = tmBox("ldAdd", `<div class="row"><h2>Nayi lead</h2><span class="sp"></span><button class="btn sm" data-x>✕</button></div>
+    <div class="grid2"><label class="fl"><span class="phead">Mobile number</span><input id="laP" inputmode="numeric" maxlength="16" placeholder="98765 43210"></label>
+      <label class="fl"><span class="phead">Naam</span><input id="laN" maxlength="80" placeholder="Customer ka naam"></label></div>
+    <label class="fl"><span class="phead">Kya chahiye (optional)</span><textarea id="laM" rows="2" maxlength="1000" placeholder="Jaise: Class 12 Physics PPT"></textarea></label>
+    <div class="err" id="laE"></div><div class="row"><button class="btn pri" id="laGo">Save</button><button class="btn" data-x>Cancel</button></div>`);
+  $("#laP").focus();
+  $("#laGo").onclick = async () => {
+    const b = $("#laGo"); b.disabled = true; $("#laE").textContent = "";
+    const r = await call("leadsAdd", { lead: { phone: $("#laP").value, name: $("#laN").value, message: $("#laM").value } });
+    b.disabled = false; if (!r.ok) return $("#laE").textContent = r.error;
+    ldMerge(r.lead); close(); LD_ST = "open"; ldDraw(); toast("✓ Lead jud gayi");
+  };
+}
+function ldSetup() {
+  const w = LEADS.wa, hook = `${API}${API.includes("?") ? "&" : "?"}wa=${w.key}`;
+  const st = w.lastHook ? `✅ Juda hua hai. Aakhri message ${ago(w.lastHook)} aaya.` : w.verified ? `✅ Webhook verify ho gaya (${ago(w.verified)}). Ab kisi dusre phone se "Hi" bhej kar test karein.` : "⏳ Abhi juda nahi hai. Neeche ke steps karein.";
+  const cp = (label, v) => `<label class="fl"><span class="phead">${label}</span><div class="row" style="gap:6px"><input readonly value="${esc(v)}" style="flex:1;font-family:monospace;font-size:12px" onclick="this.select()"><button class="btn sm" data-copy="${esc(v)}">${ic("i-copy")} Copy</button></div></label>`;
+  const { close } = tmBox("ldSet", `<div class="row"><h2>📲 WhatsApp jodein</h2><span class="sp"></span><button class="btn sm" data-x>✕</button></div>
+    <div class="warnbox" style="margin:0 0 10px">${st}</div>
+    ${API ? cp("Callback URL", hook) + cp("Verify token", w.key) : `<div class="err">Settings mein Google Script URL nahi hai.</div>`}
+    <ol class="ld-steps">
+      <li><a href="https://business.facebook.com" target="_blank" rel="noopener">business.facebook.com</a> par apna Business account banayein (pehle se hai to wahi chalega).</li>
+      <li><a href="https://developers.facebook.com/apps" target="_blank" rel="noopener">developers.facebook.com/apps</a> → <b>Create app</b> → type <b>Business</b> → app mein <b>WhatsApp</b> jodein.</li>
+      <li>WhatsApp → <b>API Setup</b> → <b>Add phone number</b>: apna business number daal kar OTP se verify karein.</li>
+      <li>WhatsApp → <b>Configuration</b> → Webhook → <b>Edit</b>: upar ka <b>Callback URL</b> aur <b>Verify token</b> copy karke daalein → <b>Verify and save</b>.</li>
+      <li>Usi page par Webhook fields mein <b>messages</b> ke saamne <b>Subscribe</b> dabayein.</li>
+      <li>App ko <b>Live</b> karein (Privacy policy URL: <code>https://www.pptstore.in/privacy.html</code>). Phir kisi dusre phone se apne number par "Hi" bhejein — 1 minute mein yahan lead dikhegi.</li>
+    </ol>
+    <div class="note">☎ <b>Computer se call:</b> Windows mein <b>Phone Link</b> app kholein aur apna mobile jodein. Phir <b>Call</b> dabate hi call aapke mobile se lagegi aur baat computer par hogi. <b>WhatsApp</b> button WhatsApp Desktop mein chat kholta hai, wahan se WhatsApp call bhi kar sakte hain.</div>
+    <div class="row" style="margin-top:12px">${LA.previewDemo ? `<button class="btn sm" id="ldTest">🧪 Test lead bhejein (demo)</button>` : ""}<span class="sp"></span><button class="btn sm danger" id="ldKey" title="Purana URL band ho jayega">Naya token banayein</button><button class="btn sm" data-x>Done</button></div>`);
+  const t = $("#ldTest");
+  if (t) t.onclick = async () => { await leadsDemoCall("leadsAdmin", {}); window.waIn_(ldDemoMsg("91" + (9000000000 + Math.floor(Math.random() * 99999999)), "Test Customer", "Hello, mujhe PPT chahiye", 0)); close(); await loadLeads(); leads(); };
+  const k = $("#ldKey");
+  k.onclick = async () => { if (k.dataset.sure !== "1") { k.dataset.sure = "1"; k.textContent = "Pakka? Meta mein URL dobara daalna padega"; return; }
+    const r = await call("leadsNewKey"); if (!r.ok) return toast(r.error, true); LEADS = r; close(); ldSetup(); toast("Naya token ban gaya. Meta mein Callback URL aur Verify token dobara daalein."); };
 }
 /* ---------- TEAM: members, task assign, review, Project Library (salary team — koi paisa nahi) ---------- */
 let TEAM = null, TM_TAB = "tasks", TM_ST = "active", TM_MEM = "", TM_LQ = "";
@@ -4558,9 +4742,9 @@ async function mnSave(reset) {
 }
 
 /* ---------- Quick search (Ctrl+K / "/"): kisi bhi section par turant jaayein ---------- */
-const GROUP = { dash: "Overview", stats: "Overview", report: "Overview", orders: "Sales", team: "Sales", sales: "Sales", customers: "Sales", coupons: "Sales", messages: "Engagement", reviews: "Engagement",
+const GROUP = { dash: "Overview", stats: "Overview", report: "Overview", orders: "Sales", leads: "Sales", team: "Sales", sales: "Sales", customers: "Sales", coupons: "Sales", messages: "Engagement", reviews: "Engagement",
   ppts: "Catalog", bundles: "Catalog", notes: "Catalog", books: "Catalog", cfiles: "Catalog", themes: "Catalog", prices: "Catalog", menu: "Website", site: "Website", settings: "Website" };
-const PAL_EXTRA = { dash: "home overview kpi", stats: "visitors traffic analytics", report: "revenue kamai monthly", orders: "custom ppt", team: "team members staff assign task library design", sales: "razorpay payments", customers: "login users", coupons: "discount code",
+const PAL_EXTRA = { dash: "home overview kpi", stats: "visitors traffic analytics", report: "revenue kamai monthly", orders: "custom ppt", leads: "whatsapp leads enquiry call customer number", team: "team members staff assign task library design", sales: "razorpay payments", customers: "login users", coupons: "discount code",
   messages: "tickets contact inbox", reviews: "ratings testimonials", ppts: "upload ready ppt pdf", bundles: "bundle package complete subject chapters zip price", notes: "pdf notes study", books: "state board syllabus pyq", cfiles: "category menu files upload ncert cbse jee neet cuet", themes: "designs slides", prices: "smart board pricing",
   menu: "category bar ncert cbse jee neet cuet cat nda clat ug ca quiz state books", site: "website controls buttons social logos", settings: "password razorpay contact theme" };
 let PALI = 0, PALL = [], PAL_BACK = null;
