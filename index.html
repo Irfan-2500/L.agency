@@ -2429,7 +2429,7 @@ $("#loadMore").onclick = () => { state.shown += CONFIG.perPage; renderGrid(); };
 function onSearch(v){
   state.q=v; state.shown=CONFIG.perPage; if($("#gridSearch").value!==v)$("#gridSearch").value=v; if($("#topSearch").value!==v)$("#topSearch").value=v; if($("#thSearch").value!==v)$("#thSearch").value=v; renderGrid();
   // Themes bhi isi search se filter hote hain (website par abhi themes hi dikhte hain)
-  thState.q = v; thState.shown = 12; renderThemes();
+  thState.q = v; thState.shown = 12; rdRender(); renderThemes();
 }
 // Search ke result wale section tak le jao: PPT mile toh Shop, warna Themes
 function goToResults(){
@@ -3063,6 +3063,13 @@ if (AUTO_MOVE && !reduceMotion) setInterval(() => {
 }, 1000);
 
 let thCard = () => "";
+/* Search ka result: kitni PPT, Notes, Themes mili */
+function thQBar(){
+  const q = String(thState.q || "").trim(), el = $("#thQ"); if (!el) return;
+  el.hidden = !q; if (!q) return;
+  const parts = [[RD_HITS.rd, "Ready PPT"], [RD_HITS.nt, "Notes"], [(thList || []).length, "Theme"]].filter(x => x[0]).map(([n, l]) => `<b>${n}</b> ${l}`);
+  el.innerHTML = `${icon("i-search","width:16px;height:16px")}<span>${parts.length ? parts.join(" · ") : "Kuch nahi mila"} for "<b>${esc(q)}</b>"</span><button type="button" onclick="onSearch('')">✕ Clear search</button>`;
+}
 function renderThemes(){
   renderThemeChips();
   thList = THEMES.filter(t => thMatch(t));
@@ -3077,17 +3084,17 @@ function renderThemes(){
   const nAct = ["tone","type","lang","cls","subj"].filter(k => thState[k]).length;
   $("#thFc").textContent = nAct ? `(${nAct})` : "";
   const show = thList.slice(0, thState.shown), q = String(thState.q || "").trim();
-  $("#thQ").hidden = !q;
-  if (q) $("#thQ").innerHTML = `${icon("i-search","width:16px;height:16px")}<span><b>${thList.length}</b> theme${thList.length === 1 ? "" : "s"} for "<b>${esc(q)}</b>"</span><button type="button" onclick="onSearch('')">✕ Clear search</button>`;
+  thQBar();
   thCard = (t,i) => `
     <div class="th-card" role="button" tabindex="0" onclick="openTheme(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTheme(${i})}" aria-label="View ${esc(t.name)}">
       <div class="th-pic">${cardSlides(t)}<span class="zoom">🔍 View Theme</span></div>
       <div class="th-meta"><div class="th-name"><b>${esc(t.name)}</b><span class="th-views" data-vid="${esc(t.id)}" title="${(+t.views || 0).toLocaleString("en-IN")} views">${icon("i-eye","width:14px;height:14px")}<em>${fmtViews(t.views)}</em></span></div><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span></div></div>
       ${t.slides && t.slides.length > 1 ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${t.slides.length} slides</span>` : ""}
     </div>`;
+  const anyOther = String(thState.q || "").trim() && (RD_HITS.rd || RD_HITS.nt);
   const all = thList.map((t,i) => [t,i]), rows = [["🎨 Theme Sample", [...all.filter(x => x[0].tone !== "White"), ...all.filter(x => x[0].tone === "White")]]].filter(r => r[1].length);   // Dark + Light ek hi line mein
   $("#thGrid").innerHTML = rows.length ? rows.map(([h, arr]) => `<div class="th-sec"><div class="th-sh"><h3 class="th-k12">${h} <small>${arr.length}</small></h3><button type="button" class="th-all" data-tone="all">View All <span>→</span></button></div><div class="th-row">${arr.map(([t,i]) => thCard(t,i)).join("")}</div></div>`).join("")
-    : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>${String(thState.q||"").trim() ? `No theme found for "${esc(thState.q.trim())}". Try another word — or <a href="#custom" class="js-custom" style="color:var(--cyan)">request a custom PPT</a>.` : "No theme matches these filters. Try another combination."}</p></div>`;
+    : anyOther ? "" : `<div class="empty">${icon("i-search","width:32px;height:32px;margin:0 auto 12px")}<p>${String(thState.q||"").trim() ? `No theme found for "${esc(thState.q.trim())}". Try another word — or <a href="#custom" class="js-custom" style="color:var(--cyan)">request a custom PPT</a>.` : "No theme matches these filters. Try another combination."}</p></div>`;
   $("#thMore").parentNode.style.display = "none";
   thHash();
 }
@@ -3104,6 +3111,12 @@ addEventListener("hashchange", () => thHash(true));
 $("#thMore").onclick = () => { thState.shown += 12; renderThemes(); };
 /* Ready to Use PPT: Ready PPTs page wali list (admin panel ki PPTs, warna built-in) ek line mein; click par theme jaisa popup */
 let RD_LIST = [], NT_LIST = [];
+/* Search: Ready PPT aur Study Notes bhi usi search box se filter hote hain (theme ke saath) */
+let RD_RAW = [];
+const rdHay = p => [p.title, p.desc, p.subject, p.lang, p.theme, p.cat, p.badge, p.fileName, ...(p.level || []), ...(p.board || []), ...(p.tags || [])].join(" ").toLowerCase().replace(/[_\-–—]+/g, " ");
+const srchToks = q => String(q || "").toLowerCase().replace(/class\s+(\d+)/g, "class$1").split(/[\s,]+/).filter(Boolean);
+const srchHit = (hay, q) => { const h = hay.replace(/class\s+(\d+)/g, "class$1"), t = srchToks(q); return t.every(w => h.includes(w)); };
+let RD_HITS = { rd: 0, nt: 0 };
 /* Preview: pehli 8 slide khuli, baaki sab dikhti hain par lock (halki blur) — click par kharidne ka popup */
 const FREE_N = 8;
 const pvSlots = (pics, n) => { const N = Math.max(n || 0, pics.length); if (!pics.length) return [];
@@ -3124,19 +3137,28 @@ function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
   const toLb = p => { const pics = (p.previews || []).filter(Boolean); if (!pics.length && p.thumb) pics.push(p.thumb);
     return { rd:true, note:isNt(p), id:+p.id, name:p.title, type:isNt(p) ? "Study Notes" : "Ready PPT", img:p.thumb, slides:pics, slots:pvSlots(pics, +p.slides || 0), price:p.price, mrp:p.mrp, lang:p.lang, subject:p.subject, level:p.level || [], n:+p.slides || 0 }; };
   const ppts = list.filter(p => !isNt(p)), notes = list.filter(isNt);
-  RD_LIST = ppts.map(toLb); NT_LIST = notes.map(toLb);
-  [["rd", ppts, "openRd"], ["nt", notes, "openNt"]].forEach(([pre, arr, fn]) => { if (!arr.length) return;
-  $("#" + pre + "N").textContent = arr.length;
-  $("#" + pre + "Row").innerHTML = arr.map((p, k) => { const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
+  RD_LIST = ppts.map(toLb); NT_LIST = notes.map(toLb); RD_RAW = [["rd", ppts, "openRd"], ["nt", notes, "openNt"]];
+  rdRender(); if (String(thState.q || "").trim()) renderThemes();
+})();
+function rdRender(){
+  const isNt = p => p.cat === "notes" || (p.level || []).includes("Study Notes");
+  const q = String(thState.q || "").trim();
+  RD_RAW.forEach(([pre, all, fn]) => { RD_HITS[pre] = 0; if (!all.length) return;
+  const arr = all.map((p, k) => [p, k]).filter(([p]) => !q || srchHit(rdHay(p), q));
+  RD_HITS[pre] = arr.length;
+  $("#" + pre + "N").textContent = q ? `${arr.length} / ${all.length}` : all.length;
+  $("#" + pre + "Sec").hidden = !arr.length;
+  if ($("#" + pre + "Row")) $("#" + pre + "Row").scrollLeft = 0;
+  $("#" + pre + "Row").innerHTML = arr.map(([p, k]) => { const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
     return `<div class="th-card" role="button" tabindex="0" onclick="${fn}(${k})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${fn}(${k})}" aria-label="View ${esc(p.title)}">
       <div class="th-pic">${p.thumb ? `<img src="${esc(p.thumb)}" alt="${esc(p.title)}" loading="lazy">` : ""}<span class="zoom">👁 Preview</span>${pre === "rd" ? `<img class="ppt-logo" src="uploads/brand/ppt-logo.webp" alt="PPT" title="PowerPoint (.pptx) file" width="30" height="29">` : ""}</div>
       <div class="th-meta"><div class="th-name"><b>${esc(p.title)}</b></div>
         <div class="th-tags">${[p.lang, p.subject].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
         <div class="rd-price"><b>${inr(+p.price || 0)}</b>${off ? `<s>${inr(+p.mrp)}</s><em>${off}% OFF</em>` : ""}</div><div class="rd-acts"><a class="rd-buy rd-ed" href="${ordUrl(p.title, p.thumb)}" onclick="event.stopPropagation()" aria-label="Customize ${esc(p.title)}" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(+p.id) ? " in" : ""}" data-rid="${+p.id}" onclick="event.stopPropagation();rdCart(${+p.id})" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${+p.id}" onclick="event.stopPropagation()" aria-label="Buy and download ${esc(p.title)}" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div></div>
       ${p.slides ? `<span class="th-count">${icon("i-layers","width:13px;height:13px")}${+p.slides} ${isNt(p) ? "pages" : "slides"}</span>` : ""}
-    </div>`; }).join("");
-  $("#" + pre + "Sec").hidden = false; });
-})();
+    </div>`; }).join(""); });
+  thQBar();
+}
 function rdCart(id){ toggleCart(id); document.querySelectorAll(`.rd-buy[data-rid="${id}"]`).forEach(b => b.classList.toggle("in", cart.includes(id))); }
 /* View All: Dark ya Light ki saari themes alag page par (phone ka Back button bhi kaam kare) */
 function openThPage(tone, push){
