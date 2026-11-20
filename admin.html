@@ -3480,7 +3480,7 @@ async function pptView() {
   V(head(TITLES[KTAB()], KIND === "notes"
       ? `Upload A4 PDF notes. They appear on the Study Notes page instantly; customers pay and download automatically.`
       : `Upload PPT or PDF files. They appear on the Ready PPTs page instantly; customers pay and download automatically.`,
-      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "bundle" ? `<a class="btn sm" href="ready-ppts.html" target="_blank" rel="noopener">${ic("i-ext")} View on site</a><button class="btn" id="addZip">📦 ZIP Upload</button><button class="btn pri" id="addPack">${ic("i-plus")} New bundle</button>` : `<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`}`) + `
+      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "bundle" ? `<a class="btn sm" href="ready-ppts.html" target="_blank" rel="noopener">${ic("i-ext")} View on site</a><button class="btn" id="addZip">📦 ZIP Upload</button><button class="btn pri" id="addPack">${ic("i-plus")} New bundle</button>` : `${KIND === "ppt" ? `<button class="btn" id="perSlide">₹ / slide daam</button>` : ""}<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`}`) + `
   ${KIND === "bundle" ? `<p class="note bnote">Class + subject chunein, chapters tick karein, apna daam likh kar Save. Website par ye "Complete Subject" card mein dikhega.</p>` : ""}
   ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}
   <div class="stats">
@@ -3493,6 +3493,7 @@ async function pptView() {
   $$("[data-nv]").forEach(b => b.onclick = () => { NVIEW = b.dataset.nv; try { localStorage.setItem("la_admin_nview", NVIEW); } catch (e) {} drawPpts(); });
   $("#pq").value = PQ; $("#pq").oninput = () => { PQ = $("#pq").value; drawPpts(); };
   if ($("#addPpt")) $("#addPpt").onclick = () => editPpt(null);
+  if ($("#perSlide")) $("#perSlide").onclick = perSlideOpen;
   if ($("#addZip")) $("#addZip").onclick = () => { editPpt(null); $("#peZipIn").click(); };
   if ($("#addPack")) $("#addPack").onclick = packOpen;
   $("#autoPv").onclick = () => { const l = PP.filter(p => inKind(p) && needPv(p)); l.forEach(pvJob); toast(`🖼 ${l.length} ki preview photo ban rahi hai`); drawPpts(); };
@@ -3543,6 +3544,36 @@ const splitRefs = (refs, urls) => { refs = refs || []; urls = urls || refs; cons
   return i < 0 ? { card: [], slides: z(refs, urls) } : { card: z(refs.slice(0, i), urls.slice(0, i)), slides: z(refs.slice(i + 1), urls.slice(i + 1)) }; };
 const joinRefs = (card, slides) => card.length ? [...card, CARD_MARK, ...slides.slice(0, 11 - card.length)] : slides.slice(0, 12);   // Script 12 tak rakhta hai
 const slideRefs = p => splitRefs(p.refs).slides.map(x => x.ref), cardRefs = p => splitRefs(p.refs).card.map(x => x.ref);
+/* ₹ / slide: saari Ready PPT (notes aur subject bundle chhod kar) ka daam = slides × ₹N, ek saath */
+function perSlideOpen() {
+  const list = PP.filter(p => !isNote(p) && !isZipP(p) && +p.slides > 0), skip = PP.filter(p => !isNote(p) && !isZipP(p) && !(+p.slides > 0));
+  let box = $("#psModal"); if (box) box.remove();
+  box = document.createElement("div"); box.className = "modal"; box.id = "psModal"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+  box.innerHTML = `<div class="mbox"><div class="row"><h2>₹ / slide daam</h2><span class="sp"></span><button class="btn sm" data-x>✕ Close</button></div>
+    <div class="row" style="gap:10px;flex-wrap:wrap"><label class="fl" style="flex:1;min-width:140px"><span class="phead">Daam ₹ per slide</span><input type="number" id="psRate" min="0.5" step="0.5" value="2"></label>
+      <label class="fl" style="flex:1;min-width:140px"><span class="phead">MRP ₹ per slide · khaali = jaisa hai</span><input type="number" id="psMrp" min="0" step="0.5" placeholder="jaisa hai"></label></div>
+    <div id="psList" style="max-height:44vh;overflow:auto;margin:10px 0"></div>
+    <p class="note">${list.length} PPT badlengi${skip.length ? ` · ${skip.length} mein slides ki ginti nahi hai, wo nahi badlengi` : ""} · Study notes aur Subject bundles nahi badlenge.</p>
+    <div class="row"><button class="btn pri" id="psGo">Sab par lagao</button><button class="btn" data-x>Cancel</button></div></div>`;
+  document.body.appendChild(box);
+  const close = () => box.remove(); box.querySelectorAll("[data-x]").forEach(b => b.onclick = close);
+  const calc = p => { const r = +$("#psRate").value || 0, m = +$("#psMrp").value || 0, n = +p.slides, price = Math.max(1, Math.round(n * r));
+    return { price, mrp: m ? Math.max(price, Math.round(n * m)) : Math.max(+p.mrp || 0, price) }; };
+  const draw = () => { $("#psList").innerHTML = `<div class="rtbl"><table><thead><tr><th>PPT</th><th>Slides</th><th>Abhi</th><th>Naya</th></tr></thead><tbody>${list.map(p => { const c = calc(p);
+      return `<tr><td style="white-space:normal">${esc(p.title)}</td><td>${p.slides}</td><td>${rs(p.price)}</td><td><b>${rs(c.price)}</b>${c.mrp > c.price ? ` <s style="opacity:.6">${rs(c.mrp)}</s>` : ""}</td></tr>`; }).join("")}</tbody></table></div>`; };
+  $("#psRate").oninput = draw; $("#psMrp").oninput = draw; draw();
+  $("#psGo").onclick = async () => {
+    if (!(+$("#psRate").value > 0)) return toast("₹ per slide likhiye", true);
+    const btn = $("#psGo"); btn.disabled = true; let ok = 0, bad = 0;
+    for (let k = 0; k < list.length; k++) {
+      const p = list[k], c = calc(p); btn.textContent = `${k + 1} / ${list.length}…`;
+      if (+p.price === c.price && +p.mrp === c.mrp) { ok++; continue; }
+      const r = await call("adminPptSave", Object.assign(pptPayload(p), { price: c.price, mrp: c.mrp }));
+      if (r.ok) { const i = PP.indexOf(p); if (i >= 0) PP[i] = r.ppt; ok++; } else bad++;
+    }
+    close(); drawPpts(); toast(bad ? `${ok} PPT ka daam badla, ${bad} mein dikkat aayi` : `✓ ${ok} PPT ka daam badal gaya`, !!bad);
+  };
+}
 const pptPayload = p => ({ id: p.id, title: p.title, desc: p.desc, price: p.price, mrp: p.mrp, cat: p.cat,
   level: isNote(p) ? [...p.level.filter(x => x !== NOTE_TAG), NOTE_TAG] : p.level.filter(x => x !== NOTE_TAG), subject: p.subject, board: p.board, lang: p.lang,
   theme: p.theme, slides: p.slides, anim: p.anim, badge: p.badge, refs: p.refs, file: p.file, fileName: p.fileName, show: p.show });
@@ -4181,7 +4212,7 @@ let ZQ = null;
 $("#peZipIn").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) zipPick(f); };
 // file ke naam / slides ke text se andaza (Hindi + English):
 // "अध्याय-1 | रासायनिक अभिक्रियाएँ एवं समीकरण | विज्ञान | कक्षा 10वीं | हिंदी माध्यम.pptx" ya "CH-1_Chemical Reactions | Science | Class-10 EM.pptx"
-const PER_SLIDE = 5, PER_SLIDE_MRP = 8;   // daam apne aap: ₹5 / slide, kata hua ₹8 / slide (badal sakte hain)
+const PER_SLIDE = 2, PER_SLIDE_MRP = 8;   // daam apne aap: ₹2 / slide, kata hua ₹8 / slide (badal sakte hain)
 const HI_SUBJ = [["सामाजिक विज्ञान", "Social Science"], ["राजनीति विज्ञान", "Political Science"], ["राजनीतिक विज्ञान", "Political Science"], ["नागरिक शास्त्र", "Political Science"],
   ["जीव विज्ञान", "Biology"], ["जीवविज्ञान", "Biology"], ["भौतिक विज्ञान", "Physics"], ["भौतिकी", "Physics"], ["रसायन विज्ञान", "Chemistry"], ["रसायन शास्त्र", "Chemistry"],
   ["कंप्यूटर", "Computer Science"], ["कम्प्यूटर", "Computer Science"], ["पर्यावरण", "EVS"], ["सामान्य ज्ञान", "GK & Current Affairs"], ["तर्कशक्ति", "Reasoning / MAT"],
@@ -4268,7 +4299,7 @@ async function zipPick(f) {
         if (/\.pptx$/i.test(n)) { const m = await pptxMeta(it.file);
           if (m) Object.assign(a, { title: m.title || a.title, desc: m.desc, slides: m.slides, cls: m.cls, subj: m.subj, lang: m.lang, anim: m.anim }); }
         else if (/\.pdf$/i.test(n)) { const doc = await (await loadPdfJs()).getDocument({ data: await it.file.arrayBuffer() }).promise; a.slides = doc.numPages; }
-        if (+a.slides > 0 && !isNote(PE)) { a.price = String(a.slides * PER_SLIDE); a.mrp = String(a.slides * PER_SLIDE_MRP); }   // ₹5 / slide, kata hua ₹8 / slide
+        if (+a.slides > 0 && !isNote(PE)) { a.price = String(a.slides * PER_SLIDE); a.mrp = String(a.slides * PER_SLIDE_MRP); }   // ₹2 / slide, kata hua ₹8 / slide
       } catch (e) {}
       it.meta = true; if (ZQ === zq) drawZip();
     }
