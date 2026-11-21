@@ -235,8 +235,8 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .strip button{flex:0 0 110px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:2px solid transparent;opacity:.65}
 .strip button.on{border-color:var(--violet);opacity:1}
 .strip button{position:relative}.strip button span{position:absolute;left:4px;bottom:3px;font-size:.62rem;font-weight:800;color:#fff;text-shadow:0 1px 3px #000}
-.strip button.lk img{filter:blur(1.5px);opacity:.6}.strip button.lk::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:1rem}
-.stage.lk #stageImg{filter:blur(1.6px);opacity:.92}
+.strip button.lk::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:1rem;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.strip button{background:var(--card2)}#stageImg[hidden]{display:none}   /* blur nahi: customer poora chapter saaf dekhe, sirf lock + Buy */
 .lk-cta{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:max-content;max-width:86%;background:rgba(12,10,30,.66);border-radius:16px;box-shadow:0 10px 30px -10px rgba(0,0,0,.6);display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;color:#fff;padding:16px 22px;text-shadow:0 2px 10px rgba(0,0,0,.6);z-index:2}
 .lk-cta[hidden]{display:none}.lk-cta b{font-size:1.2rem}.lk-cta span{font-size:.85rem}
 .strip img{width:100%;height:100%;object-fit:cover}
@@ -994,29 +994,33 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------- PREVIEW ---------- */
-/* Pehli 8 slide khuli; baaki sab dikhti hain par lock (halki blur). Lock wali par click = kharido */
+/* Poora chapter preview: har slide saaf dikhti hai (blur nahi). Pehli 8 ke baad "🔒 locked + Buy" ka parda rehta hai.
+   Saari slides ki photo alag aati hai (pvsGet) — preview kholne par, taaki products list halki rahe */
 const FREE_N = 8;
-const pvSlots = (pics, n) => { const N = Math.max(n || 0, pics.length); if (!pics.length) return [];
-  return Array.from({ length:N }, (_, k) => (k < FREE_N && pics[k] ? { src:pics[k], lock:false } : { src:pics[k % Math.min(pics.length, FREE_N)], lock:true })); };   // locked slide par asli photo kabhi nahi (sirf free wali dhundhli)
+const pvSlots = (pics, n, full) => { const src = full && full.some(Boolean) ? full : pics, N = Math.max(n || 0, src.length); if (!src.length) return [];
+  return Array.from({ length:N }, (_, k) => ({ src:src[k] || "", lock:k >= FREE_N || !src[k] })); };
+const PVS = {}, PVS_V = {};
+const pvsFetch = id => PVS[id] || (PVS[id] = !SCRIPT ? Promise.resolve([]) : fetch(SCRIPT + "?action=pvsGet&id=" + encodeURIComponent(id)).then(r => r.json()).then(j => j && j.ok && Array.isArray(j.imgs) ? j.imgs : []).catch(() => []));
 let pv = { p:null, k:0, slots:[] };
-function openPreview(id){
+function openPreview(id, full){
   const p = PRODUCTS.find(x => x.id === id); if (!p) return;
   const imgs = p.previews && p.previews.length ? p.previews : (p.thumb ? [p.thumb] : []);
-  const slots = pvSlots(imgs, +p.slides || 0), N = slots.length;
+  if (!full && PVS_V[id]) full = PVS_V[id];
+  const slots = pvSlots(imgs, +p.slides || 0, full), N = slots.length, all = !!(full && full.some(Boolean));
   pv = { p, k:0, slots };
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
   $("#previewBody").innerHTML = `
     <div class="stage${isNote(p) ? " a4" : ""}" id="stage" style="${imgs.length ? "" : thumbStyle(p)}">
-      ${imgs.length ? `<img id="stageImg" src="${esc(imgs[0])}" alt="${esc(p.title)} slide 1">` : `<span class="gt" style="position:absolute;inset:auto 20px 20px;color:#fff;font:700 1.5rem 'Space Grotesk','Hind'">${esc(p.title)}</span>`}
+      ${imgs.length ? `<img id="stageImg" src="${esc(slots[0].src || imgs[0])}" alt="${esc(p.title)} slide 1">` : `<span class="gt" style="position:absolute;inset:auto 20px 20px;color:#fff;font:700 1.5rem 'Space Grotesk','Hind'">${esc(p.title)}</span>`}
       <div class="lk-cta" id="lkCta" hidden><b id="lkT"></b><span>Poori ${N} ${isNote(p) ? "pages" : "slides"} ke liye kharidein</span><button type="button" class="btn btn-gold btn-sm" onclick="hideModal('previewModal');buyNow(${p.id})">${icon("i-dl","width:15px")}Buy ${inr(p.price)}</button></div>
       ${N > 1 ? `<button class="s-nav s-prev" onclick="slide(-1)" aria-label="Previous slide">${icon("i-left")}</button><button class="s-nav s-next" onclick="slide(1)" aria-label="Next slide">${icon("i-right")}</button><span class="s-pos" id="spos">1 / ${N}</span>` : ""}
     </div>
-    ${N > 1 ? `<div class="strip${isNote(p) ? " a4" : ""}">${slots.map((x,k) => `<button class="${k ? "" : "on"}${x.lock ? " lk" : ""}" onclick="${x.lock ? `hideModal('previewModal');buyNow(${p.id})` : `slide(${k},true)`}" aria-label="${x.lock ? "Locked — buy to unlock" : "Slide " + (k+1)}"><img src="${esc(x.src)}" alt="" loading="lazy"><span>${k+1}</span></button>`).join("")}</div>` : ""}
+    ${N > 1 ? `<div class="strip${isNote(p) ? " a4" : ""}">${slots.map((x,k) => `<button class="${k ? "" : "on"}${x.lock ? " lk" : ""}" onclick="slide(${k},true)" aria-label="${isNote(p) ? "Page" : "Slide"} ${k+1}${x.lock ? " (locked)" : ""}">${x.src ? `<img src="${esc(x.src)}" alt="" loading="lazy">` : ""}<span>${k+1}</span></button>`).join("")}</div>` : ""}
     <div class="m-info">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
       <div class="tags">${(isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "📦 PPT Bundle (ZIP)" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
-      ${N ? `<p style="font-size:.78rem;color:var(--dim)">🔒 ${slots.filter(x => !x.lock).length} ${isNote(p) ? "page" : "slides"} free preview · baaki ${slots.filter(x => x.lock).length} kharidne ke baad khulengi (kul ${N}).</p>` : ""}
+      ${N && all ? `<p style="font-size:.78rem;color:var(--dim)">👀 Poora chapter preview: saari ${N} ${isNote(p) ? "pages" : "slides"} dekhein · ${isNote(p) ? "PDF" : "editable file"} kharidne ke baad download hogi.</p>` : N ? `<p style="font-size:.78rem;color:var(--dim)">🔒 ${slots.filter(x => !x.lock).length} ${isNote(p) ? "page" : "slides"} free preview · baaki ${slots.filter(x => x.lock).length} kharidne ke baad khulengi (kul ${N}).</p>` : ""}
       <div class="m-buy">
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
         <div class="grow">
@@ -1026,15 +1030,17 @@ function openPreview(id){
       </div>
     </div>`;
   showModal("previewModal");
+  if (!full) pvsFetch(id).then(f => { PVS_V[id] = f; if (f.some(Boolean) && pv.p === p && $("#previewModal").classList.contains("on")) { const k = pv.k; openPreview(id, f); if (k) slide(k, true); } });
 }
 function slide(d, abs){
   const sl = pv.slots, N = sl.length; if (N < 2) return;
   pv.k = (((abs ? d : pv.k + d) % N) + N) % N; const x = sl[pv.k];
-  $("#stageImg").src = x.src; $("#stageImg").alt = `${pv.p.title} slide ${pv.k+1}`;
+  $("#stageImg").hidden = !x.src; if (x.src) $("#stageImg").src = x.src; $("#stageImg").alt = `${pv.p.title} slide ${pv.k+1}`;
   $("#stage").classList.toggle("lk", x.lock); $("#lkCta").hidden = !x.lock;
   if (x.lock) $("#lkT").textContent = `🔒 ${isNote(pv.p) ? "Page" : "Slide"} ${pv.k+1} locked`;
   $("#spos").textContent = `${pv.k+1} / ${N}`;
   document.querySelectorAll(".strip button").forEach((b,k) => b.classList.toggle("on", k === pv.k));
+  const on = document.querySelector(".strip button.on"); if (on) on.scrollIntoView({ block:"nearest", inline:"nearest" });
 }
 
 /* ---------- CHECKOUT ---------- */
