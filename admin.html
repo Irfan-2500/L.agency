@@ -395,6 +395,7 @@ label.f span{font-weight:500;color:var(--dim)}
 .bars.b30 small{white-space:nowrap}
 .warnbox{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;border-radius:12px;background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);font-size:.88rem}
 .warnbox .btn{margin-left:auto}
+.psbox{margin-bottom:14px}
 .tcard .nopic{display:grid;place-items:center;height:100%;font-family:var(--display);font-size:1.3rem;color:var(--muted);background:linear-gradient(135deg,var(--accent-soft),var(--card2))}
 .drop .up{display:flex;flex-direction:column;gap:8px;text-align:left}
 .drop .up .tb{height:10px}
@@ -3556,7 +3557,7 @@ async function pptView() {
       ? `Upload A4 PDF notes. They appear on the Study Notes page instantly; customers pay and download automatically.`
       : `Upload PPT or PDF files. They appear on the Ready PPTs page instantly; customers pay and download automatically.`,
       `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>` : ""}<button class="btn" id="autoPv" hidden><svg class="i"><use href="#i-image"/></svg>Auto preview</button>${KIND === "bundle" ? "" : `<button class="btn" id="fullPv" title="Generate images of every slide so customers can preview the whole chapter"><svg class="i"><use href="#i-book"/></svg>Full preview</button>`}${KIND === "bundle" ? `<a class="btn sm" href="ready-ppts.html" target="_blank" rel="noopener">${ic("i-ext")} View on site</a><button class="btn" id="addZip">📦 ZIP Upload</button><button class="btn pri" id="addPack">${ic("i-plus")} New bundle</button>` : `<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`}`) + `
-  ${KIND === "bundle" ? "" : ""}
+  ${KIND === "ppt" ? psBox() : ""}
   ${PPAY ? "" : `<div class="warnbox slim">⚠️ <b>Online payments are off.</b> Orders will need manual UPI verification. <button class="btn sm" data-go="settings">Set up Razorpay →</button></div>`}
   <div class="stats">
     <div class="stat" style="--c:var(--accent)"><span class="ic">${ic(KIND === "notes" ? "i-book" : "i-upload")}</span><b id="pTot">${mine.length}</b><small id="pTotL">Total ${w.one}s · ${live} live</small></div>
@@ -3571,12 +3572,70 @@ async function pptView() {
   $("#psort").value = PSORT; $("#psort").onchange = () => { PSORT = $("#psort").value; drawPpts(); };
   $("#pCsv").onclick = () => csv((KIND || "ppt") + "-catalog.csv", [["ID", "Title", "Status", "Price", "MRP", "Slides/Pages", "Class", "Subject", "Language", "Sold", "File"], ...PP.filter(p => inKind(p)).map(p => [p.id, p.title, p.show ? "Live" : "Hidden", p.price, p.mrp || "", p.slides || "", p.level.filter(x => x !== NOTE_TAG).join(" / "), p.subject, p.lang, p.sold, p.fileName])]);
   if ($("#addPpt")) $("#addPpt").onclick = () => editPpt(null);
+  if (KIND === "ppt") psWire();
   if ($("#addZip")) $("#addZip").onclick = () => { editPpt(null); $("#peZipIn").click(); };
   if ($("#addPack")) $("#addPack").onclick = packOpen;
   if ($("#fullPv")) $("#fullPv").onclick = pvsAll;
   $("#autoPv").onclick = () => { const l = PP.filter(p => inKind(p) && needPv(p)); l.forEach(pvJob); toast(`🖼 Generating previews for ${l.length} item(s)`); drawPpts(); };
   $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
   drawPpts();
+}
+/* ===== Per-slide price: ek daam (jaise ₹2 / slide) sabhi chapter PPTs par ek saath. Bundles (ZIP) aur Notes ko kabhi nahi chhoota ===== */
+const psList = () => PP.filter(p => !isNote(p) && !isZipP(p));
+const psMoney = v => Math.round(v * 100) / 100;
+function psBox() {
+  return `<div class="card psbox" id="psBox">
+    <div class="row" style="gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <div style="flex:1 1 260px;min-width:220px"><h3 style="margin:0 0 4px">₹ Per-slide price</h3><p class="note" style="margin:0">Set one price per slide and apply it to <b>all chapter PPTs</b> at once (price = slides × rate). Subject bundles and notes are never changed.</p></div>
+      <label class="f" style="width:150px">Price per slide (₹)<input type="number" id="psRate" min="0.1" step="0.1" inputmode="decimal"></label>
+      <label class="f" style="width:170px">Cut price per slide (₹) <span>optional</span><input type="number" id="psMrp" min="0" step="0.1" inputmode="decimal" placeholder="Keep as is"></label>
+      <button class="btn pri" id="psGo">Apply to all chapter PPTs</button>
+    </div>
+    <small class="note" id="psInfo" style="display:block;margin-top:8px"></small>
+    <div id="psCf"></div>
+  </div>`;
+}
+function psWire() {
+  $("#psRate").value = PER_SLIDE;
+  const info = () => {
+    const l = psList(), ok = l.filter(p => +p.slides > 0), r = +$("#psRate").value;
+    $("#psInfo").innerHTML = `${ok.length} chapter PPT(s) will be updated${r > 0 ? ` (e.g. 20 slides → ${rs(psMoney(Math.max(1, 20 * r)))})` : ""}.` +
+      (l.length - ok.length ? ` ${l.length - ok.length} PPT(s) have no slide count and will be skipped — add slides in Edit first.` : "") +
+      ` New uploads will also use this rate.`;
+  };
+  $("#psRate").oninput = info; info();
+  $("#psGo").onclick = () => {
+    const rate = +$("#psRate").value, mv = $("#psMrp").value.trim(), mrp = mv === "" ? null : +mv;
+    if (!(rate > 0)) return toast("Enter a price per slide", true);
+    if (mrp !== null && !(mrp >= 0)) return toast("Cut price per slide is not valid", true);
+    const todo = psList().filter(p => +p.slides > 0).map(p => {
+      const price = psMoney(Math.max(1, p.slides * rate)), m = mrp === null ? p.mrp : psMoney(p.slides * mrp);
+      return { p, price, mrp: m };
+    }).filter(x => x.price !== +x.p.price || +x.mrp !== +x.p.mrp);
+    if (!todo.length) { psSaveRate(rate, mrp); return toast("All chapter PPTs already have this price"); }
+    const box = $("#psCf");
+    box.innerHTML = `<div class="confirm" style="margin-top:10px">Change the price of ${todo.length} chapter PPT(s) to ${rs(rate)} / slide${mrp !== null ? ` (cut price ${rs(mrp)} / slide)` : ""}? Bundles stay the same. <button class="btn sm pri" data-yes>Yes, apply</button><button class="btn sm" data-no>Cancel</button></div>`;
+    box.querySelector("[data-no]").onclick = () => box.innerHTML = "";
+    box.querySelector("[data-yes]").onclick = () => psApply(todo, rate, mrp);
+  };
+}
+function psSaveRate(rate, mrp) {
+  PER_SLIDE = rate; if (mrp > 0) PER_SLIDE_MRP = mrp;
+  try { localStorage.setItem("la_admin_perslide", JSON.stringify({ rate: PER_SLIDE, mrp: PER_SLIDE_MRP })); } catch (e) {}
+}
+async function psApply(todo, rate, mrp) {
+  const btn = $("#psGo"), box = $("#psCf"); btn.disabled = true; box.innerHTML = "";
+  psSaveRate(rate, mrp);
+  let done = 0, bad = [];
+  for (const x of todo) {
+    btn.textContent = `Updating ${done + bad.length + 1} / ${todo.length}…`;
+    const r = await call("adminPptSave", Object.assign(pptPayload(x.p), { price: x.price, mrp: x.mrp }));
+    if (r.ok) { const i = PP.indexOf(x.p); if (i >= 0) PP[i] = r.ppt; done++; } else bad.push(x.p.title + ": " + (r.error || "failed"));
+  }
+  btn.disabled = false; btn.textContent = "Apply to all chapter PPTs";
+  drawPpts();
+  if (bad.length) { box.innerHTML = `<div class="confirm" style="margin-top:10px">${bad.length} PPT(s) could not be updated: ${esc(bad.slice(0, 5).join(" · "))}${bad.length > 5 ? " …" : ""}</div>`; toast(`${done} updated, ${bad.length} failed`, true); }
+  else toast(`✅ ${done} chapter PPT(s) now ${rs(rate)} / slide`);
 }
 const csv = (name, rows) => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["\ufeff" + rows.map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" })); a.download = name; a.click(); };
 function drawPpts() {
@@ -4337,7 +4396,8 @@ let ZQ = null;
 $("#peZipIn").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) zipPick(f); };
 // file ke naam / slides ke text se andaza (Hindi + English):
 // "अध्याय-1 | रासायनिक अभिक्रियाएँ एवं समीकरण | विज्ञान | कक्षा 10वीं | हिंदी माध्यम.pptx" ya "CH-1_Chemical Reactions | Science | Class-10 EM.pptx"
-const PER_SLIDE = 5, PER_SLIDE_MRP = 8;   // daam apne aap: ₹5 / slide, kata hua ₹8 / slide (badal sakte hain)
+let PER_SLIDE = 5, PER_SLIDE_MRP = 8;   // daam apne aap: ₹5 / slide, kata hua ₹8 / slide — Chapter PPTs page ke "Per-slide price" box se badalta hai
+try { const v = JSON.parse(localStorage.getItem("la_admin_perslide") || "null"); if (v && +v.rate > 0) { PER_SLIDE = +v.rate; if (+v.mrp > 0) PER_SLIDE_MRP = +v.mrp; } } catch (e) {}
 const HI_SUBJ = [["सामाजिक विज्ञान", "Social Science"], ["राजनीति विज्ञान", "Political Science"], ["राजनीतिक विज्ञान", "Political Science"], ["नागरिक शास्त्र", "Political Science"],
   ["जीव विज्ञान", "Biology"], ["जीवविज्ञान", "Biology"], ["भौतिक विज्ञान", "Physics"], ["भौतिकी", "Physics"], ["रसायन विज्ञान", "Chemistry"], ["रसायन शास्त्र", "Chemistry"],
   ["कंप्यूटर", "Computer Science"], ["कम्प्यूटर", "Computer Science"], ["पर्यावरण", "EVS"], ["सामान्य ज्ञान", "GK & Current Affairs"], ["तर्कशक्ति", "Reasoning / MAT"],
