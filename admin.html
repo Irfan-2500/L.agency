@@ -741,6 +741,8 @@ body.noscroll{overflow:hidden}
 @media(forced-colors:active){.nav button.on{outline:2px solid CanvasText}.kpi,.card{border:1px solid CanvasText}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
+.pvs-box{position:fixed;left:16px;bottom:16px;z-index:90;max-width:min(420px,calc(100vw - 32px));display:grid;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px -10px rgba(0,0,0,.35);font-size:.86rem}
+.pvs-box small{color:var(--muted);overflow-wrap:anywhere}.pvs-box .btn{justify-self:start}
 /* ===== Team ===== */
 .fl{display:flex;flex-direction:column;gap:6px;min-width:0}.fl>input,.fl>select,.fl>textarea{width:100%}
 #tmOp .mbox>.row:first-child{flex-wrap:nowrap}
@@ -1105,6 +1107,7 @@ const DEMO = (() => {
 async function demoCall(a, d) {
   await new Promise(r => setTimeout(r, 250));
   const D = DEMO, ok = o => { $("#lastSync").textContent = "Demo data"; return Object.assign({ ok: true }, o || {}); };
+  if (/^pvs/.test(a)) { await teamDemo(); return (window.GAS_DEMO_LOAD(), window.pvs_)(JSON.parse(JSON.stringify(Object.assign({}, d, { action: a, token: "demo" })))); }
   if (/^team/.test(a)) { await teamDemo(); return (window.GAS_DEMO_LOAD(), window.team_)(JSON.parse(JSON.stringify(Object.assign({}, d, { action: a, token: "demo" })))); }
   switch (a) {
     case "adminLogin": return d.user && d.password ? ok({ token: "demo", user: d.user }) : { ok: false, error: "Admin ID aur password daalein" };
@@ -1530,6 +1533,7 @@ function teamDemo() {
   return teamDemoP || (teamDemoP = (async () => {
     await new Promise((ok, no) => { const s = document.createElement("script"); s.src = "js/gas-shim.js"; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
     (0, eval)(await (await fetch("google-script/Team.gs")).text());
+    try { (0, eval)(await (await fetch("google-script/Slides.gs")).text()); } catch (e) {}
   })());
 }
 async function loadTeam(force) {
@@ -3480,7 +3484,7 @@ async function pptView() {
   V(head(TITLES[KTAB()], KIND === "notes"
       ? `Upload A4 PDF notes. They appear on the Study Notes page instantly; customers pay and download automatically.`
       : `Upload PPT or PDF files. They appear on the Ready PPTs page instantly; customers pay and download automatically.`,
-      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "bundle" ? `<a class="btn sm" href="ready-ppts.html" target="_blank" rel="noopener">${ic("i-ext")} View on site</a><button class="btn" id="addZip">📦 ZIP Upload</button><button class="btn pri" id="addPack">${ic("i-plus")} New bundle</button>` : `<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`}`) + `
+      `<a class="btn sm" href="${esc(r.folderUrl)}" target="_blank" rel="noopener">${ic("i-folder")} Drive folder</a>${KIND === "notes" ? `<a class="btn sm" href="ready-ppts.html?type=notes" target="_blank" rel="noopener">${ic("i-ext")} View on site</a>` : ""}<button class="btn" id="autoPv" hidden>🖼 Auto Preview</button>${KIND === "bundle" ? "" : `<button class="btn" id="fullPv" title="Har ${KW().one} ki SAARI slides / pages ki photo — website par customer poora chapter dekh sake">📖 Poora preview</button>`}${KIND === "bundle" ? `<a class="btn sm" href="ready-ppts.html" target="_blank" rel="noopener">${ic("i-ext")} View on site</a><button class="btn" id="addZip">📦 ZIP Upload</button><button class="btn pri" id="addPack">${ic("i-plus")} New bundle</button>` : `<button class="btn pri" id="addPpt">${ic("i-plus")} ${w.add}</button>`}`) + `
   ${KIND === "bundle" ? `<p class="note bnote">Class + subject chunein, chapters tick karein, apna daam likh kar Save. Website par ye "Complete Subject" card mein dikhega.</p>` : ""}
   ${PPAY ? "" : `<div class="warnbox">⚠️ <b>Online payment (Razorpay) abhi band hai.</b> Customer UPI se pay karke UTR daalenge, phir aapko WhatsApp par check karke PPT bhejni hogi. <button class="btn sm" data-go="settings">Razorpay keys daalein →</button></div>`}
   <div class="stats">
@@ -3495,6 +3499,7 @@ async function pptView() {
   if ($("#addPpt")) $("#addPpt").onclick = () => editPpt(null);
   if ($("#addZip")) $("#addZip").onclick = () => { editPpt(null); $("#peZipIn").click(); };
   if ($("#addPack")) $("#addPack").onclick = packOpen;
+  if ($("#fullPv")) $("#fullPv").onclick = pvsAll;
   $("#autoPv").onclick = () => { const l = PP.filter(p => inKind(p) && needPv(p)); l.forEach(pvJob); toast(`🖼 ${l.length} ki preview photo ban rahi hai`); drawPpts(); };
   $$("#view [data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
   drawPpts();
@@ -3946,7 +3951,7 @@ async function cleanPptx(file) {
   z.file("[Content_Types].xml", y); return z.generateAsync({ type: "arraybuffer", compression: "STORE" });
 }
 // PPTX ki sirf shuru ki n slides wali chhoti copy (Google Slides mein badalne ke liye — badi file ki PDF nahi banti)
-async function trimPptx(file, n) {
+async function trimPptx(file, n, from = 0) {
   const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(file);
   const txt = p => z.file(p) ? z.file(p).async("string") : "";
   const relPath = (relsFile, target) => {   // "ppt/slides/_rels/slide1.xml.rels" + "../media/a.png" → "ppt/media/a.png"
@@ -3956,7 +3961,7 @@ async function trimPptx(file, n) {
     return parts.join("/");
   };
   const pres = await txt("ppt/presentation.xml"), prel = await txt("ppt/_rels/presentation.xml.rels");
-  const ids = [...pres.matchAll(/<p:sldId\b[^>]*r:id="([^"]+)"[^>]*\/>/g)], drop = ids.slice(n).map(m => m[1]);
+  const ids = [...pres.matchAll(/<p:sldId\b[^>]*r:id="([^"]+)"[^>]*\/>/g)], drop = ids.filter((m, i) => i < from || i >= from + n).map(m => m[1]);
   if (drop.length) {
     const target = id => (new RegExp(`<Relationship\\b[^>]*Id="${id}"[^>]*>`).exec(prel) || [""])[0].replace(/^.*Target="([^"]+)".*$/, "$1");
     drop.forEach(id => { const p = relPath("ppt/_rels/presentation.xml.rels", target(id)); z.remove(p); z.remove(p.replace(/([^/]+)$/, "_rels/$1.rels")); });
@@ -3972,6 +3977,78 @@ async function trimPptx(file, n) {
   const ct = await txt("[Content_Types].xml");
   z.file("[Content_Types].xml", ct.replace(/<Override[^>]*PartName="\/([^"]+)"[^>]*\/>/g, (m, p) => z.files[p] ? m : ""));
   return z.generateAsync({ type: "blob", compression: "DEFLATE", mimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation" });
+}
+/* ===== Poora chapter preview: har PPT / Notes ki SAARI slides (pages) ki photo =====
+   Website par customer poora chapter dekh sake. Photo list alag store mein (pvsSave) — products list halki rehti hai.
+   PPTX: 12-12 slide ke tukde → Google Slides PDF → har page ki photo. PDF: seedha har page ki photo. */
+const PVS_CHUNK = 12;
+let PVS_Q = [], PVS_RUN = false;
+async function pvsCount(file) {
+  const JSZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip"), z = await JSZip.loadAsync(file);
+  const pres = z.file("ppt/presentation.xml") ? await z.file("ppt/presentation.xml").async("string") : "";
+  return (pres.match(/<p:sldId\b/g) || []).length;
+}
+async function pageShots(pdf, put, tick, name) {
+  const lib = await loadPdfJs(), doc = await lib.getDocument({ data: await pdf.arrayBuffer() }).promise, ups = [];
+  for (let n = 1; n <= doc.numPages; n++) {
+    tick(`photo ${n} / ${doc.numPages}`);
+    try {
+      const page = await doc.getPage(n), vp = page.getViewport({ scale: 1000 / page.getViewport({ scale: 1 }).width }), c = document.createElement("canvas");
+      c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+      const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+      await page.render({ canvasContext: g, viewport: vp }).promise;
+      ups.push(shotUpload(c, name + n).catch(() => shotUpload(c, name + n)).then(r => put(n - 1, r.url || ""), () => put(n - 1, "")));
+      if (ups.length >= 3) await ups[ups.length - 3];
+    } catch (e) { put(n - 1, ""); }
+  }
+  await Promise.all(ups);
+  return doc.numPages;
+}
+async function pvsMake(p, set) {
+  if (isZipP(p)) throw new Error("ZIP bundle ka poora preview nahi banta");
+  const file = await fetchFile(p, t => set(t)), urls = [], name = String(p.title || "ppt").replace(/[^\w\- ]+/g, "").trim().slice(0, 40) + "-s";
+  const put = off => (k, u) => { urls[off + k] = u; };
+  if (/\.pdf$/i.test(p.fileName)) await pageShots(file, put(0), t => set(t), name);
+  else {
+    const total = await pvsCount(file); if (!total) throw new Error("PPTX mein slide nahi mili");
+    for (let a = 0; a < total; a += PVS_CHUNK) {
+      const lb = `Slide ${a + 1}–${Math.min(total, a + PVS_CHUNK)} / ${total}`;
+      set(lb + ": Google Slides se PDF…");
+      const b = await trimPptx(file, PVS_CHUNK, a), tmp = new File([b], "pv-" + p.id + "-" + a + ".pptx", { type: b.type }), key = "tmp-" + Date.now();
+      const src = await sendFile(tmp, () => {}, { key }); dropJob({ key });
+      let r = await call("adminPptThumbs", { src }); if (!r.ok) r = await call("adminPptThumbs", { src });
+      if (!r.ok) throw new Error(r.error);
+      const pdf = new File([Uint8Array.from(atob(r.pdf), c => c.charCodeAt(0))], "part.pdf", { type: "application/pdf" });
+      await pageShots(pdf, put(a), t => set(lb + ": " + t), name);
+    }
+  }
+  const imgs = Array.from({ length: urls.length }, (_, i) => urls[i] || "");
+  if (!imgs.some(Boolean)) throw new Error("ek bhi photo nahi bani");
+  const r = await call("pvsSave", { id: p.id, imgs, n: Math.max(+p.slides || 0, imgs.length) });
+  if (!r.ok) throw new Error(r.error);
+  return imgs.filter(Boolean).length;
+}
+function pvsQueue(p) { if (!p || !p.file || isZipP(p) || PVS_Q.some(x => x.id === p.id)) return; PVS_Q.push(p); pvsRun(); }
+async function pvsAll() {
+  const r = await call("pvsList");
+  if (!r.ok) return toast(/unknown/i.test(r.error || "") ? "Pehle Apps Script mein Slides.gs daal kar naya version deploy karein" : r.error, true);
+  const l = PP.filter(p => inKind(p) && !isZipP(p) && p.file && !r.ids[p.id]);
+  if (!l.length) return toast("✅ Sabka poora preview pehle se bana hai");
+  l.forEach(pvsQueue); toast(`📖 ${l.length} ka poora preview ban raha hai — ye tab khula rakhein`);
+}
+async function pvsRun() {
+  if (PVS_RUN) return; PVS_RUN = true; let done = 0, bad = 0;
+  const box = () => { let b = $("#pvsBox"); if (!b) { b = document.createElement("div"); b.id = "pvsBox"; b.className = "pvs-box"; document.body.appendChild(b); } return b; };
+  try {
+    while (PVS_Q.length) {
+      const p = PVS_Q[0], left = PVS_Q.length;
+      const set = t => { box().innerHTML = `<b>📖 Poora preview</b> · ${done} bane · ${left} baaki${bad ? ` · ❌ ${bad}` : ""}<small>${esc(p.title)} — ${esc(t)}</small><button type="button" class="btn sm" onclick="PVS_Q.length = Math.min(PVS_Q.length, 1)">Rokein</button>`; };
+      set("shuru…");
+      try { await pvsMake(p, set); done++; } catch (e) { bad++; console.error("poora preview", p.id, e); }
+      PVS_Q.shift();
+    }
+  } finally { PVS_RUN = false; }
+  box().innerHTML = `<b>✅ Poora preview: ${done} ban gaye</b>${bad ? `<small>❌ ${bad} nahi bane — "📖 Poora preview" dobara dabayein</small>` : ""}<button type="button" class="btn sm" onclick="this.parentNode.remove()">✕</button>`;
 }
 // PPTX ki asli jaisi photo: chhoti copy Drive par → Google Slides PDF banata hai → PDF ke pages ki photo
 async function slidesShots(file, set) {
@@ -4092,6 +4169,7 @@ async function runJob(j) {
     if (!r.ok) throw new Error(r.error);
     const i = PP.findIndex(x => x.id === r.ppt.id); if (i >= 0) PP[i] = r.ppt; else PP.unshift(r.ppt);
     ppRedraw();
+    if (needUp) pvsQueue(r.ppt);   // nayi file: poora chapter preview peeche ban jayega
     j.st = "ok"; j.msg = r.ppt.show ? "✅ Website par live" : "✅ Saved (hidden)"; dropJob(j);
   } catch (e) { j.st = "bad"; j.msg = "❌ " + e.message; keepJob(j); }
   j.prog = null;

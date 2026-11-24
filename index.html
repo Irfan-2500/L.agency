@@ -1312,10 +1312,10 @@ html.light .bs-how h3,html.light .bh-steps{color:#1a1433}
 @media(max-width:760px){.rd-price{gap:6px}.rd-lb s{display:none}}
 .rd-acts{display:flex;gap:8px;margin-top:10px}.rd-acts .rd-buy{flex:1;width:auto;height:38px;margin:0!important;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.12)}   /* teeno button ek line mein barabar, saaf dikhein */
 .rd-price em{white-space:nowrap}
-.th-strip button.lk{position:relative;opacity:.55}.th-strip button.lk img{filter:blur(3px);opacity:.5}
-.th-strip button.lk::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:1.1rem}
-.lk-stage{position:relative;width:100%;height:100%}.lk-stage img{filter:blur(3.5px);opacity:.8;transform:scale(1.04)}
-.lk-cta{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;color:#fff;padding:16px;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.th-strip button.lk{position:relative}
+.th-strip button.lk::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:1.1rem;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.lk-stage{position:relative;width:100%;height:100%;background:var(--bg2,#11131c)}   /* blur nahi: poora chapter saaf dikhe, sirf lock + Buy */
+.lk-cta{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:max-content;max-width:86%;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;color:#fff;padding:14px 20px;border-radius:16px;background:rgba(12,10,30,.66);box-shadow:0 10px 30px -10px rgba(0,0,0,.6);text-shadow:0 2px 10px rgba(0,0,0,.6)}
 .lk-cta b{font-size:clamp(1rem,4cqi,1.5rem)}.lk-cta span{font-size:.85rem;opacity:.9}
 .nt-row .th-pic{aspect-ratio:210/297}.nt-row .th-card{flex-basis:200px}
 .rd-lb{font-size:.95rem;margin-top:4px}.rd-lb b{font-size:1.3rem}.rd-lb .rd-buy{width:42px;height:42px}.rd-lb .rd-dl{margin-left:0}
@@ -3117,10 +3117,14 @@ const rdHay = p => [p.title, p.desc, p.subject, p.lang, p.theme, p.cat, p.badge,
 const srchToks = q => String(q || "").toLowerCase().replace(/class\s+(\d+)/g, "class$1").split(/[\s,]+/).filter(Boolean);
 const srchHit = (hay, q) => { const h = hay.replace(/class\s+(\d+)/g, "class$1"), t = srchToks(q); return t.every(w => h.includes(w)); };
 let RD_HITS = { rd: 0, nt: 0 };
-/* Preview: pehli 8 slide khuli, baaki sab dikhti hain par lock (halki blur) — click par kharidne ka popup */
+/* Poora chapter preview: har slide saaf dikhti hai (blur nahi); pehli 8 ke baad "🔒 locked + Buy" ka parda.
+   Saari slides ki photo alag aati hai (pvsGet) — preview kholne par, taaki page halka rahe */
 const FREE_N = 8;
-const pvSlots = (pics, n) => { const N = Math.max(n || 0, pics.length); if (!pics.length) return [];
-  return Array.from({ length:N }, (_, k) => (k < FREE_N && pics[k] ? { src:pics[k], lock:false } : { src:pics[k % Math.min(pics.length, FREE_N)], lock:true })); };   // locked slide par asli photo kabhi nahi (sirf free wali dhundhli)
+const pvSlots = (pics, n, full) => { const src = full && full.some(Boolean) ? full : pics, N = Math.max(n || 0, src.length); if (!src.length) return [];
+  return Array.from({ length:N }, (_, k) => ({ src:src[k] || "", lock:k >= FREE_N || !src[k] })); };
+const PVS = {};
+const pvsFetch = id => { const U = String((window.LA_CONFIG || {}).orderUrl || "").trim();
+  return PVS[id] || (PVS[id] = !U ? Promise.resolve([]) : fetch(U + "?action=pvsGet&id=" + encodeURIComponent(id)).then(r => r.json()).then(j => j && j.ok && Array.isArray(j.imgs) ? j.imgs : []).catch(() => [])); };
 /* Admin ki "Card ki photo" CARD_MARK se pehle aati hai, PPT ki slides uske baad: card par photo, Preview mein slides */
 const CARD_MARK = "https://pptstore.in/#card-end";
 const splitPv = a => { a = (a || []).filter(Boolean); const i = a.indexOf(CARD_MARK); return i < 0 ? { card:[], slides:a } : { card:a.slice(0, i), slides:a.slice(i + 1) }; };
@@ -3232,7 +3236,7 @@ function showSlide(k, auto){
   const t = LBL()[thIdx], n = lbN(t); thSlide = (k + n) % n;
   const sl = t.rd && t.slots[thSlide];
   $("#thView").innerHTML = !t.rd ? thPic(t, thSlide).replace(' loading="lazy"','')
-    : sl.lock ? `<div class="lk-stage"><img src="${esc(sl.src)}" alt=""><div class="lk-cta"><b>🔒 ${t.note ? "Page" : "Slide"} ${thSlide + 1} locked</b><span>Poori ${t.n || n} ${t.note ? "pages" : "slides"} ke liye kharidein</span><button type="button" class="btn btn-primary btn-sm" onclick="rdBuy(${t.id})">${icon("i-dl","width:15px")} Buy ${inr(+t.price || 0)}</button></div></div>`
+    : sl.lock ? `<div class="lk-stage">${sl.src ? `<img src="${esc(sl.src)}" alt="${esc(t.name)} — ${t.note ? "page" : "slide"} ${thSlide + 1}">` : ""}<div class="lk-cta"><b>🔒 ${t.note ? "Page" : "Slide"} ${thSlide + 1} locked</b><span>Poori ${t.n || n} ${t.note ? "pages" : "slides"} ke liye kharidein</span><button type="button" class="btn btn-primary btn-sm" onclick="rdBuy(${t.id})">${icon("i-dl","width:15px")} Buy ${inr(+t.price || 0)}</button></div></div>`
     : `<img src="${esc(sl.src)}" alt="${esc(t.name)} — slide ${thSlide + 1}">`;
   $("#thView").firstElementChild?.classList.add("fade-in");
   if (!auto) lbAuto(); else { $("#thStage").classList.remove("playing"); void $("#thStage").offsetWidth; $("#thStage").classList.add("playing"); }
@@ -3261,7 +3265,7 @@ function openTheme(i, keep){
   if (!keep) lbList = null;
   const L = LBL(); thIdx = (i + L.length) % L.length; const t = L[thIdx], sl = t.slides || [t.img];
   if (!t.rd) countView(t);
-  $("#thStrip").innerHTML = t.rd ? (t.slots.length > 1 ? t.slots.map((x,j) => `<button class="${x.lock ? "lk" : ""}" onclick="${x.lock ? `rdBuy(${t.id})` : `showSlide(${j})`}" aria-label="${x.lock ? "Locked — buy to unlock" : "Slide " + (j+1)}"><img src="${esc(x.src)}" alt="" loading="lazy"><span>${j+1}</span></button>`).join("") : "")
+  $("#thStrip").innerHTML = t.rd ? (t.slots.length > 1 ? t.slots.map((x,j) => `<button class="${x.lock ? "lk" : ""}" onclick="showSlide(${j})" aria-label="${t.note ? "Page" : "Slide"} ${j+1}${x.lock ? " (locked)" : ""}">${x.src ? `<img src="${esc(x.src)}" alt="" loading="lazy">` : ""}<span>${j+1}</span></button>`).join("") : "")
     : sl.length > 1 ? sl.map((u,j) => `<button onclick="showSlide(${j})" aria-label="Slide ${j+1}"><img src="${esc(u)}" alt="" loading="lazy"><span>${j+1}</span></button>`).join("") : "";
   $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags"><span class="${t.tone==="White"?"white":"dark"}">${t.tone==="White"?"☀️ White":"🌙 Dark"}</span><span>${esc(t.type)}</span><span>${esc(langLabel(t.lang))}</span>${thSubjects(t).slice(0,3).map(x => `<span>📖 ${esc(x)}</span>`).join("")}${thClasses(t).length ? `<span>🎓 ${esc(thClasses(t).length > 2 ? thClasses(t)[0] + " – " + thClasses(t).slice(-1)[0] : thClasses(t).join(", "))}</span>` : ""}</div>
     <a class="btn btn-primary btn-sm" href="${ordUrl(t.name, sl[0])}">${icon("i-sparkle","width:15px")} Order in This Theme</a>`;
@@ -3269,6 +3273,8 @@ function openTheme(i, keep){
     $("#thInfo").innerHTML = `<h3>${esc(t.name)}</h3><div class="th-tags">${[t.lang && langLabel(t.lang), t.subject && "📖 " + t.subject, ...(t.level || []).filter(x => x !== "Study Notes").slice(0, 2).map(x => "🎓 " + x), t.n && t.n + (t.note ? " pages" : " slides")].filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div>
     <div class="rd-price rd-lb"><b>${inr(+t.price || 0)}</b>${off ? `<s>${inr(+t.mrp)}</s><em>${off}% OFF</em>` : ""}<a class="rd-buy rd-ed" href="${ordUrl(t.name, t.img)}" aria-label="Customize" title="Customize — kuch add ya change karwayein">${icon("i-pen","width:18px;height:18px")}</a><button type="button" class="rd-buy${cart.includes(t.id) ? " in" : ""}" data-rid="${t.id}" onclick="rdCart(${t.id})" aria-label="Add to cart" title="Add to cart">${icon("i-bag","width:18px;height:18px")}</button><a class="rd-buy rd-dl" href="ready-ppts.html?pay=${t.id}" aria-label="Buy and download" title="Download">${icon("i-dl","width:18px;height:18px")}</a></div>`; }
   showSlide(0); showPopup("themeModal");
+  if (t.rd && !t.full) pvsFetch(t.id).then(f => { t.full = f; if (!f.some(Boolean)) return; t.slots = pvSlots(t.slides, t.n, f);
+    if (LBL()[thIdx] === t && $("#themeModal").classList.contains("on")) { const k = thSlide; openTheme(thIdx, true); if (k) showSlide(k); } });
 }
 function stepTheme(d){ openTheme(thIdx + d, true); }
 // arrows: pehle is theme ki slides, last slide ke baad agli theme
