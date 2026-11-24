@@ -48,9 +48,9 @@ function leadsList_() {
 }
 function lFind_(id) { id = lNum_(id); return lAll_().filter(l => l.id === id)[0] || null; }
 function leadsSave_(d) {
-  const x = d.lead || {}, l = lFind_(x.id); if (!l) return { ok: false, error: 'Lead nahi mili' };
+  const x = d.lead || {}, l = lFind_(x.id); if (!l) return { ok: false, error: 'Lead not found' };
   if (x.name != null) l.name = String(x.name).trim().slice(0, 80);
-  if (x.status != null) { if (LEAD_STATUS.indexOf(x.status) < 0) return { ok: false, error: 'Galat status' }; l.status = x.status; }
+  if (x.status != null) { if (LEAD_STATUS.indexOf(x.status) < 0) return { ok: false, error: 'Invalid status' }; l.status = x.status; }
   if (x.notes != null) l.notes = String(x.notes).slice(0, 3000);
   if (x.seen) l.unread = false;
   if (x.followUp != null) l.followUp = String(x.followUp).slice(0, 30);
@@ -59,7 +59,7 @@ function leadsSave_(d) {
 }
 function leadsAdd_(d) {
   const x = d.lead || {}, id = lNum_(x.phone);
-  if (!/^\d{11,15}$/.test(id)) return { ok: false, error: 'Sahi mobile number daalein' };
+  if (!/^\d{11,15}$/.test(id)) return { ok: false, error: 'Enter a valid mobile number' };
   const now = new Date().toISOString();
   let l = lFind_(id);
   if (!l) l = { id: id, name: '', status: 'New', notes: '', msgs: [], createdAt: now, src: x.src || 'Manual' };
@@ -70,7 +70,7 @@ function leadsAdd_(d) {
   return { ok: true, lead: lClean_(l) };
 }
 function leadsCall_(d) {
-  const l = lFind_(d.id); if (!l) return { ok: false, error: 'Lead nahi mili' };
+  const l = lFind_(d.id); if (!l) return { ok: false, error: 'Lead not found' };
   l.calls = (l.calls || 0) + 1; l.calledAt = new Date().toISOString(); l.unread = false;
   if (l.status === 'New') l.status = 'Called';
   lPut_(l);
@@ -90,7 +90,7 @@ function waVerify_(e) {
     lProps_().setProperty('WA_VERIFIED', new Date().toISOString());
     return ContentService.createTextOutput(String(p['hub.challenge'] || ''));
   }
-  return ContentService.createTextOutput('Verify token galat hai');
+  return ContentService.createTextOutput('Wrong verify token');
 }
 /* Har naya WhatsApp message yahan aata hai (URL mein ?wa=KEY hona zaroori, warna koi bhi nakli lead daal sakta) */
 function waHook_(e) {
