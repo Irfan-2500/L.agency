@@ -177,15 +177,21 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .price s{color:var(--dim);font-size:.86rem}
 .price em{font-style:normal;font-size:.74rem;font-weight:800;color:var(--green)}
 .acts{display:grid;grid-template-columns:44px 44px 1fr;gap:8px}.acts>*{min-width:0}.acts .add{padding-inline:0}.acts .add .lbl{display:none}
+.acts.nocus{grid-template-columns:44px 1fr}
+.pdfpill{align-self:flex-start;font-size:.72rem;font-weight:800;padding:3px 9px;border-radius:8px;color:#fbbf24;background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.45)}
+html.light .pdfpill{color:#b45309}
+.pdfnote{font-size:.82rem;font-weight:600;line-height:1.45;padding:9px 12px;border-radius:12px;color:var(--text);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.5);margin:8px 0}.pdfnote[hidden]{display:none}
+.cats.subcats{margin-top:8px;align-items:center}.cats.subcats[hidden]{display:none}.cats.subcats button{font-size:.8rem;padding:6px 11px}.sc-h{font-size:.8rem;font-weight:700;color:var(--muted);margin-right:2px;white-space:nowrap;flex:none}
 .acts .ed{padding-inline:0;color:#fff;background:linear-gradient(135deg,#ec4899,#f97316);border:0}.acts .ed span{display:none}.acts .ed:hover{filter:brightness(1.08)}
 .add.added{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.45);color:var(--green)}
 .empty{grid-column:1/-1;text-align:center;padding:60px 16px;color:var(--muted);background:var(--card);border:1px dashed var(--line2);border-radius:18px}
 .empty b{display:block;color:var(--text);font-size:1.05rem;margin-bottom:6px}
 .more{display:flex;justify-content:center;padding-bottom:60px;margin-top:-30px}
 /* PPTs / Notes switch + A4 (khade) notes cards */
-.kind{display:inline-flex;gap:4px;padding:4px;border-radius:14px;background:var(--card);border:1px solid var(--line2);margin-top:10px}
+.kind{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:14px;background:var(--card);border:1px solid var(--line2);margin-top:10px}
 .kind button{padding:7px 14px;border-radius:10px;font-weight:700;font-size:.9rem;color:var(--muted);background:none;border:0;cursor:pointer}
 .kind button.on{color:#fff;background:var(--grad);box-shadow:0 0 14px rgba(139,44,255,.4)}
+@media (max-width:480px){.kind{flex-wrap:nowrap;max-width:100%}.kind button{padding:7px 9px;font-size:.78rem;white-space:nowrap}}
 .grid.notes{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 .grid.notes .thumb{aspect-ratio:210/297;background-position:top center}
 .grid.notes .thumb .wipe{background-position:top center}
@@ -441,7 +447,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
   <div class="h-row"><a href="index.html" class="h-back" id="hBack" aria-label="Back" title="Back"><svg class="i"><use href="#i-left"/></svg></a>
   <h1 id="hTitle">PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span></h1></div>
   <div class="ticker" role="marquee" aria-label="Updates"><b>Note</b><div class="tk-win"><div class="tk-run" id="hText"><span>Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.</span></div></div></div>
-  <div class="kind" role="tablist" aria-label="Kya dekhna hai"><button type="button" role="tab" data-kind="ppt">📊 Ready PPTs</button><button type="button" role="tab" data-kind="notes">📝 PDF Study Notes</button></div>
+  <div class="kind" role="tablist" aria-label="Kya dekhna hai"><button type="button" role="tab" data-kind="ppt">📊 Ready PPTs</button><button type="button" role="tab" data-kind="notes">📝 PDF Study Notes</button><button type="button" role="tab" data-kind="books">📚 Books</button></div>
 </section>
 <section class="samples" id="samples" hidden aria-label="Sample slides aur pages"><div class="s-track" id="sTrack"></div></section>
 
@@ -452,6 +458,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
       <button class="btn btn-ghost btn-sm ftoggle" id="ftoggle"><svg class="i" style="width:15px"><use href="#i-sliders"/></svg>Filters <span id="fcount"></span></button>
     </div>
     <div class="trow" style="margin-top:10px"><div class="cats" id="cats"></div></div>
+    <div class="cats subcats" id="subcats" hidden></div>
     <div class="mnf" id="mnf" hidden></div>
     <div class="filters" id="filters"></div>
   </div>
@@ -481,6 +488,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
     <div class="total"><span>Total</span><b id="cartTotal">₹0</b></div>
     <button class="btn btn-gold" id="checkout"><svg class="i"><use href="#i-card"/></svg>Checkout</button>
     <p class="note">Payment ke turant baad download link milega.</p>
+    <div class="pdfnote" id="cartBook" hidden>📄 Cart ki Books <b>PDF eBook</b> hain, hard copy nahi. Ghar par kitab nahi aayegi.</div>
   </div>
 </aside>
 
@@ -497,6 +505,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
     <div id="payMain">
       <h3 id="payTitle" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Checkout</h3>
       <div class="pay-items" id="payItems" hidden></div>
+      <div class="pdfnote" id="payBook" hidden></div>
       <div class="pay-alert" id="payAlert" role="alert" hidden>⚠ Pehle apna <b>Name</b>, <b>Mobile number</b> aur <b>Email</b> bharein, tab QR aur payment khulega.</div>
       <form class="form" id="payForm" novalidate>
         <div class="row2">
@@ -539,6 +548,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 
 <script src="config.js"></script>
 <script src="catalog.js"></script>
+<script src="js/book-cats.js"></script>
 <script>
 /* =========================================================
    ⚙️ SETTINGS (live website par ye admin panel / config.php se aate hain)
@@ -579,21 +589,32 @@ async function postS(action, body){   /* Google Script (admin panel) */
 }
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem("la_cart")) || []; } catch(e) {}
-const st = { menu:"", menuT:"", q:"", cat:"all", f:{}, sort:"random", shown:CONFIG.perPage };
+const st = { menu:"", menuT:"", q:"", cat:"all", sub:"", f:{}, sort:"random", shown:CONFIG.perPage };
 /* PPTs ya Notes: admin panel mein category "Notes" wali PDF yahan "Notes" tab mein dikhti hai */
-let NOTES = /\/notes/.test(location.pathname) || new URLSearchParams(location.search).get("type") === "notes";
+/* Teen tab: "ppt" · "notes" · "books". NOTES / BOOKS bas chhote shortcut hain */
+let KIND = /\/notes/.test(location.pathname) || new URLSearchParams(location.search).get("type") === "notes" ? "notes"
+  : /\/books/.test(location.pathname) || new URLSearchParams(location.search).get("type") === "books" ? "books" : "ppt";
+let NOTES = KIND === "notes", BOOKS = KIND === "books";
 /* Notes ki pehchaan: category "notes" (naya Google Script) ya class list mein "Study Notes" tag (purana Script bhi chalta rahe) */
 const NOTE_TAG = "Study Notes";
 const brd = p => arr(p.board).filter(x => String(x)[0] !== "#");   // "#..." = Category menu tag (chhupa)
-const isNote = p => p.cat === "notes" || arr(p.level).includes(NOTE_TAG);
-const lv = p => arr(p.level).filter(l => l !== NOTE_TAG);
-const VIEW = () => PRODUCTS.filter(p => isNote(p) === NOTES);
-const W = () => NOTES ? { one:"Notes", many:"Notes", all:"All Study Notes" } : { one:"PPT", many:"PPTs", all:"All PPTs" };
+const isBook = p => isBookP(p);   /* Books: admin panel ke "📚 Books" se aayi kitabein (js/book-cats.js) */
+const isNote = p => !isBook(p) && (p.cat === "notes" || arr(p.level).includes(NOTE_TAG));
+const tall = p => isNote(p) || isBook(p);   /* khadi (A4 / kitab) cover wale cards */
+const kindOf = p => isBook(p) ? "books" : isNote(p) ? "notes" : "ppt";
+const lv = p => arr(p.level).filter(l => l !== NOTE_TAG && !isBookTag(l));
+const PDF_NOTE = "📄 Ye PDF eBook hai, hard copy (chhapi hui kitab) nahi. Payment ke baad PDF download hogi, ghar par kuch nahi aayega.";
+const pdfNote = (cls = "") => `<div class="pdfnote ${cls}">${PDF_NOTE}</div>`;
+const bkLabel = p => { const b = bookOf(p); return b.cat ? b.cat.name + (b.sub ? " › " + b.sub[1] : "") : "Book"; };
+const VIEW = () => PRODUCTS.filter(p => kindOf(p) === KIND);
+const W = () => NOTES ? { one:"Notes", many:"Notes", all:"All Study Notes" } : BOOKS ? { one:"Book", many:"Books", all:"All Books" } : { one:"PPT", many:"PPTs", all:"All PPTs" };
 const HERO = {
   ppt:{ kick:"Ready to Use PPT", title:`PPT तैयार है, <span class="grad-text">अब बस अपनी क्लास में जान डालिए!</span>`, text:["Choose your PPT by class, subject and language. Editable file on your screen and email right after payment.", "क्लास, विषय और भाषा से अपनी PPT चुनिए। पेमेंट होते ही एडिटेबल फाइल आपकी स्क्रीन और ईमेल पर।"],
     perks:["100% Editable .pptx","Instant Download","UPI Payment","High & Best Quality"], q:"Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" },
   notes:{ kick:"Study Notes", title:`Har class aur exam ke <span class="grad-text">Study Notes</span>`, text:["Chapter-wise notes for school boards and competitive exams, in Hindi and English medium. A4 PDF, download right after payment.", "स्कूल बोर्ड और प्रतियोगी परीक्षाओं के अध्याय-वार नोट्स, हिंदी और इंग्लिश मीडियम में। A4 PDF, पेमेंट होते ही डाउनलोड करें।"],
-    perks:["A4 size PDF (print ready)","Hindi & English Medium","Instant Download","Definitions, formulas, solved questions"], q:"Search: chapter, subject, class, exam… (e.g. Science, Class 10, SSC)" } };
+    perks:["A4 size PDF (print ready)","Hindi & English Medium","Instant Download","Definitions, formulas, solved questions"], q:"Search: chapter, subject, class, exam… (e.g. Science, Class 10, SSC)" },
+  books:{ kick:"Books", title:`हर पाठक के लिए <span class="grad-text">Books</span>`, text:["All books here are PDF eBooks (digital), not printed hard copies. Pick a category, pay by UPI and download the PDF instantly.", "यहाँ सभी किताबें PDF eBook हैं, छपी हुई हार्ड कॉपी नहीं। कैटेगरी चुनिए, UPI से पेमेंट कीजिए और तुरंत PDF डाउनलोड कीजिए।"],
+    perks:["PDF eBook (hard copy nahi)","6 categories","Instant PDF Download","UPI Payment"], q:"Search: book name, author, exam… (e.g. Novel, NEET, Ramayan)" } };
 const SAMPLES = [1,2,3,4,5,6,7,8].map(n => `uploads/notes/sample-${n}.webp`);
 /* Ready PPTs: admin mein "⭐ Featured" wali PPT ki slides (warna sabse nayi PPT ki); 10 se kam hon to baaki PPTs se bharte hain */
 function pptSlides(){
@@ -606,10 +627,11 @@ function pptSlides(){
 }
 function drawSamples(){
   let list;
-  if (NOTES) list = SAMPLES.slice(1);   // sirf PDF ke andar ke pages (sample-2..8). Notes ki preview photos sab chapter covers hain, isliye wo yahan nahi
+  if (BOOKS) list = VIEW().map(p => p.thumb).filter(Boolean).slice(0, 12);   // kitabon ke cover
+  else if (NOTES) list = SAMPLES.slice(1);   // sirf PDF ke andar ke pages (sample-2..8). Notes ki preview photos sab chapter covers hain, isliye wo yahan nahi
   else list = pptSlides();
-  $("#samples").hidden = !list.length; $("#sTrack").classList.toggle("wide", !NOTES);
-  $("#sTrack").innerHTML = [...list, ...list].map((u,k) => `<img src="${esc(u)}" alt="${k < list.length ? `Sample ${NOTES ? "page" : "slide"} ${k+1}` : ""}" loading="lazy" decoding="async" draggable="false">`).join("");
+  $("#samples").hidden = !list.length; $("#sTrack").classList.toggle("wide", KIND === "ppt");
+  $("#sTrack").innerHTML = [...list, ...list].map((u,k) => `<img src="${esc(u)}" alt="${k < list.length ? `${BOOKS ? "Book cover" : NOTES ? "Sample page" : "Sample slide"} ${k+1}` : ""}" loading="lazy" decoding="async" draggable="false">`).join("");
   SP.pos = 0; $("#samples").scrollLeft = 0;
 }
 /* Sample pages: apne aap dheere chalte hain; mouse se pakad kar (ya ungli se) aage-peeche khiska sakte hain */
@@ -656,18 +678,19 @@ $("#hBack").onclick = goBack;
 })();
 document.fonts && document.fonts.ready.then(() => fitTitle());
 function setKind(n, push){
-  NOTES = n; st.cat = "all"; st.f = {}; st.shown = CONFIG.perPage;
-  const h = HERO[n ? "notes" : "ppt"];
+  KIND = n === true ? "notes" : n === false || !HERO[n] ? "ppt" : n;   /* purana true/false bhi chalta hai */
+  NOTES = KIND === "notes"; BOOKS = KIND === "books"; st.cat = "all"; st.sub = ""; st.f = {}; st.shown = CONFIG.perPage;
+  const h = HERO[KIND];
   $("#hTitle").innerHTML = h.title; fitTitle(); heroLines(h.text); $("#q").placeholder = h.q;
   $("#hPerks").innerHTML = h.perks.map(t => `<span>${icon("i-check")}${esc(t)}</span>`).join("");
-  document.querySelectorAll(".kind button").forEach(b => { const on = (b.dataset.kind === "notes") === n; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
-  document.title = (n ? "Study Notes" : "Ready to Use PPTs") + " — PPT Store";
+  document.querySelectorAll(".kind button").forEach(b => { const on = b.dataset.kind === KIND; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
+  document.title = (NOTES ? "Study Notes" : BOOKS ? "Books" : "Ready to Use PPTs") + " — PPT Store";
   drawSamples();
   $("#more").textContent = `Load more ${W().many}`;
   /* URL saaf: page dobara khulne / refresh par hamesha Ready PPTs hi khule */
   if (push) history.replaceState(null, "", location.pathname);
 }
-document.querySelector(".kind").onclick = e => { const b = e.target.closest("button"); if (!b) return; setKind(b.dataset.kind === "notes", true); render(); };
+document.querySelector(".kind").onclick = e => { const b = e.target.closest("button"); if (!b) return; setKind(b.dataset.kind, true); render(); };
 
 /* ---------- FILTERS ---------- */
 const PRICE = [[29,"₹29 tak"],[49,"₹49 tak"],[99,"₹99 tak"],[199,"₹199 tak"],[Infinity,"₹199 se zyada"]];
@@ -677,35 +700,44 @@ const SUBJ_ALL = ["Hindi","English","Maths","Science","Physics","Chemistry","Bio
 const FILTERS = [
   { key:"level",   label:"Class",    nl:"Class / Exam", get:p => lv(p), all:CLASS_ALL, order:v => { const m = /Class (\d+)/.exec(v); return m ? +m[1] : 99; } },
   { key:"subject", label:"Subject",  get:p => arr(p.subject), all:SUBJ_ALL },
-  { key:"lang",    label:"Language", get:p => p.lang === "Both" ? ["Hindi + English","Hindi","English"] : [p.lang], fixed:["Hindi","English","Hindi + English"], ppt:true },
+  { key:"lang",    label:"Language", get:p => p.lang === "Both" ? ["Hindi + English","Hindi","English"] : [p.lang], fixed:["Hindi","English","Hindi + English"], ppt:true, bk:true },
   { key:"board",   label:"Board",    nl:"Board / Exam", get:p => brd(p) },
   { key:"theme",   label:"Theme",    get:p => [p.theme === "Light" ? "☀️ Light" : "🌙 Dark"], ppt:true },
   { key:"style",   label:"Style",    get:p => [p.anim ? "Animated" : "Without Animation"], ppt:true },
-  { key:"price",   label:"Price",    get:p => PRICE.filter(b => p.price <= b[0]).map(b => b[1]), fixed:PRICE.map(b => b[1]) }
+  { key:"price",   label:"Price",    get:p => PRICE.filter(b => p.price <= b[0]).map(b => b[1]), fixed:PRICE.map(b => b[1]), bk:true }
 ];
 const matchQ = p => { const q = st.q.trim().toLowerCase(); if (!q) return true;
-  const hay = [p.title, p.desc, p.subject, langOf(p), ...lv(p), ...brd(p)].join(" ").toLowerCase();
+  const hay = [p.title, p.desc, p.subject, langOf(p), ...lv(p), ...brd(p), isBook(p) ? bkLabel(p) : ""].join(" ").toLowerCase();
   return q.split(/\s+/).every(w => hay.includes(w)); };
-const matchF = (p, skip) => FILTERS.every(f => f.key === skip || (NOTES && f.ppt) || !st.f[f.key] || f.get(p).includes(st.f[f.key]));
+const fOn = f => BOOKS ? !!f.bk : !(NOTES && f.ppt);   /* Books mein sirf Language + Price; category upar ke buttons se */
+const matchF = (p, skip) => FILTERS.every(f => f.key === skip || !fOn(f) || !st.f[f.key] || f.get(p).includes(st.f[f.key]));
 const MEDIUM = [["Hindi","Hindi Medium"],["English","English Medium"],["Both","Hindi + English"]];
-const matchC = p => (!st.menu || arr(p.board).includes(st.menu)) && (st.cat === "all" || (st.cat.startsWith("m:") ? p.lang === st.cat.slice(2) : p.cat === st.cat || (st.cat === "anim" && p.anim)));
+const matchC = p => (!st.menu || arr(p.board).includes(st.menu)) && (st.cat === "all" || (st.cat.startsWith("b:") ? (b => b.c === st.cat.slice(2) && (!st.sub || b.s === st.sub))(bookOf(p))
+  : st.cat.startsWith("m:") ? p.lang === st.cat.slice(2) : p.cat === st.cat || (st.cat === "anim" && p.anim)));
 /* Har baar page khulne par PPTs naye random order mein (render dobara hone par order wahi rahe) */
 const RND = new Map(), rnd = p => RND.get(p.id) ?? (RND.set(p.id, Math.random()), RND.get(p.id));
 const SORTS = { random:(a,b) => rnd(a) - rnd(b), popular:(a,b) => b.sales - a.sales || b.added - a.added, low:(a,b) => a.price - b.price, high:(a,b) => b.price - a.price, new:(a,b) => b.added - a.added };
 
 function renderCats(){
   const V = VIEW(), used = NOTES ? MEDIUM.map(([v,t]) => ({ id:"m:" + v, name:`${t} (${V.filter(p => p.lang === v).length})` })).filter(c => !c.name.endsWith("(0)"))
+    : BOOKS ? BOOK_CATS.map(c => ({ id:"b:" + c.id, name:`${c.e} ${c.name} (${V.filter(p => bookOf(p).c === c.id).length})`, hi:c.hi }))   /* 6 category hamesha dikhein */
     : [];
   /* Ready PPTs mein Educational / Business wale button nahi: Class aur Subject se hi chunte hain */
-  $("#cats").parentElement.hidden = !NOTES;
+  $("#cats").parentElement.hidden = KIND === "ppt";
   $("#cats").innerHTML = [{id:"all",name:`${W().all} (${V.length})`}, ...used]
-    .map(c => `<button class="${st.cat === c.id ? "on" : ""}" data-cat="${c.id}">${esc(c.name)}</button>`).join("");
+    .map(c => `<button class="${st.cat === c.id ? "on" : ""}" data-cat="${c.id}"${c.hi ? ` title="${esc(c.hi)}"` : ""}>${esc(c.name)}</button>`).join("");
+  /* Books: category chuni ho to uske andar ke type (Novel, NEET, Coloring Books…) */
+  const bc = BOOKS && st.cat.startsWith("b:") && BOOK_CATS.find(c => c.id === st.cat.slice(2)), sb = $("#subcats");
+  sb.hidden = !bc;
+  sb.innerHTML = bc ? `<span class="sc-h">${esc(bc.hi)}:</span>` + [["", "All " + bc.name], ...bc.sub].map(([id, t]) => { const n = V.filter(p => { const b = bookOf(p); return b.c === bc.id && (!id || b.s === id); }).length;
+      return `<button class="${st.sub === id ? "on" : ""}" data-sub="${esc(id)}">${esc(t)} (${n})</button>`; }).join("") : "";
 }
-$("#cats").onclick = e => { const b = e.target.closest("button"); if (!b) return; st.cat = b.dataset.cat; st.shown = CONFIG.perPage; render(); };
+$("#cats").onclick = e => { const b = e.target.closest("button"); if (!b) return; st.cat = b.dataset.cat; st.sub = ""; st.shown = CONFIG.perPage; render(); };
+$("#subcats").onclick = e => { const b = e.target.closest("button"); if (!b) return; st.sub = b.dataset.sub; st.shown = CONFIG.perPage; render(); };
 
 function renderFilters(){
   const V = VIEW();
-  $("#filters").innerHTML = FILTERS.filter(f => !(NOTES && f.ppt)).map(f => {
+  $("#filters").innerHTML = FILTERS.filter(fOn).map(f => {
     const base = V.filter(p => matchC(p) && matchQ(p) && matchF(p, f.key));
     let vals = f.fixed || [...new Set([...(f.all || []), ...V.flatMap(f.get)])];
     if (f.order) vals = [...vals].sort((a,b) => f.order(a) - f.order(b) || a.localeCompare(b));
@@ -716,7 +748,7 @@ function renderFilters(){
       vals.map(v => `<option value="${esc(v)}" ${v === cur ? "selected" : ""}>${esc(v)} (${base.filter(p => f.get(p).includes(v)).length})</option>`).join("")}</select></label>`;
   }).join("") + `<label class="fsel"><span>Sort by</span><select id="sort">${[["random","Random Mix"],["popular","Most Popular"],["low","Price: Low to High"],["high","Price: High to Low"],["new","Newest"]]
       .map(([v,t]) => `<option value="${v}" ${st.sort === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>`;
-  const n = Object.values(st.f).filter(Boolean).length + (st.cat !== "all" ? 1 : 0);
+  const n = Object.values(st.f).filter(Boolean).length + (st.cat !== "all" ? 1 : 0) + (st.sub ? 1 : 0);
   $("#fcount").textContent = n ? `(${n})` : "";
   $("#clear").hidden = !(n || st.q);
 }
@@ -761,19 +793,20 @@ function card(p){
   return `<article class="card">
     <button class="thumb" style="${thumbStyle(p)}"${cardPics(p).length > 1 ? ` data-wipe="${p.id}"` : ""} onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
       ${ribbon(p.badge || (p.type === "zip" ? "pack" : ""))}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
-      ${!isNote(p) && p.type !== "pdf" ? PPT_LOGO : ""}
+      ${!tall(p) && p.type !== "pdf" ? PPT_LOGO : ""}
       <span class="peek">👁 Preview</span>
-      ${isNote(p) ? `<span class="sl-badge">📄 A4 PDF${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
+      ${isBook(p) ? `<span class="sl-badge">📄 PDF eBook${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : isNote(p) ? `<span class="sl-badge">📄 A4 PDF${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
     </button>
     <div class="c-body">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3>
+      ${isBook(p) ? `<span class="pdfpill">📄 PDF eBook · hard copy nahi</span>` : ""}
       <p>${esc(p.desc)}</p>
-      <div class="tags">${[langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, p.anim ? "Animated" : ""].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      <div class="tags">${(isBook(p) ? [bkLabel(p), langTxt(p.lang), ...lv(p).filter(l => l !== "Other"), p.subject] : [langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, p.anim ? "Animated" : ""]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
-      <div class="acts">
+      <div class="acts${isBook(p) ? " nocus" : ""}">
         <button class="btn btn-ghost btn-sm add ${inCart ? "added" : ""}" onclick="toggleCart(${p.id})" aria-label="${inCart ? "In cart" : "Add to cart"}" title="${inCart ? "Cart mein hai" : "Add to Cart"}">${icon(inCart ? "i-check" : "i-bag","width:16px")}<span class="lbl">${inCart ? "In Cart" : "Add to Cart"}</span></button>
-        <a class="btn btn-sm ed" href="order.html?theme=${encodeURIComponent(p.title)}${p.thumb ? "&img=" + encodeURIComponent(p.thumb) : ""}" title="Customize — kuch add ya change karwayein" aria-label="Customize ${esc(p.title)}">${icon("i-pen","width:15px")}<span>Custom</span></a>
+        ${isBook(p) ? "" : `<a class="btn btn-sm ed" href="order.html?theme=${encodeURIComponent(p.title)}${p.thumb ? "&img=" + encodeURIComponent(p.thumb) : ""}" title="Customize — kuch add ya change karwayein" aria-label="Customize ${esc(p.title)}">${icon("i-pen","width:15px")}<span>Custom</span></a>`}
         <button class="btn btn-gold btn-sm" onclick="buyNow(${p.id})">${icon("i-dl","width:15px")}Buy Now</button>
       </div>
     </div></article>`;
@@ -803,7 +836,7 @@ function adminBundles(){
   });
 }
 function makeBundles(){
-  if (NOTES) return [];
+  if (KIND !== "ppt") return [];
   const own = adminBundles(), taken = new Set(own.map(b => [b.cls, b.subject, b.lang].join("|")));
   const g = {};
   VIEW().forEach(p => {
@@ -905,10 +938,11 @@ function render(){
   const V = VIEW(), w = W();
   const list = V.filter(p => matchC(p) && matchQ(p) && matchF(p)).sort(SORTS[st.sort]);
   const show = list;   // saare cards ek saath, "Load more" button nahi
-  $("#grid").classList.toggle("notes", NOTES);
-  $("#resultTxt").textContent = V.length ? "K-12" : "";
-  const grid = NOTES ? show : show.filter(p => !isZipP(p));
+  $("#grid").classList.toggle("notes", KIND !== "ppt"); $("#grid").classList.toggle("books", BOOKS);
+  $("#resultTxt").textContent = V.length && !BOOKS ? "K-12" : "";
+  const grid = KIND !== "ppt" ? show : show.filter(p => !isZipP(p));
   $("#grid").innerHTML = grid.length ? grid.map(card).join("") : show.length ? ""
+    : BOOKS ? `<div class="empty"><b>${V.length ? "Is category mein abhi koi Book nahi hai" : "Books jald aa rahi hain"}</b>Doosri category dekhiye, ya WhatsApp par apni pasand ki kitab maangiye. <a class="clear" href="${waURL("Hi PPT Store! Mujhe ye Book chahiye: ")}" target="_blank" rel="noopener">WhatsApp par poochhein →</a></div>`
     : NOTES ? `<div class="empty"><b>${V.length ? "Is filter mein koi Notes nahi mile" : "Notes jald aa rahe hain"}</b>Tab tak Ready PPTs dekhiye, ya WhatsApp par apne chapter ke notes maangiye. <button class="clear" type="button" onclick="setKind(false,true);render()">Ready PPTs dekhein →</button></div>`
     : `<div class="empty"><b>${V.length ? "Is filter mein koi PPT nahi mili" : "Ready PPTs jald aa rahi hain"}</b>Filter badal kar dekhiye, ya apni custom PPT banwaiye. <a class="clear" href="order.html">PPT Order Now →</a></div>`;
   renderBundles(list);
@@ -968,12 +1002,13 @@ function buyNow(id){
 function renderCart(){
   const items = cart.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
   $("#cartCount").textContent = items.length; $("#cartCount").dataset.n = items.length;
-  $("#cartBody").innerHTML = items.length ? items.map(p => `<div class="ci"><span class="mini${isNote(p) ? " a4" : ""}" style="${thumbStyle(p)}"></span>
-      <div><b>${esc(p.title)}</b><small>${inr(p.price)}</small></div>
+  $("#cartBody").innerHTML = items.length ? items.map(p => `<div class="ci"><span class="mini${tall(p) ? " a4" : ""}" style="${thumbStyle(p)}"></span>
+      <div><b>${esc(p.title)}</b><small>${isBook(p) ? "📄 PDF eBook (hard copy nahi) · " : ""}${inr(p.price)}</small></div>
       <button onclick="toggleCart(${p.id})" aria-label="Remove ${esc(p.title)}">${icon("i-trash")}</button></div>`).join("")
     : `<div class="empty" style="padding:40px 10px"><b>Cart khaali hai</b>PPT par "Add to Cart" dabaiye.</div>`;
   const total = items.reduce((s,p) => s + p.price, 0);
   $("#cartTotal").textContent = inr(total);
+  $("#cartBook").hidden = !items.some(isBook);
   $("#checkout").innerHTML = `${icon("i-card")} ${items.length ? `Proceed to Pay ${inr(total)}` : "Checkout"}`;
   $("#checkout").disabled = !items.length; $("#checkout").style.opacity = items.length ? 1 : .5;
 }
@@ -1010,17 +1045,17 @@ function openPreview(id, full){
   pv = { p, k:0, slots };
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
   $("#previewBody").innerHTML = `
-    <div class="stage${isNote(p) ? " a4" : ""}" id="stage" style="${imgs.length ? "" : thumbStyle(p)}">
+    <div class="stage${tall(p) ? " a4" : ""}" id="stage" style="${imgs.length ? "" : thumbStyle(p)}">
       ${imgs.length ? `<img id="stageImg" src="${esc(slots[0].src || imgs[0])}" alt="${esc(p.title)} slide 1">` : `<span class="gt" style="position:absolute;inset:auto 20px 20px;color:#fff;font:700 1.5rem 'Space Grotesk','Hind'">${esc(p.title)}</span>`}
-      <div class="lk-cta" id="lkCta" hidden><b id="lkT"></b><span>Poori ${N} ${isNote(p) ? "pages" : "slides"} ke liye kharidein</span><button type="button" class="btn btn-gold btn-sm" onclick="hideModal('previewModal');buyNow(${p.id})">${icon("i-dl","width:15px")}Buy ${inr(p.price)}</button></div>
+      <div class="lk-cta" id="lkCta" hidden><b id="lkT"></b><span>Poori ${N} ${tall(p) ? "pages" : "slides"} ke liye kharidein</span><button type="button" class="btn btn-gold btn-sm" onclick="hideModal('previewModal');buyNow(${p.id})">${icon("i-dl","width:15px")}Buy ${inr(p.price)}</button></div>
       ${N > 1 ? `<button class="s-nav s-prev" onclick="slide(-1)" aria-label="Previous slide">${icon("i-left")}</button><button class="s-nav s-next" onclick="slide(1)" aria-label="Next slide">${icon("i-right")}</button><span class="s-pos" id="spos">1 / ${N}</span>` : ""}
     </div>
-    ${N > 1 ? `<div class="strip${isNote(p) ? " a4" : ""}">${slots.map((x,k) => `<button class="${k ? "" : "on"}${x.lock ? " lk" : ""}" onclick="slide(${k},true)" aria-label="${isNote(p) ? "Page" : "Slide"} ${k+1}${x.lock ? " (locked)" : ""}">${x.src ? `<img src="${esc(x.src)}" alt="" loading="lazy">` : ""}<span>${k+1}</span></button>`).join("")}</div>` : ""}
+    ${N > 1 ? `<div class="strip${tall(p) ? " a4" : ""}">${slots.map((x,k) => `<button class="${k ? "" : "on"}${x.lock ? " lk" : ""}" onclick="slide(${k},true)" aria-label="${tall(p) ? "Page" : "Slide"} ${k+1}${x.lock ? " (locked)" : ""}">${x.src ? `<img src="${esc(x.src)}" alt="" loading="lazy">` : ""}<span>${k+1}</span></button>`).join("")}</div>` : ""}
     <div class="m-info">
       ${soldTag(p)}
-      <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
-      <div class="tags">${(isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "📦 PPT Bundle (ZIP)" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
-      ${N && all ? `<p style="font-size:.78rem;color:var(--dim)">👀 Poora chapter preview: saari ${N} ${isNote(p) ? "pages" : "slides"} dekhein · ${isNote(p) ? "PDF" : "editable file"} kharidne ke baad download hogi.</p>` : N ? `<p style="font-size:.78rem;color:var(--dim)">🔒 ${slots.filter(x => !x.lock).length} ${isNote(p) ? "page" : "slides"} free preview · baaki ${slots.filter(x => x.lock).length} kharidne ke baad khulengi (kul ${N}).</p>` : ""}
+      <h3>${esc(p.title)}</h3>${isBook(p) ? pdfNote() : ""}<p>${esc(p.desc)}</p>
+      <div class="tags">${(isBook(p) ? [bkLabel(p), p.slides ? `${p.slides} Pages` : "", "PDF eBook", langTxt(p.lang), ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p)] : isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "📦 PPT Bundle (ZIP)" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      ${N && all ? `<p style="font-size:.78rem;color:var(--dim)">👀 Poora chapter preview: saari ${N} ${tall(p) ? "pages" : "slides"} dekhein · ${tall(p) ? "PDF" : "editable file"} kharidne ke baad download hogi.</p>` : N ? `<p style="font-size:.78rem;color:var(--dim)">🔒 ${slots.filter(x => !x.lock).length} ${isNote(p) ? "page" : "slides"} free preview · baaki ${slots.filter(x => x.lock).length} kharidne ke baad khulengi (kul ${N}).</p>` : ""}
       <div class="m-buy">
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
         <div class="grow">
@@ -1037,7 +1072,7 @@ function slide(d, abs){
   pv.k = (((abs ? d : pv.k + d) % N) + N) % N; const x = sl[pv.k];
   $("#stageImg").hidden = !x.src; if (x.src) $("#stageImg").src = x.src; $("#stageImg").alt = `${pv.p.title} slide ${pv.k+1}`;
   $("#stage").classList.toggle("lk", x.lock); $("#lkCta").hidden = !x.lock;
-  if (x.lock) $("#lkT").textContent = `🔒 ${isNote(pv.p) ? "Page" : "Slide"} ${pv.k+1} locked`;
+  if (x.lock) $("#lkT").textContent = `🔒 ${tall(pv.p) ? "Page" : "Slide"} ${pv.k+1} locked`;
   $("#spos").textContent = `${pv.k+1} / ${N}`;
   document.querySelectorAll(".strip button").forEach((b,k) => b.classList.toggle("on", k === pv.k));
   const on = document.querySelector(".strip button.on"); if (on) on.scrollIntoView({ block:"nearest", inline:"nearest" });
@@ -1064,6 +1099,8 @@ const upiLink = (scheme, total) => `${scheme}?` + new URLSearchParams({ pa:CONFI
 function openPay(ids){
   payIds = ids.filter(id => PRODUCTS.some(p => p.id === id)); if (!payIds.length) return;
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id)); payTotal = items.reduce((s,p) => s + p.price, 0);
+  const bks = items.filter(isBook); $("#payBook").hidden = !bks.length;
+  if (bks.length) $("#payBook").innerHTML = `📄 <b>Dhyan dein:</b> ${bks.length > 1 ? "Ye books" : `"${esc(bks[0].title)}"`} <b>PDF eBook</b> hai, <b>hard copy (chhapi hui kitab) nahi</b>. Payment ke baad sirf PDF download milegi, courier se kuch nahi aayega.`;
   COUPON = null; $("#cpnBox").hidden = !SPAY; $("#cpnIn").value = ""; $("#cpnMsg").textContent = "";
   $("#payItems").innerHTML = items.map(p => `<div class="pi"><b>${esc(p.title)}</b><span>${inr(p.price)}</span></div>`).join("") + (items.length > 1 ? `<div class="pi tot"><span>Total</span><span>${inr(payTotal)}</span></div>` : "");
   const m = payMode(), u = CONFIG.upi || {}, hasId = /@/.test(u.id || ""), showApps = m !== "upi" || hasId;
@@ -1272,7 +1309,7 @@ function checking(d, orderId, utr){
 $("#payWa").onclick = () => {
   const d = buyer(); if (!d) return;
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id));
-  window.open(waURL(`Hi PPT Store! Mujhe ye Ready PPT${items.length > 1 ? "s" : ""} chahiye:\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\n\nEmail: ${d.email}\nPhone: ${d.phone}`), "_blank");
+  window.open(waURL(`Hi PPT Store! Mujhe ye${items.some(isBook) ? " (PDF)" : " Ready PPT" + (items.length > 1 ? "s" : "")} chahiye:\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\n\nEmail: ${d.email}\nPhone: ${d.phone}`), "_blank");
 };
 
 let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 2200); }
@@ -1297,7 +1334,7 @@ function seoList(){
   const QS0 = location.search;   /* pehle hi yaad rakho — purani list dikhate waqt URL saaf ho jata hai, phir menu wala filter kho jata tha */
   /* Pichhli baar ki PPT list turant dikhao (loader jaldi hate); nayi list peeche se aakar update ho jaayegi */
   try { const c = !window.claude && JSON.parse(localStorage.getItem("la_ppts") || "null");
-    if (Array.isArray(c) && c.length) { PRODUCTS = c; setKind(NOTES, true); render(); window.PSLoader && PSLoader.hide(); } } catch(e) {}
+    if (Array.isArray(c) && c.length) { PRODUCTS = c; setKind(KIND, true); render(); window.PSLoader && PSLoader.hide(); } } catch(e) {}
   try {
     const r = await fetch("api/data.php", { headers:{ Accept:"application/json" }, cache:"no-store" });
     const j = await r.json();
@@ -1317,13 +1354,13 @@ function seoList(){
   if (!API && PRODUCTS === DEMO) try { const v = await (await fetch("api/pay-config", { cache:"no-store" })).json(); if (v.ok && v.payments) VPAY = PAY = true; } catch(e) {}
   const qs = new URLSearchParams(QS0), q = qs.get("q"), mk = qs.get("m");
   const tagged = mk ? PRODUCTS.filter(p => arr(p.board).includes(mk)) : [];
-  if (tagged.length) { st.menu = mk; st.menuT = qs.get("t") || ""; NOTES = tagged.every(isNote); }   /* home page Category menu se aaye: sirf us item ki files */
+  if (tagged.length) { st.menu = mk; st.menuT = qs.get("t") || ""; KIND = tagged.every(isBook) ? "books" : tagged.every(isNote) ? "notes" : "ppt"; }   /* home page Category menu se aaye: sirf us item ki files */
   else if (q) { st.q = q; $("#q").value = q; }
-  setKind(NOTES, true); render(); window.PSLoader && PSLoader.hide(); seoList();
+  setKind(KIND, true); render(); window.PSLoader && PSLoader.hide(); seoList();
   /* homepage se "Buy / Checkout": seedha payment kholo */
   const pay = (qs.get("pay") || "").split(",").map(Number).filter(id => PRODUCTS.some(p => p.id === id));
-  if (pay.length) { pay.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart(); history.replaceState(null, "", location.pathname + (NOTES ? "?type=notes" : "")); openPay(pay); }
-  else if (qs.has("cart")) { history.replaceState(null, "", location.pathname + (NOTES ? "?type=notes" : "")); openCart(true); }   /* homepage ka cart button */
+  if (pay.length) { pay.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart(); history.replaceState(null, "", location.pathname + (KIND !== "ppt" ? "?type=" + KIND : "")); openPay(pay); }
+  else if (qs.has("cart")) { history.replaceState(null, "", location.pathname + (KIND !== "ppt" ? "?type=" + KIND : "")); openCart(true); }   /* homepage ka cart button */
 })();
 </script>
 <script>/* Theme switch: homepage wali choice (la_theme) har page par same */
