@@ -3140,6 +3140,8 @@ function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
   const isNt = p => p.cat === "notes" || (p.level || []).includes("Study Notes");
   const toLb = p => { const pics = (p.previews || []).filter(Boolean); if (!pics.length && p.thumb) pics.push(p.thumb);
     return { rd:true, note:isNt(p), id:+p.id, name:p.title, type:isNt(p) ? "Study Notes" : "Ready PPT", img:p.thumb, slides:pics, slots:pvSlots(pics, +p.slides || 0), price:p.price, mrp:p.mrp, lang:p.lang, subject:p.subject, level:p.level || [], n:+p.slides || 0 }; };
+  const isBk = p => (p.level || []).includes("Books");   /* Books (sell) ka apna tab hai ready-ppts.html?type=books par; yahan PPT / Notes row mein nahi */
+  list = list.filter(p => !isBk(p));
   const ppts = list.filter(p => !isNt(p)), notes = list.filter(isNt);
   RD_LIST = ppts.map(toLb); NT_LIST = notes.map(toLb); RD_RAW = [["rd", ppts, "openRd"], ["nt", notes, "openNt"]];
   rdRender(); if (String(thState.q || "").trim()) renderThemes();
