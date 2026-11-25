@@ -40,6 +40,8 @@ function leads_(d) {
       case 'leadsDelete': return leadsDelete_(d);
       case 'leadsRules': return leadsRules_(d);
       case 'leadsFb': return leadsFbSave_(d);
+      case 'leadsSpendSetup': return leadsSpendSetup_(d);
+      case 'leadsSpend': return leadsSpend_(d);
       case 'leadsImport': return leadsImport_(d);
       case 'leadsNewKey': lProps_().deleteProperty('WA_KEY'); return Object.assign(leadsList_(), { renewed: true });
     }
@@ -57,6 +59,7 @@ function leadsList_() {
   const p = lProps_();
   return { ok: true, leads: leads, statuses: LEAD_STATUS, rules: lRules_(), other: LEAD_OTHER,
     wa: { key: waKey_(), lastHook: p.getProperty('WA_LAST') || '', verified: p.getProperty('WA_VERIFIED') || '' },
+    spend: spendInfo_(),
     fb: { pages: Object.keys(fbPages_()).map(id => ({ id: id, name: fbPages_()[id].name, sub: !!fbPages_()[id].sub })), last: p.getProperty('FB_LAST') || '', err: p.getProperty('FB_ERR') || '' } };
 }
 function lFind_(id) { id = lNum_(id); return lAll_().filter(l => l.id === id)[0] || null; }
@@ -268,6 +271,55 @@ function fbRow_(byId, r) {
   const t = r.created ? new Date(r.created).toISOString() : new Date().toISOString();
   const ad = (r.ad || r.campaign || r.form) ? { headline: String(r.ad || r.campaign || '').slice(0, 200), body: String(r.form || '').slice(0, 300), id: '', url: '', type: 'lead form' + (r.platform ? ' · ' + r.platform : '') } : null;
   return lAdd_(byId, { id: phone, name: name, text: text, t: t, msgId: 'fb' + r.id, ad: ad, src: r.src || 'Lead form', extra: { email: pick(/e-?mail/), city: pick(/city|शहर/) } });
+}
+/* ---------- Kharcha: Meta ads ka spend (har ad) + WhatsApp API messages ka cost ----------
+   Token (system user) mein ads_read + whatsapp_business_management chahiye. Token kabhi wapas browser ko nahi bhejte. */
+function spendCfg_() { try { return JSON.parse(lProps_().getProperty('SPEND_CFG') || '{}'); } catch (e) { return {}; } }
+function spendInfo_() { const c = spendCfg_(); return { adAccount: c.adAccount || '', waba: c.waba || '', hasToken: !!c.token }; }
+function leadsSpendSetup_(d) {
+  const c = spendCfg_();
+  if (d.adAccount != null) c.adAccount = String(d.adAccount).replace(/[^\d]/g, '');
+  if (d.waba != null) c.waba = String(d.waba).replace(/[^\d]/g, '');
+  if (d.metaToken) c.token = String(d.metaToken).trim();
+  if (!c.token) return { ok: false, error: 'Paste the token' };
+  if (!c.adAccount && !c.waba) return { ok: false, error: 'Enter the Ad account ID or WhatsApp account ID' };
+  if (c.adAccount) fbGet_('act_' + c.adAccount + '?fields=name,currency', c.token);     // galat ho to yahin error
+  lProps_().setProperty('SPEND_CFG', JSON.stringify(c));
+  CacheService.getScriptCache().remove('spend_last');
+  return { ok: true, spend: spendInfo_() };
+}
+/* d.since / d.until: 'YYYY-MM-DD' */
+function leadsSpend_(d) {
+  const c = spendCfg_(); if (!c.token) return { ok: true, setup: true, spend: spendInfo_() };
+  const since = /^\d{4}-\d\d-\d\d$/.test(d.since) ? d.since : Utilities.formatDate(new Date(Date.now() - 29 * 864e5), 'Asia/Kolkata', 'yyyy-MM-dd');
+  const until = /^\d{4}-\d\d-\d\d$/.test(d.until) ? d.until : Utilities.formatDate(new Date(), 'Asia/Kolkata', 'yyyy-MM-dd');
+  const ck = 'spend_' + since + '_' + until, cache = CacheService.getScriptCache(), hit = !d.fresh && cache.get(ck);
+  if (hit) return JSON.parse(hit);
+  const out = { ok: true, since: since, until: until, spend: spendInfo_(), ads: [], wa: [], errors: [], currency: 'INR' };
+  if (c.adAccount) try {
+    const acc = fbGet_('act_' + c.adAccount + '?fields=currency,name', c.token); out.currency = acc.currency || 'INR'; out.account = acc.name || '';
+    let url = 'act_' + c.adAccount + '/insights?level=ad&limit=200&fields=ad_name,campaign_name,spend,impressions,clicks,actions&time_range=' + encodeURIComponent(JSON.stringify({ since: since, until: until }));
+    for (let page = 0; page < 10 && url; page++) {
+      const r = fbGet_(url, c.token);
+      (r.data || []).forEach(a => {
+        const act = {}; (a.actions || []).forEach(x => act[x.action_type] = Number(x.value) || 0);
+        const chats = act['onsite_conversion.messaging_conversation_started_7d'] || 0;
+        const forms = act['lead'] || act['onsite_conversion.lead_grouped'] || act['leadgen_grouped'] || 0;
+        out.ads.push({ ad: a.ad_name || '', campaign: a.campaign_name || '', spend: Number(a.spend) || 0, impressions: Number(a.impressions) || 0, clicks: Number(a.clicks) || 0,
+          chats: chats, forms: forms, service: lDetect_([a.ad_name, a.campaign_name].join(' ')) });
+      });
+      url = r.paging && r.paging.next ? r.paging.next.replace(/^https:\/\/graph\.facebook\.com\/v[\d.]+\//, '').replace(/([?&])access_token=[^&]*&?/, '$1') : '';
+    }
+  } catch (e) { out.errors.push('Ads: ' + String(e.message || e)); }
+  if (c.waba) try {
+    const st = Math.floor(new Date(since + 'T00:00:00+05:30') / 1000), en = Math.floor(new Date(until + 'T23:59:59+05:30') / 1000);
+    const r = fbGet_(c.waba + '?fields=pricing_analytics.start(' + st + ').end(' + en + ').granularity(DAILY).dimensions(["PRICING_CATEGORY"])', c.token);
+    const pts = ((((r.pricing_analytics || {}).data || [])[0] || {}).data_points) || [];
+    const by = {}; pts.forEach(p => { const k = String(p.pricing_category || 'OTHER'); by[k] = by[k] || { category: k, volume: 0, cost: 0 }; by[k].volume += Number(p.volume) || 0; by[k].cost += Number(p.cost) || 0; });
+    out.wa = Object.keys(by).map(k => by[k]);
+  } catch (e) { out.errors.push('WhatsApp: ' + String(e.message || e)); }
+  try { cache.put(ck, JSON.stringify(out), 1800); } catch (e) { }
+  return out;
 }
 /* Meta Leads Center / Ads Manager se download ki hui file (browser mein padhi gayi rows) */
 function leadsImport_(d) {

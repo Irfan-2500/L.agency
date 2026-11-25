@@ -1688,7 +1688,7 @@ async function leads() {
   if (!r.ok) return fail(/Unknown action|Unknown leads/.test(r.error || "") ? "Leads.gs is not deployed in Apps Script yet" : r.error);
   const hooked = r.wa.lastHook || r.wa.verified;
   if (LD_SV !== "all" && !ldSvcs().includes(LD_SV)) LD_SV = "all";
-  V(head("Leads", "", `<button class="btn sm" id="ldCatB">${ic("i-tag")} Categories</button><button class="btn sm" id="ldFbB">${ic("i-list")} Lead forms</button><button class="btn sm${hooked ? "" : " pri"}" id="ldSetB">${ic("i-msg")} ${hooked ? "WhatsApp setup" : "Connect WhatsApp"}</button><button class="btn sm pri" id="ldAddB">${ic("i-plus")} Lead</button>`) + `
+  V(head("Leads", "", `<button class="btn sm" id="ldSpB">${ic("i-rupee")} Spend</button><button class="btn sm" id="ldCatB">${ic("i-tag")} Categories</button><button class="btn sm" id="ldFbB">${ic("i-list")} Lead forms</button><button class="btn sm${hooked ? "" : " pri"}" id="ldSetB">${ic("i-msg")} ${hooked ? "WhatsApp setup" : "Connect WhatsApp"}</button><button class="btn sm pri" id="ldAddB">${ic("i-plus")} Lead</button>`) + `
     ${hooked ? "" : `<div class="warnbox">📲 WhatsApp is not connected yet. Click <b>Connect WhatsApp</b> for the 6 setup steps. Until then you can add leads yourself with <b>+ Lead</b>.</div>`}
     <div class="ld-sv" id="ldSv" role="tablist" aria-label="Service"></div>
     <div class="kpis k4" id="ldK"></div>
@@ -1696,7 +1696,7 @@ async function leads() {
     <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="ldq" placeholder="Search name, number or message…" aria-label="Search leads"></label></div>
     <div class="list" id="ldList"></div>`);
   $("#ldq").value = LD_Q; $("#ldq").oninput = () => { LD_Q = $("#ldq").value; ldDraw(); };
-  $("#ldSetB").onclick = ldSetup; $("#ldAddB").onclick = ldAddForm; $("#ldCatB").onclick = ldCats; $("#ldFbB").onclick = ldFbSetup;
+  $("#ldSetB").onclick = ldSetup; $("#ldAddB").onclick = ldAddForm; $("#ldCatB").onclick = ldCats; $("#ldSpB").onclick = () => ldSpend(); $("#ldFbB").onclick = ldFbSetup;
   ldDraw();
 }
 function ldDraw() {
@@ -1920,6 +1920,80 @@ function ldParseLeadsFile(buf) {
     return { id: o.id || ("row_" + (o.created_time || o.created || "") + "_" + Object.values(fields).join("|")).slice(0, 120), created: o.created_time || o.created || "", fields,
       ad: o.ad_name || "", campaign: o.campaign_name || o.adset_name || "", form: o.form_name || o.form || "", platform: o.platform || "" };
   });
+}
+/* ---------- Leads → Spend: ads ka kharcha (har ad / service) + WhatsApp message cost ---------- */
+let LD_RANGE = "30";
+const ldMoney = (n, cur) => (cur && cur !== "INR" ? cur + " " : "₹") + Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: n >= 100 ? 0 : 2 });
+const ldDay = d => new Date(d.getTime() + 330 * 6e4).toISOString().slice(0, 10);
+function ldRangeDates(k) {
+  const now = new Date(), t = ldDay(now);
+  if (k === "month") return [t.slice(0, 8) + "01", t];
+  if (k === "lastmonth") { const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 0)); return [ldDay(d).slice(0, 8) + "01", ldDay(d)]; }
+  return [ldDay(new Date(Date.now() - (Number(k) - 1) * 864e5)), t];
+}
+function ldDemoSpend(since, until) {
+  const days = Math.max(1, Math.round((new Date(until) - new Date(since)) / 864e5) + 1), f = days / 30;
+  const ads = [["Professional CV / Resume in 1 hour", "CV ads", 2150, 92, 0], ["PPT banwayein sirf ₹99 mein", "PPT ads", 1640, 71, 0], ["We are hiring: PPT designers (work from home)", "Hiring", 820, 48, 0], ["Computer course: Typing, Excel, Tally", "Computer", 960, 22, 0], ["Typing & Excel course (form)", "Computer", 540, 0, 31]];
+  return { ok: true, since, until, currency: "INR", account: "PPT Store ads (demo)", errors: [], spend: { adAccount: "demo", waba: "demo", hasToken: true },
+    ads: ads.map(([ad, campaign, s, c, fm]) => ({ ad, campaign, spend: Math.round(s * f), impressions: Math.round(s * f * 38), clicks: Math.round(s * f * .7), chats: Math.round(c * f), forms: Math.round(fm * f), service: window.lDetect_ ? window.lDetect_(ad + " " + campaign) : "" })),
+    wa: [{ category: "SERVICE", volume: Math.round(410 * f), cost: 0 }, { category: "MARKETING", volume: Math.round(60 * f), cost: Math.round(60 * f * .86 * 100) / 100 }, { category: "UTILITY", volume: Math.round(25 * f), cost: Math.round(25 * f * .125 * 100) / 100 }] };
+}
+async function ldSpend(fresh) {
+  loading();
+  const [since, until] = LD_RANGE === "custom" ? [($("#spF") || {}).value || ldRangeDates("30")[0], ($("#spT") || {}).value || ldRangeDates("30")[1]] : ldRangeDates(LD_RANGE);
+  if (!LEADS) await loadLeads();
+  const r = LA.previewDemo ? (await call("leadsAdmin"), ldDemoSpend(since, until)) : await call("leadsSpend", { since, until, fresh: !!fresh });
+  if (!r.ok) return fail(/Unknown/.test(r.error || "") ? "Leads.gs update is not deployed in Apps Script yet" : r.error);
+  const cur = r.currency, ads = r.ads || [], wa = r.wa || [];
+  const sum = (a, k) => a.reduce((s, x) => s + (Number(x[k]) || 0), 0);
+  const spend = sum(ads, "spend"), chats = sum(ads, "chats"), forms = sum(ads, "forms"), waCost = sum(wa, "cost"), got = chats + forms;
+  const inRange = l => { const d = ldDay(new Date(l.createdAt || l.lastAt)); return d >= since && d <= until; };
+  const panel = (LEADS && LEADS.leads || []).filter(inRange);
+  const svs = ldSvcs(), bySv = svs.map(sv => { const a = ads.filter(x => (x.service || (LEADS.other || "Other")) === sv), s = sum(a, "spend"), g = sum(a, "chats") + sum(a, "forms"), p = panel.filter(l => ldSvc(l) === sv);
+    return { sv, spend: s, got: g, cpl: g ? s / g : 0, panel: p.length, conv: p.filter(l => l.status === "Converted").length }; }).filter(x => x.spend || x.got || x.panel);
+  const ranges = [["7", "Last 7 days"], ["30", "Last 30 days"], ["month", "This month"], ["lastmonth", "Last month"], ["90", "Last 90 days"], ["custom", "Custom"]];
+  V(head("Leads · Spend", "", `<button class="btn sm" id="spBack">${ic("i-phone")} Back to leads</button><button class="btn sm" id="spSet">${ic("i-gear")} Connect ads account</button><button class="btn sm" id="spRef">${ic("i-refresh")} Refresh</button>`) + `
+    ${r.setup ? `<div class="warnbox">💰 Connect your Meta ads account once to see how much each ad and WhatsApp message cost. Click <b>Connect ads account</b>.</div>` : ""}
+    ${(r.errors || []).map(e => `<div class="err" style="margin-bottom:8px">⚠ ${esc(e)}</div>`).join("")}
+    <div class="chips" id="spR">${ranges.map(([k, l]) => `<button class="chip ${LD_RANGE === k ? "on" : ""}" data-k="${k}">${l}</button>`).join("")}</div>
+    ${LD_RANGE === "custom" ? `<div class="row" style="gap:8px;margin:0 0 12px"><input type="date" id="spF" value="${esc(since)}" aria-label="From"><span class="note">to</span><input type="date" id="spT" value="${esc(until)}" aria-label="To"><button class="btn sm pri" id="spGo">Show</button></div>` : ""}
+    <p class="note" style="margin:0 0 10px">${esc(since)} → ${esc(until)}${r.account ? " · " + esc(r.account) : ""}${LA.previewDemo ? " · sample numbers" : ""}</p>
+    ${r.setup ? "" : `<div class="kpis k4">${kpi({ label: "Ad spend", value: ldMoney(spend, cur), icon: ic("i-rupee"), col: "var(--accent)", go: "leads" })}
+      ${kpi({ label: "Leads from ads", value: got, icon: ic("i-msg"), col: "var(--info)", go: "leads", sub: `${chats} WhatsApp chats · ${forms} forms` })}
+      ${kpi({ label: "Cost per lead", value: got ? ldMoney(spend / got, cur) : "—", icon: ic("i-tag"), col: "var(--warn)", go: "leads" })}
+      ${kpi({ label: "WhatsApp messages", value: ldMoney(waCost, cur), icon: ic("i-phone"), col: "var(--ok)", go: "leads", sub: `${sum(wa, "volume")} sent · ${r.spend && r.spend.waba ? "via API" : "not connected"}` })}</div>
+    <h3 style="margin:18px 0 8px">By service</h3>
+    <div class="card rtbl"><table class="ctbl"><thead><tr><th>Service</th><th>Ad spend</th><th>Leads from ads</th><th>Cost / lead</th><th>Leads in panel</th><th>Converted</th></tr></thead><tbody>
+      ${bySv.map(x => `<tr><td>${ldSvcPill(x.sv)}</td><td>${ldMoney(x.spend, cur)}</td><td>${x.got}</td><td>${x.got ? ldMoney(x.cpl, cur) : "—"}</td><td>${x.panel}</td><td>${x.conv}${x.conv && x.spend ? ` <span class="note">(${ldMoney(x.spend / x.conv, cur)} each)</span>` : ""}</td></tr>`).join("") || `<tr><td colspan="6" class="note">No spend or leads in these dates.</td></tr>`}</tbody></table></div>
+    <h3 style="margin:18px 0 8px">By ad</h3>
+    <div class="card rtbl"><table class="ctbl"><thead><tr><th>Ad</th><th>Service</th><th>Spend</th><th>Clicks</th><th>Chats</th><th>Forms</th><th>Cost / lead</th></tr></thead><tbody>
+      ${ads.slice().sort((a, b) => b.spend - a.spend).map(a => { const g = a.chats + a.forms; return `<tr><td><b>${esc(a.ad)}</b>${a.campaign ? `<div class="note">${esc(a.campaign)}</div>` : ""}</td><td>${ldSvcPill(a.service || (LEADS.other || "Other"))}</td><td>${ldMoney(a.spend, cur)}</td><td>${a.clicks}</td><td>${a.chats}</td><td>${a.forms}</td><td>${g ? ldMoney(a.spend / g, cur) : "—"}</td></tr>`; }).join("") || `<tr><td colspan="7" class="note">No ads ran in these dates.</td></tr>`}</tbody></table></div>
+    <h3 style="margin:18px 0 8px">WhatsApp message cost (Cloud API)</h3>
+    <div class="card rtbl"><table class="ctbl"><thead><tr><th>Type</th><th>Messages</th><th>Cost</th></tr></thead><tbody>
+      ${wa.map(x => `<tr><td>${esc({ SERVICE: "Replies to customers (free)", MARKETING: "Offers / promotions (marketing)", UTILITY: "Order updates (utility)", AUTHENTICATION: "OTP (authentication)" }[x.category] || x.category)}</td><td>${x.volume}</td><td>${ldMoney(x.cost, cur)}</td></tr>`).join("") || `<tr><td colspan="3" class="note">${r.spend && r.spend.waba ? "No paid WhatsApp messages in these dates." : "WhatsApp account not connected here yet."}</td></tr>`}</tbody></table></div>
+    <p class="note" style="margin-top:10px">Spend comes from Meta (updates every few hours). Messages you send from the WhatsApp Business app are free and not shown here. Ad service is guessed from the ad / campaign name using your Categories.</p>`}`);
+  $$("#view .kpi").forEach(b => b.onclick = e => e.preventDefault());
+  $("#spBack").onclick = () => leads(); $("#spSet").onclick = () => ldSpendSetup(r.spend || {}); $("#spRef").onclick = () => ldSpend(true);
+  $$("#spR .chip").forEach(b => b.onclick = () => { LD_RANGE = b.dataset.k; ldSpend(); });
+  const g = $("#spGo"); if (g) g.onclick = () => ldSpend();
+}
+function ldSpendSetup(sp) {
+  const { close } = tmBox("ldSp", `<div class="row"><h2>💰 Connect ads account</h2><span class="sp"></span><button class="btn sm" data-x>✕</button></div>
+    <ol class="ld-steps">
+      <li><b>Ad account ID</b>: <a href="https://adsmanager.facebook.com" target="_blank" rel="noopener">Ads Manager</a> → top left account menu → the number after <code>act=</code> in the address bar.</li>
+      <li><b>WhatsApp account ID</b> (optional): <a href="https://business.facebook.com/settings/whatsapp-business-accounts" target="_blank" rel="noopener">Business settings → WhatsApp accounts</a> → your account → ID.</li>
+      <li><b>Token</b>: <a href="https://business.facebook.com/settings/system-users" target="_blank" rel="noopener">Business settings → System users</a> → your system user → <b>Assign assets</b>: the ad account (and WhatsApp account) → <b>Generate token</b> with <code>ads_read</code> and <code>whatsapp_business_management</code>.</li>
+    </ol>
+    <div class="grid2"><label class="fl"><span class="phead">Ad account ID</span><input id="spA" inputmode="numeric" value="${esc(sp.adAccount || "")}" placeholder="1234567890"></label>
+      <label class="fl"><span class="phead">WhatsApp account ID (optional)</span><input id="spW" inputmode="numeric" value="${esc(sp.waba || "")}" placeholder="1029384756"></label></div>
+    <label class="fl"><span class="phead">Token${sp.hasToken ? " · saved, leave empty to keep" : ""}</span><input id="spK" type="password" autocomplete="off" placeholder="${sp.hasToken ? "••••••••" : "Paste token here"}"></label>
+    <div class="err" id="spE"></div><div class="row"><button class="btn pri" id="spSave">Save</button><button class="btn" data-x>Cancel</button></div>`);
+  $("#spSave").onclick = async () => {
+    const b = $("#spSave"); b.disabled = true; $("#spE").textContent = "";
+    const r = LA.previewDemo ? { ok: true } : await call("leadsSpendSetup", { adAccount: $("#spA").value, waba: $("#spW").value, metaToken: $("#spK").value.trim() });
+    b.disabled = false; if (!r.ok) return $("#spE").textContent = r.error;
+    close(); toast("✓ Ads account connected"); ldSpend(true);
+  };
 }
 /* ---------- TEAM: members, task assign, review, Project Library (salary team — koi paisa nahi) ---------- */
 let TEAM = null, TM_TAB = "tasks", TM_ST = "active", TM_MEM = "", TM_LQ = "";
