@@ -35,7 +35,9 @@ const clip = (s, n) => { s = String(s || "").replace(/\s+/g, " ").trim(); return
 const qs = o => new URLSearchParams(Object.entries(o).filter(([, v]) => v != null && v !== "")).toString();
 const CARD_MARK = "https://pptstore.in/#card-end";
 const fit = (base, tail) => (base + tail).length <= 66 ? base + tail + " | PPT Store" : (base.length <= 66 ? base : clip(base, 66)) + " | PPT Store";
-const isNote = p => p.cat === "notes" || arr(p.level).includes("Study Notes");
+const isBook = p => arr(p.level).includes("Books");   /* admin ke "Books (sell)" wali kitabein (js/book-cats.js) */
+const isNote = p => !isBook(p) && (p.cat === "notes" || arr(p.level).includes("Study Notes"));
+const tagLv = l => l !== "Study Notes" && l !== "Other" && l !== "Books" && !/^bk:/.test(l);
 
 /* ---------- data (Google Script), memory cache ---------- */
 let memo = { t: 0 };
@@ -76,7 +78,7 @@ const itemCount = (D, cat, item) => productsFor(D, cat, item).length + itemFiles
 const stateOf = s => STATES.find(x => slug(x) === s);
 const productsFor = (D, cat, item) => { const k = catKey(cat, item); return D.products.filter(p => arr(p.board).includes(k)); };
 const img = p => { const a = arr(p.previews).filter(u => /^https:\/\//.test(u) && u !== CARD_MARK); return a[0] || ""; };
-const kindOf = p => isNote(p) ? "Notes PDF" : (p.type === "pdf" ? "PDF" : "PPT");
+const kindOf = p => isBook(p) ? "Book PDF" : isNote(p) ? "Notes PDF" : (p.type === "pdf" ? "PDF" : "PPT");
 
 /* ---------- page shell ---------- */
 function page({ url, title, desc, h1, sub, body, ld = [], image, noindex }) {
@@ -141,26 +143,26 @@ ${body}
 }
 const crumbs = (items) => '<nav class="crumb" aria-label="Breadcrumb">' + items.map(([n, u]) => u ? `<a href="${E(u)}">${E(n)}</a>` : E(n)).join(" › ") + "</nav>";
 const crumbLD = (items) => ({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: items.map(([n, u], i) => ({ "@type": "ListItem", position: i + 1, name: n, item: SITE + (u || "") })) });
-const pptList = ps => '<ul class="list">' + ps.map(p => `<li><a href="${E(pptUrl(p))}"><b>${E(p.title)}</b><small>${E([kindOf(p), arr(p.level).filter(l => l !== "Study Notes" && l !== "Other")[0], p.subject, p.lang, p.price ? "₹" + p.price : ""].filter(Boolean).join(" · "))}</small></a></li>`).join("") + "</ul>";
+const pptList = ps => '<ul class="list">' + ps.map(p => `<li><a href="${E(pptUrl(p))}"><b>${E(p.title)}</b><small>${E([kindOf(p), arr(p.level).filter(tagLv)[0], p.subject, p.lang, p.price ? "₹" + p.price : ""].filter(Boolean).join(" · "))}</small></a></li>`).join("") + "</ul>";
 
 /* ---------- pages ---------- */
 function pptPage(D, id) {
   const p = D.products.find(x => String(x.id) === String(id));
   if (!p) return null;
-  const lv = arr(p.level).filter(l => l !== "Study Notes" && l !== "Other"), kind = kindOf(p);
+  const lv = arr(p.level).filter(tagLv), kind = kindOf(p);
   const boards = arr(p.board).filter(b => b && b[0] !== "#");
   const tags = arr(p.board).filter(b => b && b[0] === "#");
   const topics = []; D.cats.forEach(c => c.it.forEach(it => { if (tags.includes(catKey(c.n, it))) topics.push([c.n, it]); }));
   const title = fit(`${p.title}${lv.length && !p.title.includes(lv[0]) ? " – " + lv[0] : ""}${p.subject && !p.title.includes(p.subject) ? " " + p.subject : ""}`, ` ${kind} Download`);
-  const desc = clip(`${p.title}: ${p.desc || ""} ${[lv.join(", "), p.subject, boards.join(", "), p.lang ? p.lang + " medium" : ""].filter(Boolean).join(" · ")}. Editable ${kind}${p.slides ? ", " + p.slides + (isNote(p) ? " pages" : " slides") : ""}, instant download.`, 158);
-  const open = (isNote(p) ? "/ready-ppts.html?type=notes&" : "/ready-ppts.html?") + qs({ q: p.title });
+  const desc = clip(`${p.title}: ${p.desc || ""} ${[lv.join(", "), p.subject, boards.join(", "), p.lang ? p.lang + " medium" : ""].filter(Boolean).join(" · ")}. Editable ${kind}${p.slides ? ", " + p.slides + (isNote(p) || isBook(p) ? " pages" : " slides") : ""}, instant download.`, 158);
+  const open = (isBook(p) ? "/ready-ppts.html?type=books&" : isNote(p) ? "/ready-ppts.html?type=notes&" : "/ready-ppts.html?") + qs({ q: p.title });
   const im = img(p), url = pptUrl(p);
-  const crumb = [["Home", "/"], [isNote(p) ? "Study Notes" : "Ready PPTs", isNote(p) ? "/ready-ppts.html?type=notes" : "/ready-ppts.html"], [p.title]];
+  const crumb = [["Home", "/"], [isBook(p) ? "Books" : isNote(p) ? "Study Notes" : "Ready PPTs", isBook(p) ? "/ready-ppts.html?type=books" : isNote(p) ? "/ready-ppts.html?type=notes" : "/ready-ppts.html"], [p.title]];
   const related = D.products.filter(x => x.id !== p.id && (x.subject === p.subject || arr(x.level).some(l => lv.includes(l)))).slice(0, 8);
   const body = `${crumbs(crumb)}
 <div class="hero${im ? " two" : ""}"><div>
 <h1>${E(p.title)}</h1>
-<div class="facts">${[kind, ...lv, p.subject, ...boards, p.lang && p.lang !== "Both" ? p.lang + " Medium" : p.lang === "Both" ? "Hindi + English" : "", p.slides ? p.slides + (isNote(p) ? " pages" : " slides") : ""].filter(Boolean).map(t => `<span>${E(t)}</span>`).join("")}</div>
+<div class="facts">${[kind, ...lv, p.subject, ...boards, p.lang && p.lang !== "Both" ? p.lang + " Medium" : p.lang === "Both" ? "Hindi + English" : "", p.slides ? p.slides + (isNote(p) || isBook(p) ? " pages" : " slides") : ""].filter(Boolean).map(t => `<span>${E(t)}</span>`).join("")}</div>
 ${p.price ? `<p class="price">₹${E(p.price)}${p.mrp > p.price ? `<s>₹${E(p.mrp)}</s>` : ""}</p>` : ""}
 <p class="txt">${E(p.desc || p.title)}</p>
 <div class="btns"><a class="btn p" href="${E(open)}">Preview &amp; Buy</a><a class="btn" href="/order.html">Need a custom version?</a></div>
