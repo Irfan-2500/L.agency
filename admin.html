@@ -748,6 +748,13 @@ body.noscroll{overflow:hidden}
 .fl{display:flex;flex-direction:column;gap:6px;min-width:0}.fl>input,.fl>select,.fl>textarea{width:100%}
 #tmOp .mbox>.row:first-child{flex-wrap:nowrap}
 .ld.unread{border-color:color-mix(in srgb,var(--info) 55%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--info) 12%,transparent)}
+.ld-sv{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin-bottom:6px;scroll-snap-type:x proximity}
+.ld-svt{flex:0 0 auto;min-width:130px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 14px;border-radius:12px;border:1px solid var(--line2);border-top:3px solid var(--c);background:var(--card);color:var(--text);text-align:left;cursor:pointer;scroll-snap-align:start}
+.ld-svt b{font-size:.92rem}.ld-svt span{font-size:.78rem;color:var(--muted)}.ld-svt em{font-style:normal;color:var(--info);font-weight:700}
+.ld-svt.on{background:color-mix(in srgb,var(--c) 12%,var(--card));border-color:var(--c);box-shadow:0 0 0 1px var(--c)}
+.ld-svp{margin-right:6px}.ld-ad{background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:8px;padding:5px 9px}
+.ld-cats{display:flex;flex-direction:column;gap:8px;margin:10px 0}.ld-cat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto;gap:6px;align-items:center}
+@media(max-width:600px){.ld-cat{grid-template-columns:minmax(0,1fr) auto}.ld-cat [data-w]{grid-column:1/-1;grid-row:2}}
 .ld-dot{color:var(--info);font-size:.7rem;vertical-align:middle}
 .ld p{margin:0;white-space:pre-wrap;word-break:break-word}
 .ld-note{background:var(--bg2);border-radius:8px;padding:6px 9px}
@@ -1609,7 +1616,7 @@ function drawOrders() {
   });
 }
 /* ---------- LEADS: WhatsApp messages → list here, Call / WhatsApp buttons, status, notes ---------- */
-let LEADS = null, LD_ST = "open", LD_Q = "", LD_TIMER = 0, LD_UNREAD = -1;
+let LEADS = null, LD_ST = "open", LD_SV = "all", LD_Q = "", LD_TIMER = 0, LD_UNREAD = -1;
 const LD_COL = { New: "var(--info)", Called: "var(--warn)", Interested: "var(--accent)", Converted: "var(--ok)", "Not interested": "var(--dim)" };
 const LD_HI = { New: "New", Called: "Called", Interested: "Interested", Converted: "Converted ✓", "Not interested": "Not interested" };
 const LD_OPEN = /^(New|Called|Interested)$/;
@@ -1630,19 +1637,25 @@ async function leadsDemoCall(a, d) {
   return window.leads_(JSON.parse(JSON.stringify(Object.assign({}, d, { action: a, token: "demo" }))));
 }
 /* Preview only: fake WhatsApp message, same shape Meta sends */
-function ldDemoMsg(from, name, text, minsAgo) {
+function ldDemoMsg(from, name, text, minsAgo, ad) {
+  const m = { from, id: "wamid.demo" + Math.random().toString(36).slice(2), timestamp: String(Math.floor(Date.now() / 1000 - minsAgo * 60)), type: "text", text: { body: text } };
+  if (ad) m.referral = { source_type: "ad", source_id: "demo-ad", source_url: "https://fb.me/demo", headline: ad, body: "" };
   return { object: "whatsapp_business_account", entry: [{ id: "demo", changes: [{ field: "messages", value: { messaging_product: "whatsapp",
-    contacts: [{ wa_id: from, profile: { name } }], messages: [{ from, id: "wamid.demo" + Math.random().toString(36).slice(2), timestamp: String(Math.floor(Date.now() / 1000 - minsAgo * 60)), type: "text", text: { body: text } }] } }] }] };
+    contacts: [{ wa_id: from, profile: { name } }], messages: [m] } }] }] };
 }
+const LD_DEMO_ADS = ["Professional CV / Resume in 1 hour", "PPT banwayein sirf ₹99 mein", "We are hiring: PPT designers (work from home)", "Computer course: Typing, Excel, Tally"];
 function ldDemoSeed() {
-  [["919876543210", "Rohit Sharma", "Hello sir, Class 10 Science ki saari chapters ki PPT chahiye. Kitne ki milegi?", 600],
-   ["918210456789", "Priya Verma", "Mujhe 25 slides ki PPT chahiye Hindi mein, kal tak mil jayegi?", 240],
-   ["917004112233", "Anjali Kumari", "Bihar board class 12 notes PDF available hai?", 95],
-   ["919934567812", "Sunil Kumar", "Hi", 30], ["919934567812", "Sunil Kumar", "School ke liye 50 teachers ka package chahiye", 28],
+  const hi = "Hello! Can I get more info on this?";
+  [["919876543210", "Rohit Sharma", "Class 10 Science ki saari chapters ki PPT chahiye. Kitne ki milegi?", 600, LD_DEMO_ADS[1]],
+   ["918210456789", "Priya Verma", hi, 240, LD_DEMO_ADS[0]], ["918210456789", "Priya Verma", "Fresher hoon, B.Com. Kal tak CV mil jayega?", 236],
+   ["917004112233", "Anjali Kumari", "Main apply karna chahti hoon, Canva aata hai", 95, LD_DEMO_ADS[2]],
+   ["919934567812", "Sunil Kumar", hi, 30, LD_DEMO_ADS[3]], ["919934567812", "Sunil Kumar", "Typing course ki fees kitni hai?", 28],
+   ["918877665544", "Neha Singh", "Mera resume update karna hai, 2 saal ka experience", 14, LD_DEMO_ADS[0]],
+   ["917979112200", "Amit Raj", hi, 9, LD_DEMO_ADS[2]],
    ["916203998877", "", "Price list bhej dijiye please", 6]].forEach(x => window.waIn_(ldDemoMsg(...x)));
   const all = window.lAll_(), p = all.find(l => l.id === "919876543210"), a = all.find(l => l.id === "917004112233");
   Object.assign(p, { status: "Converted", unread: false, calls: 1, calledAt: new Date(Date.now() - 5 * 36e5).toISOString(), notes: "₹499 wala Science bundle le liya, UPI se pay kiya." }); window.lPut_(p);
-  Object.assign(a, { status: "Called", unread: false, calls: 1, calledAt: new Date(Date.now() - 80 * 6e4).toISOString(), notes: "Shaam ko dobara call karna hai." }); window.lPut_(a);
+  Object.assign(a, { status: "Called", unread: false, calls: 1, calledAt: new Date(Date.now() - 80 * 6e4).toISOString(), notes: "Interview kal 11 baje." }); window.lPut_(a);
 }
 async function loadLeads() {
   const r = await call("leadsAdmin");
@@ -1663,36 +1676,52 @@ function leadsPing() {
     if (r.ok && tab === "leads" && !$("#ldM") && !$("#ldAdd") && !$("#ldSet") && document.activeElement !== $("#ldq")) ldDraw();
   }, 60000);
 }
+const LD_SVC_COL = ["#8b5cf6", "#0ea5e9", "#f59e0b", "#10b981", "#ec4899", "#6366f1", "#14b8a6", "#ef4444"];
+const ldSvcs = () => (LEADS.rules || []).map(r => r.name).concat([LEADS.other || "Other"]);
+const ldSvc = l => l.service || (LEADS && LEADS.other) || "Other";
+const ldSvcCol = n => { const i = ldSvcs().indexOf(n); return i < 0 || n === (LEADS.other || "Other") ? "var(--dim)" : LD_SVC_COL[i % LD_SVC_COL.length]; };
+const ldSvcPill = n => `<span class="pill tm-st ld-svp" style="--c:${ldSvcCol(n)}">${esc(n)}</span>`;
 async function leads() {
   loading();
   const r = await loadLeads();
   if (!r.ok) return fail(/Unknown action|Unknown leads/.test(r.error || "") ? "Leads.gs is not deployed in Apps Script yet" : r.error);
-  const L = r.leads, cnt = s => L.filter(l => l.status === s).length, hooked = r.wa.lastHook || r.wa.verified;
-  V(head("Leads", "", `<button class="btn sm${hooked ? "" : " pri"}" id="ldSetB">${ic("i-msg")} ${hooked ? "WhatsApp setup" : "Connect WhatsApp"}</button><button class="btn sm pri" id="ldAddB">${ic("i-plus")} Lead</button>`) + `
+  const hooked = r.wa.lastHook || r.wa.verified;
+  if (LD_SV !== "all" && !ldSvcs().includes(LD_SV)) LD_SV = "all";
+  V(head("Leads", "", `<button class="btn sm" id="ldCatB">${ic("i-tag")} Categories</button><button class="btn sm${hooked ? "" : " pri"}" id="ldSetB">${ic("i-msg")} ${hooked ? "WhatsApp setup" : "Connect WhatsApp"}</button><button class="btn sm pri" id="ldAddB">${ic("i-plus")} Lead</button>`) + `
     ${hooked ? "" : `<div class="warnbox">📲 WhatsApp is not connected yet. Click <b>Connect WhatsApp</b> for the 6 setup steps. Until then you can add leads yourself with <b>+ Lead</b>.</div>`}
-    <div class="kpis k4">${kpi({ label: "New leads", value: cnt("New"), icon: ic("i-msg"), col: "var(--info)", go: "leads", hot: cnt("New") > 0 })}
-      ${kpi({ label: "Called", value: cnt("Called"), icon: ic("i-phone"), col: "var(--warn)", go: "leads" })}
-      ${kpi({ label: "Interested", value: cnt("Interested"), icon: ic("i-star"), col: "var(--accent)", go: "leads" })}
-      ${kpi({ label: "Converted", value: cnt("Converted"), icon: ic("i-check"), col: "var(--ok)", go: "leads" })}</div>
+    <div class="ld-sv" id="ldSv" role="tablist" aria-label="Service"></div>
+    <div class="kpis k4" id="ldK"></div>
     <div class="chips" id="ldTabs"></div>
     <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="ldq" placeholder="Search name, number or message…" aria-label="Search leads"></label></div>
     <div class="list" id="ldList"></div>`);
-  $$("#view .kpi").forEach((b, i) => b.onclick = e => { e.preventDefault(); LD_ST = ["New", "Called", "Interested", "Converted"][i]; ldDraw(); });
   $("#ldq").value = LD_Q; $("#ldq").oninput = () => { LD_Q = $("#ldq").value; ldDraw(); };
-  $("#ldSetB").onclick = ldSetup; $("#ldAddB").onclick = ldAddForm;
+  $("#ldSetB").onclick = ldSetup; $("#ldAddB").onclick = ldAddForm; $("#ldCatB").onclick = ldCats;
   ldDraw();
 }
 function ldDraw() {
   if (!LEADS || tab !== "leads" || !$("#ldList")) return;
-  const L = LEADS.leads, q = LD_Q.toLowerCase().trim(), qd = q.replace(/\D/g, "");
+  const all = LEADS.leads, q = LD_Q.toLowerCase().trim(), qd = q.replace(/\D/g, "");
+  const svs = ldSvcs().filter(s => s !== (LEADS.other || "Other") || all.some(l => ldSvc(l) === s));
+  $("#ldSv").innerHTML = [["all", "All leads"]].concat(svs.map(s => [s, s])).map(([k, l]) => {
+    const inS = k === "all" ? all : all.filter(x => ldSvc(x) === k), hot = inS.filter(ldHot).length;
+    return `<button class="ld-svt${LD_SV === k ? " on" : ""}" role="tab" aria-selected="${LD_SV === k}" data-k="${esc(k)}" style="--c:${k === "all" ? "var(--accent)" : ldSvcCol(k)}"><b>${esc(l)}</b><span>${inS.length} lead${inS.length === 1 ? "" : "s"}${hot ? ` · <em>${hot} new</em>` : ""}</span></button>`;
+  }).join("");
+  $$("#ldSv .ld-svt").forEach(b => b.onclick = () => { LD_SV = b.dataset.k; ldDraw(); });
+  const L = LD_SV === "all" ? all : all.filter(l => ldSvc(l) === LD_SV), cnt = s => L.filter(l => l.status === s).length;
+  $("#ldK").innerHTML = kpi({ label: "New leads", value: cnt("New"), icon: ic("i-msg"), col: "var(--info)", go: "leads", hot: cnt("New") > 0 })
+    + kpi({ label: "Called", value: cnt("Called"), icon: ic("i-phone"), col: "var(--warn)", go: "leads" })
+    + kpi({ label: "Interested", value: cnt("Interested"), icon: ic("i-star"), col: "var(--accent)", go: "leads" })
+    + kpi({ label: "Converted", value: cnt("Converted"), icon: ic("i-check"), col: "var(--ok)", go: "leads" });
+  $$("#ldK .kpi").forEach((b, i) => b.onclick = e => { e.preventDefault(); LD_ST = ["New", "Called", "Interested", "Converted"][i]; ldDraw(); });
   const tabs = [["open", "Open", L.filter(l => LD_OPEN.test(l.status)).length]].concat(LEADS.statuses.map(s => [s, LD_HI[s] || s, L.filter(l => l.status === s).length]), [["all", "All", L.length]]);
   $("#ldTabs").innerHTML = tabs.map(([k, l, n]) => `<button class="chip ${LD_ST === k ? "on" : ""}" data-k="${esc(k)}">${esc(l)} <small>${n}</small></button>`).join("");
   $$("#ldTabs .chip").forEach(b => b.onclick = () => { LD_ST = b.dataset.k; ldDraw(); });
   const vis = L.filter(l => (LD_ST === "all" || (LD_ST === "open" ? LD_OPEN.test(l.status) : l.status === LD_ST))
-    && (!q || [l.name, l.last, l.notes].join(" ").toLowerCase().includes(q) || (qd && l.id.includes(qd))));
+    && (!q || [l.name, l.last, l.notes, ldSvc(l), l.ad && l.ad.headline].join(" ").toLowerCase().includes(q) || (qd && l.id.includes(qd))));
   $("#ldList").innerHTML = vis.length ? vis.map(l => `<div class="rv ld${l.unread ? " unread" : ""}" data-id="${esc(l.id)}">
       <div class="row"><span class="av">${esc(initials(ldName(l)))}</span><div style="min-width:0"><b>${esc(ldName(l))}</b>${l.unread ? ` <span class="ld-dot" title="New message">●</span>` : ""}
-        <div class="note">📞 ${esc(ldNum(l.id))} · ${ago(l.lastAt || l.createdAt)}${l.src === "Manual" ? " · added manually" : ""}${l.count > 1 ? ` · ${l.count} messages` : ""}</div></div><span class="sp"></span>${ldPill(l.status)}</div>
+        <div class="note">📞 ${esc(ldNum(l.id))} · ${ago(l.lastAt || l.createdAt)}${l.src === "Manual" ? " · added manually" : ""}${l.count > 1 ? ` · ${l.count} messages` : ""}</div></div><span class="sp"></span>${LD_SV === "all" ? ldSvcPill(ldSvc(l)) : ""}${ldPill(l.status)}</div>
+      ${l.ad && l.ad.headline ? `<div class="note ld-ad">📣 From ad: <b>${esc(l.ad.headline)}</b></div>` : ""}
       ${l.last ? `<p>${esc(l.last)}</p>` : ""}
       ${l.notes ? `<div class="note ld-note">📝 ${esc(l.notes.length > 140 ? l.notes.slice(0, 140) + "…" : l.notes)}</div>` : ""}
       <div class="row ld-acts">${l.calls ? `<span class="note">☎ ${l.calls} call${l.calls > 1 ? "s" : ""} · last ${ago(l.calledAt)}</span>` : ""}<span class="sp"></span>
@@ -1700,13 +1729,39 @@ function ldDraw() {
         <a class="btn sm wa" href="${ldWa(l)}" target="_blank" rel="noopener" data-lcall title="Open chat in WhatsApp Desktop (you can call from there too)">${ic("i-msg")} WhatsApp</a>
         <select class="ld-st" aria-label="Status">${LEADS.statuses.map(s => `<option value="${esc(s)}"${s === l.status ? " selected" : ""}>${esc(LD_HI[s] || s)}</option>`).join("")}</select>
         <button class="btn sm" data-lopen>Details</button></div>
-    </div>`).join("") : `<div class="empty"><b>📲</b>${L.length ? "No leads in this view." : "No leads yet. Once WhatsApp is connected, new messages will appear here automatically."}</div>`;
+    </div>`).join("") : `<div class="empty"><b>📲</b>${all.length ? "No leads in this view." : "No leads yet. Once WhatsApp is connected, new messages will appear here automatically."}</div>`;
   $$("#ldList .ld").forEach(card => {
-    const l = L.find(x => x.id === card.dataset.id);
+    const l = all.find(x => x.id === card.dataset.id);
     card.querySelectorAll("[data-lcall]").forEach(a => a.addEventListener("click", () => ldCalled(l)));
     card.querySelector(".ld-st").onchange = e => ldSave(l, { status: e.target.value }, "✓ Status: " + (LD_HI[e.target.value] || e.target.value));
     card.querySelector("[data-lopen]").onclick = () => ldOpen(l);
   });
+}
+/* Categories: har ad / service ke shabd. Ad ki headline ya customer ke message mein ye shabd mile to lead us section mein jaati hai. */
+function ldCats() {
+  let R = JSON.parse(JSON.stringify(LEADS.rules || []));
+  const { close } = tmBox("ldCat", `<div class="row"><h2>Lead categories</h2><span class="sp"></span><button class="btn sm" data-x>✕</button></div>
+    <p class="note" style="margin:0">Each WhatsApp lead is sorted automatically. First the <b>ad headline</b> it came from is checked, then the customer's message. The first category with a matching word wins; no match goes to <b>${esc(LEADS.other || "Other")}</b>.</p>
+    <div id="lcRows" class="ld-cats"></div>
+    <div class="row"><button class="btn sm" id="lcAdd">${ic("i-plus")} Category</button></div>
+    <label class="check"><input type="checkbox" id="lcRe" checked> Re-sort leads now in "${esc(LEADS.other || "Other")}"</label>
+    <div class="err" id="lcE"></div>
+    <div class="row"><button class="btn pri" id="lcGo">Save</button><button class="btn" data-x>Cancel</button></div>`);
+  const draw = () => {
+    $("#lcRows").innerHTML = R.map((r, i) => `<div class="ld-cat"><input data-n="${i}" maxlength="40" value="${esc(r.name)}" placeholder="Name, e.g. CV making" aria-label="Category name">
+      <input data-w="${i}" value="${esc((r.words || []).join(", "))}" placeholder="Words, comma separated: cv, resume, biodata" aria-label="Words"><button class="btn sm danger" data-del="${i}" aria-label="Remove category">${ic("i-trash")}</button></div>`).join("");
+    $$("#lcRows [data-n]").forEach(x => x.oninput = () => R[x.dataset.n].name = x.value);
+    $$("#lcRows [data-w]").forEach(x => x.oninput = () => R[x.dataset.w].words = x.value.split(","));
+    $$("#lcRows [data-del]").forEach(x => x.onclick = () => { R.splice(+x.dataset.del, 1); draw(); });
+  };
+  draw();
+  $("#lcAdd").onclick = () => { R.push({ name: "", words: [] }); draw(); $$("#lcRows [data-n]")[R.length - 1].focus(); };
+  $("#lcGo").onclick = async () => {
+    const b = $("#lcGo"); b.disabled = true; $("#lcE").textContent = "";
+    const r = await call("leadsRules", { rules: R, resort: $("#lcRe").checked });
+    b.disabled = false; if (!r.ok) return $("#lcE").textContent = r.error;
+    LEADS = r; close(); leads(); toast("✓ Categories saved" + (r.moved ? ` · ${r.moved} lead${r.moved > 1 ? "s" : ""} re-sorted` : ""));
+  };
 }
 function ldMerge(n) { const i = LEADS.leads.findIndex(x => x.id === n.id); if (i >= 0) LEADS.leads[i] = n; else LEADS.leads.unshift(n); badge("#nLeads", LEADS.leads.filter(ldHot).length); LD_UNREAD = LEADS.leads.filter(l => l.unread).length; }
 async function ldCalled(l) {   // Call / WhatsApp dabate hi gina jaata hai, "Nayi" → "Call kiya"
@@ -1723,18 +1778,20 @@ function ldOpen(l) {
     <div class="row" style="gap:6px;flex-wrap:wrap"><a class="btn pri" href="tel:+${esc(l.id)}" data-lcall>${ic("i-phone")} Call</a><a class="btn wa" href="${ldWa(l)}" target="_blank" rel="noopener" data-lcall>${ic("i-msg")} WhatsApp</a><button class="btn" data-copy="${esc(l.id.replace(/^91(?=\d{10}$)/, ""))}">${ic("i-copy")} Copy number</button></div>
     <div class="grid2"><label class="fl"><span class="phead">Name</span><input id="ldN" maxlength="80" value="${esc(l.name || "")}" placeholder="Customer name"></label>
       <label class="fl"><span class="phead">Status</span><select id="ldS">${LEADS.statuses.map(s => `<option value="${esc(s)}">${esc(LD_HI[s] || s)}</option>`).join("")}</select></label>
+      <label class="fl"><span class="phead">Service</span><select id="ldV">${ldSvcs().map(s => `<option>${esc(s)}</option>`).join("")}</select></label>
       <label class="fl"><span class="phead">Follow-up date</span><input id="ldF" type="date" value="${esc(l.followUp || "")}"></label></div>
     <label class="fl"><span class="phead">Notes</span><textarea id="ldT" rows="3" maxlength="3000" placeholder="e.g. Wants Class 10 Science bundle, call back tomorrow evening">${esc(l.notes || "")}</textarea></label>
     <div class="err" id="ldE"></div>
     <div class="row"><button class="btn pri" id="ldGo">Save</button><button class="btn" data-x>Cancel</button><span class="sp"></span><button class="btn sm danger" id="ldDel">${ic("i-trash")} Delete</button></div>
+    ${l.ad && (l.ad.headline || l.ad.url) ? `<div class="note ld-ad">📣 Came from ad: <b>${esc(l.ad.headline || "")}</b>${l.ad.body ? " · " + esc(l.ad.body) : ""}${/^https:\/\//.test(l.ad.url || "") ? ` · <a href="${esc(l.ad.url)}" target="_blank" rel="noopener">open ad</a>` : ""}</div>` : ""}
     <h3 style="margin:14px 0 6px">💬 Messages (${msgs.length})</h3>
     <div class="ld-msgs">${msgs.length ? msgs.map(m => `<div class="ld-m${m.by === "note" ? " me" : ""}"><p>${esc(m.text)}</p><small>${fmtTime(m.t)}${m.by === "note" ? " · your note" : ""}</small></div>`).join("") : `<div class="note">No messages.</div>`}</div>`);
-  $("#ldS").value = l.status;
+  $("#ldS").value = l.status; $("#ldV").value = ldSvc(l);
   $$("#ldM [data-lcall]").forEach(a => a.addEventListener("click", () => ldCalled(l)));
   if (l.unread) ldSave(l, { seen: true });
   $("#ldGo").onclick = async () => {
     const b = $("#ldGo"); b.disabled = true;
-    const n = await ldSave(l, { name: $("#ldN").value, status: $("#ldS").value, notes: $("#ldT").value, followUp: $("#ldF").value, seen: true });
+    const n = await ldSave(l, { name: $("#ldN").value, status: $("#ldS").value, service: $("#ldV").value, notes: $("#ldT").value, followUp: $("#ldF").value, seen: true });
     b.disabled = false; if (n) { close(); toast("✓ Saved"); }
   };
   const del = $("#ldDel");
@@ -1746,14 +1803,15 @@ function ldAddForm() {
   const { close } = tmBox("ldAdd", `<div class="row"><h2>New lead</h2><span class="sp"></span><button class="btn sm" data-x>✕</button></div>
     <div class="grid2"><label class="fl"><span class="phead">Mobile number</span><input id="laP" inputmode="numeric" maxlength="16" placeholder="98765 43210"></label>
       <label class="fl"><span class="phead">Name</span><input id="laN" maxlength="80" placeholder="Customer name"></label></div>
+    <label class="fl"><span class="phead">Service</span><select id="laV"><option value="">Auto (from requirement)</option>${ldSvcs().map(s => `<option${s === LD_SV ? " selected" : ""}>${esc(s)}</option>`).join("")}</select></label>
     <label class="fl"><span class="phead">Requirement (optional)</span><textarea id="laM" rows="2" maxlength="1000" placeholder="e.g. Class 12 Physics PPT"></textarea></label>
     <div class="err" id="laE"></div><div class="row"><button class="btn pri" id="laGo">Save</button><button class="btn" data-x>Cancel</button></div>`);
   $("#laP").focus();
   $("#laGo").onclick = async () => {
     const b = $("#laGo"); b.disabled = true; $("#laE").textContent = "";
-    const r = await call("leadsAdd", { lead: { phone: $("#laP").value, name: $("#laN").value, message: $("#laM").value } });
+    const r = await call("leadsAdd", { lead: { phone: $("#laP").value, name: $("#laN").value, message: $("#laM").value, service: $("#laV").value } });
     b.disabled = false; if (!r.ok) return $("#laE").textContent = r.error;
-    ldMerge(r.lead); close(); LD_ST = "open"; ldDraw(); toast("✓ Lead added");
+    ldMerge(r.lead); close(); LD_ST = "open"; if (LD_SV !== "all" && LD_SV !== ldSvc(r.lead)) LD_SV = ldSvc(r.lead); ldDraw(); toast("✓ Lead added · " + ldSvc(r.lead));
   };
 }
 function ldSetup() {
@@ -1774,7 +1832,7 @@ function ldSetup() {
     <div class="note">☎ <b>Calling from the computer:</b> open the <b>Phone Link</b> app on Windows and pair your mobile. Then <b>Call</b> dials through your phone and you talk on the computer. <b>WhatsApp</b> opens the chat in WhatsApp Desktop, where you can also place a WhatsApp call.</div>
     <div class="row" style="margin-top:12px">${LA.previewDemo ? `<button class="btn sm" id="ldTest">🧪 Send test lead (demo)</button>` : ""}<span class="sp"></span><button class="btn sm danger" id="ldKey" title="The old URL will stop working">New token</button><button class="btn sm" data-x>Done</button></div>`);
   const t = $("#ldTest");
-  if (t) t.onclick = async () => { await leadsDemoCall("leadsAdmin", {}); window.waIn_(ldDemoMsg("91" + (9000000000 + Math.floor(Math.random() * 99999999)), "Test Customer", "Hello, mujhe PPT chahiye", 0)); close(); await loadLeads(); leads(); };
+  if (t) t.onclick = async () => { await leadsDemoCall("leadsAdmin", {}); window.waIn_(ldDemoMsg("91" + (9000000000 + Math.floor(Math.random() * 99999999)), "Test Customer", "Hello! Can I get more info on this?", 0, LD_DEMO_ADS[Math.floor(Math.random() * 4)])); close(); await loadLeads(); leads(); };
   const k = $("#ldKey");
   k.onclick = async () => { if (k.dataset.sure !== "1") { k.dataset.sure = "1"; k.textContent = "Sure? You must re-enter it in Meta"; return; }
     const r = await call("leadsNewKey"); if (!r.ok) return toast(r.error, true); LEADS = r; close(); ldSetup(); toast("New token created. Re-enter the Callback URL and Verify token in Meta."); };
