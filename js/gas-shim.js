@@ -66,7 +66,7 @@
   root.Utilities = { getUuid: uuid, DigestAlgorithm: { SHA_256: "sha256" }, computeDigest: (a, s) => signed(sha(utf8(s))), computeHmacSha256Signature: (m, k) => signed(hmac(m, k)),
     base64Encode: b64e, base64Decode: b64d, formatDate: d => new Date(d).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "numeric", minute: "2-digit" }) };
   root.CacheService = { getScriptCache: () => ({ get: k => { const c = S.cache[k]; return c && c.e > Date.now() ? c.v : null; }, put: (k, v, s) => { S.cache[k] = { v: String(v), e: Date.now() + (s || 600) * 1000 }; save(); }, remove: k => { delete S.cache[k]; save(); } }) };
-  root.PropertiesService = { getScriptProperties: () => ({ getProperty: k => S.props[k] ?? null, setProperty: (k, v) => { S.props[k] = String(v); save(); } }) };
+  root.PropertiesService = { getScriptProperties: () => ({ getProperty: k => S.props[k] ?? null, setProperty: (k, v) => { S.props[k] = String(v); save(); }, deleteProperty: k => { delete S.props[k]; save(); } }) };
   root.LockService = { getScriptLock: () => ({ waitLock() { }, releaseLock() { } }) };
   root.ScriptApp = { getOAuthToken: () => "demo" };
   root.DriveApp = { createFolder: n => { const id = "D" + (S.n++) + "demofolder0"; S.folders[id] = n; save(); return folder(id); }, getFolderById: id => { if (!S.folders[id]) throw new Error("no folder"); return folder(id); }, getFileById: file };
