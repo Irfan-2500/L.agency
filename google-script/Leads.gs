@@ -39,6 +39,8 @@ function leads_(d) {
       case 'leadsCall': return leadsCall_(d);
       case 'leadsDelete': return leadsDelete_(d);
       case 'leadsRules': return leadsRules_(d);
+      case 'leadsFb': return leadsFbSave_(d);
+      case 'leadsImport': return leadsImport_(d);
       case 'leadsNewKey': lProps_().deleteProperty('WA_KEY'); return Object.assign(leadsList_(), { renewed: true });
     }
     return { ok: false, error: 'Unknown leads action' };
@@ -54,7 +56,8 @@ function leadsList_() {
   const leads = lAll_().sort((a, b) => String(b.lastAt || b.createdAt).localeCompare(String(a.lastAt || a.createdAt)));
   const p = lProps_();
   return { ok: true, leads: leads, statuses: LEAD_STATUS, rules: lRules_(), other: LEAD_OTHER,
-    wa: { key: waKey_(), lastHook: p.getProperty('WA_LAST') || '', verified: p.getProperty('WA_VERIFIED') || '' } };
+    wa: { key: waKey_(), lastHook: p.getProperty('WA_LAST') || '', verified: p.getProperty('WA_VERIFIED') || '' },
+    fb: { pages: Object.keys(fbPages_()).map(id => ({ id: id, name: fbPages_()[id].name, sub: !!fbPages_()[id].sub })), last: p.getProperty('FB_LAST') || '', err: p.getProperty('FB_ERR') || '' } };
 }
 function lFind_(id) { id = lNum_(id); return lAll_().filter(l => l.id === id)[0] || null; }
 function leadsSave_(d) {
@@ -144,8 +147,8 @@ function waHook_(e) {
   if (String((e.parameter || {}).wa) !== waKey_()) return { ok: false, error: 'bad key' };
   let body = {};
   try { body = JSON.parse((e.postData && e.postData.contents) || '{}'); } catch (err) { return { ok: false, error: 'bad json' }; }
-  lProps_().setProperty('WA_LAST', new Date().toISOString());
-  const added = waIn_(body);
+  lProps_().setProperty(body.object === 'page' ? 'FB_LAST' : 'WA_LAST', new Date().toISOString());
+  const added = body.object === 'page' ? fbIn_(body) : waIn_(body);
   return { ok: true, added: added };
 }
 function waIn_(body) {
@@ -153,8 +156,7 @@ function waIn_(body) {
   const lock = LockService.getScriptLock(); lock.waitLock(20000);
   let added = 0;
   try {
-    const all = lAll_(), byId = {};
-    all.forEach(l => byId[l.id] = l);
+    const byId = lById_();
     (body.entry || []).forEach(en => (en.changes || []).forEach(ch => {
       const v = ch.value || {}; if (ch.field && ch.field !== 'messages') return;
       const names = {};
@@ -163,25 +165,120 @@ function waIn_(body) {
         const id = lNum_(m.from); if (!id) return;
         const text = waText_(m); if (text === null) return;
         const ref = m.referral || null;                                   // Click-to-WhatsApp ad se aaya message
-        const t = m.timestamp ? new Date(Number(m.timestamp) * 1000).toISOString() : new Date().toISOString();
-        let l = byId[id];
-        if (!l) { l = byId[id] = { id: id, name: names[id] || '', status: 'New', notes: '', msgs: [], createdAt: t, src: 'WhatsApp' }; }
-        if (!l.name && names[id]) l.name = names[id];
-        l.msgs = l.msgs || [];
-        if (m.id && l.msgs.some(x => x.id === m.id)) return;          // Meta kabhi kabhi ek hi message 2 baar bhejta hai
-        l.msgs.push({ t: t, text: text.slice(0, 1000), id: m.id || '', by: 'customer' });
-        if (l.msgs.length > LEAD_MSGS) l.msgs = l.msgs.slice(-LEAD_MSGS);
-        if (ref) l.ad = { headline: String(ref.headline || '').slice(0, 200), body: String(ref.body || '').slice(0, 300), id: String(ref.source_id || ''), url: String(ref.source_url || '').slice(0, 300), type: String(ref.source_type || '') };
-        if (!l.service || l.service === LEAD_OTHER) {
-          const ad = ref ? [ref.headline, ref.body, ref.source_url].join(' ') : '';
-          l.service = (ad && lDetect_(ad) !== LEAD_OTHER) ? lDetect_(ad) : lDetect_(text);
-        }
-        l.last = text.slice(0, 300); l.lastAt = t; l.unread = true; l.count = (l.count || 0) + 1;
-        lPut_(l); added++;
+        const ad = ref ? { headline: String(ref.headline || '').slice(0, 200), body: String(ref.body || '').slice(0, 300), id: String(ref.source_id || ''), url: String(ref.source_url || '').slice(0, 300), type: String(ref.source_type || '') } : null;
+        if (lAdd_(byId, { id: id, name: names[id] || '', text: text, msgId: m.id || '', ad: ad, src: 'WhatsApp',
+          t: m.timestamp ? new Date(Number(m.timestamp) * 1000).toISOString() : new Date().toISOString() })) added++;
       });
     }));
   } finally { lock.releaseLock(); }
   return added;
+}
+function lById_() { const byId = {}; lAll_().forEach(l => byId[l.id] = l); return byId; }
+/* Ek naya message / form lead jodna (number se pehchaan). o: { id, name, text, t, msgId, ad, src, extra } */
+function lAdd_(byId, o) {
+  let l = byId[o.id];
+  if (!l) l = byId[o.id] = { id: o.id, name: o.name || '', status: 'New', notes: '', msgs: [], createdAt: o.t, src: o.src };
+  if (!l.name && o.name) l.name = o.name;
+  l.msgs = l.msgs || [];
+  if (o.msgId && l.msgs.some(x => x.id === o.msgId)) return false;     // Meta kabhi kabhi ek hi cheez 2 baar bhejta hai
+  l.msgs.push({ t: o.t, text: String(o.text).slice(0, 1000), id: o.msgId || '', by: 'customer', src: o.src });
+  l.msgs.sort((x, y) => String(x.t).localeCompare(String(y.t)));
+  if (l.msgs.length > LEAD_MSGS) l.msgs = l.msgs.slice(-LEAD_MSGS);
+  if (o.ad) l.ad = o.ad;
+  if (o.extra) l.form = Object.assign(l.form || {}, o.extra);
+  if (!l.service || l.service === LEAD_OTHER) {
+    const ad = o.ad ? [o.ad.headline, o.ad.body, o.ad.url].join(' ') : '';
+    l.service = (ad && lDetect_(ad) !== LEAD_OTHER) ? lDetect_(ad) : lDetect_(o.text);
+  }
+  if (!l.lastAt || String(o.t) >= String(l.lastAt)) { l.last = String(o.text).slice(0, 300); l.lastAt = o.t; }
+  l.unread = true; l.count = (l.count || 0) + 1;
+  lPut_(l);
+  return true;
+}
+
+/* ---------- Facebook / Instagram Lead form ads ----------
+   Meta "leadgen" webhook sirf lead ka ID bhejta hai; naam / number Page token se Graph API se laate hain. */
+const FB_GRAPH = 'https://graph.facebook.com/v21.0/';
+function fbGet_(path, token) {
+  const r = UrlFetchApp.fetch(FB_GRAPH + path + (path.indexOf('?') < 0 ? '?' : '&') + 'access_token=' + encodeURIComponent(token), { muteHttpExceptions: true });
+  let j = {}; try { j = JSON.parse(r.getContentText() || '{}'); } catch (e) { }
+  if (r.getResponseCode() >= 300 || j.error) throw new Error((j.error && j.error.message) || ('Facebook error ' + r.getResponseCode()));
+  return j;
+}
+function fbPages_() { try { return JSON.parse(lProps_().getProperty('FB_PAGES') || '{}'); } catch (e) { return {}; } }
+/* Admin ek token deta hai (Page token, ya user / system user token). Pages dhoondh kar har Page ko leadgen par subscribe karte hain. */
+function leadsFbSave_(d) {
+  const tok = String(d.fbToken || '').trim();
+  if (!tok) { lProps_().deleteProperty('FB_PAGES'); return Object.assign(leadsList_(), { fbMsg: 'Facebook disconnected' }); }
+  let pages = {};
+  try {
+    const acc = fbGet_('me/accounts?fields=id,name,access_token&limit=100', tok);
+    (acc.data || []).forEach(p => { if (p.access_token) pages[p.id] = { name: p.name, token: p.access_token }; });
+  } catch (e) { }
+  if (!Object.keys(pages).length) {                                    // shayad ye khud Page token hai
+    const me = fbGet_('me?fields=id,name', tok);
+    pages[me.id] = { name: me.name, token: tok };
+  }
+  const done = [];
+  Object.keys(pages).forEach(id => {
+    const r = UrlFetchApp.fetch(FB_GRAPH + id + '/subscribed_apps', { method: 'post', muteHttpExceptions: true,
+      payload: { subscribed_fields: 'leadgen', access_token: pages[id].token } });
+    pages[id].sub = r.getResponseCode() < 300; done.push(pages[id].name + (pages[id].sub ? '' : ' (subscribe failed)'));
+  });
+  lProps_().setProperty('FB_PAGES', JSON.stringify(pages));
+  lProps_().deleteProperty('FB_ERR');
+  return Object.assign(leadsList_(), { fbMsg: 'Connected: ' + done.join(', ') });
+}
+function fbIn_(body) {
+  if (!body || body.object !== 'page') return 0;
+  const pages = fbPages_(); let added = 0;
+  const lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    const byId = lById_();
+    (body.entry || []).forEach(en => (en.changes || []).forEach(ch => {
+      if (ch.field !== 'leadgen') return;
+      const v = ch.value || {}, pg = pages[String(v.page_id || en.id)];
+      if (!pg) { lProps_().setProperty('FB_ERR', new Date().toISOString() + ' · Lead aayi par Page ' + (v.page_id || en.id) + ' ka token nahi hai'); return; }
+      try { if (fbLead_(byId, String(v.leadgen_id), pg.token, v)) added++; }
+      catch (e) { lProps_().setProperty('FB_ERR', new Date().toISOString() + ' · ' + String(e.message || e).slice(0, 200)); }
+    }));
+  } finally { lock.releaseLock(); }
+  return added;
+}
+function fbFormName_(formId, token) {
+  if (!formId) return '';
+  const c = CacheService.getScriptCache(), k = 'fbform_' + formId, hit = c.get(k); if (hit !== null) return hit;
+  let n = ''; try { n = fbGet_(formId + '?fields=name', token).name || ''; } catch (e) { }
+  c.put(k, n, 21600); return n;
+}
+function fbLead_(byId, leadId, token, v) {
+  const L = fbGet_(leadId + '?fields=created_time,field_data,ad_name,adset_name,campaign_name,form_id,platform', token);
+  const f = {}; (L.field_data || []).forEach(x => f[String(x.name || '').toLowerCase()] = (x.values || []).join(', '));
+  return fbRow_(byId, { id: leadId, created: L.created_time, fields: f, ad: L.ad_name, campaign: L.campaign_name || L.adset_name, form: fbFormName_(L.form_id || v.form_id, token), platform: L.platform, src: 'Lead form' });
+}
+/* Ek form lead (webhook ya CSV) → lead. r: { id, created, fields{}, ad, campaign, form, platform, src } */
+function fbRow_(byId, r) {
+  const f = r.fields || {}, pick = re => { const k = Object.keys(f).filter(k => re.test(k))[0]; return k ? String(f[k]) : ''; };
+  const phone = lNum_(pick(/phone|mobile|whatsapp|contact|number|फ़ोन|मोबाइल/).replace(/^p:/i, ''));
+  if (!/^\d{11,15}$/.test(phone)) return false;
+  const name = (pick(/^full_?name$|^name$|पूरा नाम|नाम/) || [pick(/first_?name/), pick(/last_?name/)].join(' ')).trim();
+  const skip = /^(full_?name|name|first_?name|last_?name|phone_?number|phone|mobile)$/;
+  const qa = Object.keys(f).filter(k => !skip.test(k) && f[k]).map(k => k.replace(/_/g, ' ').replace(/\?$/, '') + ': ' + f[k]);
+  const text = '📝 Form' + (r.form ? ' "' + r.form + '"' : '') + (qa.length ? ' · ' + qa.join(' · ') : '');
+  const t = r.created ? new Date(r.created).toISOString() : new Date().toISOString();
+  const ad = (r.ad || r.campaign || r.form) ? { headline: String(r.ad || r.campaign || '').slice(0, 200), body: String(r.form || '').slice(0, 300), id: '', url: '', type: 'lead form' + (r.platform ? ' · ' + r.platform : '') } : null;
+  return lAdd_(byId, { id: phone, name: name, text: text, t: t, msgId: 'fb' + r.id, ad: ad, src: r.src || 'Lead form', extra: { email: pick(/e-?mail/), city: pick(/city|शहर/) } });
+}
+/* Meta Leads Center / Ads Manager se download ki hui file (browser mein padhi gayi rows) */
+function leadsImport_(d) {
+  const rows = Array.isArray(d.rows) ? d.rows.slice(0, 500) : [];
+  const lock = LockService.getScriptLock(); lock.waitLock(20000);
+  let added = 0, skipped = 0;
+  try {
+    const byId = lById_();
+    rows.forEach(r => { if (fbRow_(byId, Object.assign({}, r, { src: 'Lead form (file)' }))) added++; else skipped++; });
+  } finally { lock.releaseLock(); }
+  return Object.assign(leadsList_(), { added: added, skipped: skipped });
 }
 function waText_(m) {
   const cap = x => x && x.caption ? ': ' + x.caption : '';
