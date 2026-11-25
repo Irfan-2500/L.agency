@@ -178,6 +178,9 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .price em{font-style:normal;font-size:.74rem;font-weight:800;color:var(--green)}
 .acts{display:grid;grid-template-columns:44px 44px 1fr;gap:8px}.acts>*{min-width:0}.acts .add{padding-inline:0}.acts .add .lbl{display:none}
 .acts.nocus{grid-template-columns:44px 1fr}
+.pdfpill{align-self:flex-start;font-size:.72rem;font-weight:800;padding:3px 9px;border-radius:8px;color:#fbbf24;background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.45)}
+html.light .pdfpill{color:#b45309}
+.pdfnote{font-size:.82rem;font-weight:600;line-height:1.45;padding:9px 12px;border-radius:12px;color:var(--text);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.5);margin:8px 0}.pdfnote[hidden]{display:none}
 .cats.subcats{margin-top:8px;align-items:center}.cats.subcats[hidden]{display:none}.cats.subcats button{font-size:.8rem;padding:6px 11px}.sc-h{font-size:.8rem;font-weight:700;color:var(--muted);margin-right:2px;white-space:nowrap;flex:none}
 .acts .ed{padding-inline:0;color:#fff;background:linear-gradient(135deg,#ec4899,#f97316);border:0}.acts .ed span{display:none}.acts .ed:hover{filter:brightness(1.08)}
 .add.added{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.45);color:var(--green)}
@@ -485,6 +488,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
     <div class="total"><span>Total</span><b id="cartTotal">₹0</b></div>
     <button class="btn btn-gold" id="checkout"><svg class="i"><use href="#i-card"/></svg>Checkout</button>
     <p class="note">Payment ke turant baad download link milega.</p>
+    <div class="pdfnote" id="cartBook" hidden>📄 Cart ki Books <b>PDF eBook</b> hain, hard copy nahi. Ghar par kitab nahi aayegi.</div>
   </div>
 </aside>
 
@@ -501,6 +505,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
     <div id="payMain">
       <h3 id="payTitle" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Checkout</h3>
       <div class="pay-items" id="payItems" hidden></div>
+      <div class="pdfnote" id="payBook" hidden></div>
       <div class="pay-alert" id="payAlert" role="alert" hidden>⚠ Pehle apna <b>Name</b>, <b>Mobile number</b> aur <b>Email</b> bharein, tab QR aur payment khulega.</div>
       <form class="form" id="payForm" novalidate>
         <div class="row2">
@@ -598,6 +603,8 @@ const isNote = p => !isBook(p) && (p.cat === "notes" || arr(p.level).includes(NO
 const tall = p => isNote(p) || isBook(p);   /* khadi (A4 / kitab) cover wale cards */
 const kindOf = p => isBook(p) ? "books" : isNote(p) ? "notes" : "ppt";
 const lv = p => arr(p.level).filter(l => l !== NOTE_TAG && !isBookTag(l));
+const PDF_NOTE = "📄 Ye PDF eBook hai, hard copy (chhapi hui kitab) nahi. Payment ke baad PDF download hogi, ghar par kuch nahi aayega.";
+const pdfNote = (cls = "") => `<div class="pdfnote ${cls}">${PDF_NOTE}</div>`;
 const bkLabel = p => { const b = bookOf(p); return b.cat ? b.cat.name + (b.sub ? " › " + b.sub[1] : "") : "Book"; };
 const VIEW = () => PRODUCTS.filter(p => kindOf(p) === KIND);
 const W = () => NOTES ? { one:"Notes", many:"Notes", all:"All Study Notes" } : BOOKS ? { one:"Book", many:"Books", all:"All Books" } : { one:"PPT", many:"PPTs", all:"All PPTs" };
@@ -606,8 +613,8 @@ const HERO = {
     perks:["100% Editable .pptx","Instant Download","UPI Payment","High & Best Quality"], q:"Search: topic, subject, class… (e.g. Physics, Class 10, Hindi)" },
   notes:{ kick:"Study Notes", title:`Har class aur exam ke <span class="grad-text">Study Notes</span>`, text:["Chapter-wise notes for school boards and competitive exams, in Hindi and English medium. A4 PDF, download right after payment.", "स्कूल बोर्ड और प्रतियोगी परीक्षाओं के अध्याय-वार नोट्स, हिंदी और इंग्लिश मीडियम में। A4 PDF, पेमेंट होते ही डाउनलोड करें।"],
     perks:["A4 size PDF (print ready)","Hindi & English Medium","Instant Download","Definitions, formulas, solved questions"], q:"Search: chapter, subject, class, exam… (e.g. Science, Class 10, SSC)" },
-  books:{ kick:"Books", title:`हर पाठक के लिए <span class="grad-text">Books</span>`, text:["Fiction, Non-Fiction, Educational, Competitive Exam, Children's and Religious books. Pick a category, pay by UPI and download instantly.", "कहानी, जानकारी, पढ़ाई, प्रतियोगी परीक्षा, बच्चों और धार्मिक पुस्तकें। कैटेगरी चुनिए, UPI से पेमेंट कीजिए और तुरंत डाउनलोड कीजिए।"],
-    perks:["6 categories","Hindi & English","Instant Download","UPI Payment"], q:"Search: book name, author, exam… (e.g. Novel, NEET, Ramayan)" } };
+  books:{ kick:"Books", title:`हर पाठक के लिए <span class="grad-text">Books</span>`, text:["All books here are PDF eBooks (digital), not printed hard copies. Pick a category, pay by UPI and download the PDF instantly.", "यहाँ सभी किताबें PDF eBook हैं, छपी हुई हार्ड कॉपी नहीं। कैटेगरी चुनिए, UPI से पेमेंट कीजिए और तुरंत PDF डाउनलोड कीजिए।"],
+    perks:["PDF eBook (hard copy nahi)","6 categories","Instant PDF Download","UPI Payment"], q:"Search: book name, author, exam… (e.g. Novel, NEET, Ramayan)" } };
 const SAMPLES = [1,2,3,4,5,6,7,8].map(n => `uploads/notes/sample-${n}.webp`);
 /* Ready PPTs: admin mein "⭐ Featured" wali PPT ki slides (warna sabse nayi PPT ki); 10 se kam hon to baaki PPTs se bharte hain */
 function pptSlides(){
@@ -788,11 +795,12 @@ function card(p){
       ${ribbon(p.badge || (p.type === "zip" ? "pack" : ""))}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
       ${!tall(p) && p.type !== "pdf" ? PPT_LOGO : ""}
       <span class="peek">👁 Preview</span>
-      ${isBook(p) ? `<span class="sl-badge">📚 Book${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : isNote(p) ? `<span class="sl-badge">📄 A4 PDF${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
+      ${isBook(p) ? `<span class="sl-badge">📄 PDF eBook${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : isNote(p) ? `<span class="sl-badge">📄 A4 PDF${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
     </button>
     <div class="c-body">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3>
+      ${isBook(p) ? `<span class="pdfpill">📄 PDF eBook · hard copy nahi</span>` : ""}
       <p>${esc(p.desc)}</p>
       <div class="tags">${(isBook(p) ? [bkLabel(p), langTxt(p.lang), ...lv(p).filter(l => l !== "Other"), p.subject] : [langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, p.anim ? "Animated" : ""]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
@@ -995,11 +1003,12 @@ function renderCart(){
   const items = cart.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
   $("#cartCount").textContent = items.length; $("#cartCount").dataset.n = items.length;
   $("#cartBody").innerHTML = items.length ? items.map(p => `<div class="ci"><span class="mini${tall(p) ? " a4" : ""}" style="${thumbStyle(p)}"></span>
-      <div><b>${esc(p.title)}</b><small>${inr(p.price)}</small></div>
+      <div><b>${esc(p.title)}</b><small>${isBook(p) ? "📄 PDF eBook (hard copy nahi) · " : ""}${inr(p.price)}</small></div>
       <button onclick="toggleCart(${p.id})" aria-label="Remove ${esc(p.title)}">${icon("i-trash")}</button></div>`).join("")
     : `<div class="empty" style="padding:40px 10px"><b>Cart khaali hai</b>PPT par "Add to Cart" dabaiye.</div>`;
   const total = items.reduce((s,p) => s + p.price, 0);
   $("#cartTotal").textContent = inr(total);
+  $("#cartBook").hidden = !items.some(isBook);
   $("#checkout").innerHTML = `${icon("i-card")} ${items.length ? `Proceed to Pay ${inr(total)}` : "Checkout"}`;
   $("#checkout").disabled = !items.length; $("#checkout").style.opacity = items.length ? 1 : .5;
 }
@@ -1044,7 +1053,7 @@ function openPreview(id, full){
     ${N > 1 ? `<div class="strip${tall(p) ? " a4" : ""}">${slots.map((x,k) => `<button class="${k ? "" : "on"}${x.lock ? " lk" : ""}" onclick="slide(${k},true)" aria-label="${tall(p) ? "Page" : "Slide"} ${k+1}${x.lock ? " (locked)" : ""}">${x.src ? `<img src="${esc(x.src)}" alt="" loading="lazy">` : ""}<span>${k+1}</span></button>`).join("")}</div>` : ""}
     <div class="m-info">
       ${soldTag(p)}
-      <h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>
+      <h3>${esc(p.title)}</h3>${isBook(p) ? pdfNote() : ""}<p>${esc(p.desc)}</p>
       <div class="tags">${(isBook(p) ? [bkLabel(p), p.slides ? `${p.slides} Pages` : "", "PDF eBook", langTxt(p.lang), ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p)] : isNote(p) ? [p.slides ? `${p.slides} Pages` : "", "A4 size PDF", "Print ready", langOf(p), ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p)] : [p.slides ? `${p.slides} Slides` : "", langTxt(p.lang), `${p.theme} Theme`, ...lv(p).filter(l => l !== "Other"), p.subject, ...brd(p), p.type === "pdf" ? "PDF file" : p.type === "zip" ? "📦 PPT Bundle (ZIP)" : "16:9 HD", p.type === "pdf" || p.type === "zip" ? "" : "Editable .pptx"]).filter(Boolean).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       ${N && all ? `<p style="font-size:.78rem;color:var(--dim)">👀 Poora chapter preview: saari ${N} ${tall(p) ? "pages" : "slides"} dekhein · ${tall(p) ? "PDF" : "editable file"} kharidne ke baad download hogi.</p>` : N ? `<p style="font-size:.78rem;color:var(--dim)">🔒 ${slots.filter(x => !x.lock).length} ${isNote(p) ? "page" : "slides"} free preview · baaki ${slots.filter(x => x.lock).length} kharidne ke baad khulengi (kul ${N}).</p>` : ""}
       <div class="m-buy">
@@ -1090,6 +1099,8 @@ const upiLink = (scheme, total) => `${scheme}?` + new URLSearchParams({ pa:CONFI
 function openPay(ids){
   payIds = ids.filter(id => PRODUCTS.some(p => p.id === id)); if (!payIds.length) return;
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id)); payTotal = items.reduce((s,p) => s + p.price, 0);
+  const bks = items.filter(isBook); $("#payBook").hidden = !bks.length;
+  if (bks.length) $("#payBook").innerHTML = `📄 <b>Dhyan dein:</b> ${bks.length > 1 ? "Ye books" : `"${esc(bks[0].title)}"`} <b>PDF eBook</b> hai, <b>hard copy (chhapi hui kitab) nahi</b>. Payment ke baad sirf PDF download milegi, courier se kuch nahi aayega.`;
   COUPON = null; $("#cpnBox").hidden = !SPAY; $("#cpnIn").value = ""; $("#cpnMsg").textContent = "";
   $("#payItems").innerHTML = items.map(p => `<div class="pi"><b>${esc(p.title)}</b><span>${inr(p.price)}</span></div>`).join("") + (items.length > 1 ? `<div class="pi tot"><span>Total</span><span>${inr(payTotal)}</span></div>` : "");
   const m = payMode(), u = CONFIG.upi || {}, hasId = /@/.test(u.id || ""), showApps = m !== "upi" || hasId;
@@ -1298,7 +1309,7 @@ function checking(d, orderId, utr){
 $("#payWa").onclick = () => {
   const d = buyer(); if (!d) return;
   const items = payIds.map(id => PRODUCTS.find(p => p.id === id));
-  window.open(waURL(`Hi PPT Store! Mujhe ye Ready PPT${items.length > 1 ? "s" : ""} chahiye:\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\n\nEmail: ${d.email}\nPhone: ${d.phone}`), "_blank");
+  window.open(waURL(`Hi PPT Store! Mujhe ye${items.some(isBook) ? " (PDF)" : " Ready PPT" + (items.length > 1 ? "s" : "")} chahiye:\n${items.map(p => `• ${p.title} — ${inr(p.price)}`).join("\n")}\nTotal: ${inr(payTotal)}\n\nEmail: ${d.email}\nPhone: ${d.phone}`), "_blank");
 };
 
 let tt; function toast(m){ const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 2200); }
