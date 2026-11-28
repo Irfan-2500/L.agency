@@ -12,7 +12,7 @@
 var l=m==="light"||(m==="system"&&window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches);
 var r=document.documentElement;r.classList.toggle("light",l);r.setAttribute("data-mode",m);})();
 </script>
-<meta name="description" content="Apni khareedi hui PPTs mobile number se login karke kabhi bhi dobara download karein." />
+<meta name="description" content="Sign in to access and re-download your purchased PPTs anytime." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Hind:wght@500;600;700&display=swap" rel="stylesheet">
@@ -209,26 +209,26 @@ a.item{color:inherit}
   <!-- Login: PPT kharidne wale (OTP email par) + custom order wale (order number) — dono yahin -->
   <section class="box" id="login" hidden>
     <span class="ic"><svg class="i"><use href="#i-user"/></svg></span>
-    <div><h1>My Account</h1><p>PPT kharidi hai ya custom PPT order kiya hai, dono yahin dikhenge. Wahi mobile number ya email daalein jo order / payment ke time bhara tha.<span class="en">Bought a PPT or ordered a custom PPT? Use the same mobile / email.</span></p></div>
+    <div><h1>My Account</h1><p>Access your purchased PPTs and custom orders. Sign in with the mobile number or email used at checkout.</p></div>
     <form id="fPhone" novalidate style="display:grid;gap:14px">
-      <label>Mobile Number / Email<input id="phone" type="text" maxlength="120" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Mobile no. or Email"></label>
+      <label>Mobile Number / Email<input id="phone" type="text" maxlength="120" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Mobile number or email"></label>
       <input type="text" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-      <button class="btn btn-gold" id="sendBtn">Aage badhein / Continue</button>
+      <button class="btn btn-gold" id="sendBtn">Continue</button>
     </form>
     <form id="fOtp" novalidate hidden style="display:grid;gap:14px">
       <p id="sentTo"></p>
-      <label>6 अंकों का OTP / 6-digit OTP<input id="otp" class="otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••"></label>
-      <button class="btn btn-gold" id="verifyBtn">Verify करें / Login</button>
-      <div class="links"><button type="button" class="chg-no">← बदलें / Change</button><button type="button" id="resend" disabled>OTP दोबारा भेजें</button></div>
+      <label>6-digit OTP<input id="otp" class="otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••"></label>
+      <button class="btn btn-gold" id="verifyBtn">Verify &amp; Sign in</button>
+      <div class="links"><button type="button" class="chg-no">← Change</button><button type="button" id="resend" disabled>Resend OTP</button></div>
     </form>
     <form id="fOrd" novalidate hidden style="display:grid;gap:14px">
-      <p id="ordNote">Custom PPT order kiya hai? Apna <b>koi bhi ek order number</b> daalein (WhatsApp / SMS par mila tha).</p>
+      <p id="ordNote">Enter your mobile number and <b>any one order number</b> (sent via WhatsApp / SMS).</p>
       <label>Order number<input id="ordId" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="e.g. 15"></label>
-      <button class="btn btn-gold" id="ordBtn">Login karein</button>
-      <div class="links"><button type="button" class="chg-no">← Number बदलें</button></div>
+      <button class="btn btn-gold" id="ordBtn">Sign in</button>
+      <div class="links"><button type="button" class="chg-no">← Change number</button></div>
     </form>
     <p class="msg" id="msg" role="alert"></p>
-    <button type="button" class="alt-in" id="toOrd">📦 Custom PPT order kiya hai? Order number se login</button>
+    <button type="button" class="alt-in" id="toOrd">📦 Ordered a custom PPT? Sign in with order number</button>
   </section>
 
   <!-- Login ke baad: My Account dashboard — 9 hisse (desktop par left menu, phone par tiles) -->
@@ -270,8 +270,8 @@ async function sapi(fields){
     const j = await r.json();
     if (j.token) tok(j.token);
     if (!fields && j.ok && !j.loggedIn) tok("");
-    return j.ok ? j : { ok:false, error:j.error || "Kuch gadbad ho gayi." };
-  } catch(e) { return { ok:false, error:"इंटरनेट चेक करके दोबारा try करें। / Check internet and retry.", offline:true }; }
+    return j.ok ? j : { ok:false, error:j.error || "Something went wrong. Please try again." };
+  } catch(e) { return { ok:false, error:"Please check your internet connection and try again.", offline:true }; }
 }
 async function api(fields){
   if (SAPI) return sapi(fields);
@@ -279,8 +279,8 @@ async function api(fields){
   try {
     const r = await (fields ? fetch("api/account.php", { method:"POST", body:Object.entries(fields).reduce((f,[k,v]) => (f.append(k,v), f), new FormData()), headers:{ Accept:"application/json" } })
                             : fetch("api/account.php", { headers:{ Accept:"application/json" }, cache:"no-store" }));
-    const j = await r.json(); return j.ok ? j : { ok:false, error:j.error || "Kuch gadbad ho gayi." };
-  } catch(e) { return { ok:false, error:"इंटरनेट चेक करके दोबारा try करें। / Check internet and retry.", offline:true }; }
+    const j = await r.json(); return j.ok ? j : { ok:false, error:j.error || "Something went wrong. Please try again." };
+  } catch(e) { return { ok:false, error:"Please check your internet connection and try again.", offline:true }; }
 }
 /* Preview (bina server) */
 let demoIn = false;
@@ -292,7 +292,7 @@ function demoApi(f){
   if (!f) return demoIn ? { ok:true, loggedIn:true, phone:phone.includes("@") ? phone.replace(/^(.).*@/,"$1***@") : "******" + phone.slice(-4), items } : { ok:true, loggedIn:false, otp:true };
   if (f.action === "login") { demoIn = true; return demoApi(); }
   if (f.action === "send") return { ok:true, via:"email", to:(phone.includes("@") ? phone.replace(/^(.).*@/,"$1***@") : "a***@gmail.com") + " (Demo OTP: 123456)" };
-  if (f.action === "verify") { if (f.otp !== "123456") return { ok:false, error:"OTP गलत है। / Wrong OTP. (Demo OTP: 123456)" }; demoIn = true; return demoApi(); }
+  if (f.action === "verify") { if (f.otp !== "123456") return { ok:false, error:"Incorrect OTP. (Demo OTP: 123456)" }; demoIn = true; return demoApi(); }
   if (f.action === "logout") { demoIn = false; return { ok:true }; }
 }
 
@@ -301,13 +301,13 @@ const TSAVE = "la_track";
 const tsaved = v => { try { if (v === undefined) return JSON.parse(localStorage.getItem(TSAVE) || "null"); v ? localStorage.setItem(TSAVE, JSON.stringify(v)) : localStorage.removeItem(TSAVE); } catch(e) { return null; } };
 async function gas(action, body){
   try { const r = await fetch(SCRIPT, { method:"POST", body:JSON.stringify({ action, ...body }), headers:{ "Content-Type":"text/plain;charset=utf-8" } }); return await r.json(); }
-  catch(e) { return { ok:false, net:true, error:"इंटरनेट चेक करके दोबारा try करें। / Check internet and retry." }; }
+  catch(e) { return { ok:false, net:true, error:"Please check your internet connection and try again." }; }
 }
 const DEMO_ORD = [{ id:"12", time:new Date(Date.now() - 5 * 36e5).toISOString(), topic:"Physics Class 12 — Electric Charges", slides:"25", status:"Done", ready:true, price:250 },
   { id:"9", time:new Date(Date.now() - 9 * 864e5).toISOString(), topic:"Class 8 Science — Cell", slides:"18", status:"Paid", ready:true, price:180 }];
 async function ordersOf(w){
   if (!w || !w.id || !w.phone) return null;
-  if (!SCRIPT || window.claude) return w.id === "12" ? { ok:true, orders:DEMO_ORD } : { ok:false, error:"Demo: order number 12 daalein." };
+  if (!SCRIPT || window.claude) return w.id === "12" ? { ok:true, orders:DEMO_ORD } : { ok:false, error:"Demo: enter order number 12." };
   return gas("customMine", w);
 }
 /* ===== Login ke baad: My Account dashboard (9 hisse) =====
@@ -320,7 +320,7 @@ const MAIL = String((window.LA_CONFIG || {}).email || "");
 const waL = m => "https://wa.me/" + WA_NO + "?text=" + encodeURIComponent(m);
 const inr = n => "₹" + Number(n || 0).toLocaleString("en-IN");
 const dt = t => { const d = new Date(String(t || "").replace(" ", "T")); return isNaN(d) ? "" : d.toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" }); };
-const MST = { New:"Order mila", "In Progress":"Ban rahi hai", Done:"Ready · Pay karein", Paid:"Paid ✓", Cancelled:"Cancelled" };
+const MST = { New:"Received", "In Progress":"In progress", Done:"Ready · Pay now", Paid:"Paid ✓", Cancelled:"Cancelled" };
 const STEP = { New:1, "In Progress":2, Done:3, Paid:4 };
 const stCls = s => s === "Done" ? "ready" : s === "Paid" ? "paid" : s === "Cancelled" ? "cx" : "";
 /* Store ki PPT list (daam, photo, naye PPT ke liye) — pichhli baar ki, warna ek baar Google Script se */
@@ -331,9 +331,9 @@ const pOf = id => CAT.find(p => +p.id === +id);
 const thumbOf = p => p && (p.thumb || ((p.previews || []).find(u => u && !/#card-end$/.test(u))) || "");
 
 const TABS = [
-  ["home", "📂", "PPT", "Downloads"], ["noti", "🔔", "Notifications", "Order, payment, offers"], ["ppts", "🗂️", "Purchased PPTs", "Saari list"],
+  ["home", "📂", "PPT", "Downloads"], ["noti", "🔔", "Notifications", "Order, payment, offers"], ["ppts", "🗂️", "Purchased PPTs", "All purchases"],
   ["orders", "🧾", "My Orders", "Status, details"], ["pay", "💳", "Payment History", "Receipt / invoice"], ["fav", "❤️", "Favourite PPTs", "Saved"],
-  ["recent", "🕘", "Recently Viewed", "Haal hi mein dekhi"], ["set", "⚙️", "Settings", "Profile, mobile"], ["help", "💬", "Help & Support", "FAQ, contact"]
+  ["recent", "🕘", "Recently Viewed", "Recently viewed"], ["set", "⚙️", "Settings", "Profile, mobile"], ["help", "💬", "Help & Support", "FAQ, contact"]
 ];
 let TAB = (location.hash.match(/^#t=(\w+)/) || [])[1] || "home", ME = { loggedIn:false }, ORD = null;   /* ME: kharidi PPTs (OTP) · ORD: { phone, id, orders } custom orders */
 
@@ -341,7 +341,7 @@ function notifs(){
   const L = [];
   (ORD && ORD.orders || []).slice(0, 10).forEach(o => L.push({ t:o.time, ic:o.status === "Done" ? "🎉" : o.status === "Paid" ? "✅" : o.status === "Cancelled" ? "❌" : "📦",
     b:`Order #${o.id}: ${MST[o.status] || o.status}`, s:o.topic, go:"orders" }));
-  buys().forEach(p => L.push({ t:p.date, ic:"💳", b:"Payment mil gaya, PPT download ke liye ready", s:p.title, go:"ppts" }));
+  buys().forEach(p => L.push({ t:p.date, ic:"💳", b:"Payment received. Your PPT is ready to download.", s:p.title, go:"ppts" }));
   CAT.filter(p => +p.mrp > +p.price).slice().sort((a, b) => String(b.added || "").localeCompare(String(a.added || ""), undefined, { numeric:true })).slice(0, 3)
     .forEach(p => L.push({ t:typeof p.added === "string" ? p.added : "", ic:"🏷️", b:`Offer: ${Math.round((1 - p.price / p.mrp) * 100)}% OFF — ${inr(p.price)}`, s:p.title, href:"ready-ppts.html?id=" + p.id }));
   return L.sort((a, b) => (new Date(b.t) - new Date(a.t)) || 0);
@@ -360,7 +360,7 @@ const custRow = o => `<div class="item"><div class="thumb cthumb"><span>✨ Cust
     <div class="b"><b>${esc(o.topic)}</b><small>Order #${esc(o.id)} · ${dt(o.time)}</small>
       <a class="btn btn-gold btn-sm" href="track.html#id=${encodeURIComponent(o.id)}" data-oid="${esc(o.id)}">${icon("i-dl")} Download PPT</a></div></div>`;
 const allBought = fresh => buys().slice().sort((a, b) => (fresh || []).includes(b.id) - (fresh || []).includes(a.id)).map(p => pptRow(p, (fresh || []).includes(p.id))).concat(customPaid().map(custRow));
-const otpHint = () => ME.loggedIn ? "" : `<p class="hint">Email se Ready PPT kharidi thi aur yahan nahi dikh rahi? <a href="#" id="linkPpt">OTP se login karein</a>.</p>`;
+const otpHint = () => ME.loggedIn ? "" : `<p class="hint">Bought with email and not listed here? <a href="#" id="linkPpt">Sign in with OTP</a>.</p>`;
 function payments(){
   const g = {};
   buys().forEach(p => { const k = String(p.orderId || p.date); (g[k] = g[k] || { id:k, t:p.date, items:[], kind:"Ready PPT" }).items.push(p); });
@@ -380,7 +380,7 @@ function show(me){
 function draw(){
   const prof = LSG("la_profile", {}), inP = !!ME.loggedIn, inO = !!(ORD && ORD.orders);
   const ph = inO ? "******" + String(ORD.phone).slice(-4) : ME.phone || "";
-  $("#hi").textContent = "Namaste " + (prof.name || (ORD && ORD.name) || "") + (prof.name || (ORD && ORD.name) ? "" : "👋");
+  $("#hi").textContent = "Hello " + (prof.name || (ORD && ORD.name) || "") + (prof.name || (ORD && ORD.name) ? "" : "👋");
   $("#who").textContent = ph;
   const cnt = { home:0, noti:unread(), ppts:buys().length + customPaid().length, orders:inO ? ORD.orders.length : 0, pay:payments().length,
     fav:LSG("la_fav", []).length, recent:LSG("la_recent", []).length };
@@ -401,9 +401,9 @@ document.addEventListener("click", e => {
 const pptRow = (p, k) => `<div class="item${k ? " new" : ""}">
     <div class="thumb" style="background-image:url('${esc(p.thumb || thumbOf(pOf(p.id))).replace(/'/g,"")}')"></div>
     <div class="b"><b>${esc(p.title)}</b><small>Order #${esc(p.orderId)} · ${dt(p.date)}</small>
-      ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(dlUrl(p.url))}" download data-slug="${esc(p.slug || "")}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">${p.pending ? "⏳ पेमेंट चेक हो रहा है / Verifying" : "File तैयार हो रही है"}</span>`}</div></div>`;
-const needPpt = () => `<div class="nudge">Kharidi hui PPTs dekhne ke liye email OTP se login karein.<button type="button" class="btn btn-gold btn-sm" id="linkPpt">OTP se login</button></div>`;
-const needOrd = () => `<div class="nudge">📦 Custom PPT order kiya hai? Order number se jodein, yahin status dikhega.<button type="button" class="btn btn-ghost btn-sm" id="linkOrd">Order jodein</button></div>`;
+      ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(dlUrl(p.url))}" download data-slug="${esc(p.slug || "")}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">${p.pending ? "⏳ Verifying payment" : "Preparing file"}</span>`}</div></div>`;
+const needPpt = () => `<div class="nudge">Sign in with email OTP to view your purchased PPTs.<button type="button" class="btn btn-gold btn-sm" id="linkPpt">Sign in with OTP</button></div>`;
+const needOrd = () => `<div class="nudge">📦 Ordered a custom PPT? Link it with your order number to track it here.<button type="button" class="btn btn-ghost btn-sm" id="linkOrd">Link order</button></div>`;
 const empty = (t, a) => `<div class="nudge">${t}${a || ""}</div>`;
 const cardList = ids => { const L = ids.map(pOf).filter(Boolean); return L.length ? `<div class="list">${L.map(p => { const off = +p.mrp > +p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
   return `<a class="item" href="ready-ppts.html?id=${p.id}"><div class="thumb" style="background-image:url('${esc(thumbOf(p)).replace(/'/g,"")}')"></div><div class="b"><b>${esc(p.title)}</b><small>${inr(p.price)}${off ? ` · ${off}% OFF` : ""}</small><span class="btn btn-ghost btn-sm">👁 Preview &amp; Buy</span></div></a>`; }).join("")}</div>` : ""; };
@@ -412,80 +412,80 @@ function curOrder(){
   return `<div class="oc"><div class="r1"><b>#${esc(cur.id)}</b><small>${dt(cur.time)}${cur.slides && cur.slides !== "—" ? " · " + esc(cur.slides) + " slides" : ""}</small><span class="ost ${stCls(cur.status)}">${esc(MST[cur.status] || cur.status)}</span></div>
     <div class="tp">${esc(cur.topic)}</div>
     ${cur.status === "Cancelled" ? "" : `<div class="dots" aria-label="Step ${n} / 4">${[1,2,3,4].map(i => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</div>`}
-    <a class="btn ${cur.status === "Done" ? "btn-gold" : "btn-ghost"} btn-sm" href="track.html#id=${encodeURIComponent(cur.id)}" data-oid="${esc(cur.id)}">${cur.status === "Done" ? "Demo dekhein · Pay & Download" : cur.status === "Paid" ? "Download / details" : "Status dekhein"} →</a></div>`;
+    <a class="btn ${cur.status === "Done" ? "btn-gold" : "btn-ghost"} btn-sm" href="track.html#id=${encodeURIComponent(cur.id)}" data-oid="${esc(cur.id)}">${cur.status === "Done" ? "View demo · Pay & Download" : cur.status === "Paid" ? "Download / Details" : "View status"} →</a></div>`;
 }
 const PANES = {
   home(){
     const fresh = NEW ? buys().filter(p => String(p.orderId) === NEW || NEW === "demo").map(p => p.id) : [];
     const L = allBought(fresh);
-    return `${NEW ? `<div class="congrats"><span>🎉</span><div><b>बधाई हो! पेमेंट सफल रहा। / Payment successful</b><p>आपकी PPT नीचे तैयार है, <b>Download PPT</b> दबाएँ।<span class="en">Your PPT is ready below.</span></p></div></div>` : ""}
-      ${ORD && ORD.orders && ORD.orders.length ? `<h3 class="sh">🧾 Abhi ka order</h3>${curOrder()}` : ""}
-      ${L.length ? `<h3 class="sh">📥 Kharidi hui PPTs</h3><div class="list">${L.slice(0, 6).join("")}</div>${L.length > 6 ? `<button type="button" class="more" data-tab="ppts">Saari ${L.length} PPTs dekhein →</button>` : ""}` : ""}`;
+    return `${NEW ? `<div class="congrats"><span>🎉</span><div><b>Payment successful</b><p>Your PPT is ready. Tap <b>Download PPT</b> below.</p></div></div>` : ""}
+      ${ORD && ORD.orders && ORD.orders.length ? `<h3 class="sh">🧾 Current order</h3>${curOrder()}` : ""}
+      ${L.length ? `<h3 class="sh">📥 Purchased PPTs</h3><div class="list">${L.slice(0, 6).join("")}</div>${L.length > 6 ? `<button type="button" class="more" data-tab="ppts">View all ${L.length} PPTs →</button>` : ""}` : ""}`;
   },
   noti(){
     const L = notifs(), seen = LSG("la_noti_prev", 0);
     return L.length ? `<div class="nl">${L.map(n => `<a class="ni" ${n.href ? `href="${esc(n.href)}"` : `href="#" data-tab="${n.go}"`}><i>${n.ic}</i><span><b>${esc(n.b)}</b><small>${esc(n.s || "")}${n.t && dt(n.t) ? " · " + dt(n.t) : ""}</small></span></a>`).join("")}</div>
-      <p class="hint">🔔 Order ready hone par phone par alert ke liye <a href="#" data-tab="set">Settings</a> mein notification chalu karein.</p>` : empty("Abhi koi notification nahi.");
+      <p class="hint">🔔 Enable notifications in <a href="#" data-tab="set">Settings</a> to get alerts when your order is ready.</p>` : empty("No notifications yet.");
   },
   ppts(){
-    const L = allBought(); if (!L.length) return empty("Abhi koi PPT nahi kharidi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`) + otpHint();
-    return `${L.length > 6 ? `<input type="search" class="fs" id="pq" placeholder="PPT ka naam likhein…" aria-label="Kharidi PPT dhoondhein">` : ""}<div class="list" id="pl">${L.join("")}</div>${otpHint()}`;
+    const L = allBought(); if (!L.length) return empty("No purchases yet.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Browse Ready PPTs</a>`) + otpHint();
+    return `${L.length > 6 ? `<input type="search" class="fs" id="pq" placeholder="Search by PPT name…" aria-label="Search purchased PPTs">` : ""}<div class="list" id="pl">${L.join("")}</div>${otpHint()}`;
   },
   orders(){
     if (!(ORD && ORD.orders)) return needOrd();
-    const L = ORD.orders; if (!L.length) return empty("Is number par koi custom order nahi.", `<a class="btn btn-gold btn-sm" href="order.html">Custom PPT order karein</a>`);
+    const L = ORD.orders; if (!L.length) return empty("No custom orders for this number.", `<a class="btn btn-gold btn-sm" href="order.html">Order a custom PPT</a>`);
     return `${curOrder()}<div class="ol">${L.map(o => `<a href="track.html#id=${encodeURIComponent(o.id)}" data-oid="${esc(o.id)}"><b>#${esc(o.id)}</b><span><em>${esc(o.topic)}</em><small>${dt(o.time)}${o.slides && o.slides !== "—" ? " · " + esc(o.slides) + " slides" : ""}${o.price ? " · " + inr(o.price) : ""}</small></span><span class="ost ${stCls(o.status)}">${esc(MST[o.status] || o.status)}</span></a>`).join("")}</div>
-      <a class="btn btn-ghost btn-sm" href="order.html" style="margin-top:12px">✨ Naya custom PPT order</a>`;
+      <a class="btn btn-ghost btn-sm" href="order.html" style="margin-top:12px">✨ New custom PPT order</a>`;
   },
   pay(){
-    const L = payments(); if (!L.length) return empty("Abhi koi payment nahi.");
+    const L = payments(); if (!L.length) return empty("No payments yet.");
     return `<div class="ol pl">${L.map((x, i) => `<div><b>${x.kind === "Custom PPT" ? "🧾" : "💳"}</b><span><em>${esc(x.items.map(p => p.title).join(", "))}</em><small>${dt(x.t)} · ${esc(x.kind)} · ID ${esc(x.id)}</small></span><span class="amt">${x.amt ? inr(x.amt) : "—"}<button type="button" class="rcpt" data-rc="${i}">🧾 Receipt</button></span></div>`).join("")}</div>
-      <p class="hint">GST invoice chahiye? <a href="${waL("Hi PPT Store! Mujhe apne payment ka GST invoice chahiye. Mobile: " + (ORD ? ORD.phone : ""))}" target="_blank" rel="noopener">WhatsApp karein</a>.</p>`;
+      <p class="hint">Need a GST invoice? <a href="${waL("Hi PPT Store! I need a GST invoice for my payment. Mobile: " + (ORD ? ORD.phone : ""))}" target="_blank" rel="noopener">Contact us on WhatsApp</a>.</p>`;
   },
-  fav(){ const ids = LSG("la_fav", []); return cardList(ids) || empty("Koi PPT save nahi ki. Ready PPTs mein kisi bhi PPT par ♡ dabayein, wo yahan aa jayegi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`); },
-  recent(){ const L = LSG("la_recent", []); return L.length ? cardList(L.map(x => x.id)) + `<button type="button" class="more" id="clrRecent">Saaf karein ✕</button>` : empty("Abhi koi PPT nahi dekhi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`); },
+  fav(){ const ids = LSG("la_fav", []); return cardList(ids) || empty("No saved PPTs. Tap ♡ on any Ready PPT to save it here.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Browse Ready PPTs</a>`); },
+  recent(){ const L = LSG("la_recent", []); return L.length ? cardList(L.map(x => x.id)) + `<button type="button" class="more" id="clrRecent">Clear ✕</button>` : empty("No recently viewed PPTs.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Browse Ready PPTs</a>`); },
   set(){
     const prof = LSG("la_profile", {}), on = "Notification" in window && Notification.permission === "granted";
-    return `<form class="setf" id="setF"><label>Aapka naam<input id="sName" maxlength="40" value="${esc(prof.name || (ORD && ORD.name) || "")}" placeholder="Jaise: Rahul"></label><button class="btn btn-gold btn-sm">Save karein</button></form>
+    return `<form class="setf" id="setF"><label>Your name<input id="sName" maxlength="40" value="${esc(prof.name || (ORD && ORD.name) || "")}" placeholder="e.g. Rahul"></label><button class="btn btn-gold btn-sm">Save</button></form>
       <div class="sr"><span><b>Login mobile / email</b><small>${esc(ORD ? "******" + String(ORD.phone).slice(-4) : "")}${ORD && ME.loggedIn ? " · " : ""}${esc(ME.loggedIn ? ME.phone || "" : "")}</small></span>
-        <a class="btn btn-ghost btn-sm" href="${waL("Hi PPT Store! Mujhe apna mobile number / email badalna hai.\nPurana: " + (ORD ? ORD.phone : ME.phone || "") + "\nNaya: ")}" target="_blank" rel="noopener">Mobile no. change</a></div>
-      <p class="hint" style="margin-top:-4px">Mobile / email badalne ke liye hamari team verify karke badalti hai (aapki kharidi PPTs naye number par aa jayengi).</p>
-      <div class="sr"><span><b>Phone par notification</b><small>${on ? "Chalu hai ✓" : "Order ready hone par alert"}</small></span>${on ? "" : `<button type="button" class="btn btn-ghost btn-sm" id="nOn">Chalu karein</button>`}</div>
-      <div class="sr"><span><b>Logout</b><small>Is phone se bahar nikalein</small></span><button type="button" class="btn btn-ghost btn-sm" id="logout2">Logout</button></div>`;
+        <a class="btn btn-ghost btn-sm" href="${waL("Hi PPT Store! I would like to change my mobile number / email.\nOld: " + (ORD ? ORD.phone : ME.phone || "") + "\nNew: ")}" target="_blank" rel="noopener">Change mobile</a></div>
+      <p class="hint" style="margin-top:-4px">Our team verifies and updates your mobile / email. Your purchases will move to the new number.</p>
+      <div class="sr"><span><b>Notifications</b><small>${on ? "Enabled ✓" : "Get alerts when your order is ready"}</small></span>${on ? "" : `<button type="button" class="btn btn-ghost btn-sm" id="nOn">Enable</button>`}</div>
+      <div class="sr"><span><b>Logout</b><small>Sign out of this device</small></span><button type="button" class="btn btn-ghost btn-sm" id="logout2">Logout</button></div>`;
   },
   help(){
-    const F = [["PPT download nahi ho rahi?", "Purchased PPTs mein Download PPT dabayein. Phone par file Downloads folder mein jaati hai. Phir bhi na ho to WhatsApp karein, hum link bhej denge."],
-      ["Payment kat gaya par PPT nahi mili?", "2–5 minute rukiye aur page refresh karein. Na aaye to payment ka screenshot / UTR WhatsApp karein, turant bhej denge."],
-      ["Custom PPT kitni der mein milti hai?", "Zyaadatar 1 ghante mein. Bade order mein thoda zyada. Status My Orders mein live dikhta hai."],
-      ["PPT mein badlav (change) chahiye?", "My Orders → order kholein → \"PPT mein badlav chahiye?\" mein likh kar bhejein."],
-      ["Refund kaise milega?", "Refund policy page dekhein, ya WhatsApp par order number bhejein."]];
+    const F = [["PPT not downloading?", "Tap Download PPT in Purchased PPTs. On mobile, the file saves to your Downloads folder. Still stuck? WhatsApp us and we will send the link."],
+      ["Paid but did not receive the PPT?", "Wait 2–5 minutes and refresh. If it still does not appear, WhatsApp us your payment screenshot or UTR."],
+      ["How long does a custom PPT take?", "Usually within 1 hour; larger orders may take longer. Track live status in My Orders."],
+      ["Need changes to your PPT?", "Open the order in My Orders and submit your changes there."],
+      ["How do I get a refund?", "See our Refund Policy, or WhatsApp us your order number."]];
     return `<div class="faq">${F.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div>
-      <div class="hl"><a href="${waL("Hi PPT Store! Mujhe madad chahiye.")}" target="_blank" rel="noopener">💬 WhatsApp</a>${MAIL ? `<a href="mailto:${esc(MAIL)}">✉️ Email</a>` : ""}<a href="contact.html">📞 Contact</a><a href="track.html">📦 Track order</a><a href="refund.html">↩️ Refund policy</a></div>`;
+      <div class="hl"><a href="${waL("Hi PPT Store! I need help.")}" target="_blank" rel="noopener">💬 WhatsApp</a>${MAIL ? `<a href="mailto:${esc(MAIL)}">✉️ Email</a>` : ""}<a href="contact.html">📞 Contact</a><a href="track.html">📦 Track order</a><a href="refund.html">↩️ Refund policy</a></div>`;
   }
 };
 document.addEventListener("input", e => { if (e.target.id !== "pq") return; const q = e.target.value.trim().toLowerCase();
   document.querySelectorAll("#pl .item").forEach(x => x.hidden = q && !x.textContent.toLowerCase().includes(q)); });
-document.addEventListener("submit", e => { if (e.target.id !== "setF") return; e.preventDefault(); LSS("la_profile", { ...LSG("la_profile", {}), name:$("#sName").value.trim() }); toast("✓ Save ho gaya"); draw(); });
+document.addEventListener("submit", e => { if (e.target.id !== "setF") return; e.preventDefault(); LSS("la_profile", { ...LSG("la_profile", {}), name:$("#sName").value.trim() }); toast("✓ Saved"); draw(); });
 document.addEventListener("click", async e => {
   if (e.target.closest("#clrRecent")) { LSS("la_recent", []); draw(); }
   if (e.target.closest("#logout2")) $("#logout").click();
-  if (e.target.closest("#nOn")) { if (!("Notification" in window)) return toast("Is browser mein notification nahi chalta."); const p = await Notification.requestPermission(); toast(p === "granted" ? "🔔 Chalu ho gaya" : "Browser settings se Allow karein"); draw(); }
+  if (e.target.closest("#nOn")) { if (!("Notification" in window)) return toast("Notifications are not supported in this browser."); const p = await Notification.requestPermission(); toast(p === "granted" ? "🔔 Notifications enabled" : "Please allow notifications in browser settings"); draw(); }
   const r = e.target.closest("[data-rc]"); if (r) receipt(payments()[+r.dataset.rc]);
 });
 /* Payment receipt: naye tab mein, wahan se Print / PDF save */
 function receipt(x){
-  if (!x) return; const w = open("", "_blank"); if (!w) return toast("Popup band hai. Allow karein.");
+  if (!x) return; const w = open("", "_blank"); if (!w) return toast("Pop-ups are blocked. Please allow them.");
   const prof = LSG("la_profile", {});
   w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Receipt ${esc(x.id)} — PPT Store</title><style>body{font:14px/1.5 system-ui,sans-serif;color:#111;max-width:640px;margin:30px auto;padding:0 16px}h1{font-size:20px;margin:0}table{width:100%;border-collapse:collapse;margin:18px 0}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left}th:last-child,td:last-child{text-align:right}.t{font-weight:700}.m{color:#666;font-size:12px}button{margin-top:16px;padding:8px 16px}@media print{button{display:none}}</style></head><body>
     <h1>PPT Store — Payment Receipt</h1><p class="m">pptstore.in · WhatsApp +${esc(WA_NO)}${MAIL ? " · " + esc(MAIL) : ""}</p>
     <p><b>Receipt / Order:</b> ${esc(x.id)}<br><b>Date:</b> ${dt(x.t)}<br><b>Customer:</b> ${esc(prof.name || (ORD && ORD.name) || "")} ${esc(ORD ? "******" + String(ORD.phone).slice(-4) : ME.phone || "")}<br><b>Type:</b> ${esc(x.kind)}</p>
     <table><tr><th>Item</th><th>Amount</th></tr>${x.items.map(p => { const c = pOf(p.id); return `<tr><td>${esc(p.title)}</td><td>${c ? inr(c.price) : x.items.length === 1 && x.amt ? inr(x.amt) : "—"}</td></tr>`; }).join("")}<tr class="t"><td>Total</td><td>${x.amt ? inr(x.amt) : "—"}</td></tr></table>
-    <p class="m">Ye computer se bani receipt hai. GST invoice ke liye WhatsApp karein.</p><button onclick="print()">Print / Save PDF</button></body></html>`);
+    <p class="m">This is a computer-generated receipt. For a GST invoice, contact us on WhatsApp.</p><button onclick="print()">Print / Save PDF</button></body></html>`);
   w.document.close();
 }
 /* Order card se track page: wahi login aage (dobara number nahi poochhega) */
 document.addEventListener("click", e => { const a = e.target.closest("[data-oid]"); if (!a || !ORD) return; tsaved({ id:a.dataset.oid, phone:ORD.phone }); });
-function resetLogin(){ $("#sendBtn").hidden = false; $("#sendBtn").textContent = "Aage badhein / Continue"; $("#fPhone").hidden = false; $("#fOtp").hidden = true; $("#fOrd").hidden = true; $("#toOrd").hidden = false; }
+function resetLogin(){ $("#sendBtn").hidden = false; $("#sendBtn").textContent = "Continue"; $("#fPhone").hidden = false; $("#fOtp").hidden = true; $("#fOrd").hidden = true; $("#toOrd").hidden = false; }
 /* Login ke baad bhi doosra hissa jodna (PPT ↔ order) */
 document.addEventListener("click", e => {
   if (e.target.closest("#linkOrd") || e.target.closest("#toOrd")) { e.preventDefault(); $("#mine").hidden = true; $("#login").hidden = false; ordStep(""); }
@@ -499,31 +499,31 @@ function ordStep(note){
 $("#fOrd").onsubmit = async e => {
   e.preventDefault();
   const v = $("#phone").value.replace(/\D/g, "").replace(/^(91|0)(?=\d{10}$)/, ""), id = $("#ordId").value.replace(/\D/g, "");
-  if (!/^[6-9]\d{9}$/.test(v)) { msg("Order ke liye 10-digit mobile number daalein. / Enter your 10-digit mobile."); $("#phone").focus(); return; }
-  if (!id) { msg("Order number daalein (jaise 15)."); $("#ordId").focus(); return; }
-  const b = $("#ordBtn"); b.disabled = true; b.textContent = "Check हो रहा है…";
-  const r = await ordersOf({ id, phone:v }); b.disabled = false; b.textContent = "Login karein";
-  if (!r || !r.ok) { msg((r && r.error) || "Is order number aur mobile se koi order nahi mila."); return; }
+  if (!/^[6-9]\d{9}$/.test(v)) { msg("Please enter your 10-digit mobile number."); $("#phone").focus(); return; }
+  if (!id) { msg("Please enter your order number (e.g. 15)."); $("#ordId").focus(); return; }
+  const b = $("#ordBtn"); b.disabled = true; b.textContent = "Checking…";
+  const r = await ordersOf({ id, phone:v }); b.disabled = false; b.textContent = "Sign in";
+  if (!r || !r.ok) { msg((r && r.error) || "No order found for this order number and mobile."); return; }
   tsaved({ id, phone:v }); ORD = { id, phone:v, orders:r.orders || [], name:r.name || "" };
-  msg(""); $("#sendBtn").hidden = false; toast("✓ Login हो गया"); show(); loadBuys();
+  msg(""); $("#sendBtn").hidden = false; toast("✓ Signed in"); show(); loadBuys();
 };
 function startTimer(){
   let n = 30; const b = $("#resend"); b.disabled = true; clearInterval(timer);
-  b.textContent = `OTP दोबारा भेजें (${n}s)`;
-  timer = setInterval(() => { n--; b.textContent = n > 0 ? `OTP दोबारा भेजें (${n}s)` : "OTP दोबारा भेजें"; if (n <= 0) { clearInterval(timer); b.disabled = false; } }, 1000);
+  b.textContent = `Resend OTP (${n}s)`;
+  timer = setInterval(() => { n--; b.textContent = n > 0 ? `Resend OTP (${n}s)` : "Resend OTP"; if (n <= 0) { clearInterval(timer); b.disabled = false; } }, 1000);
 }
 async function send(){
   const v = $("#phone").value.trim();
   phone = v.includes("@") ? v.toLowerCase() : v.replace(/\D/g,"").replace(/^(91|0)(?=\d{10}$)/,"");
-  if (!(phone.includes("@") ? /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/.test(phone) : /^[6-9]\d{9}$/.test(phone))) { msg("सही मोबाइल नंबर या ईमेल डालें। / Enter a valid mobile or email."); $("#phone").focus(); return; }
-  msg(""); const b = $("#sendBtn"); b.disabled = true; b.textContent = OTP ? "भेज रहे हैं… / Sending…" : "Check हो रहा है…";
+  if (!(phone.includes("@") ? /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/.test(phone) : /^[6-9]\d{9}$/.test(phone))) { msg("Please enter a valid mobile number or email."); $("#phone").focus(); return; }
+  msg(""); const b = $("#sendBtn"); b.disabled = true; b.textContent = OTP ? "Sending…" : "Checking…";
   const r = await api({ action:OTP ? "send" : "login", id:phone, phone, website:$("#hp").value });
-  b.disabled = false; b.textContent = "Aage badhein / Continue";
+  b.disabled = false; b.textContent = "Continue";
   if (!r.ok) {
-    if (!phone.includes("@") && (r.noBuy || /No purchase|nahi khareedi|नहीं खरीदी/i.test(r.error || ""))) { msg(""); return ordStep("Is number se koi PPT nahi kharidi gayi. <b>Custom PPT order kiya hai?</b> To apna koi bhi ek order number daalein."); }
+    if (!phone.includes("@") && (r.noBuy || /No purchase|nahi khareedi|नहीं खरीदी/i.test(r.error || ""))) { msg(""); return ordStep("No purchases found for this number. <b>Ordered a custom PPT?</b> Enter any one order number."); }
     msg(r.error); return; }
-  if (!OTP) { toast("✓ Login हो गया"); show(r); return; }
-  $("#sentTo").innerHTML = `OTP <b>${esc(r.to)}</b> पर भेजा गया है।<span class="en">OTP sent${r.via === "email" ? " to your email" : ""}. Check inbox / spam.</span>`;
+  if (!OTP) { toast("✓ Signed in"); show(r); return; }
+  $("#sentTo").innerHTML = `OTP sent to <b>${esc(r.to)}</b>. Please check your inbox / spam.`;
   $("#fPhone").hidden = true; $("#fOtp").hidden = false; $("#otp").value = ""; $("#otp").focus(); startTimer();
 }
 $("#fPhone").onsubmit = e => { e.preventDefault(); send(); };
@@ -532,21 +532,21 @@ document.querySelectorAll(".chg-no").forEach(x => x.onclick = () => { resetLogin
 $("#otp").oninput = e => { e.target.value = e.target.value.replace(/\D/g,""); if (e.target.value.length === 6) $("#fOtp").requestSubmit(); };
 $("#fOtp").onsubmit = async e => {
   e.preventDefault(); const otp = $("#otp").value;
-  if (otp.length !== 6) { msg("6 अंकों का OTP डालें। / Enter 6-digit OTP."); return; }
-  const b = $("#verifyBtn"); b.disabled = true; b.textContent = "Check हो रहा है…";
+  if (otp.length !== 6) { msg("Please enter the 6-digit OTP."); return; }
+  const b = $("#verifyBtn"); b.disabled = true; b.textContent = "Checking…";
   const r = await api({ action:"verify", id:phone, phone, otp });
-  b.disabled = false; b.textContent = "Verify करें / Login";
+  b.disabled = false; b.textContent = "Verify & Sign in";
   if (!r.ok) { msg(r.error); $("#otp").select(); return; }
-  msg(""); toast("✓ Login हो गया"); show(r); linkOrders();
+  msg(""); toast("✓ Signed in"); show(r); linkOrders();
 };
-$("#logout").onclick = async () => { await api({ action:"logout" }); ORD = null; BUY = []; tsaved(null); show({ loggedIn:false }); toast("Logout हो गया"); };
+$("#logout").onclick = async () => { await api({ action:"logout" }); ORD = null; BUY = []; tsaved(null); show({ loggedIn:false }); toast("Signed out"); };
 /* OTP login ke baad: isi mobile ke custom orders bhi (naya Apps Script ho to bina order number ke) */
 async function linkOrders(){
   if (ORD || !SAPI) return;
   const r = await gas("acctOrders", { token:tok() });
   if (r && r.ok && r.phone && Array.isArray(r.orders) && r.orders.length) { ORD = { id:r.orders[0].id, phone:r.phone, orders:r.orders, name:r.name || "" }; show(); }
 }
-document.addEventListener("click", e => { if (e.target.closest('a[href="#demo"]')) { e.preventDefault(); toast("✓ असली वेबसाइट पर यहाँ से PPT download होगी"); } });
+document.addEventListener("click", e => { if (e.target.closest('a[href="#demo"]')) { e.preventDefault(); toast("✓ On the live site, the PPT downloads from here"); } });
 
 (async function boot(){
   let me = await api();
