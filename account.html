@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>My PPTs — PPT Store</title>
+<title>My Account (My PPTs + Orders) — PPT Store</title>
 <meta name="robots" content="noindex, nofollow" />
 <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="48x48" href="/uploads/brand/icon-48.png"><link rel="icon" type="image/png" sizes="96x96" href="/uploads/brand/icon-96.png"><link rel="icon" type="image/png" sizes="192x192" href="/uploads/brand/icon-192.png"><link rel="apple-touch-icon" href="uploads/brand/apple-touch-icon.png">
 <script>
@@ -110,6 +110,23 @@ input:focus-visible{outline:none}
 .theme-sw:not(.open) button:not([aria-checked="true"]){display:none}
 /* Theme sirf Home page par chuni jaati hai; baaki pages wahi theme follow karte hain */
 .theme-sw{display:none!important}
+/* Chhota account page: abhi ka order upar, kharidi PPTs, purane orders band list mein */
+.alt-in{justify-self:center;color:var(--cyan);font-weight:700;font-size:.85rem}
+.av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--grad);color:#fff;flex:none}.av svg{width:22px;height:22px}
+.top{margin-bottom:12px}.top h1{font-size:1.3rem}.top p{font-size:.82rem}
+.qk{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.qk a{padding:7px 12px;border-radius:99px;font-size:.8rem;font-weight:700;background:var(--card);border:1px solid var(--line2);cursor:pointer}.qk a:hover{border-color:var(--violet)}
+.sh{font-size:1.05rem;margin:18px 0 10px;display:flex;align-items:baseline;gap:8px}.sh small{color:var(--muted);font-size:.78rem;font-weight:600}
+.oc{display:grid;gap:10px;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px 16px}
+.oc .r1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.oc .r1 b{font-size:1rem}.oc .r1 small{color:var(--muted);font-size:.78rem;font-weight:600}
+.oc .tp{font-weight:600;font-size:.9rem}
+.ost{margin-left:auto;font-size:.72rem;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--card2);border:1px solid var(--line2);white-space:nowrap}.ost.ready{color:#1a1200;background:#fde047;border-color:transparent}.ost.paid{color:#052e16;background:#4ade80;border-color:transparent}.ost.cx{color:#fff;background:#ef4444;border-color:transparent}
+.dots{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.dots i{height:5px;border-radius:9px;background:var(--line2)}.dots i.on{background:linear-gradient(90deg,#22c55e,#06b6d4)}
+.oc .btn{width:auto;justify-self:start}
+.olist{margin-top:10px}.olist summary{cursor:pointer;font-weight:700;font-size:.85rem;color:var(--violet);list-style:none}.olist summary::-webkit-details-marker{display:none}.olist summary::after{content:" ▾"}.olist[open] summary::after{content:" ▴"}
+.olist a{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:9px 12px;margin-top:6px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:.84rem}
+.olist a b{color:var(--muted)}.olist a span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nudge{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:14px;border:1px dashed var(--line2);color:var(--muted);font-size:.85rem}.nudge .btn{width:auto;margin-left:auto}
+.list{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}.item .b{padding:12px;gap:8px}.item b{font-size:.92rem}
 .otp-note{display:inline-block;margin:6px 0 2px;padding:4px 10px;border-radius:9px;font-weight:800;color:#7c2d12;background:linear-gradient(135deg,#fde68a,#fbbf24);box-shadow:0 0 0 2px rgba(251,191,36,.35);animation:otpPulse 1.6s ease-in-out infinite;transform-origin:left center}
 @keyframes otpPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07);box-shadow:0 0 0 5px rgba(251,191,36,.25)}}
 @media(prefers-reduced-motion:reduce){.otp-note{animation:none}}
@@ -154,32 +171,42 @@ input:focus-visible{outline:none}
 </header>
 
 <main class="container">
-  <!-- Login -->
+  <!-- Login: PPT kharidne wale (OTP email par) + custom order wale (order number) — dono yahin -->
   <section class="box" id="login" hidden>
     <span class="ic"><svg class="i"><use href="#i-user"/></svg></span>
-    <div><h1>My PPTs</h1><p>वही मोबाइल नंबर या ईमेल डालें जो PPT खरीदते समय भरा था। <b class="otp-note">📧 OTP आपके ईमेल पर आएगा।</b><span class="en">Use the mobile / email you bought with. OTP comes on email.</span></p></div>
+    <div><h1>My Account</h1><p>PPT kharidi hai ya custom PPT order kiya hai, dono yahin dikhenge. Wahi mobile number ya email daalein jo order / payment ke time bhara tha.<span class="en">Bought a PPT or ordered a custom PPT? Use the same mobile / email.</span></p></div>
     <form id="fPhone" novalidate style="display:grid;gap:14px">
       <label>Mobile Number / Email<input id="phone" type="text" maxlength="120" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Mobile no. or Email"></label>
       <input type="text" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-      <button class="btn btn-gold" id="sendBtn">OTP भेजें / Send OTP</button>
+      <button class="btn btn-gold" id="sendBtn">Aage badhein / Continue</button>
     </form>
     <form id="fOtp" novalidate hidden style="display:grid;gap:14px">
       <p id="sentTo"></p>
       <label>6 अंकों का OTP / 6-digit OTP<input id="otp" class="otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••"></label>
       <button class="btn btn-gold" id="verifyBtn">Verify करें / Login</button>
-      <div class="links"><button type="button" id="changeNo">← बदलें / Change</button><button type="button" id="resend" disabled>OTP दोबारा भेजें</button></div>
+      <div class="links"><button type="button" class="chg-no">← बदलें / Change</button><button type="button" id="resend" disabled>OTP दोबारा भेजें</button></div>
+    </form>
+    <form id="fOrd" novalidate hidden style="display:grid;gap:14px">
+      <p id="ordNote">Custom PPT order kiya hai? Apna <b>koi bhi ek order number</b> daalein (WhatsApp / SMS par mila tha).</p>
+      <label>Order number<input id="ordId" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="e.g. 15"></label>
+      <button class="btn btn-gold" id="ordBtn">Login karein</button>
+      <div class="links"><button type="button" class="chg-no">← Number बदलें</button></div>
     </form>
     <p class="msg" id="msg" role="alert"></p>
-    <a class="btn btn-ghost" href="track.html">📦 Custom PPT order track करें / Track order</a>
+    <button type="button" class="alt-in" id="toOrd">📦 Custom PPT order kiya hai? Order number se login</button>
   </section>
 
-  <!-- My PPTs -->
+  <!-- Login ke baad: chhota profile — abhi ka order, kharidi PPTs, purane orders -->
   <section id="mine" hidden>
     <div class="congrats" id="congrats" hidden><span>🎉</span><div><b>बधाई हो! पेमेंट सफल रहा। / Payment successful</b><p>आपकी PPT नीचे तैयार है, <b>Download PPT</b> दबाएँ। यह पेज कभी भी "My PPTs" में मोबाइल या ईमेल से दोबारा खोल सकते हैं।<span class="en">Your PPT is ready below. Open it anytime from My PPTs.</span></p></div></div>
     <div class="top">
-      <div><h1>My PPTs 📂</h1><p id="who"></p></div>
-      <div class="acts"><a class="btn btn-gold btn-sm" href="track.html">📦 PPT Order Track करें</a><button class="btn btn-ghost btn-sm" id="logout">Logout</button></div>
+      <span class="av" aria-hidden="true"><svg class="i"><use href="#i-user"/></svg></span>
+      <div><h1 id="hi">My Account</h1><p id="who"></p></div>
+      <div class="acts"><button class="btn btn-ghost btn-sm" id="logout">Logout</button></div>
     </div>
+    <div class="qk"><a href="ready-ppts.html">🛍️ Ready PPTs</a><a href="order.html">✨ Custom PPT order</a><a id="waHelp" target="_blank" rel="noopener">💬 WhatsApp help</a></div>
+    <div id="ordBox"></div>
+    <h2 class="sh">📂 My PPTs <small id="pptN"></small></h2>
     <div class="list" id="list"></div>
   </section>
 </main>
@@ -238,19 +265,86 @@ function demoApi(f){
   if (f.action === "logout") { demoIn = false; return { ok:true }; }
 }
 
+/* Custom order login (track.html wala hi): mobile + koi ek order number. Is phone par yaad rehta hai (la_track) */
+const TSAVE = "la_track";
+const tsaved = v => { try { if (v === undefined) return JSON.parse(localStorage.getItem(TSAVE) || "null"); v ? localStorage.setItem(TSAVE, JSON.stringify(v)) : localStorage.removeItem(TSAVE); } catch(e) { return null; } };
+async function gas(action, body){
+  try { const r = await fetch(SCRIPT, { method:"POST", body:JSON.stringify({ action, ...body }), headers:{ "Content-Type":"text/plain;charset=utf-8" } }); return await r.json(); }
+  catch(e) { return { ok:false, net:true, error:"इंटरनेट चेक करके दोबारा try करें। / Check internet and retry." }; }
+}
+const DEMO_ORD = [{ id:"12", time:new Date(Date.now() - 5 * 36e5).toISOString(), topic:"Physics Class 12 — Electric Charges", slides:"25", status:"Done", ready:true, price:250 },
+  { id:"9", time:new Date(Date.now() - 9 * 864e5).toISOString(), topic:"Class 8 Science — Cell", slides:"18", status:"Paid", ready:true, price:180 }];
+async function ordersOf(w){
+  if (!w || !w.id || !w.phone) return null;
+  if (!SCRIPT || window.claude) return w.id === "12" ? { ok:true, orders:DEMO_ORD } : { ok:false, error:"Demo: order number 12 daalein." };
+  return gas("customMine", w);
+}
+let ME = { loggedIn:false }, ORD = null;   /* ME: kharidi PPTs (OTP) · ORD: { phone, id, orders } custom orders */
 function show(me){
-  $("#login").hidden = me.loggedIn; $("#mine").hidden = !me.loggedIn;
-  if (!me.loggedIn) { if (me.otp !== undefined) OTP = !!me.otp; $("#sendBtn").textContent = OTP ? "OTP भेजें / Send OTP" : "Login करें / Login"; $("#fPhone").hidden = false; $("#fOtp").hidden = true; return; }
-  $("#who").textContent = `${me.phone} · ${me.items.length} PPT`;
+  if (me) ME = me;
+  const inP = !!ME.loggedIn, inO = !!(ORD && ORD.orders), any = inP || inO;
+  $("#login").hidden = any; $("#mine").hidden = !any;
+  if (!any) { if (ME.otp !== undefined) OTP = !!ME.otp; resetLogin(); return; }
+  const ph = inO ? "******" + String(ORD.phone).slice(-4) : ME.phone || "";
+  $("#hi").textContent = ORD && ORD.name ? "Namaste " + ORD.name : "My Account";
+  $("#who").textContent = [ph, inO ? ORD.orders.length + " order" + (ORD.orders.length > 1 ? "s" : "") : "", inP ? (ME.items || []).length + " PPT" : ""].filter(Boolean).join(" · ");
+  $("#waHelp").href = "https://wa.me/" + String((window.LA_CONFIG || {}).whatsapp || "919711069435").replace(/\D/g, "") + "?text=" + encodeURIComponent("Hi PPT Store! Mujhe apne account / order mein madad chahiye.");
+  drawOrders(); drawPpts();
+}
+const MST = { New:"Order mila", "In Progress":"Ban rahi hai", Done:"Ready · Pay karein", Paid:"Paid ✓", Cancelled:"Cancelled" };
+const STEP = { New:1, "In Progress":2, Done:3, Paid:4 };
+const dt = t => new Date(t).toLocaleDateString("en-IN", { day:"numeric", month:"short" });
+const stCls = s => s === "Done" ? "ready" : s === "Paid" ? "paid" : s === "Cancelled" ? "cx" : "";
+function drawOrders(){
+  const box = $("#ordBox");
+  if (!(ORD && ORD.orders)) { box.innerHTML = `<div class="nudge">📦 Custom PPT order kiya hai? Order number se jodein, yahin status dikhega.<button type="button" class="btn btn-ghost btn-sm" id="linkOrd">Order jodein</button></div>`; return; }
+  const L = ORD.orders; if (!L.length) { box.innerHTML = ""; return; }
+  const cur = L.find(o => o.status !== "Paid" && o.status !== "Cancelled") || L[0], rest = L.filter(o => o !== cur), n = STEP[cur.status] || 0;
+  const open = id => `track.html#id=${encodeURIComponent(id)}`;
+  box.innerHTML = `<h2 class="sh">🧾 ${cur.status === "Paid" || cur.status === "Cancelled" ? "Aakhri order" : "Abhi ka order"}</h2>
+    <div class="oc"><div class="r1"><b>#${esc(cur.id)}</b><small>${dt(cur.time)}${cur.slides && cur.slides !== "—" ? " · " + esc(cur.slides) + " slides" : ""}</small><span class="ost ${stCls(cur.status)}">${esc(MST[cur.status] || cur.status)}</span></div>
+      <div class="tp">${esc(cur.topic)}</div>
+      ${cur.status === "Cancelled" ? "" : `<div class="dots" aria-label="Step ${n} / 4">${[1,2,3,4].map(i => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</div>`}
+      <a class="btn ${cur.status === "Done" ? "btn-gold" : "btn-ghost"} btn-sm" href="${open(cur.id)}" data-oid="${esc(cur.id)}">${cur.status === "Done" ? "Demo dekhein · Pay & Download" : cur.status === "Paid" ? "Download / details" : "Status dekhein"} →</a></div>
+    ${rest.length ? `<details class="olist"><summary>Purane orders (${rest.length})</summary>${rest.map(o => `<a href="${open(o.id)}" data-oid="${esc(o.id)}"><b>#${esc(o.id)}</b><span>${esc(o.topic)}</span><span class="ost ${stCls(o.status)}">${esc(MST[o.status] || o.status)}</span></a>`).join("")}</details>` : ""}`;
+}
+function drawPpts(){
+  const me = ME, inP = !!me.loggedIn;
+  $("#pptN").textContent = inP ? `${(me.items || []).length}` : "";
+  if (!inP) { $("#congrats").hidden = true; $("#list").innerHTML = `<div class="nudge" style="grid-column:1/-1">Kharidi hui PPTs dekhne ke liye email OTP se login karein.<button type="button" class="btn btn-gold btn-sm" id="linkPpt">OTP se login</button></div>`; return; }
   const fresh = NEW && me.items.filter(p => String(p.orderId) === NEW || NEW === "demo").map(p => p.id);
   $("#congrats").hidden = !NEW;
   if (fresh && fresh.length) me.items.sort((a,b) => fresh.includes(b.id) - fresh.includes(a.id));
   $("#list").innerHTML = me.items.length ? me.items.map(p => `<div class="item${fresh && fresh.includes(p.id) ? " new" : ""}">
       <div class="thumb" style="background-image:url('${esc(p.thumb).replace(/'/g,"")}')"></div>
-      <div class="b"><b>${esc(p.title)}</b><small>Order #${p.orderId} · ${new Date(p.date.replace(" ","T")).toLocaleDateString("en-IN",{ day:"numeric", month:"short", year:"numeric" })}</small>
+      <div class="b"><b>${esc(p.title)}</b><small>Order #${p.orderId} · ${new Date(String(p.date).replace(" ","T")).toLocaleDateString("en-IN",{ day:"numeric", month:"short", year:"numeric" })}</small>
         ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(dlUrl(p.url))}" download data-slug="${esc(p.slug || "")}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">${p.pending ? "⏳ पेमेंट चेक हो रहा है / Verifying" : "File तैयार हो रही है"}</span>`}</div></div>`).join("")
-    : `<div class="empty" style="grid-column:1/-1"><p>इस मोबाइल / ईमेल पर अभी कोई PPT नहीं है।<span class="en">No PPT found yet.</span></p><a class="btn btn-gold" href="ready-ppts.html">Ready PPTs देखें</a></div>`;
+    : `<div class="nudge" style="grid-column:1/-1">इस मोबाइल / ईमेल पर अभी कोई PPT नहीं है। / No PPT yet.<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a></div>`;
 }
+/* Order card se track page: wahi login aage (dobara number nahi poochhega) */
+document.addEventListener("click", e => { const a = e.target.closest("[data-oid]"); if (!a || !ORD) return; tsaved({ id:a.dataset.oid, phone:ORD.phone }); });
+function resetLogin(){ $("#sendBtn").hidden = false; $("#sendBtn").textContent = "Aage badhein / Continue"; $("#fPhone").hidden = false; $("#fOtp").hidden = true; $("#fOrd").hidden = true; $("#toOrd").hidden = false; }
+/* Login ke baad bhi doosra hissa jodna (PPT ↔ order) */
+document.addEventListener("click", e => {
+  if (e.target.closest("#linkOrd") || e.target.closest("#toOrd")) { e.preventDefault(); $("#mine").hidden = true; $("#login").hidden = false; ordStep(""); }
+  if (e.target.closest("#linkPpt")) { e.preventDefault(); $("#mine").hidden = true; $("#login").hidden = false; resetLogin(); if (ORD) $("#phone").value = ORD.phone; $("#phone").focus(); }
+});
+function ordStep(note){
+  $("#fPhone").hidden = false; $("#fOtp").hidden = true; $("#fOrd").hidden = false; $("#toOrd").hidden = true;
+  $("#sendBtn").hidden = true; if (note) $("#ordNote").innerHTML = note;
+  ($("#phone").value.trim() ? $("#ordId") : $("#phone")).focus();
+}
+$("#fOrd").onsubmit = async e => {
+  e.preventDefault();
+  const v = $("#phone").value.replace(/\D/g, "").replace(/^(91|0)(?=\d{10}$)/, ""), id = $("#ordId").value.replace(/\D/g, "");
+  if (!/^[6-9]\d{9}$/.test(v)) { msg("Order ke liye 10-digit mobile number daalein. / Enter your 10-digit mobile."); $("#phone").focus(); return; }
+  if (!id) { msg("Order number daalein (jaise 15)."); $("#ordId").focus(); return; }
+  const b = $("#ordBtn"); b.disabled = true; b.textContent = "Check हो रहा है…";
+  const r = await ordersOf({ id, phone:v }); b.disabled = false; b.textContent = "Login karein";
+  if (!r || !r.ok) { msg((r && r.error) || "Is order number aur mobile se koi order nahi mila."); return; }
+  tsaved({ id, phone:v }); ORD = { id, phone:v, orders:r.orders || [], name:r.name || "" };
+  msg(""); $("#sendBtn").hidden = false; toast("✓ Login हो गया"); show();
+};
 function startTimer(){
   let n = 30; const b = $("#resend"); b.disabled = true; clearInterval(timer);
   b.textContent = `OTP दोबारा भेजें (${n}s)`;
@@ -262,15 +356,17 @@ async function send(){
   if (!(phone.includes("@") ? /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/.test(phone) : /^[6-9]\d{9}$/.test(phone))) { msg("सही मोबाइल नंबर या ईमेल डालें। / Enter a valid mobile or email."); $("#phone").focus(); return; }
   msg(""); const b = $("#sendBtn"); b.disabled = true; b.textContent = OTP ? "भेज रहे हैं… / Sending…" : "Check हो रहा है…";
   const r = await api({ action:OTP ? "send" : "login", id:phone, phone, website:$("#hp").value });
-  b.disabled = false; b.textContent = OTP ? "OTP भेजें / Send OTP" : "Login करें / Login";
-  if (!r.ok) { msg(r.error); return; }
+  b.disabled = false; b.textContent = "Aage badhein / Continue";
+  if (!r.ok) {
+    if (!phone.includes("@") && (r.noBuy || /No purchase|nahi khareedi|नहीं खरीदी/i.test(r.error || ""))) { msg(""); return ordStep("Is number se koi PPT nahi kharidi gayi. <b>Custom PPT order kiya hai?</b> To apna koi bhi ek order number daalein."); }
+    msg(r.error); return; }
   if (!OTP) { toast("✓ Login हो गया"); show(r); return; }
   $("#sentTo").innerHTML = `OTP <b>${esc(r.to)}</b> पर भेजा गया है।<span class="en">OTP sent${r.via === "email" ? " to your email" : ""}. Check inbox / spam.</span>`;
   $("#fPhone").hidden = true; $("#fOtp").hidden = false; $("#otp").value = ""; $("#otp").focus(); startTimer();
 }
 $("#fPhone").onsubmit = e => { e.preventDefault(); send(); };
 $("#resend").onclick = send;
-$("#changeNo").onclick = () => { $("#fOtp").hidden = true; $("#fPhone").hidden = false; msg(""); $("#phone").focus(); };
+document.querySelectorAll(".chg-no").forEach(x => x.onclick = () => { resetLogin(); $("#sendBtn").hidden = false; msg(""); $("#phone").focus(); });
 $("#otp").oninput = e => { e.target.value = e.target.value.replace(/\D/g,""); if (e.target.value.length === 6) $("#fOtp").requestSubmit(); };
 $("#fOtp").onsubmit = async e => {
   e.preventDefault(); const otp = $("#otp").value;
@@ -279,9 +375,15 @@ $("#fOtp").onsubmit = async e => {
   const r = await api({ action:"verify", id:phone, phone, otp });
   b.disabled = false; b.textContent = "Verify करें / Login";
   if (!r.ok) { msg(r.error); $("#otp").select(); return; }
-  msg(""); toast("✓ Login हो गया"); show(r);
+  msg(""); toast("✓ Login हो गया"); show(r); linkOrders();
 };
-$("#logout").onclick = async () => { await api({ action:"logout" }); show({ loggedIn:false }); toast("Logout हो गया"); };
+$("#logout").onclick = async () => { await api({ action:"logout" }); ORD = null; tsaved(null); show({ loggedIn:false }); toast("Logout हो गया"); };
+/* OTP login ke baad: isi mobile ke custom orders bhi (naya Apps Script ho to bina order number ke) */
+async function linkOrders(){
+  if (ORD || !SAPI) return;
+  const r = await gas("acctOrders", { token:tok() });
+  if (r && r.ok && r.phone && Array.isArray(r.orders) && r.orders.length) { ORD = { id:r.orders[0].id, phone:r.phone, orders:r.orders, name:r.name || "" }; show(); }
+}
 document.addEventListener("click", e => { if (e.target.closest('a[href="#demo"]')) { e.preventDefault(); toast("✓ असली वेबसाइट पर यहाँ से PPT download होगी"); } });
 
 (async function boot(){
@@ -289,7 +391,8 @@ document.addEventListener("click", e => { if (e.target.closest('a[href="#demo"]'
   if (!me.ok && SCRIPT && !window.claude) { SAPI = true; const s = await api(); if (s.ok) me = s; else SAPI = false; }   /* Vercel: asli login Google Script se */
   if (!me.ok && CONFIG.demo) { API = false; me = await api(); }
   if (NEW === "demo" && !API) { demoIn = true; me = await api(); }
-  show(me.ok ? me : { loggedIn:false });
+  const w = tsaved(); if (w && w.id && w.phone) { const r = await ordersOf(w); if (r && r.ok) ORD = { id:w.id, phone:w.phone, orders:r.orders || [], name:r.name || "" }; }
+  show(me.ok ? me : { loggedIn:false }); if (me.loggedIn) linkOrders();
   if (NEW && me.loggedIn) { history.replaceState(null, "", location.pathname); const a = document.querySelector(".item.new a.btn"); if (a && a.getAttribute("href") !== "#demo") setTimeout(() => a.click(), 800); }
   if (!me.ok && !CONFIG.demo) msg(me.error);
 })();

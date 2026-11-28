@@ -173,7 +173,9 @@ ${related.length ? `<h2>Related study material</h2>${pptList(related)}` : ""}`;
     "@context": "https://schema.org", "@type": "Product", name: p.title, description: clip(p.desc || p.title, 300), sku: String(p.id),
     category: [kind, ...lv, p.subject].filter(Boolean).join(", "), brand: { "@type": "Brand", name: "PPT Store" }, ...(im ? { image: im } : {}),
     offers: { "@type": "Offer", price: String(p.price || 0), priceCurrency: "INR", availability: "https://schema.org/InStock", url: SITE + url } }];
-  return page({ url, title, desc, body, ld, image: im });
+  /* Share link (?s=1): WhatsApp / Telegram ko upar ke og:image (chapter ki slide) milti hai; insaan seedha store mein isi PPT ka preview dekhe */
+  const go = (isBook(p) ? "/ready-ppts.html?type=books&" : isNote(p) ? "/ready-ppts.html?type=notes&" : "/ready-ppts.html?") + qs({ id: p.id });
+  return page({ url, title, desc, body: body + `<script>if(/[?&]s=1\\b/.test(location.search))location.replace(${JSON.stringify(go)})</script>`, ld, image: im });
 }
 
 function topicPage(D, cs, is) {

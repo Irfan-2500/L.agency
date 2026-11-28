@@ -240,13 +240,6 @@ const esc = t => String(t == null ? "" : t).replace(/[&<>"']/g, c => ({ "&": "&a
 
 /* ===== More Offerings — har service ka content yahan badlein ===== */
 const SERVICES = [
-  { id: "ready-to-use-presentations", icon: "i-ppt", c: "#a855f7", name: "Ready-to-Use Presentations",
-    tag: "Download karo, padhao — PPT pehle se taiyaar.",
-    intro: "Professionally designed, fully editable PowerPoint presentations that are ready for your next class. Pick a design and topic, make small changes if you need, and start teaching right away.",
-    what: ["Chapter-wise theory and concept slides", "Question, MCQ and practice slides", "Hindi, English and bilingual presentations", "Animated and non-animated versions", "Clean themes for digital boards and online classes", "100% editable PPTX files"],
-    who: ["School and coaching teachers", "YouTube and online educators", "Students preparing seminars and projects"],
-    steps: [["Choose", "Browse our themes and tell us your class, subject and topic."], ["Confirm", "We share the available presentation and details on WhatsApp."], ["Download", "Get the editable PPTX file and start using it."]],
-    cta: [["Explore Themes", "./#themes"]] },
   { id: "lecture-recording", icon: "i-mic", c: "#ef4444", name: "Lecture Recording",
     tag: "Aapka lecture, saaf awaaz aur saaf screen ke saath.",
     intro: "Record your lectures with your slides, clear audio and a neat on-screen layout — ready for YouTube, online courses or your own learning app.",
@@ -277,7 +270,14 @@ const SERVICES = [
     what: ["Content calendar and posting plan", "Post, carousel and Story designs", "Reels and Shorts editing", "YouTube titles, descriptions and thumbnails", "Page / channel setup and branding", "Monthly management plans"],
     who: ["Teachers building a personal brand", "Coaching institutes and schools", "EdTech and education businesses"],
     platforms: ["YouTube", "Instagram", "Facebook"],
-    steps: [["Discuss", "Tell us your goals, platforms and audience."], ["Plan", "We prepare a content plan and designs for approval."], ["Manage", "We post and manage your pages as per the plan."]] }
+    steps: [["Discuss", "Tell us your goals, platforms and audience."], ["Plan", "We prepare a content plan and designs for approval."], ["Manage", "We post and manage your pages as per the plan."]] },
+  { id: "ready-to-use-presentations", icon: "i-ppt", c: "#a855f7", name: "Ready-to-Use Presentations", href: "ready-ppts.html",
+    tag: "Download karo, padhao — PPT pehle se taiyaar.",
+    intro: "Professionally designed, fully editable PowerPoint presentations that are ready for your next class. Pick a design and topic, make small changes if you need, and start teaching right away.",
+    what: ["Chapter-wise theory and concept slides", "Question, MCQ and practice slides", "Hindi, English and bilingual presentations", "Animated and non-animated versions", "Clean themes for digital boards and online classes", "100% editable PPTX files"],
+    who: ["School and coaching teachers", "YouTube and online educators", "Students preparing seminars and projects"],
+    steps: [["Choose", "Browse our themes and tell us your class, subject and topic."], ["Confirm", "We share the available presentation and details on WhatsApp."], ["Download", "Get the editable PPTX file and start using it."]],
+    cta: [["Explore Themes", "./#themes-all"]] }
 ];
 
 const icon = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#${id}"/></svg>`;
@@ -285,7 +285,7 @@ const wa = msg => "https://wa.me/" + WA + "?text=" + encodeURIComponent(msg);
 function render() {
   const p = new URLSearchParams(location.search), id = p.get("s") || location.hash.slice(1);
   const s = SERVICES.find(x => x.id === id) || SERVICES[0];
-  if (s.href) { location.replace(s.href); return; }   /* Study Notes = notes kharidne wala page */
+  if (s.href) { location.replace(s.href); return; }   /* Study Notes / Ready-to-Use = seedha kharidne wala page */
   document.title = s.name + " — PPT Store";
   $tabs.innerHTML = SERVICES.map(x => `<a href="${x.href || "service.html?s=" + x.id}" class="${x === s ? "on" : ""}" style="--c:${x.c}" ${x === s ? 'aria-current="page"' : ""}>${icon(x.icon)}<span>${esc(x.name)}</span></a>`).join("");
   const on = $tabs.querySelector(".on"); if (on) on.scrollIntoView({ block: "nearest", inline: "center" });

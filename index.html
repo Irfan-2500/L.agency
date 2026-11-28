@@ -1338,6 +1338,7 @@ html.light .thp-back{background:#fff}
 .th-row::-webkit-scrollbar{display:none}
 .th-row>.th-card{flex:0 0 calc((100% - 48px)/4);min-width:0}
 .th-row.dragging{cursor:grabbing}
+.th-card.sk{pointer-events:none}.th-card.sk .th-pic{background:linear-gradient(90deg,var(--card2,#eee) 0,rgba(139,44,255,.12) 50%,var(--card2,#eee) 100%) 0 0/200% 100%;animation:skM 1.2s linear infinite}.th-card.sk i{display:block;height:12px;margin:10px 0;border-radius:6px;background:var(--card2,rgba(139,44,255,.1))}.th-card.sk i:nth-child(2){width:60%}.th-card.sk i:nth-child(3){width:40%;height:26px}@keyframes skM{to{background-position:-200% 0}}
 .th-row.dragging *{pointer-events:none}
 @media(max-width:1024px){.th-row>.th-card{flex-basis:calc((100% - 32px)/3)}}
 @media(max-width:760px){.th-row{gap:12px}.th-row>.th-card{flex-basis:62%}}
@@ -1563,7 +1564,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
       <a href="account.html" class="nav-my" data-ui="nav_my" title="Khareedi PPTs dobara download karein"><svg class="i" style="width:16px"><use href="#i-user"/></svg>My PPTs</a>
       <div class="nav-more" data-ui="nav_more">
         <button type="button" class="more-btn" id="moreBtn" aria-haspopup="true" aria-expanded="false"><svg class="i" style="width:16px"><use href="#i-grid"/></svg><span class="mo-l">More Offerings</span><span class="mo-s">More</span><svg class="i chev" style="width:14px"><use href="#i-down"/></svg></button>
-        <div class="more-menu" id="moreMenu" role="menu"><a href="service.html?s=ready-to-use-presentations" role="menuitem" style="--c:#a855f7"><span class="mo-ic"><svg class="i"><use href="#i-ppt"/></svg></span><span><b>Ready-to-Use Presentations</b><small>Editable PPTs, ready to teach</small></span></a><a href="service.html?s=lecture-recording" role="menuitem" style="--c:#ef4444"><span class="mo-ic"><svg class="i"><use href="#i-mic"/></svg></span><span><b>Lecture Recording</b><small>Clear audio + slide recording</small></span></a><a href="service.html?s=thumbnail-design" role="menuitem" style="--c:#f59e0b"><span class="mo-ic"><svg class="i"><use href="#i-image"/></svg></span><span><b>Thumbnail Design</b><small>YouTube & class thumbnails</small></span></a><a href="ready-ppts.html?type=notes" role="menuitem" style="--c:#22c55e"><span class="mo-ic"><svg class="i"><use href="#i-book"/></svg></span><span><b>Study Notes</b><small>Notes for every class &amp; exam · Hindi / English</small></span></a><a href="service.html?s=video-editing" role="menuitem" style="--c:#06b6d4"><span class="mo-ic"><svg class="i"><use href="#i-film"/></svg></span><span><b>Video Editing</b><small>Lectures, Shorts & Reels</small></span></a><a href="service.html?s=social-media-management" role="menuitem" style="--c:#ec4899"><span class="mo-ic"><svg class="i"><use href="#i-share"/></svg></span><span><b>Social Media Management</b><small>YouTube, Instagram & Facebook</small></span></a><a href="service.html" class="mo-all" role="menuitem">View all offerings →</a></div>
+        <div class="more-menu" id="moreMenu" role="menu"><a href="service.html?s=lecture-recording" role="menuitem" style="--c:#ef4444"><span class="mo-ic"><svg class="i"><use href="#i-mic"/></svg></span><span><b>Lecture Recording</b><small>Clear audio + slide recording</small></span></a><a href="service.html?s=thumbnail-design" role="menuitem" style="--c:#f59e0b"><span class="mo-ic"><svg class="i"><use href="#i-image"/></svg></span><span><b>Thumbnail Design</b><small>YouTube & class thumbnails</small></span></a><a href="ready-ppts.html?type=notes" role="menuitem" style="--c:#22c55e"><span class="mo-ic"><svg class="i"><use href="#i-book"/></svg></span><span><b>Study Notes</b><small>Notes for every class &amp; exam · Hindi / English</small></span></a><a href="service.html?s=video-editing" role="menuitem" style="--c:#06b6d4"><span class="mo-ic"><svg class="i"><use href="#i-film"/></svg></span><span><b>Video Editing</b><small>Lectures, Shorts & Reels</small></span></a><a href="service.html?s=social-media-management" role="menuitem" style="--c:#ec4899"><span class="mo-ic"><svg class="i"><use href="#i-share"/></svg></span><span><b>Social Media Management</b><small>YouTube, Instagram & Facebook</small></span></a><a href="ready-ppts.html" role="menuitem" style="--c:#a855f7"><span class="mo-ic"><svg class="i"><use href="#i-ppt"/></svg></span><span><b>Ready-to-Use Presentations</b><small>Editable PPTs, ready to teach</small></span></a><a href="service.html" class="mo-all" role="menuitem">View all offerings →</a></div>
       </div>
       <div class="theme-sw" role="radiogroup" aria-label="Website theme" data-ui="nav_theme">
         <button type="button" role="radio" data-mode="dark" title="Dark theme"><svg class="i"><use href="#i-moon"/></svg><span>Dark</span></button>
@@ -1596,7 +1597,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
         </div>
       </div>
       <div class="hero-cta">
-        <a href="#themes" class="btn btn-primary hcta" data-ui="hero_explore"><span class="cta-ic"><svg class="i"><use href="#i-grid"/></svg></span><span class="cta-tx"><b>Explore Themes</b><small>Browse PPT designs</small></span><svg class="i cta-go"><use href="#i-arrow"/></svg></a>
+        <a href="#themes-all" class="btn btn-primary hcta" data-ui="hero_explore"><span class="cta-ic"><svg class="i"><use href="#i-grid"/></svg></span><span class="cta-tx"><b>Explore Themes</b><small>Browse PPT designs</small></span><svg class="i cta-go"><use href="#i-arrow"/></svg></a>
         <a href="order.html" class="btn btn-ghost hcta" data-ui="hero_order"><span class="cta-ic"><img src="uploads/brand/ppt-icon.webp" alt="" width="28" height="27" draggable="false"></span><span class="cta-tx"><b>PPT Order Now</b><small>Custom PPT in 1 hour</small></span><svg class="i cta-go"><use href="#i-arrow"/></svg></a>
         <a href="ready-ppts.html" class="btn btn-ready hcta" id="readyPptBtn" data-ui="hero_ready"><span class="cta-ic rd-swap"><svg class="i sw-a"><use href="#i-dl"/></svg><img class="sw-b" src="uploads/brand/ppt-icon.webp" alt="" width="24" height="23" draggable="false"><span class="ready-dot" aria-hidden="true"></span></span><span class="cta-tx"><b>Ready to Use PPT</b><small>Pay &amp; download instantly</small></span><svg class="i cta-go"><use href="#i-arrow"/></svg></a>
       </div>
@@ -1627,7 +1628,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
 </section>
 
 <!-- ================= PPT THEMES ================= -->
-<style>#thBar,#thFt{display:none!important}</style>
+<style>#thBar,#thFt{display:none!important}#themes .th-tools{display:none!important}</style>
 <section class="section" id="themes" style="padding-top:10px">
   <div class="container">
     <div class="th-tools reveal">
@@ -1644,7 +1645,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
       <button type="button" id="thReset" hidden>↺ Reset</button>
     </div>
     <div class="th-q" id="thQ" hidden role="status"></div>
-    <div class="th-sec" id="rdSec" hidden><div class="th-sh"><h3 class="th-k12">📦 Ready to Use PPT <small id="rdN"></small></h3><a class="th-all" href="ready-ppts.html">View All <span>→</span></a></div><div class="th-row" id="rdRow"></div></div>
+    <div class="th-sec" id="rdSec"><div class="th-sh"><h3 class="th-k12">📦 Ready to Use PPT <small id="rdN"></small></h3><a class="th-all" href="ready-ppts.html">View All <span>→</span></a></div><div class="th-row" id="rdRow"><div class="th-card sk" aria-hidden="true"><div class="th-pic"></div><div class="th-meta"><i></i><i></i><i></i></div></div><div class="th-card sk" aria-hidden="true"><div class="th-pic"></div><div class="th-meta"><i></i><i></i><i></i></div></div><div class="th-card sk" aria-hidden="true"><div class="th-pic"></div><div class="th-meta"><i></i><i></i><i></i></div></div><div class="th-card sk" aria-hidden="true"><div class="th-pic"></div><div class="th-meta"><i></i><i></i><i></i></div></div></div></div>
     <div class="th-sec" id="ntSec" hidden><div class="th-sh"><h3 class="th-k12">📝 Study Notes <small id="ntN"></small></h3><a class="th-all" href="ready-ppts.html?type=notes">View All <span>→</span></a></div><div class="th-row nt-row" id="ntRow"></div></div>
     <div class="th-grid" id="thGrid"></div>
     <div class="load-more"><button class="btn btn-ghost" id="thMore">Show More Themes</button></div>
@@ -1891,7 +1892,7 @@ html.light .section-head .eyebrow{background:#ecfeff;border-color:#a5f3fc}
       <div><h5>NAVIGATION</h5><ul>
         <li><a href="#home">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="ready-ppts.html">All Presentations</a></li><li data-ui="foot_admin"><a href="admin.html">🔐 Admin Panel</a></li><li><a href="team.html" rel="nofollow">👥 Team Login · Order Assign</a></li><li><a href="#custom" class="js-custom">Custom PPT Services</a></li><li><a href="#why">Why PPT Store</a></li><li><a href="#payment">Payment &amp; Billing</a></li><li><a href="track.html">Track Order</a></li><li><a href="#contact">Contact Us</a></li><li><a href="#faq">FAQs</a></li></ul></div>
       <div><h5>CATEGORIES</h5><ul id="footCats"></ul></div>
-      <div data-ui="foot_more"><h5>MORE OFFERINGS</h5><ul><li><a href="service.html?s=ready-to-use-presentations">Ready-to-Use Presentations</a></li><li><a href="service.html?s=lecture-recording">Lecture Recording</a></li><li><a href="service.html?s=thumbnail-design">Thumbnail Design</a></li><li><a href="ready-ppts.html?type=notes">Study Notes</a></li><li><a href="service.html?s=video-editing">Video Editing</a></li><li><a href="service.html?s=social-media-management">Social Media Management</a></li></ul></div>
+      <div data-ui="foot_more"><h5>MORE OFFERINGS</h5><ul><li><a href="service.html?s=lecture-recording">Lecture Recording</a></li><li><a href="service.html?s=thumbnail-design">Thumbnail Design</a></li><li><a href="ready-ppts.html?type=notes">Study Notes</a></li><li><a href="service.html?s=video-editing">Video Editing</a></li><li><a href="service.html?s=social-media-management">Social Media Management</a></li><li><a href="ready-ppts.html">Ready-to-Use Presentations</a></li></ul></div>
       <div data-ui="foot_popular"><h5>POPULAR</h5><ul><li><a href="/study-material">All Study Material</a></li><li><a href="educational-ppt.html">Educational PPT</a></li><li><a href="ready-made-ppt.html">Ready-Made PPT</a></li><li><a href="custom-ppt-design.html">Custom PPT Design</a></li><li><a href="student-ppt.html">PPT for Students</a></li><li><a href="study-notes-pdf.html">Study Notes PDF</a></li><li><a href="cbse-icse-state-board-ppt.html">CBSE, ICSE &amp; State Board PPT</a></li><li><a href="lecture-recording-video-editing.html">Lecture Recording &amp; Video Editing</a></li></ul></div>
       <div><h5>TRUST & LEGAL</h5><ul>
         <li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms & Conditions</a></li><li><a href="refund.html">Refund & Cancellation</a></li><li><a href="delivery.html">Shipping & Delivery</a></li><li><a href="contact.html">Contact Us</a></li></ul>
@@ -3102,6 +3103,9 @@ function renderThemes(){
 let thHashDone = false;
 function thHash(force){
   if ((thHashDone && !force) || !THEMES.length) return;
+  const t1 = location.hash.match(/^#theme=(.+)$/);
+  if (t1) { thHashDone = true; const k = decodeURIComponent(t1[1]), i = thList.findIndex(t => String(t.id) === k || t.name === k);
+    history.replaceState(null, "", location.pathname + location.search); if (i >= 0) openTheme(i); return; }
   const m = location.hash.match(/^#themes-(all|dark|light)$/); thHashDone = true; if (!m) return;
   if ($("#thPage").classList.contains("on")) return;
   history.replaceState(null, "", location.pathname + location.search);   // Back dabane par home page par aayein
@@ -3132,11 +3136,19 @@ const splitPv = a => { a = (a || []).filter(Boolean); const i = a.indexOf(CARD_M
 const ordUrl = (name, img) => "order.html?theme=" + encodeURIComponent(name) + (img ? "&img=" + encodeURIComponent(img) : "");
 function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
 (async function readyRow(){
-  let list = [];
   const SCR = String((window.LA_CONFIG || {}).orderUrl || "").trim();
-  if (SCR) try { const j = await (await fetch(SCR + "?action=ppts", { cache:"no-store" })).json(); if (j.ok && j.products) list = j.products.map(p => { const s = splitPv(p.previews); return { ...p, thumb:s.card[0] || s.slides[0] || "", previews:s.slides }; }); } catch(e) {}
-  if (!list.length && window.LA_CATALOG) list = LA_CATALOG.map(p => ({ ...p, thumb:`uploads/previews/demo-${p.slug}-1.webp`, previews:p.previews || [1, 2, 3, 4].map(n => `uploads/previews/demo-${p.slug}-${n}.webp`) }));
-  if (!list.length) return;
+  /* Pichhli baar ki PPT list (Ready PPTs page wali bhi) turant dikhao, taaki page khulte hi sabse upar Ready PPT ho */
+  let cached = null; try { cached = !window.claude && JSON.parse(localStorage.getItem("la_ppts") || "null"); } catch(e) {}
+  if (Array.isArray(cached) && cached.length) rdShow(cached);
+  let list = [];
+  if (SCR) try { const j = await (await fetch(SCR + "?action=ppts", { cache:"no-store" })).json(); if (j.ok && j.products) list = j.products.map(p => { const s = splitPv(p.previews); return { ...p, thumb:s.card[0] || s.slides[0] || "", cards:s.card, previews:s.slides }; }); } catch(e) {}
+  if (list.length) { try { localStorage.setItem("la_ppts", JSON.stringify(list)); } catch(e) {} return rdShow(list); }
+  if (cached && cached.length) return;
+  if (window.LA_CATALOG) list = LA_CATALOG.map(p => ({ ...p, thumb:`uploads/previews/demo-${p.slug}-1.webp`, previews:p.previews || [1, 2, 3, 4].map(n => `uploads/previews/demo-${p.slug}-${n}.webp`) }));
+  if (!list.length) { $("#rdSec").hidden = true; return; }
+  rdShow(list);
+})();
+function rdShow(list){
   const isNt = p => p.cat === "notes" || (p.level || []).includes("Study Notes");
   const toLb = p => { const pics = (p.previews || []).filter(Boolean); if (!pics.length && p.thumb) pics.push(p.thumb);
     return { rd:true, note:isNt(p), id:+p.id, name:p.title, type:isNt(p) ? "Study Notes" : "Ready PPT", img:p.thumb, slides:pics, slots:pvSlots(pics, +p.slides || 0), price:p.price, mrp:p.mrp, lang:p.lang, subject:p.subject, level:p.level || [], n:+p.slides || 0 }; };
@@ -3145,7 +3157,7 @@ function rdBuy(id){ location.href = "ready-ppts.html?pay=" + id; }
   const ppts = list.filter(p => !isNt(p)), notes = list.filter(isNt);
   RD_LIST = ppts.map(toLb); NT_LIST = notes.map(toLb); RD_RAW = [["rd", ppts, "openRd"], ["nt", notes, "openNt"]];
   rdRender(); if (String(thState.q || "").trim()) renderThemes();
-})();
+}
 function rdRender(){
   const isNt = p => p.cat === "notes" || (p.level || []).includes("Study Notes");
   const q = String(thState.q || "").trim();
@@ -3490,5 +3502,6 @@ document.addEventListener("click",e=>{if(cur>=0&&!nav.contains(e.target)&&!pan.c
 })();
 </script>
 <script src="js/loader.js"></script>
+<script src="js/site-search.js"></script>
 </body>
 </html>

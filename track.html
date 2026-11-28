@@ -109,6 +109,25 @@ input:focus-visible{outline:none}
 /* Theme: band rahe to sirf chuni hui theme dikhe, click par teeno khulein */
 .theme-sw:not(.open) button:not([aria-checked="true"]){display:none}
 /* ===== TRACK ORDER ===== */
+/* Chhota order card (website changes #6): profile patti, mini progress, details aur badlav dabane par */
+.prof{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);font-size:.8rem}
+.prof .who{font-weight:700;margin-right:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.prof .who small{color:var(--muted);font-weight:600}
+.prof a,.prof button{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:9px;font-weight:700;font-size:.78rem;color:var(--text);background:var(--card);border:1px solid var(--line2);text-decoration:none;cursor:pointer}
+.prof .lo{color:var(--cyan);border-color:transparent;background:none;padding-inline:4px}
+.oh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}.oh h1{font-size:1.15rem}.oh small{color:var(--muted);font-size:.78rem}
+.otopic{font-weight:700;font-size:.95rem}
+.ostat{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--card2,rgba(139,44,255,.1));border:1px solid var(--line2)}
+.mstep{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;position:relative}
+.mstep div{display:grid;justify-items:center;gap:4px;text-align:center;font-size:.68rem;color:var(--muted);font-weight:600;position:relative}
+.mstep div::before{content:"";position:absolute;top:10px;left:-50%;right:50%;height:2px;background:var(--line2)}.mstep div:first-child::before{display:none}
+.mstep i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:.7rem;font-weight:800;background:var(--card2);border:1.5px solid var(--line2);z-index:1}
+.mstep .done i{background:#22c55e;border-color:#22c55e;color:#fff}.mstep .done::before,.mstep .now::before{background:#22c55e}
+.mstep .now i{background:var(--grad,#8b2cff);border-color:transparent;color:#fff;box-shadow:0 0 0 4px rgba(139,44,255,.2)}.mstep .now{color:var(--text)}
+.mnow{font-size:.8rem;color:var(--muted);text-align:center}
+details.odet summary,details.chgd summary{cursor:pointer;font-weight:700;font-size:.85rem;color:var(--violet,#8b2cff);list-style:none}details.odet summary::-webkit-details-marker,details.chgd summary::-webkit-details-marker{display:none}
+details.odet summary::after,details.chgd summary::after{content:" ▾"}details[open].odet summary::after,details[open].chgd summary::after{content:" ▴"}
+details.odet .kv{margin-top:8px}details.chgd .chg{border-top:0;padding-top:8px}
+.oacts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.oacts .btn{font-size:.8rem;padding:9px 8px}.oacts .btn:only-child{grid-column:1/-1}
 .steps{display:grid;gap:0;margin-top:4px}
 .st{display:grid;grid-template-columns:34px 1fr;gap:12px;position:relative;padding-bottom:18px}
 .st:last-child{padding-bottom:0}
@@ -296,16 +315,21 @@ function show(o){
   if (o.ppt) steps[2][2] = "Neeche demo dekhein, pay karein aur turant download karein 👇";
   if (o.download) steps[3][2] = "Payment mil gaya. PPT download karein 🙏";
   $("#res").classList.toggle("wide", !!o.ppt);
-  $("#res").innerHTML = `<div><h1 style="font-size:1.3rem">Order #${esc(o.id)}</h1><p>Namaste ${esc(o.name)} · ${esc(when)}</p></div>
-    <div class="kv"><div><span>PPT:</span> ${esc(o.topic)}</div>${o.theme && o.theme !== "—" ? `<div><span>Theme:</span> ${esc(o.theme)}</div>` : ""}${o.slides && o.slides !== "—" ? `<div><span>Slides:</span> ${esc(o.slides)}</div>` : ""}${o.language && o.language !== "—" ? `<div><span>Language:</span> ${esc(o.language)}</div>` : ""}${o.files ? `<div><span>Aapki files:</span> ${o.files} file${o.files > 1 ? "s" : ""} mili</div>` : ""}${o.details && o.details !== "—" ? `<div><span>Aapne kya likha:</span><div class="det">${esc(o.details)}</div></div>` : ""}</div>
+  const kvs = [o.theme && o.theme !== "—" && ["Theme", o.theme], o.slides && o.slides !== "—" && ["Slides", o.slides], o.language && o.language !== "—" && ["Language", o.language], o.files && ["Aapki files", o.files + " file" + (o.files > 1 ? "s" : "") + " mili"]].filter(Boolean);
+  const n = MINE.length, dk = o.status === "Cancelled" ? -1 : k;
+  $("#res").innerHTML = `${!WHO ? "" : `<div class="prof"><span class="who">👤 ${esc(o.name)} <small>· ******${esc(String(WHO.phone).slice(-4))}</small></span>
+      <a href="account.html">📂 My PPTs</a><button type="button" id="allOrd" aria-expanded="${!$("#mine").hidden}"${n > 1 ? "" : " hidden"}>🧾 Orders (${n})</button><button type="button" class="lo" id="other">Logout</button></div>`}
+    <div class="oh"><h1>Order #${esc(o.id)}</h1><small>${esc(when)}</small></div>
+    <div class="otopic">${esc(o.topic)}</div>
+    ${kvs.length || (o.details && o.details !== "—") ? `<details class="odet"><summary>Order details</summary><div class="kv">${kvs.map(([a, v]) => `<div><span>${a}:</span> ${esc(v)}</div>`).join("")}${o.details && o.details !== "—" ? `<div><span>Aapne kya likha:</span><div class="det">${esc(o.details)}</div></div>` : ""}</div></details>` : ""}
     ${o.download ? doneHtml(o) : ""}
     ${o.status === "Cancelled" ? `<div class="cancel">❌ Ye order cancel ho gaya hai. Koi sawaal ho to WhatsApp karein.</div>`
-      : `<div class="steps">${steps.map((s, i) => `<div class="st ${i < k || (i === k && i === STEPS.length - 1) ? "done" : i === k ? "now" : ""}"><span class="dot">${i < k || (i === k && i === STEPS.length - 1) ? "✓" : i + 1}</span><div><b>${s[1]}</b><small>${s[2]}</small></div></div>`).join("")}</div>`}
+      : `<div class="mstep">${steps.map((s, i) => `<div class="${i < dk || (i === dk && i === STEPS.length - 1) ? "done" : i === dk ? "now" : ""}"><i>${i < dk || (i === dk && i === STEPS.length - 1) ? "✓" : i + 1}</i>${s[1]}</div>`).join("")}</div>
+        <p class="mnow">${esc((steps[Math.max(0, k)] || steps[0])[2])}</p>`}
     ${o.ppt ? readyHtml(o) : ""}
     ${chgHtml(o)}
-    ${!o.download && !o.ppt && o.status !== "Cancelled" && o.status !== "Paid" ? `<button type="button" class="btn btn-ghost" id="bell"></button>` : ""}
-    <a class="btn btn-wa" href="${wa}" target="_blank" rel="noopener"><svg class="i"><use href="#i-msg"/></svg>WhatsApp par poochhein</a>
-    ${isDemo() ? "" : `<p class="live-n"><span class="live">Live: status apne aap update hota hai</span><button type="button" id="other">Logout / doosra number</button></p>`}`;
+    <div class="oacts">${!o.download && !o.ppt && o.status !== "Cancelled" && o.status !== "Paid" ? `<button type="button" class="btn btn-ghost" id="bell"></button>` : ""}<a class="btn btn-wa" href="${wa}" target="_blank" rel="noopener"><svg class="i"><use href="#i-msg"/></svg>WhatsApp</a></div>
+    ${isDemo() ? "" : `<p class="live-n"><span class="live">Live: status apne aap update hota hai</span></p>`}`;
   $("#res").hidden = false; bellUi();
   if (o.ppt) { drawSlide(0); if (o.ppt.payments) makeQr(); }
   if (!show.done) $("#res").scrollIntoView({ behavior:"smooth", block:"start" });
@@ -341,10 +365,10 @@ function readyHtml(o){
 function chgHtml(o){
   const l = o.changes || [], can = o.status !== "Cancelled" && (o.ppt || o.download || o.status === "Done" || o.status === "In Progress");
   if (!l.length && !can) return "";
-  return `<div class="chg" id="chg"><h3 style="font-size:1rem">✏️ PPT mein badlav chahiye?</h3>
+  return `<details class="chgd"${l.some(c => c.status !== "Done") ? " open" : ""}><summary>✏️ PPT mein badlav chahiye?</summary><div class="chg" id="chg">
     ${l.map(c => `<div class="it"><small>${new Date(c.time).toLocaleString("en-IN", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" })} · ${c.status === "Done" ? "✅ Ho gaya" : "⏳ Chal raha hai"}</small>${esc(c.text)}</div>`).join("")}
     ${can ? `<textarea id="chgT" maxlength="2000" placeholder="Jaise: Slide 5 ka color badlein, slide 8 mein ek diagram jodein…"></textarea>
-    <button type="button" class="btn btn-ghost" id="chgB">Badlav bhejein</button><p class="pay-note" style="margin:0">Badlav bhejne par PPT dobara ready hone tak payment ruk jayega.</p>` : ""}</div>`;
+    <button type="button" class="btn btn-ghost" id="chgB">Badlav bhejein</button><p class="pay-note" style="margin:0">Badlav bhejne par PPT dobara ready hone tak payment ruk jayega.</p>` : ""}</div></details>`;
 }
 document.addEventListener("click", async e => {
   const b = e.target.closest("#chgB"); if (!b || !WHO) return;
@@ -367,7 +391,7 @@ async function loadMine(){
   MINE = r.orders || []; drawMine();
 }
 function drawMine(){
-  const box = $("#mine"); if (!WHO || MINE.length < 2) { box.hidden = true; return; }
+  const box = $("#mine"); if (!WHO || MINE.length < 2 || !drawMine.open) { box.hidden = true; const b0 = $("#allOrd"); if (b0) { b0.textContent = `🧾 Orders (${MINE.length})`; b0.hidden = MINE.length < 2; } return; }
   const q = MQ.replace(/\D/g, ""), l = MINE.filter(o => !q || String(o.id).includes(q));
   box.hidden = false;
   box.innerHTML = `<h2>📂 Mere saare orders <small>${MINE.length} orders · ******${esc(String(WHO.phone).slice(-4))}</small></h2>
@@ -377,7 +401,10 @@ function drawMine(){
   const i = $("#mq"); if (i) { i.oninput = () => { MQ = i.value; drawMine(); const j = $("#mq"); j.focus(); j.setSelectionRange(j.value.length, j.value.length); }; }
 }
 document.addEventListener("click", e => { const b = e.target.closest("[data-mo]"); if (!b || !WHO || b.dataset.mo === String(WHO.id)) return;
-  stopLive(); stopQr(); open_(b.dataset.mo, WHO.phone); });
+  drawMine.open = false; stopLive(); stopQr(); open_(b.dataset.mo, WHO.phone); });
+/* "Orders (n)": baaki orders ki list khole / band kare */
+document.addEventListener("click", e => { const b = e.target.closest("#allOrd"); if (!b) return;
+  drawMine.open = !drawMine.open; drawMine(); b.setAttribute("aria-expanded", String(drawMine.open)); if (drawMine.open) $("#mine").scrollIntoView({ behavior:"smooth", block:"nearest" }); });
 
 /* Demo slides viewer */
 let SI = 0;
@@ -530,7 +557,7 @@ document.addEventListener("click", async e => { const b = e.target.closest("#bel
   const p = await Notification.requestPermission(); bellUi();
   toast(p === "granted" ? "🔔 Ho gaya! PPT ready hote hi notification aayega." : "Notification band hai. Browser settings se Allow karein."); });
 function bellUi(){ const b = $("#bell"); if (!b) return; const on = canNotify() && Notification.permission === "granted";
-  b.innerHTML = on ? "🔔 Notification chalu hai: PPT ready hote hi bataenge" : "🔔 PPT ready hone par notification paayein"; b.disabled = on; }
+  b.innerHTML = on ? "🔔 Alert chalu hai" : "🔔 Ready hone par alert"; b.title = on ? "PPT ready hote hi notification aayega" : "PPT ready hone par phone par notification paayein"; b.disabled = on; }
 
 (function(){
   const h = new URLSearchParams(location.hash.slice(1)); let s = {};
