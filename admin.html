@@ -1219,6 +1219,10 @@ async function demoCall(a, d) {
     case "adminOrders": return ok({ orders: D.orders.map(o => Object.assign({}, o)), statuses: D.statuses });
     case "adminOrderStatus": { const o = D.orders.find(x => x.row === d.row); if (o) o.status = d.status; return ok(); }
     case "adminChanges": return ok({ changes: (D.chg || (D.chg = [{ row: 2, time: new Date(Date.now() - 3 * 36e5).toISOString(), id: String(D.orders[3].id), name: D.orders[3].name, mobile: D.orders[3].mobile, text: "Slide 5 ka color blue karein aur slide 9 mein ek diagram jodein", status: "Open" }])).map(c => Object.assign({}, c)) });
+    case "adminWaCfg": return ok({ wa: D.wa || (D.wa = { on: false, ready: false, phoneId: "", number: "", hasToken: false, tplDone: "", tplCancel: "", lang: "en", site: "" }) });
+    case "adminWaSave": D.wa = { on: !!d.on, ready: !!(d.on && d.phoneId), phoneId: d.phoneId, number: d.phoneId ? "+91 97110 69435 · PPT Store" : "", hasToken: !!d.token || !!(D.wa && D.wa.hasToken), tplDone: d.tplDone, tplCancel: d.tplCancel, lang: d.lang, site: d.site }; return ok({ wa: D.wa });
+    case "adminWaTest": return ok();
+    case "adminOrderNotify": return ok();
     case "adminChangeSet": { const c = (D.chg || []).find(x => x.row === d.row); if (c) c.status = d.status; return ok(); }
     case "adminOrderNew": { const id = Math.max(...D.orders.map(o => +o.id || 0)) + 1; D.orders.unshift({ row: D.orders.length + 2, time: new Date().toISOString(), id, name: d.name, mobile: "+91 " + d.phone, wa: "https://wa.me/91" + d.phone, topic: d.topic || "—", theme: d.theme || "—", slides: d.slides || "—", language: d.language || "—", details: d.details || "—", files: "—", failed: "—", from: "Admin panel", status: "New" }); return ok({ id }); }
     case "adminThemes": return ok({ themes: D.themes.map(t => Object.assign({}, t)) });
@@ -1640,6 +1644,7 @@ async function delOrders(rows, btn) {
   orders();
 }
 function drawOrders() {
+  if (!drawOrders.wa) { drawOrders.wa = 1; waAutoLoad(); }
   drawChips();
   const list = filteredOrders();
   $("#olist").innerHTML = list.length ? list.map(o => {
@@ -1680,12 +1685,20 @@ function drawOrders() {
   $$("#olist [data-tm]").forEach(tmBindStrip);
   $$("#olist select").forEach(s => s.onchange = async () => {
     s.disabled = true;
-    const o0 = ORD.find(x => x.row === +s.dataset.row), wurl = o0 && statusWa(o0, s.value);
-    const w = wurl ? open("", "_blank") : null;          // abhi kholo, warna browser popup rok deta hai
+    const o0 = ORD.find(x => x.row === +s.dataset.row), wurl = o0 && statusWa(o0, s.value), auto = WA_AUTO && /^(Done|Cancelled)$/.test(s.value);
+    const w = wurl && !auto ? open("", "_blank") : null;          // abhi kholo, warna browser popup rok deta hai
     const r = await call("adminOrderStatus", { row: +s.dataset.row, id: s.dataset.id, status: s.value });
     s.disabled = false;
     if (!r.ok) { if (w) w.close(); return toast(r.error, true); }
     if (w) { try { w.opener = null; w.location.href = wurl; } catch (e) { open(wurl, "_blank", "noopener"); } }
+    if (auto) {
+      const box = s.closest(".order").querySelector("[data-ocf]");
+      call("adminOrderNotify", { id: s.dataset.id, status: s.value }).then(n => {
+        if (n.ok) return toast("✅ Customer ko WhatsApp chala gaya");
+        toast(n.error || "WhatsApp nahi gaya", true);
+        if (box && wurl) box.innerHTML = `<div class="note" style="margin-top:4px;color:var(--warn)">⚠ ${esc(n.error || "WhatsApp nahi gaya")} · <a href="${esc(wurl)}" target="_blank" rel="noopener">Khud bhejein</a></div>`;
+      });
+    }
     const o = ORD.find(x => x.row === +s.dataset.row); if (o) o.status = s.value;
     s.closest(".order").className = "order s-" + s.value.split(" ")[0];
     const fb = s.closest(".order").querySelector("[data-fin]"); if (fb && o) { fb.innerHTML = finHtml(o); bindFin(fb); }
@@ -2359,6 +2372,8 @@ function tmLib(p) {
 const FIN_DEMO = 10, FIN_LOCK = 300;
 /* Customer ko "PPT ready" message: Track page ka link ke saath (ek click, WhatsApp khulta hai) */
 /* Status Done / Cancelled hote hi customer ko WhatsApp message (WhatsApp khulta hai, bas Send dabana hai) */
+let WA_AUTO = false;
+function waAutoLoad() { call("adminWaCfg").then(r => { WA_AUTO = !!(r.ok && r.wa && r.wa.ready); }).catch(() => { }); }
 function statusWa(o, st) {
   const m = String(o.mobile || "").replace(/\D/g, "").slice(-10); if (!/^[6-9]\d{9}$/.test(m)) return "";
   const n = String(o.name || "").split(" ")[0];
@@ -2951,6 +2966,7 @@ async function settings() {
       <p class="note">Forgot your password? Run <b>resetAdminPassword</b> in Apps Script to restore the default login.</p>
     </form>
     <div class="card" id="payCard"><h3>Online payment (Razorpay)</h3><p class="note">Loading…</p></div>
+    <div class="card" id="waCard"><h3>WhatsApp auto message</h3><p class="note">Loading…</p></div>
     <div class="card">
       <h3>Admin panel theme</h3>
       <div class="themepick"><button type="button" data-th="dark"><span class="sw d"></span>🌙 Dark</button><button type="button" data-th="light"><span class="sw l"></span>☀️ Light</button></div>
@@ -2959,7 +2975,7 @@ async function settings() {
   </div>`);
   $$(".themepick button").forEach(b => b.onclick = () => setTheme(b.dataset.th));
   setTheme(document.documentElement.getAttribute("data-theme"));
-  payCard();
+  payCard(); waCard();
   $("#pwUser").value = SUM.user || "";
   $("#stWa").value = s.whatsapp || ""; $("#stPh").value = s.phoneDisplay || ""; $("#stEm").value = s.email || "";
   $("#setForm").onsubmit = async e => {
@@ -5307,6 +5323,36 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------- Settings → Razorpay ---------- */
+/* Order Done / Cancelled → customer ko WhatsApp Cloud API se apne aap message */
+async function waCard() {
+  const box = $("#waCard"); if (!box) return;
+  const r = await call("adminWaCfg");
+  if (!r.ok) { box.innerHTML = `<h3>WhatsApp auto message</h3><p class="note">${/Unknown admin action/i.test(r.error || "") ? "Requires an Apps Script update." : esc(r.error)}</p>`; return; }
+  const w = r.wa;
+  box.innerHTML = `<h3>WhatsApp auto message</h3>
+    <p>${w.ready ? `<span class="pill ok">● ON</span> ${esc(w.number || "Connected")}` : `<span class="pill" style="color:var(--bad)">● OFF</span> ${w.phoneId ? "Saved, but switched off" : "Not connected"}`}</p>
+    <p class="note">Order status <b>Done</b> ya <b>Cancelled</b> karte hi customer ko apne aap WhatsApp jayega. Off ho to WhatsApp khulta hai aur aapko Send dabana padta hai.</p>
+    <label class="f">Phone number ID <span>Meta → WhatsApp → API Setup</span><input type="text" id="waPid" inputmode="numeric" autocomplete="off" value="${esc(w.phoneId)}"></label>
+    <label class="f">Access token <span>${w.hasToken ? "saved · paste only to change" : "permanent (System user) token"}</span><input type="password" id="waTok" autocomplete="new-password" placeholder="${w.hasToken ? "••••••••" : "EAAG…"}"></label>
+    <div class="grid2"><label class="f">"Done" template<input type="text" id="waTd" autocapitalize="off" spellcheck="false" value="${esc(w.tplDone || "order_ready")}"></label>
+      <label class="f">"Cancelled" template<input type="text" id="waTc" autocapitalize="off" spellcheck="false" value="${esc(w.tplCancel || "order_cancelled")}"></label></div>
+    <div class="grid2"><label class="f">Template language <span>en, hi, en_US…</span><input type="text" id="waLg" value="${esc(w.lang || "en")}"></label>
+      <label class="f">Website <span>tracking link</span><input type="text" inputmode="url" id="waSite" placeholder="https://www.pptstore.in" value="${esc(w.site)}"></label></div>
+    <label class="f" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="waOn" ${w.on ? "checked" : ""} style="width:auto"> Auto message ON</label>
+    <div class="row"><button class="btn pri" type="button" id="waSave">Save &amp; Check</button></div>
+    <div class="row" style="gap:6px;margin-top:8px"><input type="tel" id="waTm" placeholder="Apna 10-digit number" maxlength="10" style="flex:1;min-width:140px"><button class="btn sm" type="button" data-wat="Done">Test "Done"</button><button class="btn sm" type="button" data-wat="Cancelled">Test "Cancelled"</button></div>`;
+  $("#waSave").onclick = async e => {
+    e.target.disabled = true; e.target.textContent = "Checking…";
+    const s = await call("adminWaSave", { phoneId: $("#waPid").value, token: $("#waTok").value, tplDone: $("#waTd").value, tplCancel: $("#waTc").value, lang: $("#waLg").value, site: $("#waSite").value, on: $("#waOn").checked });
+    e.target.disabled = false; e.target.textContent = "Save & Check";
+    if (!s.ok) return toast(s.error, true);
+    WA_AUTO = !!(s.wa && s.wa.ready); toast(WA_AUTO ? "WhatsApp connected ✓ Auto message ON" : "Saved · auto message OFF"); waCard();
+  };
+  $$("#waCard [data-wat]").forEach(b => b.onclick = async () => {
+    b.disabled = true; const t = await call("adminWaTest", { mobile: $("#waTm").value, status: b.dataset.wat }); b.disabled = false;
+    toast(t.ok ? "Test message bheja ✓ WhatsApp check karein" : t.error, !t.ok);
+  });
+}
 async function payCard() {
   const box = $("#payCard"); if (!box) return;
   const r = await call("adminPayStatus");
