@@ -159,7 +159,7 @@ a.item{color:inherit}
   .dnav button{flex-direction:column;justify-content:center;text-align:center;gap:6px;padding:12px 6px;border:1px solid var(--line2);background:var(--card);position:relative;min-height:96px}
   .dnav button.on{box-shadow:none}.dnav i{width:38px;height:38px;font-size:1.3rem}.dnav b{font-size:.74rem;line-height:1.2}.dnav small{display:none}
   .dnav em{position:absolute;top:6px;right:6px}
-  body:not([data-tab="menu"]) .dnav{display:none}body[data-tab="menu"] .dpane{display:none}
+  body:not([data-view="menu"]) .dnav{display:none}body[data-view="menu"] .dpane{display:none}
   .pback{display:grid;place-items:center}.dpane{padding:14px}.dpane .list{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.dpane .item .b{padding:10px}.dpane .item b{font-size:.8rem}.dpane .item .btn{font-size:.74rem;padding:7px 4px}
 }
 .otp-note{display:inline-block;margin:6px 0 2px;padding:4px 10px;border-radius:9px;font-weight:800;color:#7c2d12;background:linear-gradient(135deg,#fde68a,#fbbf24);box-shadow:0 0 0 2px rgba(251,191,36,.35);animation:otpPulse 1.6s ease-in-out infinite;transform-origin:left center}
@@ -375,7 +375,7 @@ function show(me){
   $("#login").hidden = any; $("#mine").hidden = !any;
   if (!any) { if (ME.otp !== undefined) OTP = !!ME.otp; resetLogin(); return; }
   if (NEW) TAB = "home";
-  draw(); if (innerWidth < 760 && !NEW && !/^#t=/.test(location.hash)) document.body.dataset.tab = "menu";
+  draw(); if (innerWidth < 760 && !NEW && !/^#t=/.test(location.hash)) document.body.dataset.view = "menu";
 }
 function draw(){
   const prof = LSG("la_profile", {}), inP = !!ME.loggedIn, inO = !!(ORD && ORD.orders);
@@ -387,11 +387,11 @@ function draw(){
   $("#dnav").innerHTML = TABS.map(([k, e, l, s]) => `<button type="button" data-tab="${k}" class="${k === TAB ? "on" : ""}" aria-current="${k === TAB}"><i>${e}</i><span><b>${l}</b><small>${s}</small></span>${cnt[k] ? `<em class="${k === "noti" ? "hot" : ""}">${cnt[k]}</em>` : ""}</button>`).join("");
   const T = TABS.find(x => x[0] === TAB) || TABS[0];
   $("#dpane").innerHTML = `<h2 class="ph"><button type="button" class="pback" data-tab="menu" aria-label="Menu">←</button>${T[1]} ${T[2]}</h2>` + (PANES[TAB] || PANES.home)();
-  document.body.dataset.tab = TAB;
+  document.body.dataset.view = TAB;
 }
 document.addEventListener("click", e => {
-  const b = e.target.closest("[data-tab]"); if (!b) return; e.preventDefault();
-  if (b.dataset.tab === "menu") { document.body.dataset.tab = "menu"; scrollTo({ top:0 }); return; }
+  const b = e.target.closest("button[data-tab],a[data-tab]"); if (!b) return; e.preventDefault();
+  if (b.dataset.tab === "menu") { document.body.dataset.view = "menu"; scrollTo({ top:0 }); return; }
   TAB = b.dataset.tab; history.replaceState(null, "", "#t=" + TAB);
   if (TAB === "noti") LSS("la_noti_seen", Date.now() + 1000);
   draw(); if (innerWidth < 760) $("#dpane").scrollIntoView({ block:"start" });
