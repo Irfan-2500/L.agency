@@ -258,6 +258,7 @@ label.f span{font-weight:500;color:var(--dim)}
 .tcard .pic img{width:100%;height:100%;object-fit:cover;display:block}
 .tcard .ppick{display:inline-flex;vertical-align:-3px;margin-right:7px}.tcard .ppick input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
 .tcard.sel{box-shadow:0 0 0 2px var(--accent)}
+.pselall{gap:6px;cursor:pointer;user-select:none}.pselall input{width:16px;height:16px;accent-color:var(--accent);margin:0}
 /* Study notes: 2 view — thumbnail grid ya list (".notes" naam analytics ki list se takrata tha, isliye nview / nlist) */
 .vtog{display:flex;gap:4px;padding:3px;border:1px solid var(--line2);border-radius:11px;background:var(--bg2);flex:none}
 .vtog button{display:flex;align-items:center;gap:6px;padding:6px 12px;border:0;border-radius:8px;background:none;color:var(--muted);font-weight:600;font-size:.84rem}
@@ -4062,7 +4063,7 @@ async function pptView() {
     <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-cart")}</span><b>${nf(sold)}</b><small>Units sold</small></div>
     <div class="stat" style="--c:${PPAY ? "var(--ok)" : "var(--bad)"}"><span class="ic">₹</span><b>${PPAY ? "ON" : "OFF"}</b><small>Online payment (Razorpay)</small></div>
   </div>
-  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="pq" placeholder="Search ${w.one} name, class, subject…" aria-label="Search"></label><div class="vtog" role="group" aria-label="Status">${[["", "All"], ["live", "Live"], ["hid", "Hidden"]].map(([k, l]) => `<button type="button" data-pst="${k}">${l}</button>`).join("")}</div><select id="psort" aria-label="Sort"><option value="new">Newest</option><option value="sold">Best selling</option><option value="pa">Price: low to high</option><option value="pd">Price: high to low</option><option value="az">Title A–Z</option></select><div class="vtog" role="group" aria-label="View"><button type="button" data-nv="grid" title="Grid view" aria-label="Grid view">${ic("i-grid")}</button><button type="button" data-nv="list" title="List view" aria-label="List view">${ic("i-list")}</button></div><button class="btn sm" id="pCsv" title="Export CSV">${ic("i-down")} CSV</button></div>
+  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="pq" placeholder="Search ${w.one} name, class, subject…" aria-label="Search"></label><div class="vtog" role="group" aria-label="Status">${[["", "All"], ["live", "Live"], ["hid", "Hidden"]].map(([k, l]) => `<button type="button" data-pst="${k}">${l}</button>`).join("")}</div><select id="psort" aria-label="Sort"><option value="new">Newest</option><option value="sold">Best selling</option><option value="pa">Price: low to high</option><option value="pd">Price: high to low</option><option value="az">Title A–Z</option></select><div class="vtog" role="group" aria-label="View"><button type="button" data-nv="grid" title="Grid view" aria-label="Grid view">${ic("i-grid")}</button><button type="button" data-nv="list" title="List view" aria-label="List view">${ic("i-list")}</button></div><button class="btn sm" id="pCsv" title="Export CSV">${ic("i-down")} CSV</button><label class="btn sm pselall" title="Select all shown"><input type="checkbox" id="pSelAll" aria-label="Select all shown"> Select all</label></div>
   <div class="bulkbar" id="pbulk" hidden></div>
   <div class="tgrid" id="pgrid"></div>`);
   $$("[data-nv]").forEach(b => b.onclick = () => { NVIEW = b.dataset.nv; try { localStorage.setItem("la_admin_nview", NVIEW); } catch (e) {} drawPpts(); });
@@ -4191,7 +4192,11 @@ function drawPpts() {
       <div class="cf" data-pcf="${i}"></div>
     </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `No matching ${w.one.toLowerCase()}s.` : `No ${w.one.toLowerCase()}s yet.`}</div>`;
   $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
-  $$("[data-ppick]").forEach(c => c.onchange = () => { c.checked ? PSEL.add(c.dataset.ppick) : PSEL.delete(c.dataset.ppick); c.closest(".tcard").classList.toggle("sel", c.checked); drawPBulk(vis); });
+  const sa = $("#pSelAll");
+  if (sa) { const ids = vis.map(([p]) => String(p.id)), n = ids.filter(id => PSEL.has(id)).length;
+    sa.checked = !!ids.length && n === ids.length; sa.indeterminate = n > 0 && n < ids.length;
+    sa.onchange = () => { ids.forEach(id => sa.checked ? PSEL.add(id) : PSEL.delete(id)); drawPpts(); }; }
+  $$("[data-ppick]").forEach(c => c.onchange = () => { c.checked ? PSEL.add(c.dataset.ppick) : PSEL.delete(c.dataset.ppick); c.closest(".tcard").classList.toggle("sel", c.checked); drawPpts(); });
   drawPBulk(vis);
   $$("[data-pdl]").forEach(b => b.onclick = () => dlPpt(PP[+b.dataset.pdl], b));
   $$("[data-pa]").forEach(b => b.onclick = () => { pvJob(PP[+b.dataset.pa]); drawPpts(); });
