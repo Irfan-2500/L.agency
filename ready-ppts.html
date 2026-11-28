@@ -176,7 +176,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .price b{font-size:1.35rem;font-family:'Space Grotesk'}
 .price s{color:var(--dim);font-size:.86rem}
 .price em{font-style:normal;font-size:.74rem;font-weight:800;color:var(--green)}
-.acts{display:grid;grid-template-columns:44px 44px 1fr;gap:8px}.acts>*{min-width:0}.acts .add{padding-inline:0}.acts .add .lbl{display:none}
+.acts{display:grid;grid-template-columns:44px 44px 44px 1fr;gap:8px}.acts.nocus{grid-template-columns:44px 44px 1fr}.shr{padding-inline:0}.m-buy .shr{width:42px;flex:none;justify-content:center}.acts>*{min-width:0}.acts .add{padding-inline:0}.acts .add .lbl{display:none}
 .acts.nocus{grid-template-columns:44px 1fr}
 .pdfpill{align-self:flex-start;font-size:.72rem;font-weight:800;padding:3px 9px;border-radius:8px;color:#fbbf24;background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.45)}
 html.light .pdfpill{color:#b45309}
@@ -241,6 +241,8 @@ html.light .pdfpill{color:#b45309}
 .strip button{flex:0 0 110px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:2px solid transparent;opacity:.65}
 .strip button.on{border-color:var(--violet);opacity:1}
 .strip button{position:relative}.strip button span{position:absolute;left:4px;bottom:3px;font-size:.62rem;font-weight:800;color:#fff;text-shadow:0 1px 3px #000}
+.stage.bl #stageImg,.strip.bl button.lk img{filter:blur(9px) saturate(.9);transform:scale(1.04)}
+.pv-back{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;padding:7px 12px;border-radius:10px;font-weight:700;font-size:.84rem;color:var(--text);background:var(--card2);border:1px solid var(--line2)}.pv-back:hover{border-color:var(--violet)}
 .strip button.lk::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:1rem;text-shadow:0 1px 4px rgba(0,0,0,.5)}
 .strip button{background:var(--card2)}#stageImg[hidden]{display:none}   /* blur nahi: customer poora chapter saaf dekhe, sirf lock + Buy */
 .lk-cta{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:max-content;max-width:86%;background:rgba(12,10,30,.66);border-radius:16px;box-shadow:0 10px 30px -10px rgba(0,0,0,.6);display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;color:#fff;padding:16px 22px;text-shadow:0 2px 10px rgba(0,0,0,.6);z-index:2}
@@ -326,7 +328,7 @@ html.light .pdfpill{color:#b45309}
   .card h3{font-size:.9rem}
   .card p,.tags{display:none}
   .price b{font-size:1.1rem}
-  .acts{grid-template-columns:1fr 1fr}.acts>*{min-width:0}.acts .btn-gold{grid-column:1/-1}.acts .add .lbl{display:none}
+  .acts,.acts.nocus{grid-template-columns:1fr 1fr 1fr}.acts.nocus{grid-template-columns:1fr 1fr}.acts>*{min-width:0}.acts .btn-gold{grid-column:1/-1}.acts .add .lbl{display:none}
   .acts .btn{padding:8px 6px;font-size:.78rem}
 }
 /* Phone: ek screen par 2 card, upar-neeche scroll */
@@ -408,7 +410,7 @@ html.light .pdfpill{color:#b45309}
   <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
   <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
-  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol><symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol><symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol><symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol><symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol><symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
@@ -791,7 +793,7 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(() => {
 function card(p){
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0, inCart = cart.includes(p.id);
   return `<article class="card">
-    <button class="thumb" style="${thumbStyle(p)}"${cardPics(p).length > 1 ? ` data-wipe="${p.id}"` : ""} onclick="openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
+    <button class="thumb" style="${thumbStyle(p)}"${cardPics(p).length > 1 ? ` data-wipe="${p.id}"` : ""} onclick="PV_FROM=null;openPreview(${p.id})" aria-label="Preview ${esc(p.title)}">
       ${ribbon(p.badge || (p.type === "zip" ? "pack" : ""))}${p.thumb ? "" : `<span class="gt">${esc(p.title)}</span>`}
       ${!tall(p) && p.type !== "pdf" ? PPT_LOGO : ""}
       <span class="peek">👁 Preview</span>
@@ -807,6 +809,7 @@ function card(p){
       <div class="acts${isBook(p) ? " nocus" : ""}">
         <button class="btn btn-ghost btn-sm add ${inCart ? "added" : ""}" onclick="toggleCart(${p.id})" aria-label="${inCart ? "In cart" : "Add to cart"}" title="${inCart ? "Cart mein hai" : "Add to Cart"}">${icon(inCart ? "i-check" : "i-bag","width:16px")}<span class="lbl">${inCart ? "In Cart" : "Add to Cart"}</span></button>
         ${isBook(p) ? "" : `<a class="btn btn-sm ed" href="order.html?theme=${encodeURIComponent(p.title)}${p.thumb ? "&img=" + encodeURIComponent(p.thumb) : ""}" title="Customize — kuch add ya change karwayein" aria-label="Customize ${esc(p.title)}">${icon("i-pen","width:15px")}<span>Custom</span></a>`}
+        <button class="btn btn-ghost btn-sm shr" onclick="sharePpt(${p.id})" aria-label="Share ${esc(p.title)}" title="Share">${icon("i-share","width:16px")}</button>
         <button class="btn btn-gold btn-sm" onclick="buyNow(${p.id})">${icon("i-dl","width:15px")}Buy Now</button>
       </div>
     </div></article>`;
@@ -905,13 +908,13 @@ function buyBundle(k){
   hideModal("previewModal"); openPay(b.ids);
 }
 function openBundle(k){
-  const b = BUNDLES[k]; if (!b) return;
+  const b = BUNDLES[k]; if (!b) return; PV_FROM = null;
   const off = b.mrp > b.price ? Math.round((1 - b.price / b.mrp) * 100) : 0;
   $("#previewBody").innerHTML = `<div class="m-info">
     <span class="bbadges" style="position:static"><span>COMPLETE SUBJECT</span>${off ? `<span class="bv">BEST VALUE</span>` : ""}</span>
     <h3>${esc(b.title)}</h3>
     <p>${b.items.length} chapters · ${b.slides ? b.slides + " slides · " : ""}${esc(langTxt(b.lang))} Medium${b.boards.length ? " · " + esc(b.boards.join(" / ")) : ""}. Kisi bhi chapter par click karke uski slides dekhein.</p>
-    <div class="chs">${b.items.map((p, j) => `<button type="button" class="ch" onclick="openPreview(${p.id || b.pid})"><i>${j + 1}</i><span class="mini" style="${thumbStyle(p)}"></span>
+    <div class="chs">${b.items.map((p, j) => `<button type="button" class="ch" onclick="PV_FROM=${k};openPreview(${p.id || b.pid})"><i>${j + 1}</i><span class="mini" style="${thumbStyle(p)}"></span>
       <span><b>${esc(String(p.title).replace(/_/g, " "))}</b><small>${p.slides ? p.slides + " slides · " : ""}👁 Preview</small></span><span>${b.manual ? "" : `<small>${inr(p.price)}</small>`}</span></button>`).join("")}</div>
     <div class="m-buy">
       <div class="price"><b>${inr(b.price)}</b>${off ? `<s>${inr(b.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
@@ -1036,21 +1039,30 @@ const pvSlots = (pics, n, full) => { const src = full && full.some(Boolean) ? fu
   return Array.from({ length:N }, (_, k) => ({ src:src[k] || "", lock:k >= FREE_N || !src[k] })); };
 const PVS = {}, PVS_V = {};
 const pvsFetch = id => PVS[id] || (PVS[id] = !SCRIPT ? Promise.resolve([]) : fetch(SCRIPT + "?action=pvsGet&id=" + encodeURIComponent(id)).then(r => r.json()).then(j => j && j.ok && Array.isArray(j.imgs) ? j.imgs : []).catch(() => []));
-let pv = { p:null, k:0, slots:[] };
+let pv = { p:null, k:0, slots:[] }, PV_FROM = null;   /* PV_FROM: bundle se khula chapter (Back = chapter list) */
+/* Share: phone par share sheet, warna link copy */
+function sharePpt(id){
+  const p = PRODUCTS.find(x => x.id === id); if (!p) return;
+  const url = location.origin + location.pathname + "?id=" + id + (KIND !== "ppt" ? "&type=" + KIND : ""), text = `${p.title} — ${inr(p.price)} | PPT Store`;
+  if (navigator.share) return navigator.share({ title:p.title, text, url }).catch(() => {});
+  const done = () => toast("✓ Link copy ho gaya");
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, () => open(waURL(text + "\n" + url), "_blank"));
+  else open(waURL(text + "\n" + url), "_blank");
+}
 function openPreview(id, full){
   const p = PRODUCTS.find(x => x.id === id); if (!p) return;
   const imgs = p.previews && p.previews.length ? p.previews : (p.thumb ? [p.thumb] : []);
   if (!full && PVS_V[id]) full = PVS_V[id];
-  const slots = pvSlots(imgs, +p.slides || 0, full), N = slots.length, all = !!(full && full.some(Boolean));
-  pv = { p, k:0, slots };
+  const slots = pvSlots(imgs, +p.slides || 0, full), N = slots.length, all = !!(full && full.some(Boolean)), bk = PV_FROM != null && BUNDLES[PV_FROM];
+  pv = { p, k:0, slots, bl:!!bk };
   const off = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
-  $("#previewBody").innerHTML = `
-    <div class="stage${tall(p) ? " a4" : ""}" id="stage" style="${imgs.length ? "" : thumbStyle(p)}">
+  $("#previewBody").innerHTML = `${bk ? `<button type="button" class="pv-back" onclick="openBundle(${PV_FROM})">${icon("i-left","width:15px")}Back to chapters</button>` : ""}
+    <div class="stage${tall(p) ? " a4" : ""}${bk && slots[0] && slots[0].lock ? " bl" : ""}" id="stage" style="${imgs.length ? "" : thumbStyle(p)}">
       ${imgs.length ? `<img id="stageImg" src="${esc(slots[0].src || imgs[0])}" alt="${esc(p.title)} slide 1">` : `<span class="gt" style="position:absolute;inset:auto 20px 20px;color:#fff;font:700 1.5rem 'Space Grotesk','Hind'">${esc(p.title)}</span>`}
       <div class="lk-cta" id="lkCta" hidden><b id="lkT"></b><span>Poori ${N} ${tall(p) ? "pages" : "slides"} ke liye kharidein</span><button type="button" class="btn btn-gold btn-sm" onclick="hideModal('previewModal');buyNow(${p.id})">${icon("i-dl","width:15px")}Buy ${inr(p.price)}</button></div>
       ${N > 1 ? `<button class="s-nav s-prev" onclick="slide(-1)" aria-label="Previous slide">${icon("i-left")}</button><button class="s-nav s-next" onclick="slide(1)" aria-label="Next slide">${icon("i-right")}</button><span class="s-pos" id="spos">1 / ${N}</span>` : ""}
     </div>
-    ${N > 1 ? `<div class="strip${tall(p) ? " a4" : ""}">${slots.map((x,k) => `<button class="${k ? "" : "on"}${x.lock ? " lk" : ""}" onclick="slide(${k},true)" aria-label="${tall(p) ? "Page" : "Slide"} ${k+1}${x.lock ? " (locked)" : ""}">${x.src ? `<img src="${esc(x.src)}" alt="" loading="lazy">` : ""}<span>${k+1}</span></button>`).join("")}</div>` : ""}
+    ${N > 1 ? `<div class="strip${tall(p) ? " a4" : ""}${bk ? " bl" : ""}">${slots.map((x,k) => `<button class="${k ? "" : "on"}${x.lock ? " lk" : ""}" onclick="slide(${k},true)" aria-label="${tall(p) ? "Page" : "Slide"} ${k+1}${x.lock ? " (locked)" : ""}">${x.src ? `<img src="${esc(x.src)}" alt="" loading="lazy">` : ""}<span>${k+1}</span></button>`).join("")}</div>` : ""}
     <div class="m-info">
       ${soldTag(p)}
       <h3>${esc(p.title)}</h3>${isBook(p) ? pdfNote() : ""}<p>${esc(p.desc)}</p>
@@ -1060,6 +1072,7 @@ function openPreview(id, full){
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
         <div class="grow">
           <button class="btn btn-ghost btn-sm" onclick="toggleCart(${p.id});hideModal('previewModal')">${cart.includes(p.id) ? "Remove from Cart" : "+ Add to Cart"}</button>
+          <button class="btn btn-ghost btn-sm shr" onclick="sharePpt(${p.id})" aria-label="Share" title="Share">${icon("i-share","width:16px")}</button>
           <button class="btn btn-gold btn-sm" onclick="hideModal('previewModal');buyNow(${p.id})">${icon("i-dl","width:15px")}Buy Now</button>
         </div>
       </div>
@@ -1071,7 +1084,7 @@ function slide(d, abs){
   const sl = pv.slots, N = sl.length; if (N < 2) return;
   pv.k = (((abs ? d : pv.k + d) % N) + N) % N; const x = sl[pv.k];
   $("#stageImg").hidden = !x.src; if (x.src) $("#stageImg").src = x.src; $("#stageImg").alt = `${pv.p.title} slide ${pv.k+1}`;
-  $("#stage").classList.toggle("lk", x.lock); $("#lkCta").hidden = !x.lock;
+  $("#stage").classList.toggle("lk", x.lock); $("#stage").classList.toggle("bl", pv.bl && x.lock); $("#lkCta").hidden = !x.lock;
   if (x.lock) $("#lkT").textContent = `🔒 ${tall(pv.p) ? "Page" : "Slide"} ${pv.k+1} locked`;
   $("#spos").textContent = `${pv.k+1} / ${N}`;
   document.querySelectorAll(".strip button").forEach((b,k) => b.classList.toggle("on", k === pv.k));
@@ -1360,6 +1373,7 @@ function seoList(){
   /* homepage se "Buy / Checkout": seedha payment kholo */
   const pay = (qs.get("pay") || "").split(",").map(Number).filter(id => PRODUCTS.some(p => p.id === id));
   if (pay.length) { pay.forEach(id => { if (!cart.includes(id)) cart.push(id); }); saveCart(); history.replaceState(null, "", location.pathname + (KIND !== "ppt" ? "?type=" + KIND : "")); openPay(pay); }
+  else if (qs.get("id") && PRODUCTS.some(p => p.id === +qs.get("id"))) { PV_FROM = null; openPreview(+qs.get("id")); }
   else if (qs.has("cart")) { history.replaceState(null, "", location.pathname + (KIND !== "ppt" ? "?type=" + KIND : "")); openCart(true); }   /* homepage ka cart button */
 })();
 </script>
