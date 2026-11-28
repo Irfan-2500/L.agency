@@ -223,6 +223,16 @@ label.f span{font-weight:500;color:var(--dim)}
 .order .side2 .row{gap:6px;justify-content:flex-end}
 .order select{width:auto;padding:7px 10px;font-weight:600}
 .order .fin{grid-column:1/-1;font-size:.84rem;min-width:0}
+.order{padding:12px 14px;gap:8px 14px}
+.order .tags{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}.order .tags span{font-size:.76rem;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--bg2);color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.order .det{padding:8px 11px;font-size:.85rem;cursor:pointer}.order .det.clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal}
+.order .fin-box{padding:8px 10px;gap:6px}
+.order .side2{flex-direction:row;align-items:center;flex-wrap:wrap;justify-content:flex-end}.order .side2>[data-ocf]{flex-basis:100%;text-align:right}
+.order .files{display:flex;flex-wrap:wrap;gap:4px 14px}.order .files br{display:none}
+.order .fin-t{align-items:center;gap:8px}.order .fin-t b{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.86rem}.order .fin-t small{display:inline;flex:none;font-size:.78rem}
+.order .fin-t .pill{flex:none;font-size:.72rem;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn);font-weight:700}.order .fin-t .pill.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.order .fin-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.order .fin-th img{width:52px;border-radius:4px}
+.order .fin-acts{gap:6px;flex-wrap:wrap;margin-left:auto}
 .order .buys{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}.order .buys>div{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:8px 12px;border-radius:10px;background:var(--bg2);font-size:.86rem}.order .buys>div>span:first-child{flex:1;min-width:180px}
 #cTab em{font-style:normal;opacity:.7;margin-left:4px}
 .order .chgs{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
@@ -1209,6 +1219,10 @@ async function demoCall(a, d) {
     case "adminOrders": return ok({ orders: D.orders.map(o => Object.assign({}, o)), statuses: D.statuses });
     case "adminOrderStatus": { const o = D.orders.find(x => x.row === d.row); if (o) o.status = d.status; return ok(); }
     case "adminChanges": return ok({ changes: (D.chg || (D.chg = [{ row: 2, time: new Date(Date.now() - 3 * 36e5).toISOString(), id: String(D.orders[3].id), name: D.orders[3].name, mobile: D.orders[3].mobile, text: "Slide 5 ka color blue karein aur slide 9 mein ek diagram jodein", status: "Open" }])).map(c => Object.assign({}, c)) });
+    case "adminWaCfg": return ok({ wa: D.wa || (D.wa = { on: false, ready: false, phoneId: "", number: "", hasToken: false, tplDone: "", tplCancel: "", lang: "en", site: "" }) });
+    case "adminWaSave": D.wa = { on: !!d.on, ready: !!(d.on && d.phoneId), phoneId: d.phoneId, number: d.phoneId ? "+91 97110 69435 · PPT Store" : "", hasToken: !!d.token || !!(D.wa && D.wa.hasToken), tplDone: d.tplDone, tplCancel: d.tplCancel, lang: d.lang, site: d.site }; return ok({ wa: D.wa });
+    case "adminWaTest": return ok();
+    case "adminOrderNotify": return ok();
     case "adminChangeSet": { const c = (D.chg || []).find(x => x.row === d.row); if (c) c.status = d.status; return ok(); }
     case "adminOrderNew": { const id = Math.max(...D.orders.map(o => +o.id || 0)) + 1; D.orders.unshift({ row: D.orders.length + 2, time: new Date().toISOString(), id, name: d.name, mobile: "+91 " + d.phone, wa: "https://wa.me/91" + d.phone, topic: d.topic || "—", theme: d.theme || "—", slides: d.slides || "—", language: d.language || "—", details: d.details || "—", files: "—", failed: "—", from: "Admin panel", status: "New" }); return ok({ id }); }
     case "adminThemes": return ok({ themes: D.themes.map(t => Object.assign({}, t)) });
@@ -1630,18 +1644,18 @@ async function delOrders(rows, btn) {
   orders();
 }
 function drawOrders() {
+  if (!drawOrders.wa) { drawOrders.wa = 1; waAutoLoad(); }
   drawChips();
   const list = filteredOrders();
   $("#olist").innerHTML = list.length ? list.map(o => {
     const files = o.files && o.files !== "—" ? o.files.split("\n").map(l => { const m = l.split(" → "); return m[1] ? `📎 <a href="${esc(m[1])}" target="_blank" rel="noopener">${esc(m[0])}</a>` : esc(l); }).join("<br>") : "";
     const wa = /^https:\/\/wa\.me\/\d+$/.test(o.wa) ? o.wa : "";
-    const tel = String(o.mobile || "").replace(/[^\d+]/g, "");
     return `<article class="order s-${esc(String(o.status).split(" ")[0])}${OSEL.has(okey(o)) ? " sel" : ""}">
-      <div><h3><label class="pick" title="Select"><input type="checkbox" data-pick="${esc(okey(o))}" ${OSEL.has(okey(o)) ? "checked" : ""} aria-label="Select order ${esc(o.id)}"></label>#${esc(o.id)} · ${esc(o.name)}</h3><div class="meta">${fmtTime(o.time)} · ${ago(o.time)} · ${esc(o.mobile)} · ${esc(o.from)}</div></div>
+      <div><h3><label class="pick" title="Select"><input type="checkbox" data-pick="${esc(okey(o))}" ${OSEL.has(okey(o)) ? "checked" : ""} aria-label="Select order ${esc(o.id)}"></label>#${esc(o.id)} · ${esc(o.name)}</h3><div class="meta" title="${esc(fmtTime(o.time))}">${ago(o.time)} · ${esc(o.mobile)}${o.from && o.from !== "—" ? " · " + esc(o.from) : ""}</div></div>
       <div class="side2"><select data-row="${o.row}" data-id="${esc(o.id)}" aria-label="Order status">${STAT.map(s => `<option ${s === o.status ? "selected" : ""}>${s}</option>`).join("")}</select>
-        <div class="row">${wa ? `<a class="btn sm wa" href="${wa}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}${tel ? `<a class="btn sm" href="tel:${esc(tel)}">${ic("i-phone")} Call</a>` : ""}${o.mobile ? `<button class="btn sm" data-copy="${esc(o.mobile)}" aria-label="Copy mobile">${ic("i-copy")}</button>` : ""}<button class="btn sm" data-otl="${esc(o.id)}" title="Send the customer their tracking link" aria-label="Share tracking link">${ic("i-link")}</button><button class="btn sm danger" data-odel="${esc(okey(o))}" aria-label="Delete order" title="Delete order">${ic("i-trash")}</button></div><div data-ocf="${esc(okey(o))}"></div></div>
-      <div class="kv"><div><span>PPT:</span> ${esc(o.topic)}</div>${o.theme !== "—" ? `<div><span>Theme:</span> ${esc(o.theme)}</div>` : ""}${o.slides !== "—" ? `<div><span>Slides:</span> ${esc(o.slides)}</div>` : ""}${o.language !== "—" ? `<div><span>Language:</span> ${esc(o.language)}</div>` : ""}</div>
-      <div class="det">${esc(o.details)}</div>
+        <div class="row">${wa ? `<a class="btn sm wa" href="${wa}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}<button class="btn sm" data-otl="${esc(o.id)}" title="Copy tracking link" aria-label="Copy tracking link">${ic("i-link")}</button><button class="btn sm danger" data-odel="${esc(okey(o))}" aria-label="Delete order" title="Delete order">${ic("i-trash")}</button></div><div data-ocf="${esc(okey(o))}"></div></div>
+      <div class="tags">${[o.topic, o.theme, o.slides !== "—" && o.slides ? (/slide/i.test(o.slides) ? o.slides : o.slides + " slides") : "", o.language].filter(v => v && v !== "—").map(v => `<span>${esc(v)}</span>`).join("")}</div>
+      ${o.details && o.details !== "—" ? `<div class="det clamp" data-more title="Click to expand">${esc(o.details)}</div>` : ""}
       ${files ? `<div class="files">${files}</div>` : ""}
       ${o.failed && o.failed !== "—" ? `<div class="files" style="color:var(--warn)">⚠ Not uploaded: ${esc(o.failed)}</div>` : ""}
       ${chgHtml(o)}
@@ -1658,10 +1672,9 @@ function drawOrders() {
   });
   drawBulk();
   $$("#olist [data-otl]").forEach(b => b.onclick = () => {
-    const o = ORD.find(x => String(x.id) === b.dataset.otl), ph = String(o && o.mobile || "").replace(/\D/g, "").slice(-10);
-    const msg = `Namaste ${String(o && o.name || "").split(" ")[0]}! Aapke PPT order #${b.dataset.otl} ka link. Apne mobile number se login karke status, preview aur payment dekhein:\n${trackUrl(b.dataset.otl)}`;
-    if (/^\d{10}$/.test(ph)) open(`https://wa.me/91${ph}?text=${encodeURIComponent(msg)}`, "_blank", "noopener"); else copy(trackUrl(b.dataset.otl));
+    copy(trackUrl(b.dataset.otl));
   });
+  $$("#olist [data-more]").forEach(d => d.onclick = () => d.classList.toggle("clamp"));
   $$("#olist [data-chg]").forEach(b => b.onclick = async () => {
     const c = CHG.find(x => x.row === +b.dataset.chg); if (!c) return;
     b.disabled = true; const st = c.status === "Done" ? "Open" : "Done", r = await call("adminChangeSet", { row: c.row, id: c.id, status: st }); b.disabled = false;
@@ -1672,9 +1685,20 @@ function drawOrders() {
   $$("#olist [data-tm]").forEach(tmBindStrip);
   $$("#olist select").forEach(s => s.onchange = async () => {
     s.disabled = true;
+    const o0 = ORD.find(x => x.row === +s.dataset.row), wurl = o0 && statusWa(o0, s.value), auto = WA_AUTO && /^(Done|Cancelled)$/.test(s.value);
+    const w = wurl && !auto ? open("", "_blank") : null;          // abhi kholo, warna browser popup rok deta hai
     const r = await call("adminOrderStatus", { row: +s.dataset.row, id: s.dataset.id, status: s.value });
     s.disabled = false;
-    if (!r.ok) return toast(r.error, true);
+    if (!r.ok) { if (w) w.close(); return toast(r.error, true); }
+    if (w) { try { w.opener = null; w.location.href = wurl; } catch (e) { open(wurl, "_blank", "noopener"); } }
+    if (auto) {
+      const box = s.closest(".order").querySelector("[data-ocf]");
+      call("adminOrderNotify", { id: s.dataset.id, status: s.value }).then(n => {
+        if (n.ok) return toast("✅ Customer ko WhatsApp chala gaya");
+        toast(n.error || "WhatsApp nahi gaya", true);
+        if (box && wurl) box.innerHTML = `<div class="note" style="margin-top:4px;color:var(--warn)">⚠ ${esc(n.error || "WhatsApp nahi gaya")} · <a href="${esc(wurl)}" target="_blank" rel="noopener">Khud bhejein</a></div>`;
+      });
+    }
     const o = ORD.find(x => x.row === +s.dataset.row); if (o) o.status = s.value;
     s.closest(".order").className = "order s-" + s.value.split(" ")[0];
     const fb = s.closest(".order").querySelector("[data-fin]"); if (fb && o) { fb.innerHTML = finHtml(o); bindFin(fb); }
@@ -2347,6 +2371,20 @@ function tmLib(p) {
 /* ---------- Custom order: final PPT upload → customer Track page par demo + pay + download ---------- */
 const FIN_DEMO = 10, FIN_LOCK = 300;
 /* Customer ko "PPT ready" message: Track page ka link ke saath (ek click, WhatsApp khulta hai) */
+/* Status Done / Cancelled hote hi customer ko WhatsApp message (WhatsApp khulta hai, bas Send dabana hai) */
+let WA_AUTO = false;
+function waAutoLoad() { call("adminWaCfg").then(r => { WA_AUTO = !!(r.ok && r.wa && r.wa.ready); }).catch(() => { }); }
+function statusWa(o, st) {
+  const m = String(o.mobile || "").replace(/\D/g, "").slice(-10); if (!/^[6-9]\d{9}$/.test(m)) return "";
+  const n = String(o.name || "").split(" ")[0];
+  if (st === "Done") {
+    const c = CUST[String(o.id)];
+    if (c && c.file && !c.payment) return finWa(o);
+    return `https://wa.me/91${m}?text=${encodeURIComponent(`Namaste ${n}! ✅ Aapki PPT "${o.topic}" ready hai (Order #${o.id}).\n\nDekhein aur download karein:\n${trackUrl(o.id)}\n\n(Wahi mobile number daalein jo order mein diya tha.)\n— PPT Store`)}`;
+  }
+  if (st === "Cancelled") return `https://wa.me/91${m}?text=${encodeURIComponent(`Namaste ${n}, aapka PPT order #${o.id} ("${o.topic}") cancel kar diya gaya hai.\n\nKoi sawal ho ya dobara order karna ho to isi number par message karein.\n— PPT Store`)}`;
+  return "";
+}
 function finWa(o) {
   const m = String(o.mobile || "").replace(/\D/g, "").slice(-10); if (!/^[6-9]\d{9}$/.test(m)) return "";
   const c = CUST[String(o.id)] || {}, site = /localhost|127\.|vercel\.app|^$/.test(location.hostname) ? "https://www.pptstore.in" : location.origin;
@@ -2358,11 +2396,11 @@ function finHtml(o) {
   if (c && c.file) {
     const noLock = c.demo.length && c.slides > FIN_DEMO && !(c.locked || []).length;
     const paid = !!c.payment || o.status === "Paid";
-    return `<div class="fin-box ${paid ? "paid" : ""}"><div class="fin-t">${ic("i-book")}<div><b>${esc(c.fileName)}</b><small>${c.slides ? c.slides + " slides · " : ""}${c.demo.length} demo${(c.locked || []).length ? " + " + c.locked.length + " locked" : ""} slides · <b>₹${esc(c.price)}</b>${paid ? ` · ✅ Paid${c.payment ? " (" + esc(c.payment) + ")" : ""}` : " · awaiting customer payment"}</small></div></div>
+    return `<div class="fin-box ${paid ? "paid" : ""}"><div class="fin-t">${ic("i-book")}<b title="${esc(c.fileName)}">${esc(c.fileName)}</b><small>${c.slides ? c.slides + " slides · " : ""}₹${esc(c.price)}</small><span class="pill ${paid ? "ok" : ""}" title="${paid && c.payment ? esc(c.payment) : ""}">${paid ? "✅ Paid" : "Unpaid"}</span></div>
       ${c.demo.length ? "" : `<div class="note" style="color:var(--warn)">⚠ No preview slides yet. Generate them so the customer can preview before paying.</div>`}
       ${noLock && !c.payment ? `<div class="note" style="color:var(--warn)">⚠ Locked slide images are missing. Generate all slides for a complete preview.</div>` : ""}
-      ${c.demo.length ? `<div class="fin-th">${c.demo.slice(0, 5).map(u => `<img src="${esc(u)}" alt="" loading="lazy">`).join("")}${c.demo.length > 5 ? `<span>+${c.demo.length - 5}</span>` : ""}</div>` : ""}
-      ${c.payment ? "" : `<div class="row" style="gap:6px;flex-wrap:wrap">${finWa(o) ? `<a class="btn sm wa" href="${finWa(o)}" target="_blank" rel="noopener">${ic("i-msg")} Notify customer</a>` : ""}${!c.demo.length || noLock ? `<button class="btn sm pri" data-fin-demo>${ic("i-image")} ${c.demo.length ? "Generate all slides" : "Generate " + FIN_DEMO + " preview slides"}</button>` : ""}<button class="btn sm" data-fin-up>${ic("i-upload")} Replace file</button><button class="btn sm" data-fin-price>₹ Edit price</button><button class="btn sm danger" data-fin-del>${ic("i-trash")} Remove</button></div>`}
+      <div class="fin-row">${c.demo.length ? `<div class="fin-th">${c.demo.slice(0, 4).map(u => `<img src="${esc(u)}" alt="" loading="lazy">`).join("")}${c.demo.length > 4 ? `<span>+${c.demo.length - 4}</span>` : ""}</div>` : ""}
+      ${c.payment ? "" : `<div class="row fin-acts">${finWa(o) ? `<a class="btn sm wa" href="${finWa(o)}" target="_blank" rel="noopener" title="Send preview & payment link on WhatsApp">${ic("i-msg")} Notify</a>` : ""}${!c.demo.length || noLock ? `<button class="btn sm pri" data-fin-demo>${ic("i-image")} ${c.demo.length ? "All slides" : "Preview slides"}</button>` : ""}<button class="btn sm ib" data-fin-up title="Replace file" aria-label="Replace file">${ic("i-upload")}</button><button class="btn sm" data-fin-price title="Edit price">₹ Price</button><button class="btn sm ib danger" data-fin-del title="Remove file" aria-label="Remove file">${ic("i-trash")}</button></div>`}</div>
       <div data-fin-form></div></div>`;
   }
   return `<div class="fin-empty"><button class="btn sm pri" data-fin-up>${ic("i-upload")} Upload final file</button></div><div data-fin-form></div>`;
@@ -2928,6 +2966,7 @@ async function settings() {
       <p class="note">Forgot your password? Run <b>resetAdminPassword</b> in Apps Script to restore the default login.</p>
     </form>
     <div class="card" id="payCard"><h3>Online payment (Razorpay)</h3><p class="note">Loading…</p></div>
+    <div class="card" id="waCard"><h3>WhatsApp auto message</h3><p class="note">Loading…</p></div>
     <div class="card">
       <h3>Admin panel theme</h3>
       <div class="themepick"><button type="button" data-th="dark"><span class="sw d"></span>🌙 Dark</button><button type="button" data-th="light"><span class="sw l"></span>☀️ Light</button></div>
@@ -2936,7 +2975,7 @@ async function settings() {
   </div>`);
   $$(".themepick button").forEach(b => b.onclick = () => setTheme(b.dataset.th));
   setTheme(document.documentElement.getAttribute("data-theme"));
-  payCard();
+  payCard(); waCard();
   $("#pwUser").value = SUM.user || "";
   $("#stWa").value = s.whatsapp || ""; $("#stPh").value = s.phoneDisplay || ""; $("#stEm").value = s.email || "";
   $("#setForm").onsubmit = async e => {
@@ -5284,6 +5323,36 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------- Settings → Razorpay ---------- */
+/* Order Done / Cancelled → customer ko WhatsApp Cloud API se apne aap message */
+async function waCard() {
+  const box = $("#waCard"); if (!box) return;
+  const r = await call("adminWaCfg");
+  if (!r.ok) { box.innerHTML = `<h3>WhatsApp auto message</h3><p class="note">${/Unknown admin action/i.test(r.error || "") ? "Requires an Apps Script update." : esc(r.error)}</p>`; return; }
+  const w = r.wa;
+  box.innerHTML = `<h3>WhatsApp auto message</h3>
+    <p>${w.ready ? `<span class="pill ok">● ON</span> ${esc(w.number || "Connected")}` : `<span class="pill" style="color:var(--bad)">● OFF</span> ${w.phoneId ? "Saved, but switched off" : "Not connected"}`}</p>
+    <p class="note">Order status <b>Done</b> ya <b>Cancelled</b> karte hi customer ko apne aap WhatsApp jayega. Off ho to WhatsApp khulta hai aur aapko Send dabana padta hai.</p>
+    <label class="f">Phone number ID <span>Meta → WhatsApp → API Setup</span><input type="text" id="waPid" inputmode="numeric" autocomplete="off" value="${esc(w.phoneId)}"></label>
+    <label class="f">Access token <span>${w.hasToken ? "saved · paste only to change" : "permanent (System user) token"}</span><input type="password" id="waTok" autocomplete="new-password" placeholder="${w.hasToken ? "••••••••" : "EAAG…"}"></label>
+    <div class="grid2"><label class="f">"Done" template<input type="text" id="waTd" autocapitalize="off" spellcheck="false" value="${esc(w.tplDone || "order_ready")}"></label>
+      <label class="f">"Cancelled" template<input type="text" id="waTc" autocapitalize="off" spellcheck="false" value="${esc(w.tplCancel || "order_cancelled")}"></label></div>
+    <div class="grid2"><label class="f">Template language <span>en, hi, en_US…</span><input type="text" id="waLg" value="${esc(w.lang || "en")}"></label>
+      <label class="f">Website <span>tracking link</span><input type="text" inputmode="url" id="waSite" placeholder="https://www.pptstore.in" value="${esc(w.site)}"></label></div>
+    <label class="f" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="waOn" ${w.on ? "checked" : ""} style="width:auto"> Auto message ON</label>
+    <div class="row"><button class="btn pri" type="button" id="waSave">Save &amp; Check</button></div>
+    <div class="row" style="gap:6px;margin-top:8px"><input type="tel" id="waTm" placeholder="Apna 10-digit number" maxlength="10" style="flex:1;min-width:140px"><button class="btn sm" type="button" data-wat="Done">Test "Done"</button><button class="btn sm" type="button" data-wat="Cancelled">Test "Cancelled"</button></div>`;
+  $("#waSave").onclick = async e => {
+    e.target.disabled = true; e.target.textContent = "Checking…";
+    const s = await call("adminWaSave", { phoneId: $("#waPid").value, token: $("#waTok").value, tplDone: $("#waTd").value, tplCancel: $("#waTc").value, lang: $("#waLg").value, site: $("#waSite").value, on: $("#waOn").checked });
+    e.target.disabled = false; e.target.textContent = "Save & Check";
+    if (!s.ok) return toast(s.error, true);
+    WA_AUTO = !!(s.wa && s.wa.ready); toast(WA_AUTO ? "WhatsApp connected ✓ Auto message ON" : "Saved · auto message OFF"); waCard();
+  };
+  $$("#waCard [data-wat]").forEach(b => b.onclick = async () => {
+    b.disabled = true; const t = await call("adminWaTest", { mobile: $("#waTm").value, status: b.dataset.wat }); b.disabled = false;
+    toast(t.ok ? "Test message bheja ✓ WhatsApp check karein" : t.error, !t.ok);
+  });
+}
 async function payCard() {
   const box = $("#payCard"); if (!box) return;
   const r = await call("adminPayStatus");
