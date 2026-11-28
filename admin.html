@@ -2373,7 +2373,7 @@ async function finZipShots(zip, set) {
     if (!d.pdf) {   // PPTX → zaroori slides ki chhoti copy → Google Slides se PDF
       try {
         set(`${d.f.name}: converting to PDF…`);
-        const b = await trimPptx(d.f, take), tmp = new File([b], "zip-src-" + Date.now() + ".pptx", { type: b.type }), key = "tmp-" + Date.now();
+        const b = await trimPptx(d.f, take), tmp = new File([b], "preview-src-zip-" + Date.now() + ".pptx", { type: b.type }), key = "tmp-" + Date.now();
         const src = await sendFile(tmp, pc => set(`${d.f.name}: uploading ${pc}%`), { key }); dropJob({ key });
         const r = await call("adminPptThumbs", { src }); if (!r.ok) throw new Error(r.error);
         pdf = new File([Uint8Array.from(atob(r.pdf), c => c.charCodeAt(0))], d.f.name.replace(/\.\w+$/, "") + ".pdf", { type: "application/pdf" });
@@ -4574,7 +4574,7 @@ async function pvsMake(p, set) {
     for (let a = 0; a < total; a += PVS_CHUNK) {
       const lb = `Slide ${a + 1}–${Math.min(total, a + PVS_CHUNK)} / ${total}`;
       set(lb + ": converting to PDF…");
-      const b = await trimPptx(file, PVS_CHUNK, a), tmp = new File([b], "pv-" + p.id + "-" + a + ".pptx", { type: b.type }), key = "tmp-" + Date.now();
+      const b = await trimPptx(file, PVS_CHUNK, a), tmp = new File([b], "preview-src-pv-" + p.id + "-" + a + ".pptx", { type: b.type }), key = "tmp-" + Date.now();
       const src = await sendFile(tmp, () => {}, { key }); dropJob({ key });
       let r = await call("adminPptThumbs", { src }); if (!r.ok) r = await call("adminPptThumbs", { src });
       if (!r.ok) throw new Error(r.error);
