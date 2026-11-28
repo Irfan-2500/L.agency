@@ -246,6 +246,8 @@ label.f span{font-weight:500;color:var(--dim)}
 .tcard.hid{opacity:.55}
 .tcard .pic{aspect-ratio:16/9;background:var(--bg2);position:relative;max-width:100%}
 .tcard .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.tcard .ppick{display:inline-flex;vertical-align:-3px;margin-right:7px}.tcard .ppick input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
+.tcard.sel{box-shadow:0 0 0 2px var(--accent)}
 /* Study notes: 2 view — thumbnail grid ya list (".notes" naam analytics ki list se takrata tha, isliye nview / nlist) */
 .vtog{display:flex;gap:4px;padding:3px;border:1px solid var(--line2);border-radius:11px;background:var(--bg2);flex:none}
 .vtog button{display:flex;align-items:center;gap:6px;padding:6px 12px;border:0;border-radius:8px;background:none;color:var(--muted);font-weight:600;font-size:.84rem}
@@ -4022,6 +4024,7 @@ async function pptView() {
     <div class="stat" style="--c:${PPAY ? "var(--ok)" : "var(--bad)"}"><span class="ic">₹</span><b>${PPAY ? "ON" : "OFF"}</b><small>Online payment (Razorpay)</small></div>
   </div>
   <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="pq" placeholder="Search ${w.one} name, class, subject…" aria-label="Search"></label><div class="vtog" role="group" aria-label="Status">${[["", "All"], ["live", "Live"], ["hid", "Hidden"]].map(([k, l]) => `<button type="button" data-pst="${k}">${l}</button>`).join("")}</div><select id="psort" aria-label="Sort"><option value="new">Newest</option><option value="sold">Best selling</option><option value="pa">Price: low to high</option><option value="pd">Price: high to low</option><option value="az">Title A–Z</option></select><div class="vtog" role="group" aria-label="View"><button type="button" data-nv="grid" title="Grid view" aria-label="Grid view">${ic("i-grid")}</button><button type="button" data-nv="list" title="List view" aria-label="List view">${ic("i-list")}</button></div><button class="btn sm" id="pCsv" title="Export CSV">${ic("i-down")} CSV</button></div>
+  <div class="bulkbar" id="pbulk" hidden></div>
   <div class="tgrid" id="pgrid"></div>`);
   $$("[data-nv]").forEach(b => b.onclick = () => { NVIEW = b.dataset.nv; try { localStorage.setItem("la_admin_nview", NVIEW); } catch (e) {} drawPpts(); });
   $("#pq").value = PQ; $("#pq").oninput = () => { PQ = $("#pq").value; drawPpts(); };
@@ -4095,6 +4098,41 @@ async function psApply(todo, rate, mrp) {
   else toast(`✅ ${done} chapter PPT(s) now ${rs(rate)} / slide`);
 }
 const csv = (name, rows) => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["\ufeff" + rows.map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" })); a.download = name; a.click(); };
+/* Ek saath kai PPT chun kar delete / hide / show */
+const PSEL = new Set();
+function drawPBulk(vis) {
+  const bar = $("#pbulk"); if (!bar) return;
+  [...PSEL].forEach(id => { if (!PP.some(p => String(p.id) === id)) PSEL.delete(id); });
+  bar.hidden = !PSEL.size; if (!PSEL.size) return;
+  const n = PSEL.size, w = KW().one + (n > 1 ? "s" : "");
+  bar.innerHTML = `<b>${n} ${w} selected</b><button class="btn sm" id="pAll">Select all shown (${vis.length})</button><button class="btn sm" id="pNone">Clear</button><span class="sp"></span><button class="btn sm" data-pbs="1">${ic("i-eye")} Show</button><button class="btn sm" data-pbs="0"><svg class="i"><use href="#i-eyeoff"/></svg> Hide</button><button class="btn sm danger" id="pDel">${ic("i-trash")} Delete selected</button>`;
+  $("#pAll").onclick = () => { vis.forEach(([p]) => PSEL.add(String(p.id))); drawPpts(); };
+  $("#pNone").onclick = () => { PSEL.clear(); drawPpts(); };
+  $$("#pbulk [data-pbs]").forEach(b => b.onclick = () => pBulkRun(b.dataset.pbs === "1" ? "show" : "hide"));
+  $("#pDel").onclick = () => {
+    bar.innerHTML = `<b>Delete ${n} ${w} permanently?</b> <span class="note">Their files and preview images will be removed too.</span><span class="sp"></span><button class="btn sm danger" id="pYes">Yes, delete ${n}</button><button class="btn sm" id="pNo">No</button>`;
+    $("#pNo").onclick = () => drawPBulk(vis);
+    $("#pYes").onclick = () => pBulkRun("delete");
+  };
+}
+async function pBulkRun(kind) {
+  const bar = $("#pbulk"), ids = [...PSEL], fails = []; let done = 0;
+  for (const id of ids) {
+    bar.innerHTML = `<b>${kind === "delete" ? "Deleting" : "Updating"}… ${done + 1} / ${ids.length}</b>`;
+    const i = PP.findIndex(p => String(p.id) === id); if (i < 0) { PSEL.delete(id); continue; }
+    if (kind === "delete") {
+      const r = await call("adminPptDelete", { id: PP[i].id });
+      if (r.ok) { PP.splice(i, 1); PSEL.delete(id); done++; } else fails.push(r.error);
+    } else {
+      const show = kind === "show";
+      if (!!PP[i].show === show) { PSEL.delete(id); done++; continue; }
+      const r = await call("adminPptSave", Object.assign(pptPayload(PP[i]), { show }));
+      if (r.ok) { PP[i] = r.ppt; PSEL.delete(id); done++; } else fails.push(r.error);
+    }
+  }
+  drawPpts();
+  toast(fails.length ? `${done} done · ${fails.length} failed: ${fails[0]}` : kind === "delete" ? `${done} deleted` : `${done} ${kind === "show" ? "now live" : "hidden"}`, !!fails.length);
+}
 function drawPpts() {
   const q = PQ.toLowerCase().trim();
   const srt = { new: (a, b) => (+b[0].id || 0) - (+a[0].id || 0), sold: (a, b) => (b[0].sold || 0) - (a[0].sold || 0), pa: (a, b) => a[0].price - b[0].price, pd: (a, b) => b[0].price - a[0].price, az: (a, b) => String(a[0].title).localeCompare(String(b[0].title)) }[PSORT] || null;
@@ -4106,14 +4144,16 @@ function drawPpts() {
   $("#pgrid").className = "tgrid" + (NVIEW === "list" ? " nlist" : KIND === "notes" || KIND === "book" ? " nview" : "");
   $$("[data-nv]").forEach(b => { const on = b.dataset.nv === NVIEW; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
   if ($("#pTot")) { $("#pTot").textContent = ml.length; $("#pTotL").textContent = `Total ${w.one}s · ${ml.filter(p => p.show).length} live`; }
-  $("#pgrid").innerHTML = vis.length ? vis.map(([p, i]) => `<div class="tcard ${p.show ? "" : "hid"}">
+  $("#pgrid").innerHTML = vis.length ? vis.map(([p, i]) => `<div class="tcard ${p.show ? "" : "hid"}${PSEL.has(String(p.id)) ? " sel" : ""}">
     <div class="pic">${p.previews[0] ? `<img src="${esc(p.previews[0])}" alt="" loading="lazy">` : `<div class="nopic">${isBook(p) ? "📚 Book" : isNote(p) ? "📝 Notes" : /\.pdf$/i.test(p.fileName) ? "📕 PDF" : "📊 PPT"}</div>`}<span class="cnt">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.7">${rs(p.mrp)}</s>` : ""}</span><span class="cnt" style="left:8px;right:auto">🛒 ${nf(p.sold)} sold</span></div>
-    <div class="body"><b>${esc(p.title)}</b><span class="lmeta">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.6">${rs(p.mrp)}</s>` : ""} · 🛒 ${nf(p.sold)} sold</span>
+    <div class="body"><b><label class="ppick" title="Select" onclick="event.stopPropagation()"><input type="checkbox" data-ppick="${esc(p.id)}" ${PSEL.has(String(p.id)) ? "checked" : ""} aria-label="Select"></label>${esc(p.title)}</b><span class="lmeta">${rs(p.price)}${p.mrp > p.price ? ` <s style="opacity:.6">${rs(p.mrp)}</s>` : ""} · 🛒 ${nf(p.sold)} sold</span>
       <div class="tags"><span class="pill ${p.show ? "ok" : "off"}">${p.show ? "● Live" : "Hidden"}</span>${isBook(p) ? `<span class="pill info">${esc(bkName(p))}</span>` : ""}${lvShow(p).slice(0, 2).map(x => `<span class="pill">${esc(x)}</span>`).join("")}${p.subject ? `<span class="pill info">📖 ${esc(p.subject)}</span>` : ""}<span class="pill">📎 ${esc((p.fileName.split(".").pop() || "").toUpperCase())}${p.slides ? ` · ${p.slides} ${isNote(p) || isBook(p) ? "pages" : "slides"}` : ""}</span></div>
       <div class="acts"><button class="btn sm" data-pe="${i}"><svg class="i"><use href="#i-pen"/></svg>Edit</button><button class="btn sm ib" data-pv="${i}" title="${p.show ? "Hide from website" : "Show on website"}" aria-label="${p.show ? "Hide" : "Show"}">${p.show ? `<svg class="i"><use href="#i-eyeoff"/></svg>` : `<svg class="i"><use href="#i-eye"/></svg>`}</button>${p.file ? `<button class="btn sm ib" data-pdl="${i}" title="Download ${esc(p.fileName)}" aria-label="Download"><svg class="i"><use href="#i-down"/></svg></button>` : ""}${needPv(p) ? `<button class="btn sm ib" data-pa="${i}" title="Generate preview" aria-label="Generate preview"><svg class="i"><use href="#i-image"/></svg></button>` : slideRefs(p).length && /\.(pptx|pdf)$/i.test(p.fileName) && !UQ.some(j => j.pv === p.id && j.st !== "ok" && j.st !== "bad") ? `<button class="btn sm ib" data-pr="${i}" title="Regenerate preview images" aria-label="Regenerate preview"><svg class="i"><use href="#i-refresh"/></svg></button>` : ""}<button class="btn sm ib danger" data-pd="${i}" title="Delete" aria-label="Delete"><svg class="i"><use href="#i-trash"/></svg></button></div>
       <div class="cf" data-pcf="${i}"></div>
     </div></div>`).join("") : `<div class="empty" style="grid-column:1/-1"><b>${w.icon}</b>${mine ? `No matching ${w.one.toLowerCase()}s.` : `No ${w.one.toLowerCase()}s yet.`}</div>`;
   $$("[data-pe]").forEach(b => b.onclick = () => editPpt(PP[+b.dataset.pe]));
+  $$("[data-ppick]").forEach(c => c.onchange = () => { c.checked ? PSEL.add(c.dataset.ppick) : PSEL.delete(c.dataset.ppick); c.closest(".tcard").classList.toggle("sel", c.checked); drawPBulk(vis); });
+  drawPBulk(vis);
   $$("[data-pdl]").forEach(b => b.onclick = () => dlPpt(PP[+b.dataset.pdl], b));
   $$("[data-pa]").forEach(b => b.onclick = () => { pvJob(PP[+b.dataset.pa]); drawPpts(); });
   $$("[data-pr]").forEach(b => b.onclick = () => { pvJob(PP[+b.dataset.pr], true); drawPpts(); });
@@ -4132,7 +4172,7 @@ function drawPpts() {
       e.target.disabled = true;
       const r = await call("adminPptDelete", { id: PP[i].id });
       if (!r.ok) return toast(r.error, true);
-      PP.splice(i, 1); drawPpts(); toast("Deleted");
+      PSEL.delete(String(PP[i].id)); PP.splice(i, 1); drawPpts(); toast("Deleted");
     };
   });
 }
