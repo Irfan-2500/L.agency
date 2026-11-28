@@ -223,6 +223,11 @@ label.f span{font-weight:500;color:var(--dim)}
 .order .side2 .row{gap:6px;justify-content:flex-end}
 .order select{width:auto;padding:7px 10px;font-weight:600}
 .order .fin{grid-column:1/-1;font-size:.84rem;min-width:0}
+.order .buys{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}.order .buys>div{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:8px 12px;border-radius:10px;background:var(--bg2);font-size:.86rem}.order .buys>div>span:first-child{flex:1;min-width:180px}
+#cTab em{font-style:normal;opacity:.7;margin-left:4px}
+.order .chgs{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
+.order .chg{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;padding:9px 12px;border-radius:10px;background:color-mix(in srgb,var(--warn) 10%,transparent);border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);font-size:.86rem;white-space:pre-wrap;overflow-wrap:anywhere}
+.order .chg small{display:block;color:var(--muted);font-size:.74rem;font-weight:700;margin-bottom:2px;white-space:normal}.order .chg.done{opacity:.6;background:var(--bg2);border-color:var(--line)}.order .chg .btn{flex:none}
 .fin .note{color:var(--muted);font-size:.8rem}
 .fin-empty{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .fin-box{display:grid;gap:8px;background:var(--bg2);border:1px dashed var(--line2);border-radius:10px;padding:10px 12px}
@@ -895,6 +900,7 @@ body.noscroll{overflow:hidden}
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
   <symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
   <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
   <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></symbol>
@@ -943,8 +949,7 @@ body.noscroll{overflow:hidden}
         <button data-t="orders"><svg class="i"><use href="#i-cart"/></svg>Orders<span class="n" id="nOrders" hidden></span></button>
         <button data-t="leads"><svg class="i"><use href="#i-phone"/></svg>Leads<span class="n" id="nLeads" hidden></span></button>
         <button data-t="team"><svg class="i"><use href="#i-users"/></svg>Team<span class="n" id="nTeam" hidden></span></button>
-        <button data-t="sales"><svg class="i"><use href="#i-rupee"/></svg>Online sales</button>
-        <button data-t="customers"><svg class="i"><use href="#i-users"/></svg>Customers</button>
+        <button data-t="customers"><svg class="i"><use href="#i-users"/></svg>Customers &amp; sales</button>
         <button data-t="coupons"><svg class="i"><use href="#i-tag"/></svg>Coupons</button>
         <span class="lbl">Engagement</span>
         <button data-t="messages"><svg class="i"><use href="#i-msg"/></svg>Inbox</button>
@@ -1113,7 +1118,7 @@ const ic = (id, st) => `<svg class="i"${st ? ` style="${st}"` : ""}><use href="#
 const CLASSES = [...Array.from({ length: 12 }, (_, i) => "Class " + (i + 1)), "Competitive Exams", "College / UG"];
 const SUBJECTS = ["Hindi","English","Maths","Science","Physics","Chemistry","Biology","Social Science","History","Geography","Political Science","Economics","Sanskrit","Computer Science","EVS","GK & Current Affairs","Reasoning / MAT","Accountancy","Business Studies","Physical Education","Corporate / Training"];
 const TONES = ["Dark", "White"], TYPES = ["Questions", "Theory", "Theory + Questions", "Screenshot"], LANGS = [["Hindi","Hindi"], ["English","English"], ["Both","Hindi + English"]];
-const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", leads: "Leads", team: "Team", sales: "Online sales", customers: "Customers", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", bundles: "Subject bundles", notes: "Study notes", sellbooks: "Books (sell)", cfiles: "Category files", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
+const TITLES = { dash: "Dashboard", stats: "Analytics", report: "Revenue report", orders: "Orders", leads: "Leads", team: "Team", sales: "Online sales", customers: "Customers & sales", coupons: "Coupons", messages: "Inbox", reviews: "Reviews", ppts: "Ready PPTs", bundles: "Subject bundles", notes: "Study notes", sellbooks: "Books (sell)", cfiles: "Category files", themes: "Themes", prices: "Pricing", menu: "Category menu", site: "Site controls", settings: "Settings" };
 let TOKEN = ""; try { TOKEN = sessionStorage.getItem("la_admin") || ""; } catch (e) {}
 let SUM = {}, tab = "dash";
 
@@ -1203,6 +1208,9 @@ async function demoCall(a, d) {
       pendingReviews: D.reviews.filter(r => !r.show).length, messages: D.messages.length, sheetUrl: "#", filesUrl: "#", imagesUrl: "#" });
     case "adminOrders": return ok({ orders: D.orders.map(o => Object.assign({}, o)), statuses: D.statuses });
     case "adminOrderStatus": { const o = D.orders.find(x => x.row === d.row); if (o) o.status = d.status; return ok(); }
+    case "adminChanges": return ok({ changes: (D.chg || (D.chg = [{ row: 2, time: new Date(Date.now() - 3 * 36e5).toISOString(), id: String(D.orders[3].id), name: D.orders[3].name, mobile: D.orders[3].mobile, text: "Slide 5 ka color blue karein aur slide 9 mein ek diagram jodein", status: "Open" }])).map(c => Object.assign({}, c)) });
+    case "adminChangeSet": { const c = (D.chg || []).find(x => x.row === d.row); if (c) c.status = d.status; return ok(); }
+    case "adminOrderNew": { const id = Math.max(...D.orders.map(o => +o.id || 0)) + 1; D.orders.unshift({ row: D.orders.length + 2, time: new Date().toISOString(), id, name: d.name, mobile: "+91 " + d.phone, wa: "https://wa.me/91" + d.phone, topic: d.topic || "—", theme: d.theme || "—", slides: d.slides || "—", language: d.language || "—", details: d.details || "—", files: "—", failed: "—", from: "Admin panel", status: "New" }); return ok({ id }); }
     case "adminThemes": return ok({ themes: D.themes.map(t => Object.assign({}, t)) });
     case "adminThemeSave": {
       let t = D.themes.find(x => x.id === d.id);
@@ -1512,14 +1520,25 @@ async function dash() {
 }
 
 /* ---------- Orders ---------- */
-let ORD = [], STAT = [], OQ = "", OST = "", OTM = "", OSORT = "new", CUST = {}, CUST_ON = false, CUST_PAY = false;
+let ORD = [], STAT = [], OQ = "", OST = "", OTM = "", OSORT = "new", CUST = {}, CUST_ON = false, CUST_PAY = false, CHG = [], CHG_ON = false;
+const chgOf = id => CHG.filter(c => c.id === String(id));
+const trackUrl = id => location.origin + "/track.html#id=" + encodeURIComponent(id);
 async function orders() {
   loading();
-  const [r, cu] = await Promise.all([call("adminOrders"), call("adminCustomList"), loadTeam(true)]); if (!r.ok) return fail(r.error);
+  const [r, cu, ch] = await Promise.all([call("adminOrders"), call("adminCustomList"), call("adminChanges"), loadTeam(true)]); if (!r.ok) return fail(r.error);
+  CHG_ON = !!ch.ok; CHG = ch.ok ? ch.changes : [];
   ORD = r.orders; STAT = r.statuses;
   CUST = {}; CUST_ON = !!cu.ok; CUST_PAY = !!cu.payments; if (cu.ok) cu.items.forEach(c => CUST[String(c.id)] = c);
   badge("#nOrders", ORD.filter(o => String(o.status).split(" ")[0] === "New").length);
-  V(head("Orders", "Every custom PPT order. Changing a status also updates the Google Sheet.", `<button class="btn sm" id="oCsv">${ic("i-down")} Export CSV</button>`) + `
+  const m0 = new Date(); m0.setDate(1); m0.setHours(0, 0, 0, 0);
+  const paidM = Object.values(CUST).filter(c => c.payment && c.paidAt && new Date(c.paidAt) >= m0), cnt = s => ORD.filter(o => o.status === s).length;
+  V(head("Orders", "", `<button class="btn sm" id="oCsv">${ic("i-down")} Export CSV</button><button class="btn pri" id="oNew">${ic("i-plus")} New order</button>`) + `
+  <div class="stats">
+    <div class="stat" style="--c:var(--warn)"><span class="ic">${ic("i-zap")}</span><b>${nf(cnt("New"))}</b><small>New</small></div>
+    <div class="stat" style="--c:var(--info)"><span class="ic">${ic("i-clock")}</span><b>${nf(cnt("In Progress"))}</b><small>In progress${CHG_ON ? ` · ${CHG.filter(c => c.status === "Open").length} change requests` : ""}</small></div>
+    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic("i-eye")}</span><b>${nf(cnt("Done"))}</b><small>Ready · awaiting payment</small></div>
+    <div class="stat" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(paidM.reduce((s, c) => s + (+c.paid || +c.price || 0), 0))}</b><small>Paid this month · ${paidM.length} orders</small></div>
+  </div>
   <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="oq" placeholder="Search name, mobile, topic, order ID…" aria-label="Search orders"></label>
     <select id="osort" aria-label="Sort"><option value="new">Newest first</option><option value="old">Oldest first</option></select></div>
   <div class="chips" id="ochips"></div>
@@ -1529,16 +1548,51 @@ async function orders() {
   $("#oq").value = OQ; $("#osort").value = OSORT;
   $("#oq").oninput = () => { OQ = $("#oq").value; drawOrders(); };
   $("#osort").onchange = () => { OSORT = $("#osort").value; drawOrders(); };
-  $("#oCsv").onclick = exportCsv;
+  $("#oCsv").onclick = exportCsv; $("#oNew").onclick = newOrder;
   drawOrders();
+}
+/* Admin khud customer ka order banaye (jise order karna nahi aata) → Track link WhatsApp par */
+function newOrder() {
+  const m = document.createElement("div"); m.className = "modal"; m.setAttribute("role", "dialog"); m.setAttribute("aria-modal", "true");
+  m.innerHTML = `<form class="mbox" id="noForm" style="width:min(620px,100%)" novalidate><div class="row" style="justify-content:space-between"><h2>New order</h2><button type="button" class="btn sm ib" data-x aria-label="Close">${ic("i-x")}</button></div>
+    <div class="grid2"><label class="f">Customer name<input id="noName" maxlength="120" required></label><label class="f">Mobile<input id="noPhone" inputmode="tel" maxlength="16" placeholder="10-digit" required></label></div>
+    <label class="f">PPT topic<input id="noTopic" maxlength="200" placeholder="e.g. Class 10 Science — Light, Chapter 10"></label>
+    <div class="grid2"><label class="f">Slides<input id="noSlides" maxlength="30" placeholder="e.g. 25"></label><label class="f">Language<select id="noLang"><option>Hindi</option><option>English</option><option>Hindi + English</option></select></label><label class="f">Theme<input id="noTheme" maxlength="120" placeholder="Optional"></label></div>
+    <label class="f">Details<textarea id="noDet" rows="4" maxlength="3000" placeholder="Board, chapter, what to include, deadline…"></textarea></label>
+    <div class="row"><button class="btn pri" type="submit" id="noSave">Create order</button><span class="err" id="noErr" role="alert"></span></div></form>`;
+  document.body.appendChild(m);
+  const close = () => m.remove();
+  m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-x]")) close(); });
+  m.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+  $("#noName").focus();
+  $("#noForm").onsubmit = async e => {
+    e.preventDefault();
+    const d = { name: $("#noName").value.trim(), phone: $("#noPhone").value.replace(/\D/g, "").replace(/^(91|0)(?=\d{10}$)/, ""), topic: $("#noTopic").value.trim(), slides: $("#noSlides").value.trim(), language: $("#noLang").value, theme: $("#noTheme").value.trim(), details: $("#noDet").value.trim() };
+    if (d.name.length < 2) return $("#noErr").textContent = "Enter the customer's name";
+    if (!/^[6-9]\d{9}$/.test(d.phone)) return $("#noErr").textContent = "Enter a valid 10-digit mobile";
+    if (!d.topic && d.details.length < 2) return $("#noErr").textContent = "Enter the topic or details";
+    $("#noSave").disabled = true; const r = await call("adminOrderNew", d); $("#noSave").disabled = false;
+    if (!r.ok) return $("#noErr").textContent = /Unknown admin action/i.test(r.error || "") ? "Deploy the new Apps Script version first" : r.error;
+    const msg = `Namaste ${d.name.split(" ")[0]}! PPT Store par aapka order #${r.id} ban gaya hai.\nIs link par apne mobile number se login karke order dekhein, PPT ka preview, badlav aur payment:\n${trackUrl(r.id)}`;
+    m.querySelector(".mbox").innerHTML = `<h2>Order #${esc(r.id)} created ✓</h2><p class="note">Send the tracking link to the customer. They sign in with ${esc(d.phone)} and order #${esc(r.id)}.</p>
+      <div class="row"><a class="btn pri wa" href="https://wa.me/91${esc(d.phone)}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${ic("i-msg")} Send on WhatsApp</a><button type="button" class="btn" id="noCopy">${ic("i-copy")} Copy link</button><button type="button" class="btn" data-x>Done</button></div>`;
+    $("#noCopy").onclick = () => copy(trackUrl(r.id));
+    orders();
+  };
 }
 function drawChips() {
   const all = [["", "All", ORD.length], ...STAT.map(s => [s, s, ORD.filter(o => o.status === s).length])];
-  const tm = TEAM && TEAM.ok && TEAM.members.length ? [["team", "👥 With team"], ["me", "🙋 Unassigned"], ["review", "✅ To review"]].map(([k, l]) => [k, l, ORD.filter(o => tmOF(o, k)).length]) : [];
+  const nc = new Set(CHG.filter(c => c.status === "Open").map(c => c.id)).size;
+  const tm0 = CHG_ON && nc ? [["chg", "✏️ Change requests", nc]] : [];
+  const tm = tm0.concat(TEAM && TEAM.ok && TEAM.members.length ? [["team", "👥 With team"], ["me", "🙋 Unassigned"], ["review", "✅ To review"]].map(([k, l]) => [k, l, ORD.filter(o => tmOF(o, k)).length]) : []);
   $("#ochips").innerHTML = all.map(([v, l, n]) => `<button class="chip ${v === OST && !OTM ? "on" : ""}" data-st="${esc(v)}">${esc(l)}<em>${n}</em></button>`).join("")
     + tm.map(([k, l, n]) => `<button class="chip ${OTM === k ? "on" : ""}" data-tmf="${k}">${l}<em>${n}</em></button>`).join("");
   $$("#ochips [data-st]").forEach(b => b.onclick = () => { OST = b.dataset.st; OTM = ""; drawOrders(); });
   $$("#ochips [data-tmf]").forEach(b => b.onclick = () => { OTM = OTM === b.dataset.tmf ? "" : b.dataset.tmf; OST = ""; drawOrders(); });
+}
+function chgHtml(o) {
+  const l = chgOf(o.id); if (!l.length) return "";
+  return `<div class="chgs">${l.map(c => `<div class="chg ${c.status === "Done" ? "done" : ""}"><div><small>✏️ Change request · ${fmtTime(c.time)}${c.status === "Done" ? " · done" : ""}</small>${esc(c.text)}</div><button class="btn sm" data-chg="${c.row}">${c.status === "Done" ? "Reopen" : ic("i-check") + " Mark done"}</button></div>`).join("")}</div>`;
 }
 function filteredOrders() {
   const q = OQ.toLowerCase();
@@ -1547,6 +1601,7 @@ function filteredOrders() {
 }
 /* Team filter: team ke paas (kisi member par chal raha), mere paas (kisi ko nahi diya), review (approve ka intezaar) */
 function tmOF(o, k) {
+  if (k === "chg") return chgOf(o.id).some(c => c.status === "Open");
   if (/^(Cancelled)$/.test(o.status)) return false;
   const t = tmTaskOf(o.id), on = t && /^(Assigned|Accepted|Working|Changes|Review)$/.test(t.status);
   return k === "team" ? !!on : k === "review" ? !!(t && t.status === "Review") : !on && !(t && t.status === "Approved") && !/^(Done|Paid)$/.test(String(o.status).split(" ")[0]);
@@ -1584,11 +1639,12 @@ function drawOrders() {
     return `<article class="order s-${esc(String(o.status).split(" ")[0])}${OSEL.has(okey(o)) ? " sel" : ""}">
       <div><h3><label class="pick" title="Select"><input type="checkbox" data-pick="${esc(okey(o))}" ${OSEL.has(okey(o)) ? "checked" : ""} aria-label="Select order ${esc(o.id)}"></label>#${esc(o.id)} · ${esc(o.name)}</h3><div class="meta">${fmtTime(o.time)} · ${ago(o.time)} · ${esc(o.mobile)} · ${esc(o.from)}</div></div>
       <div class="side2"><select data-row="${o.row}" data-id="${esc(o.id)}" aria-label="Order status">${STAT.map(s => `<option ${s === o.status ? "selected" : ""}>${s}</option>`).join("")}</select>
-        <div class="row">${wa ? `<a class="btn sm wa" href="${wa}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}${tel ? `<a class="btn sm" href="tel:${esc(tel)}">${ic("i-phone")} Call</a>` : ""}${o.mobile ? `<button class="btn sm" data-copy="${esc(o.mobile)}" aria-label="Copy mobile">${ic("i-copy")}</button>` : ""}<button class="btn sm danger" data-odel="${esc(okey(o))}" aria-label="Delete order" title="Delete order">${ic("i-trash")}</button></div><div data-ocf="${esc(okey(o))}"></div></div>
+        <div class="row">${wa ? `<a class="btn sm wa" href="${wa}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}${tel ? `<a class="btn sm" href="tel:${esc(tel)}">${ic("i-phone")} Call</a>` : ""}${o.mobile ? `<button class="btn sm" data-copy="${esc(o.mobile)}" aria-label="Copy mobile">${ic("i-copy")}</button>` : ""}<button class="btn sm" data-otl="${esc(o.id)}" title="Send the customer their tracking link" aria-label="Share tracking link">${ic("i-link")}</button><button class="btn sm danger" data-odel="${esc(okey(o))}" aria-label="Delete order" title="Delete order">${ic("i-trash")}</button></div><div data-ocf="${esc(okey(o))}"></div></div>
       <div class="kv"><div><span>PPT:</span> ${esc(o.topic)}</div>${o.theme !== "—" ? `<div><span>Theme:</span> ${esc(o.theme)}</div>` : ""}${o.slides !== "—" ? `<div><span>Slides:</span> ${esc(o.slides)}</div>` : ""}${o.language !== "—" ? `<div><span>Language:</span> ${esc(o.language)}</div>` : ""}</div>
       <div class="det">${esc(o.details)}</div>
       ${files ? `<div class="files">${files}</div>` : ""}
       ${o.failed && o.failed !== "—" ? `<div class="files" style="color:var(--warn)">⚠ Not uploaded: ${esc(o.failed)}</div>` : ""}
+      ${chgHtml(o)}
       ${o.status === "Cancelled" || !TEAM || !TEAM.ok ? "" : `<div class="fin" data-tm="${esc(o.id)}">${tmStrip(o)}</div>`}
       ${o.status === "Cancelled" ? "" : `<div class="fin" data-fin="${esc(o.id)}">${finHtml(o)}</div>`}
     </article>`;
@@ -1601,6 +1657,17 @@ function drawOrders() {
     box.querySelector("[data-yes]").onclick = e => delOrders([{ row: +row, id }], e.target);
   });
   drawBulk();
+  $$("#olist [data-otl]").forEach(b => b.onclick = () => {
+    const o = ORD.find(x => String(x.id) === b.dataset.otl), ph = String(o && o.mobile || "").replace(/\D/g, "").slice(-10);
+    const msg = `Namaste ${String(o && o.name || "").split(" ")[0]}! Aapke PPT order #${b.dataset.otl} ka link. Apne mobile number se login karke status, preview aur payment dekhein:\n${trackUrl(b.dataset.otl)}`;
+    if (/^\d{10}$/.test(ph)) open(`https://wa.me/91${ph}?text=${encodeURIComponent(msg)}`, "_blank", "noopener"); else copy(trackUrl(b.dataset.otl));
+  });
+  $$("#olist [data-chg]").forEach(b => b.onclick = async () => {
+    const c = CHG.find(x => x.row === +b.dataset.chg); if (!c) return;
+    b.disabled = true; const st = c.status === "Done" ? "Open" : "Done", r = await call("adminChangeSet", { row: c.row, id: c.id, status: st }); b.disabled = false;
+    if (!r.ok) return toast(r.error, true);
+    c.status = st; drawOrders(); toast(st === "Done" ? "Change marked done" : "Change reopened");
+  });
   $$("#olist [data-fin]").forEach(bindFin);
   $$("#olist [data-tm]").forEach(tmBindStrip);
   $$("#olist select").forEach(s => s.onchange = async () => {
@@ -3313,37 +3380,7 @@ async function report() {
 
 /* ---------- Sales (Razorpay se biki Ready PPTs) ---------- */
 let SALES = [], SQ = "";
-async function sales() {
-  loading();
-  const r = await call("adminSales");
-  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Online sales", "") + NEW_SCRIPT) : fail(r.error);
-  SALES = r.sales;
-  const d0 = new Date(); d0.setHours(0, 0, 0, 0);
-  const m0 = new Date(d0.getFullYear(), d0.getMonth(), 1);
-  const sum = l => l.reduce((s, x) => s + x.amount, 0);
-  const today = SALES.filter(x => new Date(x.time) >= d0), month = SALES.filter(x => new Date(x.time) >= m0);
-  const per = {}; SALES.forEach(x => x.items.split(", ").forEach(t => { if (t) per[t] = (per[t] || 0) + 1; }));
-  V(head("Online sales", "Ready PPTs sold through Razorpay. You also get an email for every sale.", `<button class="btn sm" id="sCsv">${ic("i-down")} Export CSV</button>`) + `
-  <div class="stats">
-    <div class="stat" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(sum(today))}</b><small>Today · ${today.length} sales</small></div>
-    <div class="stat" style="--c:var(--accent)"><span class="ic">₹</span><b>${rs(sum(month))}</b><small>This month · ${month.length} sales</small></div>
-    <div class="stat" style="--c:var(--cyan)"><span class="ic">₹</span><b>${rs(sum(SALES))}</b><small>All time · ${SALES.length} sales</small></div>
-  </div>
-  <div class="dgrid">
-    <div class="card"><div class="ch"><h3>Best sellers</h3></div>${toplist(Object.entries(per).sort((a, b) => b[1] - a[1]).slice(0, 8), 0, "var(--ok)")}</div>
-    <div class="card"><div class="ch"><h3>${ic("i-clock", "color:var(--warn)")} Recent customers</h3></div>
-      <div class="recent">${SALES.slice(0, 6).map(x => `<a href="mailto:${esc(x.email)}"><span class="av">${esc(initials(x.name))}</span><span class="tx"><b>${esc(x.name)} · ${rs(x.amount)}</b><small>${esc(x.items)} · ${ago(x.time)}</small></span></a>`).join("") || `<p class="note">No sales yet.</p>`}</div></div>
-  </div>
-  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="sq" placeholder="Search name, email, mobile, PPT, payment ID…" aria-label="Search sales"></label></div>
-  <div class="olist" id="slist"></div>`);
-  $("#sq").value = SQ; $("#sq").oninput = () => { SQ = $("#sq").value; drawSales(); };
-  $("#sCsv").onclick = () => {
-    const rows = [["Time", "Name", "Email", "Mobile", "PPTs", "Amount", "Payment ID", "Order ID"], ...SALES.map(x => [fmtTime(x.time), x.name, x.email, x.mobile, x.items, x.amount, x.payment, x.order])];
-    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" }));
-    a.download = "lakshay-sales.csv"; a.click();
-  };
-  drawSales();
-}
+async function sales() { CTAB = "sales"; return customers(); }
 document.addEventListener("click", async e => {
   const b = e.target.closest("[data-rs]"); if (!b) return;
   b.disabled = true; const r = await call("adminSaleResend", { payment: b.dataset.rs }); b.disabled = false;
@@ -3431,28 +3468,37 @@ function drawCoupons() {
 
 /* ---------- Customers (My PPTs login) ---------- */
 let CUS = [], CQ = "";
+let CTAB = "cust";
 async function customers() {
   loading();
-  const r = await call("adminCustomers");
-  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Customers", "") + NEW_SCRIPT) : fail(r.error);
-  CUS = r.customers;
+  const [r, sl] = await Promise.all([call("adminCustomers"), call("adminSales")]);
+  if (!r.ok) return /Unknown admin action/i.test(r.error || "") ? V(head("Customers & sales", "") + NEW_SCRIPT) : fail(r.error);
+  CUS = r.customers; SALES = sl.ok ? sl.sales : [];
+  const d0 = new Date(); d0.setHours(0, 0, 0, 0);
+  const m0 = new Date(d0.getFullYear(), d0.getMonth(), 1), sum = l => l.reduce((s, x) => s + (+x.amount || 0), 0);
+  const today = SALES.filter(x => new Date(x.time) >= d0), month = SALES.filter(x => new Date(x.time) >= m0);
   const d30 = Date.now() - 30 * 864e5, active = CUS.filter(c => c.lastLogin && new Date(c.lastLogin) >= d30).length;
-  V(head("Customers", "People who bought on the website. They sign in to My PPTs with mobile / email + OTP to download again.", `<button class="btn sm" id="cCsv">${ic("i-down")} Export CSV</button>`) + `
+  V(head("Customers & sales", "", `<button class="btn sm" id="cCsv">${ic("i-down")} Export CSV</button>`) + `
   <div class="stats">
-    <div class="stat" style="--c:var(--accent)"><span class="ic">${ic("i-phone")}</span><b>${nf(CUS.length)}</b><small>Total customers</small></div>
-    <div class="stat" style="--c:var(--ok)"><span class="ic">${ic("i-eye")}</span><b>${nf(CUS.filter(c => c.logins).length)}</b><small>Signed in · ${active} in last 30 days</small></div>
-    <div class="stat" style="--c:var(--cyan)"><span class="ic">${ic("i-cart")}</span><b>${nf(CUS.filter(c => c.orders > 1).length)}</b><small>Repeat buyers</small></div>
+    <div class="stat" style="--c:var(--ok)"><span class="ic">₹</span><b>${rs(sum(today))}</b><small>Today · ${today.length} sales</small></div>
+    <div class="stat" style="--c:var(--accent)"><span class="ic">₹</span><b>${rs(sum(month))}</b><small>This month · ${month.length} sales</small></div>
+    <div class="stat" style="--c:var(--cyan)"><span class="ic">₹</span><b>${rs(sum(SALES))}</b><small>All time · ${SALES.length} sales</small></div>
+    <div class="stat" style="--c:var(--pink)"><span class="ic">${ic("i-users")}</span><b>${nf(CUS.length)}</b><small>Customers · ${nf(CUS.filter(c => c.orders > 1).length)} repeat · ${active} signed in (30 days)</small></div>
   </div>
-  <div class="fbar"><label class="search">${ic("i-search")}<input type="search" id="cq" placeholder="Search name, mobile, email, PPT…" aria-label="Search customers"></label></div>
-  <div class="olist" id="clist"></div>
-  `);
-  $("#cq").value = CQ; $("#cq").oninput = () => { CQ = $("#cq").value; drawCus(); };
+  <div class="fbar"><div class="seg" id="cTab" role="tablist"><button type="button" data-ct="cust">Customers <em>${CUS.length}</em></button><button type="button" data-ct="sales">Sales <em>${SALES.length}</em></button></div>
+    <label class="search">${ic("i-search")}<input type="search" id="cq" placeholder="Search name, mobile, email, PPT, payment ID…" aria-label="Search"></label></div>
+  <div class="olist" id="clist"></div><div class="olist" id="slist"></div>`);
+  const tab = () => { $$("#cTab [data-ct]").forEach(b => { b.classList.toggle("on", b.dataset.ct === CTAB); b.setAttribute("aria-selected", b.dataset.ct === CTAB); });
+    $("#clist").hidden = CTAB !== "cust"; $("#slist").hidden = CTAB !== "sales"; $("#cq").value = CTAB === "cust" ? CQ : SQ; CTAB === "cust" ? drawCus() : drawSales(); };
+  $$("#cTab [data-ct]").forEach(b => b.onclick = () => { CTAB = b.dataset.ct; tab(); });
+  $("#cq").oninput = () => { if (CTAB === "cust") { CQ = $("#cq").value; drawCus(); } else { SQ = $("#cq").value; drawSales(); } };
   $("#cCsv").onclick = () => {
-    const rows = [["Name", "Mobile", "Email", "Orders", "Spent", "PPTs", "Logins", "Last login", "First buy"], ...CUS.map(c => [c.name, c.mobile, c.email, c.orders, c.spent, c.ppts.join(" | "), c.logins, c.lastLogin ? fmtTime(c.lastLogin) : "", fmtTime(c.first)])];
+    const rows = CTAB === "cust" ? [["Name", "Mobile", "Email", "Orders", "Spent", "PPTs", "Logins", "Last login", "First buy"], ...CUS.map(c => [c.name, c.mobile, c.email, c.orders, c.spent, c.ppts.join(" | "), c.logins, c.lastLogin ? fmtTime(c.lastLogin) : "", fmtTime(c.first)])]
+      : [["Time", "Name", "Email", "Mobile", "PPTs", "Amount", "Payment ID", "Order ID"], ...SALES.map(x => [fmtTime(x.time), x.name, x.email, x.mobile, x.items, x.amount, x.payment, x.order])];
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" }));
-    a.download = "lakshay-customers.csv"; a.click();
+    a.download = CTAB === "cust" ? "pptstore-customers.csv" : "pptstore-sales.csv"; a.click();
   };
-  drawCus();
+  tab(); CTAB = "cust";
 }
 function drawCus() {
   const q = CQ.toLowerCase().trim();
@@ -3461,7 +3507,8 @@ function drawCus() {
       <div class="meta">${c.logins ? `🔐 ${c.logins} sign-ins · last ${ago(c.lastLogin)}${c.device ? " · " + esc(c.device) : ""}` : "Never signed in"} · ${c.orders} order(s)</div></div>
     <div class="side2"><div class="row">${c.mobile ? `<a class="btn sm wa" href="https://wa.me/91${esc(c.mobile)}" target="_blank" rel="noopener">${ic("i-msg")} WhatsApp</a>` : ""}
       <button class="btn sm" data-cr="${i}">🔄 Reset login</button><button class="btn sm ${c.blocked ? "" : "danger"}" data-cb="${i}">${c.blocked ? "✅ Unblock" : "🚫 Block"}</button></div></div>
-    <div class="det">📞 ${esc(c.mobile || "—")} · ✉️ ${esc(c.email || "—")}<br>📦 ${c.ppts.map(esc).join(", ")}<br><small>First purchase: ${fmtTime(c.first)}</small></div></article>`).join("")
+    <div class="det">📞 ${esc(c.mobile || "—")} · ✉️ ${esc(c.email || "—")}<br><small>First purchase: ${fmtTime(c.first)}</small></div>
+    <div class="buys">${SALES.filter(x => (c.mobile && x.mobile === c.mobile) || (c.email && String(x.email).toLowerCase() === String(c.email).toLowerCase())).slice(0, 12).map(x => `<div><span>📦 ${esc(x.items)}</span><span class="note">${fmtTime(x.time)} · <b style="color:var(--ok)">${rs(x.amount)}</b></span><button class="btn sm" data-rs="${esc(x.payment)}" title="Email the download link again">${ic("i-mail")} Resend</button></div>`).join("") || `<div><span>📦 ${c.ppts.map(esc).join(", ")}</span></div>`}</div></article>`).join("")
     : `<div class="empty"><b>👥</b>${CUS.length ? "No matching customers." : "No customers yet."}</div>`;
   $$("[data-cr]").forEach(b => b.onclick = async () => {
     b.disabled = true; const c = CUS[+b.dataset.cr], r = await call("adminCustomerSet", { key: c.key, reset: true }); b.disabled = false;

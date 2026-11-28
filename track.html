@@ -122,6 +122,19 @@ input:focus-visible{outline:none}
 .st:not(.done):not(.now) b{color:var(--dim)}
 .kv{display:grid;gap:6px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:.88rem}
 .kv span{color:var(--muted)}
+.kv .det{white-space:pre-wrap;word-break:break-word;margin-top:2px;color:var(--text)}
+.mine{width:min(440px,100%);margin:18px auto 0;background:var(--card);border:1px solid var(--line2);border-radius:20px;padding:18px;display:grid;gap:10px}
+#res.wide~.mine{width:min(880px,100%)}
+.mine h2{font-size:1.05rem;display:flex;align-items:center;gap:8px}.mine h2 small{margin-left:auto;font-size:.78rem;color:var(--muted);font-weight:600}
+.mine input{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:11px;padding:10px 12px;font:inherit;color:inherit;outline:none}
+.mo{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);color:inherit;font:inherit;cursor:pointer;width:100%}
+.mo:hover,.mo.on{border-color:var(--violet,#8b2cff)}.mo b{font-size:.9rem;display:block}.mo small{color:var(--muted);font-size:.76rem}
+.mo .n{font-weight:800;color:var(--muted)}.mo .st{font-size:.72rem;font-weight:800;padding:3px 8px;border-radius:99px;background:var(--card2,rgba(255,255,255,.06));border:1px solid var(--line2);white-space:nowrap}
+.mo .st.ready{color:#1a1200;background:#fde047;border-color:transparent}.mo .st.paid{color:#052e16;background:#4ade80;border-color:transparent}
+.chg{display:grid;gap:10px;border-top:1px solid var(--line);padding-top:14px}
+.chg textarea{width:100%;min-height:92px;resize:vertical;background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:11px 12px;font:inherit;color:inherit;outline:none}
+.chg .it{font-size:.84rem;padding:9px 12px;border-radius:11px;background:var(--bg2);border:1px solid var(--line);white-space:pre-wrap;word-break:break-word}
+.chg .it small{display:block;color:var(--muted);font-size:.74rem;margin-bottom:3px}
 .cancel{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.4);color:#f87171;border-radius:12px;padding:12px 14px;font-weight:700}
 /* ===== PPT READY: demo + payment + download ===== */
 #res.wide{width:min(760px,100%)}
@@ -229,15 +242,16 @@ html.light .rd-h .pill{color:#a16207}
 <main class="container">
   <section class="box" id="find">
     <span class="ic"><svg class="i"><use href="#i-zap"/></svg></span>
-    <div><h1>Track Your Order</h1><p>Custom PPT order ka status dekhein. Order number (jaise #12) aur wahi mobile number daalein jo order karte waqt bhara tha.<span class="en">Enter your order number and the mobile you ordered with.</span></p></div>
+    <div><h1>Track Your Order</h1><p>Apna mobile number aur koi bhi ek order number daalein. Login ke baad is mobile ke saare orders yahin dikhenge.<span class="en">Sign in with your mobile number and any one order number to see all your orders.</span></p></div>
     <form id="fTrack" novalidate style="display:grid;gap:14px">
-      <label>Order number<input id="tId" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="e.g. 12"></label>
       <label>Mobile number<input id="tPhone" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="10-digit mobile"></label>
-      <button class="btn btn-gold" id="tBtn">Status dekhein / Track</button>
+      <label>Order number<input id="tId" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="e.g. 12"></label>
+      <button class="btn btn-gold" id="tBtn">Login / Track</button>
     </form>
     <p class="msg" id="msg" role="alert"></p>
   </section>
   <section class="box" id="res" hidden style="margin-top:18px"></section>
+  <section class="mine" id="mine" hidden aria-label="Mere saare orders"></section>
 </main>
 <div class="toast" id="toast" role="status"></div>
 <script src="config.js"></script>
@@ -246,7 +260,7 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const LA = window.LA_CONFIG || {}, SCRIPT = String(LA.orderUrl || "").trim(), WA = String(LA.whatsapp || "919711069435");
 const STEPS = [["New", "Order mil gaya", "Hum aapka order dekh rahe hain"], ["In Progress", "PPT ban rahi hai", "Designer aapki PPT par kaam kar raha hai"], ["Done", "PPT ready hai", "Ready hote hi yahin demo, payment aur download milega"], ["Paid", "Order complete", "Payment mil gaya. Dhanyavaad! 🙏"]];
-const DEMO = { id:"12", time:new Date(Date.now() - 5 * 36e5).toISOString(), name:"Rahul", topic:"Physics Class 12 — Electric Charges", theme:"Blue Science", slides:"25", status:"Done",
+const DEMO = { id:"12", time:new Date(Date.now() - 5 * 36e5).toISOString(), name:"Rahul", topic:"Physics Class 12 — Electric Charges", theme:"Blue Science", slides:"25", status:"Done", language:"Hindi", files:1, details:"Board: CBSE\nChapter 1 poora, har topic ke baad 2 MCQ. Animation chahiye.", changes:[],
   ppt:{ price:250, slides:25, type:"pptx", payments:true, demo:["dark-chalk-physics-1","dark-chalk-physics-2","dark-chalk-physics-3","dark-chalk-physics-4","formula-board-maths-1","formula-board-maths-2","formula-board-maths-3","formula-board-maths-4","blue-red-gradient-1","blue-red-gradient-2"].map(n => `uploads/themes/samples/${n}.webp`) } };
 const isDemo = () => !!(LA.previewDemo || window.claude || !SCRIPT);
 async function api(action, body){
@@ -283,14 +297,15 @@ function show(o){
   if (o.download) steps[3][2] = "Payment mil gaya. PPT download karein 🙏";
   $("#res").classList.toggle("wide", !!o.ppt);
   $("#res").innerHTML = `<div><h1 style="font-size:1.3rem">Order #${esc(o.id)}</h1><p>Namaste ${esc(o.name)} · ${esc(when)}</p></div>
-    <div class="kv"><div><span>PPT:</span> ${esc(o.topic)}</div>${o.theme && o.theme !== "—" ? `<div><span>Theme:</span> ${esc(o.theme)}</div>` : ""}${o.slides && o.slides !== "—" ? `<div><span>Slides:</span> ${esc(o.slides)}</div>` : ""}</div>
+    <div class="kv"><div><span>PPT:</span> ${esc(o.topic)}</div>${o.theme && o.theme !== "—" ? `<div><span>Theme:</span> ${esc(o.theme)}</div>` : ""}${o.slides && o.slides !== "—" ? `<div><span>Slides:</span> ${esc(o.slides)}</div>` : ""}${o.language && o.language !== "—" ? `<div><span>Language:</span> ${esc(o.language)}</div>` : ""}${o.files ? `<div><span>Aapki files:</span> ${o.files} file${o.files > 1 ? "s" : ""} mili</div>` : ""}${o.details && o.details !== "—" ? `<div><span>Aapne kya likha:</span><div class="det">${esc(o.details)}</div></div>` : ""}</div>
     ${o.download ? doneHtml(o) : ""}
     ${o.status === "Cancelled" ? `<div class="cancel">❌ Ye order cancel ho gaya hai. Koi sawaal ho to WhatsApp karein.</div>`
       : `<div class="steps">${steps.map((s, i) => `<div class="st ${i < k || (i === k && i === STEPS.length - 1) ? "done" : i === k ? "now" : ""}"><span class="dot">${i < k || (i === k && i === STEPS.length - 1) ? "✓" : i + 1}</span><div><b>${s[1]}</b><small>${s[2]}</small></div></div>`).join("")}</div>`}
     ${o.ppt ? readyHtml(o) : ""}
+    ${chgHtml(o)}
     ${!o.download && !o.ppt && o.status !== "Cancelled" && o.status !== "Paid" ? `<button type="button" class="btn btn-ghost" id="bell"></button>` : ""}
     <a class="btn btn-wa" href="${wa}" target="_blank" rel="noopener"><svg class="i"><use href="#i-msg"/></svg>WhatsApp par poochhein</a>
-    ${isDemo() ? "" : `<p class="live-n"><span class="live">Live: status apne aap update hota hai</span><button type="button" id="other">Doosra order dekhein</button></p>`}`;
+    ${isDemo() ? "" : `<p class="live-n"><span class="live">Live: status apne aap update hota hai</span><button type="button" id="other">Logout / doosra number</button></p>`}`;
   $("#res").hidden = false; bellUi();
   if (o.ppt) { drawSlide(0); if (o.ppt.payments) makeQr(); }
   if (!show.done) $("#res").scrollIntoView({ behavior:"smooth", block:"start" });
@@ -322,6 +337,48 @@ function readyHtml(o){
       : `<h3>Payment ke liye WhatsApp karein</h3><p class="pay-note">Online payment abhi band hai. WhatsApp par order #${esc(o.id)} bhejein, hum payment link bhej denge.</p>`}
     </div></div>`;
 }
+/* Badlav (change request): PPT ready ho ya ban rahi ho, customer likh kar bhej sake */
+function chgHtml(o){
+  const l = o.changes || [], can = o.status !== "Cancelled" && (o.ppt || o.download || o.status === "Done" || o.status === "In Progress");
+  if (!l.length && !can) return "";
+  return `<div class="chg" id="chg"><h3 style="font-size:1rem">✏️ PPT mein badlav chahiye?</h3>
+    ${l.map(c => `<div class="it"><small>${new Date(c.time).toLocaleString("en-IN", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" })} · ${c.status === "Done" ? "✅ Ho gaya" : "⏳ Chal raha hai"}</small>${esc(c.text)}</div>`).join("")}
+    ${can ? `<textarea id="chgT" maxlength="2000" placeholder="Jaise: Slide 5 ka color badlein, slide 8 mein ek diagram jodein…"></textarea>
+    <button type="button" class="btn btn-ghost" id="chgB">Badlav bhejein</button><p class="pay-note" style="margin:0">Badlav bhejne par PPT dobara ready hone tak payment ruk jayega.</p>` : ""}</div>`;
+}
+document.addEventListener("click", async e => {
+  const b = e.target.closest("#chgB"); if (!b || !WHO) return;
+  const text = $("#chgT").value.trim(); if (text.length < 3) { toast("Kya badlav chahiye, thoda likhein."); return $("#chgT").focus(); }
+  b.disabled = true; b.textContent = "Bhej rahe hain…";
+  const r = isDemo() ? { ok:true, status:"In Progress", changes:(CUR.changes || []).concat([{ time:new Date().toISOString(), text, status:"Open" }]) } : await api("customChange", { ...WHO, text });
+  b.disabled = false; b.textContent = "Badlav bhejein";
+  if (!r.ok) return toast("⚠ " + r.error);
+  toast("✓ Badlav bhej diya. PPT update hote hi yahin dikhegi.");
+  const o = Object.assign({}, CUR, { changes:r.changes, status:r.status, ppt:r.status === "Done" ? CUR.ppt : null });
+  show.done = true; show(o); show.done = false; LAST = sig(o); drawMine();
+});
+/* Login ke baad: is mobile ke saare orders + order number se search */
+let MINE = [], MQ = "";
+const MST = { New:"Order mila", "In Progress":"Ban rahi hai", Done:"Ready · Pay karein", Paid:"Paid ✓", Cancelled:"Cancelled" };
+async function loadMine(){
+  if (!WHO) return;
+  const r = isDemo() ? { ok:true, orders:[{ id:"12", time:DEMO.time, topic:DEMO.topic, slides:DEMO.slides, status:"Done", ready:true, price:250 }, { id:"9", time:new Date(Date.now() - 9 * 864e5).toISOString(), topic:"Class 8 Science — Cell", slides:"18", status:"Paid", ready:true, price:180 }] } : await api("customMine", WHO);
+  if (!r.ok) return;
+  MINE = r.orders || []; drawMine();
+}
+function drawMine(){
+  const box = $("#mine"); if (!WHO || MINE.length < 2) { box.hidden = true; return; }
+  const q = MQ.replace(/\D/g, ""), l = MINE.filter(o => !q || String(o.id).includes(q));
+  box.hidden = false;
+  box.innerHTML = `<h2>📂 Mere saare orders <small>${MINE.length} orders · ******${esc(String(WHO.phone).slice(-4))}</small></h2>
+    ${MINE.length > 4 ? `<input type="search" id="mq" inputmode="numeric" placeholder="Order number se dhoondhein" value="${esc(MQ)}" aria-label="Order number se dhoondhein">` : ""}
+    <div style="display:grid;gap:8px">${l.map(o => { const st = o.id === String(CUR && CUR.id) && CUR ? CUR.status : o.status;
+      return `<button type="button" class="mo${o.id === String(WHO.id) ? " on" : ""}" data-mo="${esc(o.id)}"><span class="n">#${esc(o.id)}</span><span><b>${esc(o.topic)}</b><small>${new Date(o.time).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" })}${o.slides && o.slides !== "—" ? " · " + esc(o.slides) + " slides" : ""}${o.price ? " · " + inr(o.price) : ""}</small></span><span class="st ${st === "Done" ? "ready" : st === "Paid" ? "paid" : ""}">${esc(MST[st] || st)}</span></button>`; }).join("") || `<p class="pay-note">Is number ka koi order nahi mila.</p>`}</div>`;
+  const i = $("#mq"); if (i) { i.oninput = () => { MQ = i.value; drawMine(); const j = $("#mq"); j.focus(); j.setSelectionRange(j.value.length, j.value.length); }; }
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-mo]"); if (!b || !WHO || b.dataset.mo === String(WHO.id)) return;
+  stopLive(); stopQr(); open_(b.dataset.mo, WHO.phone); });
+
 /* Demo slides viewer */
 let SI = 0;
 /* Pehli slides khuli, baaki sab dikhti hain par lock (dhundhli). Locked par asli photo kabhi nahi, sirf free wali dhundhli */
@@ -421,11 +478,12 @@ const SAVE = "la_track";
 const sig = o => [o.status, o.ppt ? o.ppt.price + "|" + (o.ppt.demo || []).length + "|" + o.ppt.payments : "", o.download || ""].join("~");
 async function open_(id, phone, quiet){
   const b = $("#tBtn"); if (!quiet) { b.disabled = true; b.textContent = "Dhoondh rahe hain…"; }
-  const r = await track(id, phone); b.disabled = false; b.textContent = "Status dekhein / Track";
+  const r = await track(id, phone); b.disabled = false; b.textContent = "Login / Track";
   if (!r.ok) { if (quiet && r.net) return setTimeout(() => open_(id, phone, true), 8000);   /* net nahi → thodi der baad */
     $("#find").hidden = false; $("#res").hidden = true; $("#msg").textContent = r.error; return; }
   try { localStorage.setItem(SAVE, JSON.stringify({ id, phone })); } catch(e) {}
-  WHO = { id, phone }; LAST = sig(r); $("#find").hidden = true; show.done = quiet; show(r); show.done = false; live();
+  const same = WHO && WHO.phone === phone; WHO = { id, phone }; LAST = sig(r); $("#find").hidden = true; show.done = quiet; show(r); show.done = false; live();
+  if (same && MINE.length) drawMine(); else loadMine();
 }
 $("#fTrack").onsubmit = e => {
   e.preventDefault();
@@ -436,7 +494,7 @@ $("#fTrack").onsubmit = e => {
 };
 /* Doosra order: form wapas */
 document.addEventListener("click", e => { if (!e.target.closest("#other")) return;
-  stopLive(); stopQr(); WHO = null; CUR = null; try { localStorage.removeItem(SAVE); } catch(x) {}
+  stopLive(); stopQr(); WHO = null; CUR = null; MINE = []; MQ = ""; $("#mine").hidden = true; try { localStorage.removeItem(SAVE); } catch(x) {}
   $("#res").hidden = true; $("#find").hidden = false; $("#tId").value = ""; $("#tPhone").value = ""; $("#tId").focus(); });
 
 /* Live: har 15 sec (page khula ho tab) admin ka badlaav yahan apne aap */
