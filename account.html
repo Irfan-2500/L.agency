@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>My PPTs — PPT Store</title>
+<title>My Account (My PPTs + Orders) — PPT Store</title>
 <meta name="robots" content="noindex, nofollow" />
 <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="48x48" href="/uploads/brand/icon-48.png"><link rel="icon" type="image/png" sizes="96x96" href="/uploads/brand/icon-96.png"><link rel="icon" type="image/png" sizes="192x192" href="/uploads/brand/icon-192.png"><link rel="apple-touch-icon" href="uploads/brand/apple-touch-icon.png">
 <script>
@@ -110,6 +110,57 @@ input:focus-visible{outline:none}
 .theme-sw:not(.open) button:not([aria-checked="true"]){display:none}
 /* Theme sirf Home page par chuni jaati hai; baaki pages wahi theme follow karte hain */
 .theme-sw{display:none!important}
+/* Chhota account page: abhi ka order upar, kharidi PPTs, purane orders band list mein */
+.alt-in{justify-self:center;color:var(--cyan);font-weight:700;font-size:.85rem}
+.av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--grad);color:#fff;flex:none}.av svg{width:22px;height:22px}
+.top{margin-bottom:12px}.top h1{font-size:1.3rem}.top p{font-size:.82rem}
+.qk{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.qk a{padding:7px 12px;border-radius:99px;font-size:.8rem;font-weight:700;background:var(--card);border:1px solid var(--line2);cursor:pointer}.qk a:hover{border-color:var(--violet)}
+.sh{font-size:1.05rem;margin:18px 0 10px;display:flex;align-items:baseline;gap:8px}.sh small{color:var(--muted);font-size:.78rem;font-weight:600}
+.oc{display:grid;gap:10px;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px 16px}
+.oc .r1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.oc .r1 b{font-size:1rem}.oc .r1 small{color:var(--muted);font-size:.78rem;font-weight:600}
+.oc .tp{font-weight:600;font-size:.9rem}
+.ost{margin-left:auto;font-size:.72rem;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--card2);border:1px solid var(--line2);white-space:nowrap}.ost.ready{color:#1a1200;background:#fde047;border-color:transparent}.ost.paid{color:#052e16;background:#4ade80;border-color:transparent}.ost.cx{color:#fff;background:#ef4444;border-color:transparent}
+.dots{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.dots i{height:5px;border-radius:9px;background:var(--line2)}.dots i.on{background:linear-gradient(90deg,#22c55e,#06b6d4)}
+.oc .btn{width:auto;justify-self:start}
+.olist{margin-top:10px}.olist summary{cursor:pointer;font-weight:700;font-size:.85rem;color:var(--violet);list-style:none}.olist summary::-webkit-details-marker{display:none}.olist summary::after{content:" ▾"}.olist[open] summary::after{content:" ▴"}
+.olist a{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:9px 12px;margin-top:6px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:.84rem}
+.olist a b{color:var(--muted)}.olist a span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nudge{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:14px;border:1px dashed var(--line2);color:var(--muted);font-size:.85rem}.nudge .btn{width:auto;margin-left:auto}
+.list{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}.item .b{padding:12px;gap:8px}.item b{font-size:.92rem}
+/* ===== Dashboard ===== */
+main:has(#mine:not([hidden])){padding-top:22px}
+.dash{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start}
+.dnav{display:grid;gap:4px;padding:8px;border-radius:16px;background:var(--card);border:1px solid var(--line2);position:sticky;top:84px}
+.dnav button{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:11px;text-align:left;color:var(--text);background:none;border:0;cursor:pointer;font:inherit}
+.dnav button:hover{background:var(--card2)}.dnav button.on{background:linear-gradient(135deg,rgba(139,44,255,.16),rgba(6,182,212,.14));box-shadow:inset 0 0 0 1px rgba(139,44,255,.4)}
+.dnav i{font-style:normal;font-size:1.15rem;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:var(--card2);flex:none}
+.dnav span{min-width:0;flex:1}.dnav b{display:block;font-size:.88rem}.dnav small{display:block;font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dnav em{font-style:normal;font-size:.7rem;font-weight:800;min-width:22px;text-align:center;padding:2px 6px;border-radius:99px;background:var(--card2);border:1px solid var(--line2)}.dnav em.hot{background:#ef4444;color:#fff;border-color:transparent}
+.dpane{min-width:0;padding:16px 18px 20px;border-radius:16px;background:var(--card);border:1px solid var(--line2)}
+.ph{font-size:1.15rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}.pback{display:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--line2);background:var(--card2);color:var(--text);cursor:pointer;font-weight:800}
+.dpane .sh{font-size:.98rem;margin:16px 0 8px}.dpane .sh:first-of-type{margin-top:0}
+.more{margin-top:10px;color:var(--violet);font-weight:700;font-size:.85rem;background:none;border:0;cursor:pointer}
+.fs{margin-bottom:12px}
+.nl{display:grid;gap:6px}.ni{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg2)}.ni:hover{border-color:var(--violet)}
+.ni i{font-style:normal;font-size:1.2rem}.ni b{display:block;font-size:.88rem}.ni small{color:var(--muted);font-size:.76rem}
+.hint{font-size:.8rem;color:var(--muted);margin-top:12px}.hint a{color:var(--cyan);font-weight:700}
+.ol{display:grid;gap:6px;margin-top:12px}.ol>a,.ol>div{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);font-size:.85rem}
+.ol>a:hover{border-color:var(--violet)}.ol b{color:var(--muted)}.ol em{display:block;font-style:normal;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ol small{color:var(--muted);font-size:.74rem}.ol span{min-width:0}
+.pl .amt{display:grid;justify-items:end;gap:4px;font-weight:800}.rcpt{font-size:.72rem;font-weight:700;color:var(--cyan);background:none;border:0;cursor:pointer}
+.setf{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:14px}.setf label{flex:1;min-width:200px}.setf .btn{width:auto}
+.sr{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}.sr span{flex:1;min-width:0}.sr b{display:block;font-size:.9rem}.sr small{color:var(--muted);font-size:.78rem}.sr .btn{width:auto}
+.faq{display:grid;gap:6px}.faq details{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg2)}.faq summary{cursor:pointer;font-weight:700;font-size:.88rem}.faq p{margin-top:6px;color:var(--muted);font-size:.84rem}
+.hl{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.hl a{padding:8px 13px;border-radius:99px;font-size:.82rem;font-weight:700;background:var(--bg2);border:1px solid var(--line2)}.hl a:hover{border-color:var(--violet)}
+a.item{color:inherit}
+/* Phone: pehle 9 tiles (3x3), tile dabane par us hisse ka page, ← se wapas tiles */
+@media(max-width:760px){
+  .dash{grid-template-columns:1fr}.dnav{position:static;grid-template-columns:repeat(3,1fr);gap:8px;padding:0;background:none;border:0}
+  .dnav button{flex-direction:column;justify-content:center;text-align:center;gap:6px;padding:12px 6px;border:1px solid var(--line2);background:var(--card);position:relative;min-height:96px}
+  .dnav button.on{box-shadow:none}.dnav i{width:38px;height:38px;font-size:1.3rem}.dnav b{font-size:.74rem;line-height:1.2}.dnav small{display:none}
+  .dnav em{position:absolute;top:6px;right:6px}
+  body:not([data-tab="menu"]) .dnav{display:none}body[data-tab="menu"] .dpane{display:none}
+  .pback{display:grid;place-items:center}.dpane{padding:14px}.dpane .list{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.dpane .item .b{padding:10px}.dpane .item b{font-size:.8rem}.dpane .item .btn{font-size:.74rem;padding:7px 4px}
+}
 .otp-note{display:inline-block;margin:6px 0 2px;padding:4px 10px;border-radius:9px;font-weight:800;color:#7c2d12;background:linear-gradient(135deg,#fde68a,#fbbf24);box-shadow:0 0 0 2px rgba(251,191,36,.35);animation:otpPulse 1.6s ease-in-out infinite;transform-origin:left center}
 @keyframes otpPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07);box-shadow:0 0 0 5px rgba(251,191,36,.25)}}
 @media(prefers-reduced-motion:reduce){.otp-note{animation:none}}
@@ -154,33 +205,39 @@ input:focus-visible{outline:none}
 </header>
 
 <main class="container">
-  <!-- Login -->
+  <!-- Login: PPT kharidne wale (OTP email par) + custom order wale (order number) — dono yahin -->
   <section class="box" id="login" hidden>
     <span class="ic"><svg class="i"><use href="#i-user"/></svg></span>
-    <div><h1>My PPTs</h1><p>वही मोबाइल नंबर या ईमेल डालें जो PPT खरीदते समय भरा था। <b class="otp-note">📧 OTP आपके ईमेल पर आएगा।</b><span class="en">Use the mobile / email you bought with. OTP comes on email.</span></p></div>
+    <div><h1>My Account</h1><p>PPT kharidi hai ya custom PPT order kiya hai, dono yahin dikhenge. Wahi mobile number ya email daalein jo order / payment ke time bhara tha.<span class="en">Bought a PPT or ordered a custom PPT? Use the same mobile / email.</span></p></div>
     <form id="fPhone" novalidate style="display:grid;gap:14px">
       <label>Mobile Number / Email<input id="phone" type="text" maxlength="120" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Mobile no. or Email"></label>
       <input type="text" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-      <button class="btn btn-gold" id="sendBtn">OTP भेजें / Send OTP</button>
+      <button class="btn btn-gold" id="sendBtn">Aage badhein / Continue</button>
     </form>
     <form id="fOtp" novalidate hidden style="display:grid;gap:14px">
       <p id="sentTo"></p>
       <label>6 अंकों का OTP / 6-digit OTP<input id="otp" class="otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••"></label>
       <button class="btn btn-gold" id="verifyBtn">Verify करें / Login</button>
-      <div class="links"><button type="button" id="changeNo">← बदलें / Change</button><button type="button" id="resend" disabled>OTP दोबारा भेजें</button></div>
+      <div class="links"><button type="button" class="chg-no">← बदलें / Change</button><button type="button" id="resend" disabled>OTP दोबारा भेजें</button></div>
+    </form>
+    <form id="fOrd" novalidate hidden style="display:grid;gap:14px">
+      <p id="ordNote">Custom PPT order kiya hai? Apna <b>koi bhi ek order number</b> daalein (WhatsApp / SMS par mila tha).</p>
+      <label>Order number<input id="ordId" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="e.g. 15"></label>
+      <button class="btn btn-gold" id="ordBtn">Login karein</button>
+      <div class="links"><button type="button" class="chg-no">← Number बदलें</button></div>
     </form>
     <p class="msg" id="msg" role="alert"></p>
-    <a class="btn btn-ghost" href="track.html">📦 Custom PPT order track करें / Track order</a>
+    <button type="button" class="alt-in" id="toOrd">📦 Custom PPT order kiya hai? Order number se login</button>
   </section>
 
-  <!-- My PPTs -->
+  <!-- Login ke baad: My Account dashboard — 9 hisse (desktop par left menu, phone par tiles) -->
   <section id="mine" hidden>
-    <div class="congrats" id="congrats" hidden><span>🎉</span><div><b>बधाई हो! पेमेंट सफल रहा। / Payment successful</b><p>आपकी PPT नीचे तैयार है, <b>Download PPT</b> दबाएँ। यह पेज कभी भी "My PPTs" में मोबाइल या ईमेल से दोबारा खोल सकते हैं।<span class="en">Your PPT is ready below. Open it anytime from My PPTs.</span></p></div></div>
     <div class="top">
-      <div><h1>My PPTs 📂</h1><p id="who"></p></div>
-      <div class="acts"><a class="btn btn-gold btn-sm" href="track.html">📦 PPT Order Track करें</a><button class="btn btn-ghost btn-sm" id="logout">Logout</button></div>
+      <span class="av" aria-hidden="true"><svg class="i"><use href="#i-user"/></svg></span>
+      <div><h1 id="hi">My Account</h1><p id="who"></p></div>
+      <div class="acts"><button class="btn btn-ghost btn-sm" id="logout">Logout</button></div>
     </div>
-    <div class="list" id="list"></div>
+    <div class="dash"><nav class="dnav" id="dnav" aria-label="My Account menu"></nav><div class="dpane" id="dpane"></div></div>
   </section>
 </main>
 <div class="toast" id="toast" role="status"></div>
@@ -238,19 +295,206 @@ function demoApi(f){
   if (f.action === "logout") { demoIn = false; return { ok:true }; }
 }
 
-function show(me){
-  $("#login").hidden = me.loggedIn; $("#mine").hidden = !me.loggedIn;
-  if (!me.loggedIn) { if (me.otp !== undefined) OTP = !!me.otp; $("#sendBtn").textContent = OTP ? "OTP भेजें / Send OTP" : "Login करें / Login"; $("#fPhone").hidden = false; $("#fOtp").hidden = true; return; }
-  $("#who").textContent = `${me.phone} · ${me.items.length} PPT`;
-  const fresh = NEW && me.items.filter(p => String(p.orderId) === NEW || NEW === "demo").map(p => p.id);
-  $("#congrats").hidden = !NEW;
-  if (fresh && fresh.length) me.items.sort((a,b) => fresh.includes(b.id) - fresh.includes(a.id));
-  $("#list").innerHTML = me.items.length ? me.items.map(p => `<div class="item${fresh && fresh.includes(p.id) ? " new" : ""}">
-      <div class="thumb" style="background-image:url('${esc(p.thumb).replace(/'/g,"")}')"></div>
-      <div class="b"><b>${esc(p.title)}</b><small>Order #${p.orderId} · ${new Date(p.date.replace(" ","T")).toLocaleDateString("en-IN",{ day:"numeric", month:"short", year:"numeric" })}</small>
-        ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(dlUrl(p.url))}" download data-slug="${esc(p.slug || "")}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">${p.pending ? "⏳ पेमेंट चेक हो रहा है / Verifying" : "File तैयार हो रही है"}</span>`}</div></div>`).join("")
-    : `<div class="empty" style="grid-column:1/-1"><p>इस मोबाइल / ईमेल पर अभी कोई PPT नहीं है।<span class="en">No PPT found yet.</span></p><a class="btn btn-gold" href="ready-ppts.html">Ready PPTs देखें</a></div>`;
+/* Custom order login (track.html wala hi): mobile + koi ek order number. Is phone par yaad rehta hai (la_track) */
+const TSAVE = "la_track";
+const tsaved = v => { try { if (v === undefined) return JSON.parse(localStorage.getItem(TSAVE) || "null"); v ? localStorage.setItem(TSAVE, JSON.stringify(v)) : localStorage.removeItem(TSAVE); } catch(e) { return null; } };
+async function gas(action, body){
+  try { const r = await fetch(SCRIPT, { method:"POST", body:JSON.stringify({ action, ...body }), headers:{ "Content-Type":"text/plain;charset=utf-8" } }); return await r.json(); }
+  catch(e) { return { ok:false, net:true, error:"इंटरनेट चेक करके दोबारा try करें। / Check internet and retry." }; }
 }
+const DEMO_ORD = [{ id:"12", time:new Date(Date.now() - 5 * 36e5).toISOString(), topic:"Physics Class 12 — Electric Charges", slides:"25", status:"Done", ready:true, price:250 },
+  { id:"9", time:new Date(Date.now() - 9 * 864e5).toISOString(), topic:"Class 8 Science — Cell", slides:"18", status:"Paid", ready:true, price:180 }];
+async function ordersOf(w){
+  if (!w || !w.id || !w.phone) return null;
+  if (!SCRIPT || window.claude) return w.id === "12" ? { ok:true, orders:DEMO_ORD } : { ok:false, error:"Demo: order number 12 daalein." };
+  return gas("customMine", w);
+}
+/* ===== Login ke baad: My Account dashboard (9 hisse) =====
+   PPT · Notifications · Purchased PPTs · My Orders · Payment History · Favourite · Recently Viewed · Settings · Help
+   Favourite / Recently Viewed / naam / notification "padh liya" isi phone (localStorage) mein rehte hain. */
+const LSG = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v == null ? d : v; } catch(e) { return d; } };
+const LSS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
+const WA_NO = String((window.LA_CONFIG || {}).whatsapp || "919711069435").replace(/\D/g, "");
+const MAIL = String((window.LA_CONFIG || {}).email || "");
+const waL = m => "https://wa.me/" + WA_NO + "?text=" + encodeURIComponent(m);
+const inr = n => "₹" + Number(n || 0).toLocaleString("en-IN");
+const dt = t => { const d = new Date(String(t || "").replace(" ", "T")); return isNaN(d) ? "" : d.toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" }); };
+const MST = { New:"Order mila", "In Progress":"Ban rahi hai", Done:"Ready · Pay karein", Paid:"Paid ✓", Cancelled:"Cancelled" };
+const STEP = { New:1, "In Progress":2, Done:3, Paid:4 };
+const stCls = s => s === "Done" ? "ready" : s === "Paid" ? "paid" : s === "Cancelled" ? "cx" : "";
+/* Store ki PPT list (daam, photo, naye PPT ke liye) — pichhli baar ki, warna ek baar Google Script se */
+let CAT = LSG("la_ppts", []);
+if (!CAT.length && SCRIPT && !window.claude) fetch(SCRIPT + "?action=ppts").then(r => r.json()).then(j => { if (j && j.ok && j.products) { CAT = j.products; if (!$("#mine").hidden) draw(); } }).catch(() => {});
+if (!CAT.length && window.claude) CAT = [1,2,3,4,5].map(i => ({ id:i, title:["","Photosynthesis — Class 10 Science","भारत का संविधान — Class 8 SST","Newton's Laws of Motion — Class 9","Fractions Made Easy — Class 5 Maths","Startup Business Plan Pitch Deck"][i], price:[0,49,39,59,1,99][i], mrp:[0,99,79,119,59,199][i], thumb:`uploads/previews/demo-${["","photosynthesis","samvidhan","newton","fractions","pitch"][i]}-1.webp`, added:i }));
+const pOf = id => CAT.find(p => +p.id === +id);
+const thumbOf = p => p && (p.thumb || ((p.previews || []).find(u => u && !/#card-end$/.test(u))) || "");
+
+const TABS = [
+  ["home", "📂", "PPT", "Downloads"], ["noti", "🔔", "Notifications", "Order, payment, offers"], ["ppts", "🗂️", "Purchased PPTs", "Saari list"],
+  ["orders", "🧾", "My Orders", "Status, details"], ["pay", "💳", "Payment History", "Receipt / invoice"], ["fav", "❤️", "Favourite PPTs", "Saved"],
+  ["recent", "🕘", "Recently Viewed", "Haal hi mein dekhi"], ["set", "⚙️", "Settings", "Profile, mobile"], ["help", "💬", "Help & Support", "FAQ, contact"]
+];
+let TAB = (location.hash.match(/^#t=(\w+)/) || [])[1] || "home", ME = { loggedIn:false }, ORD = null;   /* ME: kharidi PPTs (OTP) · ORD: { phone, id, orders } custom orders */
+
+function notifs(){
+  const L = [];
+  (ORD && ORD.orders || []).slice(0, 10).forEach(o => L.push({ t:o.time, ic:o.status === "Done" ? "🎉" : o.status === "Paid" ? "✅" : o.status === "Cancelled" ? "❌" : "📦",
+    b:`Order #${o.id}: ${MST[o.status] || o.status}`, s:o.topic, go:"orders" }));
+  (ME.items || []).forEach(p => L.push({ t:p.date, ic:"💳", b:"Payment mil gaya, PPT download ke liye ready", s:p.title, go:"ppts" }));
+  CAT.filter(p => +p.mrp > +p.price).slice().sort((a, b) => String(b.added || "").localeCompare(String(a.added || ""), undefined, { numeric:true })).slice(0, 3)
+    .forEach(p => L.push({ t:typeof p.added === "string" ? p.added : "", ic:"🏷️", b:`Offer: ${Math.round((1 - p.price / p.mrp) * 100)}% OFF — ${inr(p.price)}`, s:p.title, href:"ready-ppts.html?id=" + p.id }));
+  return L.sort((a, b) => (new Date(b.t) - new Date(a.t)) || 0);
+}
+const unread = () => { const seen = LSG("la_noti_seen", 0); return notifs().filter(n => n.t && new Date(n.t) > seen && n.ic !== "🏷️").length; };
+function payments(){
+  const g = {};
+  (ME.items || []).forEach(p => { const k = String(p.orderId || p.date); (g[k] = g[k] || { id:k, t:p.date, items:[], kind:"Ready PPT" }).items.push(p); });
+  const L = Object.values(g).map(x => ({ ...x, amt:x.items.reduce((s, p) => s + (+(pOf(p.id) || {}).price || 0), 0) }));
+  (ORD && ORD.orders || []).filter(o => o.status === "Paid").forEach(o => L.push({ id:"Order #" + o.id, t:o.time, kind:"Custom PPT", items:[{ title:o.topic }], amt:+o.price || 0 }));
+  return L.sort((a, b) => new Date(b.t) - new Date(a.t));
+}
+
+function show(me){
+  if (me) ME = me;
+  const inP = !!ME.loggedIn, inO = !!(ORD && ORD.orders), any = inP || inO;
+  $("#login").hidden = any; $("#mine").hidden = !any;
+  if (!any) { if (ME.otp !== undefined) OTP = !!ME.otp; resetLogin(); return; }
+  if (NEW) TAB = "home";
+  draw(); if (innerWidth < 760 && !NEW && !/^#t=/.test(location.hash)) document.body.dataset.tab = "menu";
+}
+function draw(){
+  const prof = LSG("la_profile", {}), inP = !!ME.loggedIn, inO = !!(ORD && ORD.orders);
+  const ph = inO ? "******" + String(ORD.phone).slice(-4) : ME.phone || "";
+  $("#hi").textContent = "Namaste " + (prof.name || (ORD && ORD.name) || "") + (prof.name || (ORD && ORD.name) ? "" : "👋");
+  $("#who").textContent = ph;
+  const cnt = { home:(ME.items || []).length, noti:unread(), ppts:(ME.items || []).length, orders:inO ? ORD.orders.length : 0, pay:payments().length,
+    fav:LSG("la_fav", []).length, recent:LSG("la_recent", []).length };
+  $("#dnav").innerHTML = TABS.map(([k, e, l, s]) => `<button type="button" data-tab="${k}" class="${k === TAB ? "on" : ""}" aria-current="${k === TAB}"><i>${e}</i><span><b>${l}</b><small>${s}</small></span>${cnt[k] ? `<em class="${k === "noti" ? "hot" : ""}">${cnt[k]}</em>` : ""}</button>`).join("");
+  const T = TABS.find(x => x[0] === TAB) || TABS[0];
+  $("#dpane").innerHTML = `<h2 class="ph"><button type="button" class="pback" data-tab="menu" aria-label="Menu">←</button>${T[1]} ${T[2]}</h2>` + (PANES[TAB] || PANES.home)();
+  document.body.dataset.tab = TAB;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-tab]"); if (!b) return; e.preventDefault();
+  if (b.dataset.tab === "menu") { document.body.dataset.tab = "menu"; scrollTo({ top:0 }); return; }
+  TAB = b.dataset.tab; history.replaceState(null, "", "#t=" + TAB);
+  if (TAB === "noti") LSS("la_noti_seen", Date.now() + 1000);
+  draw(); if (innerWidth < 760) $("#dpane").scrollIntoView({ block:"start" });
+});
+
+/* ---------- har hissa ---------- */
+const pptRow = (p, k) => `<div class="item${k ? " new" : ""}">
+    <div class="thumb" style="background-image:url('${esc(p.thumb || thumbOf(pOf(p.id))).replace(/'/g,"")}')"></div>
+    <div class="b"><b>${esc(p.title)}</b><small>Order #${esc(p.orderId)} · ${dt(p.date)}</small>
+      ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(dlUrl(p.url))}" download data-slug="${esc(p.slug || "")}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">${p.pending ? "⏳ पेमेंट चेक हो रहा है / Verifying" : "File तैयार हो रही है"}</span>`}</div></div>`;
+const needPpt = () => `<div class="nudge">Kharidi hui PPTs dekhne ke liye email OTP se login karein.<button type="button" class="btn btn-gold btn-sm" id="linkPpt">OTP se login</button></div>`;
+const needOrd = () => `<div class="nudge">📦 Custom PPT order kiya hai? Order number se jodein, yahin status dikhega.<button type="button" class="btn btn-ghost btn-sm" id="linkOrd">Order jodein</button></div>`;
+const empty = (t, a) => `<div class="nudge">${t}${a || ""}</div>`;
+const cardList = ids => { const L = ids.map(pOf).filter(Boolean); return L.length ? `<div class="list">${L.map(p => { const off = +p.mrp > +p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
+  return `<a class="item" href="ready-ppts.html?id=${p.id}"><div class="thumb" style="background-image:url('${esc(thumbOf(p)).replace(/'/g,"")}')"></div><div class="b"><b>${esc(p.title)}</b><small>${inr(p.price)}${off ? ` · ${off}% OFF` : ""}</small><span class="btn btn-ghost btn-sm">👁 Preview &amp; Buy</span></div></a>`; }).join("")}</div>` : ""; };
+function curOrder(){
+  const L = ORD.orders, cur = L.find(o => o.status !== "Paid" && o.status !== "Cancelled") || L[0], n = STEP[cur.status] || 0;
+  return `<div class="oc"><div class="r1"><b>#${esc(cur.id)}</b><small>${dt(cur.time)}${cur.slides && cur.slides !== "—" ? " · " + esc(cur.slides) + " slides" : ""}</small><span class="ost ${stCls(cur.status)}">${esc(MST[cur.status] || cur.status)}</span></div>
+    <div class="tp">${esc(cur.topic)}</div>
+    ${cur.status === "Cancelled" ? "" : `<div class="dots" aria-label="Step ${n} / 4">${[1,2,3,4].map(i => `<i class="${i <= n ? "on" : ""}"></i>`).join("")}</div>`}
+    <a class="btn ${cur.status === "Done" ? "btn-gold" : "btn-ghost"} btn-sm" href="track.html#id=${encodeURIComponent(cur.id)}" data-oid="${esc(cur.id)}">${cur.status === "Done" ? "Demo dekhein · Pay & Download" : cur.status === "Paid" ? "Download / details" : "Status dekhein"} →</a></div>`;
+}
+const PANES = {
+  home(){
+    const fresh = NEW ? (ME.items || []).filter(p => String(p.orderId) === NEW || NEW === "demo").map(p => p.id) : [];
+    const items = (ME.items || []).slice().sort((a, b) => fresh.includes(b.id) - fresh.includes(a.id));
+    return `${NEW ? `<div class="congrats"><span>🎉</span><div><b>बधाई हो! पेमेंट सफल रहा। / Payment successful</b><p>आपकी PPT नीचे तैयार है, <b>Download PPT</b> दबाएँ।<span class="en">Your PPT is ready below.</span></p></div></div>` : ""}
+      ${ORD && ORD.orders && ORD.orders.length ? `<h3 class="sh">🧾 Abhi ka order</h3>${curOrder()}` : ""}
+      <h3 class="sh">📥 Download</h3>
+      ${!ME.loggedIn ? needPpt() : items.length ? `<div class="list">${items.slice(0, 6).map(p => pptRow(p, fresh.includes(p.id))).join("")}</div>${items.length > 6 ? `<button type="button" class="more" data-tab="ppts">Saari ${items.length} PPTs dekhein →</button>` : ""}`
+        : empty("Abhi koi PPT nahi kharidi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`)}`;
+  },
+  noti(){
+    const L = notifs(), seen = LSG("la_noti_prev", 0);
+    return L.length ? `<div class="nl">${L.map(n => `<a class="ni" ${n.href ? `href="${esc(n.href)}"` : `href="#" data-tab="${n.go}"`}><i>${n.ic}</i><span><b>${esc(n.b)}</b><small>${esc(n.s || "")}${n.t && dt(n.t) ? " · " + dt(n.t) : ""}</small></span></a>`).join("")}</div>
+      <p class="hint">🔔 Order ready hone par phone par alert ke liye <a href="#" data-tab="set">Settings</a> mein notification chalu karein.</p>` : empty("Abhi koi notification nahi.");
+  },
+  ppts(){
+    if (!ME.loggedIn) return needPpt();
+    const L = ME.items || []; if (!L.length) return empty("Abhi koi PPT nahi kharidi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`);
+    return `${L.length > 6 ? `<input type="search" class="fs" id="pq" placeholder="PPT ka naam likhein…" aria-label="Kharidi PPT dhoondhein">` : ""}<div class="list" id="pl">${L.map(p => pptRow(p)).join("")}</div>`;
+  },
+  orders(){
+    if (!(ORD && ORD.orders)) return needOrd();
+    const L = ORD.orders; if (!L.length) return empty("Is number par koi custom order nahi.", `<a class="btn btn-gold btn-sm" href="order.html">Custom PPT order karein</a>`);
+    return `${curOrder()}<div class="ol">${L.map(o => `<a href="track.html#id=${encodeURIComponent(o.id)}" data-oid="${esc(o.id)}"><b>#${esc(o.id)}</b><span><em>${esc(o.topic)}</em><small>${dt(o.time)}${o.slides && o.slides !== "—" ? " · " + esc(o.slides) + " slides" : ""}${o.price ? " · " + inr(o.price) : ""}</small></span><span class="ost ${stCls(o.status)}">${esc(MST[o.status] || o.status)}</span></a>`).join("")}</div>
+      <a class="btn btn-ghost btn-sm" href="order.html" style="margin-top:12px">✨ Naya custom PPT order</a>`;
+  },
+  pay(){
+    const L = payments(); if (!L.length) return (ME.loggedIn ? "" : needPpt()) + empty("Abhi koi payment nahi.");
+    return `<div class="ol pl">${L.map((x, i) => `<div><b>${x.kind === "Custom PPT" ? "🧾" : "💳"}</b><span><em>${esc(x.items.map(p => p.title).join(", "))}</em><small>${dt(x.t)} · ${esc(x.kind)} · ID ${esc(x.id)}</small></span><span class="amt">${x.amt ? inr(x.amt) : "—"}<button type="button" class="rcpt" data-rc="${i}">🧾 Receipt</button></span></div>`).join("")}</div>
+      ${ME.loggedIn ? "" : needPpt()}<p class="hint">GST invoice chahiye? <a href="${waL("Hi PPT Store! Mujhe apne payment ka GST invoice chahiye. Mobile: " + (ORD ? ORD.phone : ""))}" target="_blank" rel="noopener">WhatsApp karein</a>.</p>`;
+  },
+  fav(){ const ids = LSG("la_fav", []); return cardList(ids) || empty("Koi PPT save nahi ki. Ready PPTs mein kisi bhi PPT par ♡ dabayein, wo yahan aa jayegi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`); },
+  recent(){ const L = LSG("la_recent", []); return L.length ? cardList(L.map(x => x.id)) + `<button type="button" class="more" id="clrRecent">Saaf karein ✕</button>` : empty("Abhi koi PPT nahi dekhi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`); },
+  set(){
+    const prof = LSG("la_profile", {}), on = "Notification" in window && Notification.permission === "granted";
+    return `<form class="setf" id="setF"><label>Aapka naam<input id="sName" maxlength="40" value="${esc(prof.name || (ORD && ORD.name) || "")}" placeholder="Jaise: Rahul"></label><button class="btn btn-gold btn-sm">Save karein</button></form>
+      <div class="sr"><span><b>Login mobile / email</b><small>${esc(ORD ? "******" + String(ORD.phone).slice(-4) : "")}${ORD && ME.loggedIn ? " · " : ""}${esc(ME.loggedIn ? ME.phone || "" : "")}</small></span>
+        <a class="btn btn-ghost btn-sm" href="${waL("Hi PPT Store! Mujhe apna mobile number / email badalna hai.\nPurana: " + (ORD ? ORD.phone : ME.phone || "") + "\nNaya: ")}" target="_blank" rel="noopener">Mobile no. change</a></div>
+      <p class="hint" style="margin-top:-4px">Mobile / email badalne ke liye hamari team verify karke badalti hai (aapki kharidi PPTs naye number par aa jayengi).</p>
+      <div class="sr"><span><b>Phone par notification</b><small>${on ? "Chalu hai ✓" : "Order ready hone par alert"}</small></span>${on ? "" : `<button type="button" class="btn btn-ghost btn-sm" id="nOn">Chalu karein</button>`}</div>
+      <div class="sr"><span><b>Logout</b><small>Is phone se bahar nikalein</small></span><button type="button" class="btn btn-ghost btn-sm" id="logout2">Logout</button></div>`;
+  },
+  help(){
+    const F = [["PPT download nahi ho rahi?", "Purchased PPTs mein Download PPT dabayein. Phone par file Downloads folder mein jaati hai. Phir bhi na ho to WhatsApp karein, hum link bhej denge."],
+      ["Payment kat gaya par PPT nahi mili?", "2–5 minute rukiye aur page refresh karein. Na aaye to payment ka screenshot / UTR WhatsApp karein, turant bhej denge."],
+      ["Custom PPT kitni der mein milti hai?", "Zyaadatar 1 ghante mein. Bade order mein thoda zyada. Status My Orders mein live dikhta hai."],
+      ["PPT mein badlav (change) chahiye?", "My Orders → order kholein → \"PPT mein badlav chahiye?\" mein likh kar bhejein."],
+      ["Refund kaise milega?", "Refund policy page dekhein, ya WhatsApp par order number bhejein."]];
+    return `<div class="faq">${F.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div>
+      <div class="hl"><a href="${waL("Hi PPT Store! Mujhe madad chahiye.")}" target="_blank" rel="noopener">💬 WhatsApp</a>${MAIL ? `<a href="mailto:${esc(MAIL)}">✉️ Email</a>` : ""}<a href="contact.html">📞 Contact</a><a href="track.html">📦 Track order</a><a href="refund.html">↩️ Refund policy</a></div>`;
+  }
+};
+document.addEventListener("input", e => { if (e.target.id !== "pq") return; const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll("#pl .item").forEach(x => x.hidden = q && !x.textContent.toLowerCase().includes(q)); });
+document.addEventListener("submit", e => { if (e.target.id !== "setF") return; e.preventDefault(); LSS("la_profile", { ...LSG("la_profile", {}), name:$("#sName").value.trim() }); toast("✓ Save ho gaya"); draw(); });
+document.addEventListener("click", async e => {
+  if (e.target.closest("#clrRecent")) { LSS("la_recent", []); draw(); }
+  if (e.target.closest("#logout2")) $("#logout").click();
+  if (e.target.closest("#nOn")) { if (!("Notification" in window)) return toast("Is browser mein notification nahi chalta."); const p = await Notification.requestPermission(); toast(p === "granted" ? "🔔 Chalu ho gaya" : "Browser settings se Allow karein"); draw(); }
+  const r = e.target.closest("[data-rc]"); if (r) receipt(payments()[+r.dataset.rc]);
+});
+/* Payment receipt: naye tab mein, wahan se Print / PDF save */
+function receipt(x){
+  if (!x) return; const w = open("", "_blank"); if (!w) return toast("Popup band hai. Allow karein.");
+  const prof = LSG("la_profile", {});
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Receipt ${esc(x.id)} — PPT Store</title><style>body{font:14px/1.5 system-ui,sans-serif;color:#111;max-width:640px;margin:30px auto;padding:0 16px}h1{font-size:20px;margin:0}table{width:100%;border-collapse:collapse;margin:18px 0}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left}th:last-child,td:last-child{text-align:right}.t{font-weight:700}.m{color:#666;font-size:12px}button{margin-top:16px;padding:8px 16px}@media print{button{display:none}}</style></head><body>
+    <h1>PPT Store — Payment Receipt</h1><p class="m">pptstore.in · WhatsApp +${esc(WA_NO)}${MAIL ? " · " + esc(MAIL) : ""}</p>
+    <p><b>Receipt / Order:</b> ${esc(x.id)}<br><b>Date:</b> ${dt(x.t)}<br><b>Customer:</b> ${esc(prof.name || (ORD && ORD.name) || "")} ${esc(ORD ? "******" + String(ORD.phone).slice(-4) : ME.phone || "")}<br><b>Type:</b> ${esc(x.kind)}</p>
+    <table><tr><th>Item</th><th>Amount</th></tr>${x.items.map(p => { const c = pOf(p.id); return `<tr><td>${esc(p.title)}</td><td>${c ? inr(c.price) : x.items.length === 1 && x.amt ? inr(x.amt) : "—"}</td></tr>`; }).join("")}<tr class="t"><td>Total</td><td>${x.amt ? inr(x.amt) : "—"}</td></tr></table>
+    <p class="m">Ye computer se bani receipt hai. GST invoice ke liye WhatsApp karein.</p><button onclick="print()">Print / Save PDF</button></body></html>`);
+  w.document.close();
+}
+/* Order card se track page: wahi login aage (dobara number nahi poochhega) */
+document.addEventListener("click", e => { const a = e.target.closest("[data-oid]"); if (!a || !ORD) return; tsaved({ id:a.dataset.oid, phone:ORD.phone }); });
+function resetLogin(){ $("#sendBtn").hidden = false; $("#sendBtn").textContent = "Aage badhein / Continue"; $("#fPhone").hidden = false; $("#fOtp").hidden = true; $("#fOrd").hidden = true; $("#toOrd").hidden = false; }
+/* Login ke baad bhi doosra hissa jodna (PPT ↔ order) */
+document.addEventListener("click", e => {
+  if (e.target.closest("#linkOrd") || e.target.closest("#toOrd")) { e.preventDefault(); $("#mine").hidden = true; $("#login").hidden = false; ordStep(""); }
+  if (e.target.closest("#linkPpt")) { e.preventDefault(); $("#mine").hidden = true; $("#login").hidden = false; resetLogin(); if (ORD) $("#phone").value = ORD.phone; $("#phone").focus(); }
+});
+function ordStep(note){
+  $("#fPhone").hidden = false; $("#fOtp").hidden = true; $("#fOrd").hidden = false; $("#toOrd").hidden = true;
+  $("#sendBtn").hidden = true; if (note) $("#ordNote").innerHTML = note;
+  ($("#phone").value.trim() ? $("#ordId") : $("#phone")).focus();
+}
+$("#fOrd").onsubmit = async e => {
+  e.preventDefault();
+  const v = $("#phone").value.replace(/\D/g, "").replace(/^(91|0)(?=\d{10}$)/, ""), id = $("#ordId").value.replace(/\D/g, "");
+  if (!/^[6-9]\d{9}$/.test(v)) { msg("Order ke liye 10-digit mobile number daalein. / Enter your 10-digit mobile."); $("#phone").focus(); return; }
+  if (!id) { msg("Order number daalein (jaise 15)."); $("#ordId").focus(); return; }
+  const b = $("#ordBtn"); b.disabled = true; b.textContent = "Check हो रहा है…";
+  const r = await ordersOf({ id, phone:v }); b.disabled = false; b.textContent = "Login karein";
+  if (!r || !r.ok) { msg((r && r.error) || "Is order number aur mobile se koi order nahi mila."); return; }
+  tsaved({ id, phone:v }); ORD = { id, phone:v, orders:r.orders || [], name:r.name || "" };
+  msg(""); $("#sendBtn").hidden = false; toast("✓ Login हो गया"); show();
+};
 function startTimer(){
   let n = 30; const b = $("#resend"); b.disabled = true; clearInterval(timer);
   b.textContent = `OTP दोबारा भेजें (${n}s)`;
@@ -262,15 +506,17 @@ async function send(){
   if (!(phone.includes("@") ? /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/.test(phone) : /^[6-9]\d{9}$/.test(phone))) { msg("सही मोबाइल नंबर या ईमेल डालें। / Enter a valid mobile or email."); $("#phone").focus(); return; }
   msg(""); const b = $("#sendBtn"); b.disabled = true; b.textContent = OTP ? "भेज रहे हैं… / Sending…" : "Check हो रहा है…";
   const r = await api({ action:OTP ? "send" : "login", id:phone, phone, website:$("#hp").value });
-  b.disabled = false; b.textContent = OTP ? "OTP भेजें / Send OTP" : "Login करें / Login";
-  if (!r.ok) { msg(r.error); return; }
+  b.disabled = false; b.textContent = "Aage badhein / Continue";
+  if (!r.ok) {
+    if (!phone.includes("@") && (r.noBuy || /No purchase|nahi khareedi|नहीं खरीदी/i.test(r.error || ""))) { msg(""); return ordStep("Is number se koi PPT nahi kharidi gayi. <b>Custom PPT order kiya hai?</b> To apna koi bhi ek order number daalein."); }
+    msg(r.error); return; }
   if (!OTP) { toast("✓ Login हो गया"); show(r); return; }
   $("#sentTo").innerHTML = `OTP <b>${esc(r.to)}</b> पर भेजा गया है।<span class="en">OTP sent${r.via === "email" ? " to your email" : ""}. Check inbox / spam.</span>`;
   $("#fPhone").hidden = true; $("#fOtp").hidden = false; $("#otp").value = ""; $("#otp").focus(); startTimer();
 }
 $("#fPhone").onsubmit = e => { e.preventDefault(); send(); };
 $("#resend").onclick = send;
-$("#changeNo").onclick = () => { $("#fOtp").hidden = true; $("#fPhone").hidden = false; msg(""); $("#phone").focus(); };
+document.querySelectorAll(".chg-no").forEach(x => x.onclick = () => { resetLogin(); $("#sendBtn").hidden = false; msg(""); $("#phone").focus(); });
 $("#otp").oninput = e => { e.target.value = e.target.value.replace(/\D/g,""); if (e.target.value.length === 6) $("#fOtp").requestSubmit(); };
 $("#fOtp").onsubmit = async e => {
   e.preventDefault(); const otp = $("#otp").value;
@@ -279,9 +525,15 @@ $("#fOtp").onsubmit = async e => {
   const r = await api({ action:"verify", id:phone, phone, otp });
   b.disabled = false; b.textContent = "Verify करें / Login";
   if (!r.ok) { msg(r.error); $("#otp").select(); return; }
-  msg(""); toast("✓ Login हो गया"); show(r);
+  msg(""); toast("✓ Login हो गया"); show(r); linkOrders();
 };
-$("#logout").onclick = async () => { await api({ action:"logout" }); show({ loggedIn:false }); toast("Logout हो गया"); };
+$("#logout").onclick = async () => { await api({ action:"logout" }); ORD = null; tsaved(null); show({ loggedIn:false }); toast("Logout हो गया"); };
+/* OTP login ke baad: isi mobile ke custom orders bhi (naya Apps Script ho to bina order number ke) */
+async function linkOrders(){
+  if (ORD || !SAPI) return;
+  const r = await gas("acctOrders", { token:tok() });
+  if (r && r.ok && r.phone && Array.isArray(r.orders) && r.orders.length) { ORD = { id:r.orders[0].id, phone:r.phone, orders:r.orders, name:r.name || "" }; show(); }
+}
 document.addEventListener("click", e => { if (e.target.closest('a[href="#demo"]')) { e.preventDefault(); toast("✓ असली वेबसाइट पर यहाँ से PPT download होगी"); } });
 
 (async function boot(){
@@ -289,7 +541,8 @@ document.addEventListener("click", e => { if (e.target.closest('a[href="#demo"]'
   if (!me.ok && SCRIPT && !window.claude) { SAPI = true; const s = await api(); if (s.ok) me = s; else SAPI = false; }   /* Vercel: asli login Google Script se */
   if (!me.ok && CONFIG.demo) { API = false; me = await api(); }
   if (NEW === "demo" && !API) { demoIn = true; me = await api(); }
-  show(me.ok ? me : { loggedIn:false });
+  const w = tsaved(); if (w && w.id && w.phone) { const r = await ordersOf(w); if (r && r.ok) ORD = { id:w.id, phone:w.phone, orders:r.orders || [], name:r.name || "" }; }
+  show(me.ok ? me : { loggedIn:false }); if (me.loggedIn) linkOrders();
   if (NEW && me.loggedIn) { history.replaceState(null, "", location.pathname); const a = document.querySelector(".item.new a.btn"); if (a && a.getAttribute("href") !== "#demo") setTimeout(() => a.click(), 800); }
   if (!me.ok && !CONFIG.demo) msg(me.error);
 })();

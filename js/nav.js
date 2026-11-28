@@ -14,12 +14,12 @@
   };
   var page = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
   var more = [
-    ["service.html?s=ready-to-use-presentations", "Ready-to-Use Presentations"],
     ["service.html?s=lecture-recording", "Lecture Recording"],
     ["service.html?s=thumbnail-design", "Thumbnail Design"],
     ["ready-ppts.html?type=notes", "Study Notes"],
     ["service.html?s=video-editing", "Video Editing"],
     ["service.html?s=social-media-management", "Social Media Management"],
+    ["ready-ppts.html", "Ready-to-Use Presentations"],
     ["service.html", "View all offerings →"]
   ];
   var css = '.gnav{display:flex;align-items:center;gap:6px;margin-left:auto}' +
@@ -62,4 +62,6 @@
   var box = nav.querySelector(".g-more"), btn = box.querySelector("button");
   btn.onclick = function (e) { e.stopPropagation(); var o = box.classList.toggle("open"); btn.setAttribute("aria-expanded", String(o)); };
   document.addEventListener("click", function (e) { if (!e.target.closest(".g-more")) { box.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); } });
+  /* Header mein poori website ka search */
+  if (!window.SiteSearch) { var ss = document.createElement("script"); ss.src = "js/site-search.js"; document.body.appendChild(ss); }
 })();
