@@ -131,9 +131,9 @@ input:focus-visible{outline:none}
 main:has(#mine:not([hidden])){padding-top:22px}
 .dash{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start}
 .dnav{display:grid;gap:4px;padding:8px;border-radius:16px;background:var(--card);border:1px solid var(--line2);position:sticky;top:84px}
-.dnav button{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:11px;text-align:left;color:var(--text);background:none;border:0;cursor:pointer;font:inherit}
+.dnav button{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:11px;text-align:left;color:var(--text);background:none;border:0;cursor:pointer;font:inherit}
 .dnav button:hover{background:var(--card2)}.dnav button.on{background:linear-gradient(135deg,rgba(139,44,255,.16),rgba(6,182,212,.14));box-shadow:inset 0 0 0 1px rgba(139,44,255,.4)}
-.dnav i{font-style:normal;font-size:1.15rem;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:var(--card2);flex:none}
+.dnav i{font-style:normal;font-size:1rem;width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:var(--card2);flex:none}
 .dnav span{min-width:0;flex:1}.dnav b{display:block;font-size:.88rem}.dnav small{display:block;font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dnav em{font-style:normal;font-size:.7rem;font-weight:800;min-width:22px;text-align:center;padding:2px 6px;border-radius:99px;background:var(--card2);border:1px solid var(--line2)}.dnav em.hot{background:#ef4444;color:#fff;border-color:transparent}
 .dpane{min-width:0;padding:16px 18px 20px;border-radius:16px;background:var(--card);border:1px solid var(--line2)}
@@ -156,7 +156,7 @@ a.item{color:inherit}
 /* Phone: pehle 9 tiles (3x3), tile dabane par us hisse ka page, ← se wapas tiles */
 @media(max-width:760px){
   .dash{grid-template-columns:1fr}.dnav{position:static;grid-template-columns:repeat(3,1fr);gap:8px;padding:0;background:none;border:0}
-  .dnav button{flex-direction:column;justify-content:center;text-align:center;gap:6px;padding:12px 6px;border:1px solid var(--line2);background:var(--card);position:relative;min-height:96px}
+  .dnav button{flex-direction:column;justify-content:center;text-align:center;gap:6px;padding:12px 6px;border:1px solid var(--line2);background:var(--card);position:relative;min-height:78px}
   .dnav button.on{box-shadow:none}.dnav i{width:38px;height:38px;font-size:1.3rem}.dnav b{font-size:.74rem;line-height:1.2}.dnav small{display:none}
   .dnav em{position:absolute;top:6px;right:6px}
   body:not([data-view="menu"]) .dnav{display:none}body[data-view="menu"] .dpane{display:none}
@@ -331,9 +331,9 @@ const pOf = id => CAT.find(p => +p.id === +id);
 const thumbOf = p => p && (p.thumb || ((p.previews || []).find(u => u && !/#card-end$/.test(u))) || "");
 
 const TABS = [
-  ["home", "📂", "PPT", "Downloads"], ["noti", "🔔", "Notifications", "Order, payment, offers"], ["ppts", "🗂️", "Purchased PPTs", "All purchases"],
-  ["orders", "🧾", "My Orders", "Status, details"], ["pay", "💳", "Payment History", "Receipt / invoice"], ["fav", "❤️", "Favourite PPTs", "Saved"],
-  ["recent", "🕘", "Recently Viewed", "Recently viewed"], ["set", "⚙️", "Settings", "Profile, mobile"], ["help", "💬", "Help & Support", "FAQ, contact"]
+  ["home", "📂", "Home", ""], ["noti", "🔔", "Notifications", ""], ["ppts", "🗂️", "My PPTs", ""],
+  ["orders", "🧾", "Orders", ""], ["pay", "💳", "Payments", ""], ["fav", "❤️", "Favourites", ""],
+  ["recent", "🕘", "Recent", ""], ["set", "⚙️", "Settings", ""], ["help", "💬", "Help", ""]
 ];
 let TAB = (location.hash.match(/^#t=(\w+)/) || [])[1] || "home", ME = { loggedIn:false }, ORD = null;   /* ME: kharidi PPTs (OTP) · ORD: { phone, id, orders } custom orders */
 
@@ -360,7 +360,7 @@ const custRow = o => `<div class="item"><div class="thumb cthumb"><span>✨ Cust
     <div class="b"><b>${esc(o.topic)}</b><small>Order #${esc(o.id)} · ${dt(o.time)}</small>
       <a class="btn btn-gold btn-sm" href="track.html#id=${encodeURIComponent(o.id)}" data-oid="${esc(o.id)}">${icon("i-dl")} Download PPT</a></div></div>`;
 const allBought = fresh => buys().slice().sort((a, b) => (fresh || []).includes(b.id) - (fresh || []).includes(a.id)).map(p => pptRow(p, (fresh || []).includes(p.id))).concat(customPaid().map(custRow));
-const otpHint = () => ME.loggedIn ? "" : `<p class="hint">Bought with email and not listed here? <a href="#" id="linkPpt">Sign in with OTP</a>.</p>`;
+const otpHint = () => ME.loggedIn ? "" : `<p class="hint"><a href="#" id="linkPpt">Missing a PPT? Sign in with email</a></p>`;
 function payments(){
   const g = {};
   buys().forEach(p => { const k = String(p.orderId || p.date); (g[k] = g[k] || { id:k, t:p.date, items:[], kind:"Ready PPT" }).items.push(p); });
@@ -384,7 +384,7 @@ function draw(){
   $("#who").textContent = ph;
   const cnt = { home:0, noti:unread(), ppts:buys().length + customPaid().length, orders:inO ? ORD.orders.length : 0, pay:payments().length,
     fav:LSG("la_fav", []).length, recent:LSG("la_recent", []).length };
-  $("#dnav").innerHTML = TABS.map(([k, e, l, s]) => `<button type="button" data-tab="${k}" class="${k === TAB ? "on" : ""}" aria-current="${k === TAB}"><i>${e}</i><span><b>${l}</b><small>${s}</small></span>${cnt[k] ? `<em class="${k === "noti" ? "hot" : ""}">${cnt[k]}</em>` : ""}</button>`).join("");
+  $("#dnav").innerHTML = TABS.map(([k, e, l, s]) => `<button type="button" data-tab="${k}" class="${k === TAB ? "on" : ""}" aria-current="${k === TAB}"><i>${e}</i><span><b>${l}</b></span>${cnt[k] ? `<em class="${k === "noti" ? "hot" : ""}">${cnt[k]}</em>` : ""}</button>`).join("");
   const T = TABS.find(x => x[0] === TAB) || TABS[0];
   $("#dpane").innerHTML = `<h2 class="ph"><button type="button" class="pback" data-tab="menu" aria-label="Menu">←</button>${T[1]} ${T[2]}</h2>` + (PANES[TAB] || PANES.home)();
   document.body.dataset.view = TAB;
@@ -403,10 +403,11 @@ const pptRow = (p, k) => `<div class="item${k ? " new" : ""}">
     <div class="b"><b>${esc(p.title)}</b><small>Order #${esc(p.orderId)} · ${dt(p.date)}</small>
       ${p.url ? `<a class="btn btn-gold btn-sm" href="${esc(dlUrl(p.url))}" download data-slug="${esc(p.slug || "")}">${icon("i-dl")} Download PPT</a>` : `<span class="btn btn-ghost btn-sm" style="cursor:default">${p.pending ? "⏳ Verifying payment" : "Preparing file"}</span>`}</div></div>`;
 const needPpt = () => `<div class="nudge">Sign in with email OTP to view your purchased PPTs.<button type="button" class="btn btn-gold btn-sm" id="linkPpt">Sign in with OTP</button></div>`;
-const needOrd = () => `<div class="nudge">📦 Ordered a custom PPT? Link it with your order number to track it here.<button type="button" class="btn btn-ghost btn-sm" id="linkOrd">Link order</button></div>`;
+const needOrd = () => `<div class="nudge">No custom orders linked.<button type="button" class="btn btn-ghost btn-sm" id="linkOrd">Link order</button></div>`;
+const BROWSE = `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Browse PPTs</a>`;
 const empty = (t, a) => `<div class="nudge">${t}${a || ""}</div>`;
 const cardList = ids => { const L = ids.map(pOf).filter(Boolean); return L.length ? `<div class="list">${L.map(p => { const off = +p.mrp > +p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
-  return `<a class="item" href="ready-ppts.html?id=${p.id}"><div class="thumb" style="background-image:url('${esc(thumbOf(p)).replace(/'/g,"")}')"></div><div class="b"><b>${esc(p.title)}</b><small>${inr(p.price)}${off ? ` · ${off}% OFF` : ""}</small><span class="btn btn-ghost btn-sm">👁 Preview &amp; Buy</span></div></a>`; }).join("")}</div>` : ""; };
+  return `<a class="item" href="ready-ppts.html?id=${p.id}"><div class="thumb" style="background-image:url('${esc(thumbOf(p)).replace(/'/g,"")}')"></div><div class="b"><b>${esc(p.title)}</b><small>${inr(p.price)}${off ? ` · ${off}% OFF` : ""}</small><span class="btn btn-ghost btn-sm">View</span></div></a>`; }).join("")}</div>` : ""; };
 function curOrder(){
   const L = ORD.orders, cur = L.find(o => o.status !== "Paid" && o.status !== "Cancelled") || L[0], n = STEP[cur.status] || 0;
   return `<div class="oc"><div class="r1"><b>#${esc(cur.id)}</b><small>${dt(cur.time)}${cur.slides && cur.slides !== "—" ? " · " + esc(cur.slides) + " slides" : ""}</small><span class="ost ${stCls(cur.status)}">${esc(MST[cur.status] || cur.status)}</span></div>
@@ -418,49 +419,46 @@ const PANES = {
   home(){
     const fresh = NEW ? buys().filter(p => String(p.orderId) === NEW || NEW === "demo").map(p => p.id) : [];
     const L = allBought(fresh);
-    return `${NEW ? `<div class="congrats"><span>🎉</span><div><b>Payment successful</b><p>Your PPT is ready. Tap <b>Download PPT</b> below.</p></div></div>` : ""}
-      ${ORD && ORD.orders && ORD.orders.length ? `<h3 class="sh">🧾 Current order</h3>${curOrder()}` : ""}
-      ${L.length ? `<h3 class="sh">📥 Purchased PPTs</h3><div class="list">${L.slice(0, 6).join("")}</div>${L.length > 6 ? `<button type="button" class="more" data-tab="ppts">View all ${L.length} PPTs →</button>` : ""}` : ""}`;
+    return `${NEW ? `<div class="congrats"><span>🎉</span><div><b>Payment successful</b><p>Your PPT is ready below.</p></div></div>` : ""}
+      ${ORD && ORD.orders && ORD.orders.length ? `<h3 class="sh">Current order</h3>${curOrder()}` : ""}
+      ${L.length ? `<h3 class="sh">Your PPTs</h3><div class="list">${L.slice(0, 6).join("")}</div>${L.length > 6 ? `<button type="button" class="more" data-tab="ppts">View all ${L.length} →</button>` : ""}` : (ORD && ORD.orders && ORD.orders.length ? "" : empty("No PPTs yet.", BROWSE))}`;
   },
   noti(){
     const L = notifs(), seen = LSG("la_noti_prev", 0);
-    return L.length ? `<div class="nl">${L.map(n => `<a class="ni" ${n.href ? `href="${esc(n.href)}"` : `href="#" data-tab="${n.go}"`}><i>${n.ic}</i><span><b>${esc(n.b)}</b><small>${esc(n.s || "")}${n.t && dt(n.t) ? " · " + dt(n.t) : ""}</small></span></a>`).join("")}</div>
-      <p class="hint">🔔 Enable notifications in <a href="#" data-tab="set">Settings</a> to get alerts when your order is ready.</p>` : empty("No notifications yet.");
+    return L.length ? `<div class="nl">${L.map(n => `<a class="ni" ${n.href ? `href="${esc(n.href)}"` : `href="#" data-tab="${n.go}"`}><i>${n.ic}</i><span><b>${esc(n.b)}</b><small>${esc(n.s || "")}${n.t && dt(n.t) ? " · " + dt(n.t) : ""}</small></span></a>`).join("")}</div>` : empty("No notifications.");
   },
   ppts(){
-    const L = allBought(); if (!L.length) return empty("No purchases yet.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Browse Ready PPTs</a>`) + otpHint();
-    return `${L.length > 6 ? `<input type="search" class="fs" id="pq" placeholder="Search by PPT name…" aria-label="Search purchased PPTs">` : ""}<div class="list" id="pl">${L.join("")}</div>${otpHint()}`;
+    const L = allBought(); if (!L.length) return empty("No PPTs yet.", BROWSE) + otpHint();
+    return `${L.length > 6 ? `<input type="search" class="fs" id="pq" placeholder="Search…" aria-label="Search purchased PPTs">` : ""}<div class="list" id="pl">${L.join("")}</div>${otpHint()}`;
   },
   orders(){
     if (!(ORD && ORD.orders)) return needOrd();
-    const L = ORD.orders; if (!L.length) return empty("No custom orders for this number.", `<a class="btn btn-gold btn-sm" href="order.html">Order a custom PPT</a>`);
+    const L = ORD.orders; if (!L.length) return empty("No orders yet.", `<a class="btn btn-gold btn-sm" href="order.html">Order custom PPT</a>`);
     return `${curOrder()}<div class="ol">${L.map(o => `<a href="track.html#id=${encodeURIComponent(o.id)}" data-oid="${esc(o.id)}"><b>#${esc(o.id)}</b><span><em>${esc(o.topic)}</em><small>${dt(o.time)}${o.slides && o.slides !== "—" ? " · " + esc(o.slides) + " slides" : ""}${o.price ? " · " + inr(o.price) : ""}</small></span><span class="ost ${stCls(o.status)}">${esc(MST[o.status] || o.status)}</span></a>`).join("")}</div>
-      <a class="btn btn-ghost btn-sm" href="order.html" style="margin-top:12px">✨ New custom PPT order</a>`;
+      <a class="btn btn-ghost btn-sm" href="order.html" style="margin-top:12px">+ New order</a>`;
   },
   pay(){
-    const L = payments(); if (!L.length) return empty("No payments yet.");
-    return `<div class="ol pl">${L.map((x, i) => `<div><b>${x.kind === "Custom PPT" ? "🧾" : "💳"}</b><span><em>${esc(x.items.map(p => p.title).join(", "))}</em><small>${dt(x.t)} · ${esc(x.kind)} · ID ${esc(x.id)}</small></span><span class="amt">${x.amt ? inr(x.amt) : "—"}<button type="button" class="rcpt" data-rc="${i}">🧾 Receipt</button></span></div>`).join("")}</div>
-      <p class="hint">Need a GST invoice? <a href="${waL("Hi PPT Store! I need a GST invoice for my payment. Mobile: " + (ORD ? ORD.phone : ""))}" target="_blank" rel="noopener">Contact us on WhatsApp</a>.</p>`;
+    const L = payments(); if (!L.length) return empty("No payments.");
+    return `<div class="ol pl">${L.map((x, i) => `<div><b>${x.kind === "Custom PPT" ? "🧾" : "💳"}</b><span><em>${esc(x.items.map(p => p.title).join(", "))}</em><small>${dt(x.t)} · ${esc(x.kind)} · ID ${esc(x.id)}</small></span><span class="amt">${x.amt ? inr(x.amt) : "—"}<button type="button" class="rcpt" data-rc="${i}">Receipt</button></span></div>`).join("")}</div>`;
   },
-  fav(){ const ids = LSG("la_fav", []); return cardList(ids) || empty("No saved PPTs. Tap ♡ on any Ready PPT to save it here.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Browse Ready PPTs</a>`); },
-  recent(){ const L = LSG("la_recent", []); return L.length ? cardList(L.map(x => x.id)) + `<button type="button" class="more" id="clrRecent">Clear ✕</button>` : empty("No recently viewed PPTs.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Browse Ready PPTs</a>`); },
+  fav(){ const ids = LSG("la_fav", []); return cardList(ids) || empty("No favourites yet.", BROWSE); },
+  recent(){ const L = LSG("la_recent", []); return L.length ? cardList(L.map(x => x.id)) + `<button type="button" class="more" id="clrRecent">Clear ✕</button>` : empty("Nothing viewed yet.", BROWSE); },
   set(){
     const prof = LSG("la_profile", {}), on = "Notification" in window && Notification.permission === "granted";
-    return `<form class="setf" id="setF"><label>Your name<input id="sName" maxlength="40" value="${esc(prof.name || (ORD && ORD.name) || "")}" placeholder="e.g. Rahul"></label><button class="btn btn-gold btn-sm">Save</button></form>
-      <div class="sr"><span><b>Login mobile / email</b><small>${esc(ORD ? "******" + String(ORD.phone).slice(-4) : "")}${ORD && ME.loggedIn ? " · " : ""}${esc(ME.loggedIn ? ME.phone || "" : "")}</small></span>
-        <a class="btn btn-ghost btn-sm" href="${waL("Hi PPT Store! I would like to change my mobile number / email.\nOld: " + (ORD ? ORD.phone : ME.phone || "") + "\nNew: ")}" target="_blank" rel="noopener">Change mobile</a></div>
-      <p class="hint" style="margin-top:-4px">Our team verifies and updates your mobile / email. Your purchases will move to the new number.</p>
-      <div class="sr"><span><b>Notifications</b><small>${on ? "Enabled ✓" : "Get alerts when your order is ready"}</small></span>${on ? "" : `<button type="button" class="btn btn-ghost btn-sm" id="nOn">Enable</button>`}</div>
-      <div class="sr"><span><b>Logout</b><small>Sign out of this device</small></span><button type="button" class="btn btn-ghost btn-sm" id="logout2">Logout</button></div>`;
+    return `<form class="setf" id="setF"><label>Name<input id="sName" maxlength="40" value="${esc(prof.name || (ORD && ORD.name) || "")}" placeholder="e.g. Rahul"></label><button class="btn btn-gold btn-sm">Save</button></form>
+      <div class="sr"><span><b>Mobile / Email</b><small>${esc(ORD ? "******" + String(ORD.phone).slice(-4) : "")}${ORD && ME.loggedIn ? " · " : ""}${esc(ME.loggedIn ? ME.phone || "" : "")}</small></span>
+        <a class="btn btn-ghost btn-sm" href="${waL("Hi PPT Store! I would like to change my mobile number / email.\nOld: " + (ORD ? ORD.phone : ME.phone || "") + "\nNew: ")}" target="_blank" rel="noopener">Change</a></div>
+      <div class="sr"><span><b>Notifications</b><small>${on ? "On" : "Off"}</small></span>${on ? "" : `<button type="button" class="btn btn-ghost btn-sm" id="nOn">Enable</button>`}</div>
+      <div class="sr"><span><b>Logout</b></span><button type="button" class="btn btn-ghost btn-sm" id="logout2">Logout</button></div>`;
   },
   help(){
-    const F = [["PPT not downloading?", "Tap Download PPT in Purchased PPTs. On mobile, the file saves to your Downloads folder. Still stuck? WhatsApp us and we will send the link."],
-      ["Paid but did not receive the PPT?", "Wait 2–5 minutes and refresh. If it still does not appear, WhatsApp us your payment screenshot or UTR."],
-      ["How long does a custom PPT take?", "Usually within 1 hour; larger orders may take longer. Track live status in My Orders."],
-      ["Need changes to your PPT?", "Open the order in My Orders and submit your changes there."],
-      ["How do I get a refund?", "See our Refund Policy, or WhatsApp us your order number."]];
+    const F = [["PPT not downloading?", "Check your Downloads folder, or WhatsApp us."],
+      ["Paid but no PPT?", "Refresh after 2–5 minutes, or WhatsApp us your UTR."],
+      ["Custom PPT delivery time?", "Usually within 1 hour."],
+      ["Need changes?", "Open the order in My Orders."],
+      ["Refund?", "See Refund Policy or WhatsApp us."]];
     return `<div class="faq">${F.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div>
-      <div class="hl"><a href="${waL("Hi PPT Store! I need help.")}" target="_blank" rel="noopener">💬 WhatsApp</a>${MAIL ? `<a href="mailto:${esc(MAIL)}">✉️ Email</a>` : ""}<a href="contact.html">📞 Contact</a><a href="track.html">📦 Track order</a><a href="refund.html">↩️ Refund policy</a></div>`;
+      <div class="hl"><a href="${waL("Hi PPT Store! I need help.")}" target="_blank" rel="noopener">💬 WhatsApp</a>${MAIL ? `<a href="mailto:${esc(MAIL)}">✉️ Email</a>` : ""}<a href="contact.html">📞 Contact</a><a href="refund.html">↩️ Refund</a></div>`;
   }
 };
 document.addEventListener("input", e => { if (e.target.id !== "pq") return; const q = e.target.value.trim().toLowerCase();
