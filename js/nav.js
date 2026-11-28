@@ -46,7 +46,7 @@
   nav.innerHTML =
     '<a class="g-home' + on("index") + '" href="index.html">Home</a>' +
     '<a class="g-shop' + on("ready-ppts") + '" href="ready-ppts.html">' + ic(I.bag) + 'Shop PPTs</a>' +
-    '<a class="g-custom' + on("order") + '" href="index.html#custom">' + ic(I.spark) + 'Custom PPT</a>' +
+    '<a class="g-custom' + on("order") + '" href="order.html">' + ic(I.spark) + 'Custom PPT</a>' +
     '<a class="g-price" href="index.html#pricing"><span class="g-rs">₹</span>Pricing</a>' +
     '<a class="g-my' + on("account") + '" href="account.html">' + ic(I.user) + 'My PPTs</a>' +
     '<div class="g-more"><button type="button" aria-haspopup="true" aria-expanded="false">' + ic(I.grid) + 'More' + ic(I.down, 14) + '</button><div class="g-menu" role="menu">' +
