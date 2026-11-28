@@ -152,6 +152,7 @@ main:has(#mine:not([hidden])){padding-top:22px}
 .faq{display:grid;gap:6px}.faq details{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg2)}.faq summary{cursor:pointer;font-weight:700;font-size:.88rem}.faq p{margin-top:6px;color:var(--muted);font-size:.84rem}
 .hl{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.hl a{padding:8px 13px;border-radius:99px;font-size:.82rem;font-weight:700;background:var(--bg2);border:1px solid var(--line2)}.hl a:hover{border-color:var(--violet)}
 a.item{color:inherit}
+.cthumb{display:grid;place-items:center;background:linear-gradient(135deg,#8b2cff,#06b6d4)}.cthumb span{color:#fff;font-weight:800;font-size:.9rem}
 /* Phone: pehle 9 tiles (3x3), tile dabane par us hisse ka page, ← se wapas tiles */
 @media(max-width:760px){
   .dash{grid-template-columns:1fr}.dnav{position:static;grid-template-columns:repeat(3,1fr);gap:8px;padding:0;background:none;border:0}
@@ -340,15 +341,29 @@ function notifs(){
   const L = [];
   (ORD && ORD.orders || []).slice(0, 10).forEach(o => L.push({ t:o.time, ic:o.status === "Done" ? "🎉" : o.status === "Paid" ? "✅" : o.status === "Cancelled" ? "❌" : "📦",
     b:`Order #${o.id}: ${MST[o.status] || o.status}`, s:o.topic, go:"orders" }));
-  (ME.items || []).forEach(p => L.push({ t:p.date, ic:"💳", b:"Payment mil gaya, PPT download ke liye ready", s:p.title, go:"ppts" }));
+  buys().forEach(p => L.push({ t:p.date, ic:"💳", b:"Payment mil gaya, PPT download ke liye ready", s:p.title, go:"ppts" }));
   CAT.filter(p => +p.mrp > +p.price).slice().sort((a, b) => String(b.added || "").localeCompare(String(a.added || ""), undefined, { numeric:true })).slice(0, 3)
     .forEach(p => L.push({ t:typeof p.added === "string" ? p.added : "", ic:"🏷️", b:`Offer: ${Math.round((1 - p.price / p.mrp) * 100)}% OFF — ${inr(p.price)}`, s:p.title, href:"ready-ppts.html?id=" + p.id }));
   return L.sort((a, b) => (new Date(b.t) - new Date(a.t)) || 0);
 }
 const unread = () => { const seen = LSG("la_noti_seen", 0); return notifs().filter(n => n.t && new Date(n.t) > seen && n.ic !== "🏷️").length; };
+let BUY = [];   /* order number login: isi mobile se kharidi Ready PPTs (Apps Script "acctByOrder") */
+const buys = () => ME.loggedIn ? (ME.items || []) : BUY;
+async function loadBuys(){
+  if (ME.loggedIn || !ORD || !SCRIPT || window.claude) return;
+  const r = await gas("acctByOrder", { id:ORD.id, phone:ORD.phone });
+  if (r && r.ok && Array.isArray(r.items)) { BUY = r.items; if (!$("#mine").hidden) draw(); }
+}
+/* Purchased list: Ready PPTs + paid custom PPT orders, ek hi jagah */
+const customPaid = () => (ORD && ORD.orders || []).filter(o => o.status === "Paid");
+const custRow = o => `<div class="item"><div class="thumb cthumb"><span>✨ Custom PPT</span></div>
+    <div class="b"><b>${esc(o.topic)}</b><small>Order #${esc(o.id)} · ${dt(o.time)}</small>
+      <a class="btn btn-gold btn-sm" href="track.html#id=${encodeURIComponent(o.id)}" data-oid="${esc(o.id)}">${icon("i-dl")} Download PPT</a></div></div>`;
+const allBought = fresh => buys().slice().sort((a, b) => (fresh || []).includes(b.id) - (fresh || []).includes(a.id)).map(p => pptRow(p, (fresh || []).includes(p.id))).concat(customPaid().map(custRow));
+const otpHint = () => ME.loggedIn ? "" : `<p class="hint">Email se Ready PPT kharidi thi aur yahan nahi dikh rahi? <a href="#" id="linkPpt">OTP se login karein</a>.</p>`;
 function payments(){
   const g = {};
-  (ME.items || []).forEach(p => { const k = String(p.orderId || p.date); (g[k] = g[k] || { id:k, t:p.date, items:[], kind:"Ready PPT" }).items.push(p); });
+  buys().forEach(p => { const k = String(p.orderId || p.date); (g[k] = g[k] || { id:k, t:p.date, items:[], kind:"Ready PPT" }).items.push(p); });
   const L = Object.values(g).map(x => ({ ...x, amt:x.items.reduce((s, p) => s + (+(pOf(p.id) || {}).price || 0), 0) }));
   (ORD && ORD.orders || []).filter(o => o.status === "Paid").forEach(o => L.push({ id:"Order #" + o.id, t:o.time, kind:"Custom PPT", items:[{ title:o.topic }], amt:+o.price || 0 }));
   return L.sort((a, b) => new Date(b.t) - new Date(a.t));
@@ -367,7 +382,7 @@ function draw(){
   const ph = inO ? "******" + String(ORD.phone).slice(-4) : ME.phone || "";
   $("#hi").textContent = "Namaste " + (prof.name || (ORD && ORD.name) || "") + (prof.name || (ORD && ORD.name) ? "" : "👋");
   $("#who").textContent = ph;
-  const cnt = { home:(ME.items || []).length, noti:unread(), ppts:(ME.items || []).length, orders:inO ? ORD.orders.length : 0, pay:payments().length,
+  const cnt = { home:0, noti:unread(), ppts:buys().length + customPaid().length, orders:inO ? ORD.orders.length : 0, pay:payments().length,
     fav:LSG("la_fav", []).length, recent:LSG("la_recent", []).length };
   $("#dnav").innerHTML = TABS.map(([k, e, l, s]) => `<button type="button" data-tab="${k}" class="${k === TAB ? "on" : ""}" aria-current="${k === TAB}"><i>${e}</i><span><b>${l}</b><small>${s}</small></span>${cnt[k] ? `<em class="${k === "noti" ? "hot" : ""}">${cnt[k]}</em>` : ""}</button>`).join("");
   const T = TABS.find(x => x[0] === TAB) || TABS[0];
@@ -401,13 +416,11 @@ function curOrder(){
 }
 const PANES = {
   home(){
-    const fresh = NEW ? (ME.items || []).filter(p => String(p.orderId) === NEW || NEW === "demo").map(p => p.id) : [];
-    const items = (ME.items || []).slice().sort((a, b) => fresh.includes(b.id) - fresh.includes(a.id));
+    const fresh = NEW ? buys().filter(p => String(p.orderId) === NEW || NEW === "demo").map(p => p.id) : [];
+    const L = allBought(fresh);
     return `${NEW ? `<div class="congrats"><span>🎉</span><div><b>बधाई हो! पेमेंट सफल रहा। / Payment successful</b><p>आपकी PPT नीचे तैयार है, <b>Download PPT</b> दबाएँ।<span class="en">Your PPT is ready below.</span></p></div></div>` : ""}
       ${ORD && ORD.orders && ORD.orders.length ? `<h3 class="sh">🧾 Abhi ka order</h3>${curOrder()}` : ""}
-      <h3 class="sh">📥 Download</h3>
-      ${!ME.loggedIn ? needPpt() : items.length ? `<div class="list">${items.slice(0, 6).map(p => pptRow(p, fresh.includes(p.id))).join("")}</div>${items.length > 6 ? `<button type="button" class="more" data-tab="ppts">Saari ${items.length} PPTs dekhein →</button>` : ""}`
-        : empty("Abhi koi PPT nahi kharidi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`)}`;
+      ${L.length ? `<h3 class="sh">📥 Kharidi hui PPTs</h3><div class="list">${L.slice(0, 6).join("")}</div>${L.length > 6 ? `<button type="button" class="more" data-tab="ppts">Saari ${L.length} PPTs dekhein →</button>` : ""}` : ""}`;
   },
   noti(){
     const L = notifs(), seen = LSG("la_noti_prev", 0);
@@ -415,9 +428,8 @@ const PANES = {
       <p class="hint">🔔 Order ready hone par phone par alert ke liye <a href="#" data-tab="set">Settings</a> mein notification chalu karein.</p>` : empty("Abhi koi notification nahi.");
   },
   ppts(){
-    if (!ME.loggedIn) return needPpt();
-    const L = ME.items || []; if (!L.length) return empty("Abhi koi PPT nahi kharidi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`);
-    return `${L.length > 6 ? `<input type="search" class="fs" id="pq" placeholder="PPT ka naam likhein…" aria-label="Kharidi PPT dhoondhein">` : ""}<div class="list" id="pl">${L.map(p => pptRow(p)).join("")}</div>`;
+    const L = allBought(); if (!L.length) return empty("Abhi koi PPT nahi kharidi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`) + otpHint();
+    return `${L.length > 6 ? `<input type="search" class="fs" id="pq" placeholder="PPT ka naam likhein…" aria-label="Kharidi PPT dhoondhein">` : ""}<div class="list" id="pl">${L.join("")}</div>${otpHint()}`;
   },
   orders(){
     if (!(ORD && ORD.orders)) return needOrd();
@@ -426,9 +438,9 @@ const PANES = {
       <a class="btn btn-ghost btn-sm" href="order.html" style="margin-top:12px">✨ Naya custom PPT order</a>`;
   },
   pay(){
-    const L = payments(); if (!L.length) return (ME.loggedIn ? "" : needPpt()) + empty("Abhi koi payment nahi.");
+    const L = payments(); if (!L.length) return empty("Abhi koi payment nahi.");
     return `<div class="ol pl">${L.map((x, i) => `<div><b>${x.kind === "Custom PPT" ? "🧾" : "💳"}</b><span><em>${esc(x.items.map(p => p.title).join(", "))}</em><small>${dt(x.t)} · ${esc(x.kind)} · ID ${esc(x.id)}</small></span><span class="amt">${x.amt ? inr(x.amt) : "—"}<button type="button" class="rcpt" data-rc="${i}">🧾 Receipt</button></span></div>`).join("")}</div>
-      ${ME.loggedIn ? "" : needPpt()}<p class="hint">GST invoice chahiye? <a href="${waL("Hi PPT Store! Mujhe apne payment ka GST invoice chahiye. Mobile: " + (ORD ? ORD.phone : ""))}" target="_blank" rel="noopener">WhatsApp karein</a>.</p>`;
+      <p class="hint">GST invoice chahiye? <a href="${waL("Hi PPT Store! Mujhe apne payment ka GST invoice chahiye. Mobile: " + (ORD ? ORD.phone : ""))}" target="_blank" rel="noopener">WhatsApp karein</a>.</p>`;
   },
   fav(){ const ids = LSG("la_fav", []); return cardList(ids) || empty("Koi PPT save nahi ki. Ready PPTs mein kisi bhi PPT par ♡ dabayein, wo yahan aa jayegi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`); },
   recent(){ const L = LSG("la_recent", []); return L.length ? cardList(L.map(x => x.id)) + `<button type="button" class="more" id="clrRecent">Saaf karein ✕</button>` : empty("Abhi koi PPT nahi dekhi.", `<a class="btn btn-gold btn-sm" href="ready-ppts.html">Ready PPTs देखें</a>`); },
@@ -493,7 +505,7 @@ $("#fOrd").onsubmit = async e => {
   const r = await ordersOf({ id, phone:v }); b.disabled = false; b.textContent = "Login karein";
   if (!r || !r.ok) { msg((r && r.error) || "Is order number aur mobile se koi order nahi mila."); return; }
   tsaved({ id, phone:v }); ORD = { id, phone:v, orders:r.orders || [], name:r.name || "" };
-  msg(""); $("#sendBtn").hidden = false; toast("✓ Login हो गया"); show();
+  msg(""); $("#sendBtn").hidden = false; toast("✓ Login हो गया"); show(); loadBuys();
 };
 function startTimer(){
   let n = 30; const b = $("#resend"); b.disabled = true; clearInterval(timer);
@@ -527,7 +539,7 @@ $("#fOtp").onsubmit = async e => {
   if (!r.ok) { msg(r.error); $("#otp").select(); return; }
   msg(""); toast("✓ Login हो गया"); show(r); linkOrders();
 };
-$("#logout").onclick = async () => { await api({ action:"logout" }); ORD = null; tsaved(null); show({ loggedIn:false }); toast("Logout हो गया"); };
+$("#logout").onclick = async () => { await api({ action:"logout" }); ORD = null; BUY = []; tsaved(null); show({ loggedIn:false }); toast("Logout हो गया"); };
 /* OTP login ke baad: isi mobile ke custom orders bhi (naya Apps Script ho to bina order number ke) */
 async function linkOrders(){
   if (ORD || !SAPI) return;
@@ -542,7 +554,7 @@ document.addEventListener("click", e => { if (e.target.closest('a[href="#demo"]'
   if (!me.ok && CONFIG.demo) { API = false; me = await api(); }
   if (NEW === "demo" && !API) { demoIn = true; me = await api(); }
   const w = tsaved(); if (w && w.id && w.phone) { const r = await ordersOf(w); if (r && r.ok) ORD = { id:w.id, phone:w.phone, orders:r.orders || [], name:r.name || "" }; }
-  show(me.ok ? me : { loggedIn:false }); if (me.loggedIn) linkOrders();
+  show(me.ok ? me : { loggedIn:false }); if (me.loggedIn) linkOrders(); else loadBuys();
   if (NEW && me.loggedIn) { history.replaceState(null, "", location.pathname); const a = document.querySelector(".item.new a.btn"); if (a && a.getAttribute("href") !== "#demo") setTimeout(() => a.click(), 800); }
   if (!me.ok && !CONFIG.demo) msg(me.error);
 })();

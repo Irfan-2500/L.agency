@@ -6,6 +6,7 @@
    Live project mein ye code Store.gs ke aakhir mein (ya alag file "Account.gs") rakhein. Routing —
    doPost ke switch mein, 'acctMe' wali line ke paas:
      case 'acctOrders': return json_(acctOrders_(d));
+     case 'acctByOrder': return json_(acctByOrder_(d));
    (Ye na lage to bhi website chalti hai: tab OTP wale ko orders ke liye ek baar order number daalna padta hai.)
    ===================================================================== */
 function acctOrders_(d) {
@@ -23,4 +24,12 @@ function acctOrders_(d) {
     return { id: String(x[1]), time: iso_(x[0]), topic: str_(x[5]), slides: str_(x[7]), status: str_(x[13]) || 'New', ready: !!(c && str_(c[2])), price: c ? Number(c[1]) || 0 : 0 };
   });
   return { ok: true, phone: mobile, name: mine.length ? str_(mine[mine.length - 1][2]).split(' ')[0] : '', orders: orders };
+}
+
+/* Order number + mobile se login (custom order wale): isi mobile se kharidi Ready PPTs bhi
+   My Account → Purchased PPTs mein dikhein, alag se email OTP ke bina. */
+function acctByOrder_(d) {
+  const t = trackOrder_(d); if (!t.ok) return t;
+  const key = mob_(d.phone), sales = salesOf_(key);
+  return acctItems_(key, sales);
 }
