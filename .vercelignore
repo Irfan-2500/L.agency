@@ -1,1 +1,4 @@
+# Figma sync tooling, not part of the website
+design/
+# Google Apps Script source (paste into script.google.com), not served
 google-script/
