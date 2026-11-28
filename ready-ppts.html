@@ -167,6 +167,7 @@ html:not(.light) .fsel select{color:#fff;font-weight:700}
 .sold{display:inline-flex;align-items:center;gap:3px;align-self:flex-start;justify-self:start;width:max-content;white-space:nowrap;font-size:.62rem;font-weight:800;letter-spacing:.02em;line-height:1;
   padding:3px 7px 3px 5px;border-radius:99px;color:#fff;background:linear-gradient(135deg,#f97316,#ef4444);box-shadow:none}
 .sold b{font-weight:800}
+.srow{display:flex;align-items:center;gap:8px}.fav{margin-left:auto;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line2);background:var(--card2);font-size:.85rem;cursor:pointer;line-height:1;padding:0}.fav:hover,.fav.on{border-color:#ef4444}.fv{font-size:.9rem}
 .sold.fresh{background:linear-gradient(135deg,#06b6d4,#8b2cff);box-shadow:0 4px 14px -4px rgba(6,182,212,.6)}
 .card h3{font-size:1.02rem;font-weight:700}
 .card p{font-size:.84rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -817,7 +818,7 @@ function card(p){
       ${isBook(p) ? `<span class="sl-badge">📄 PDF eBook${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : isNote(p) ? `<span class="sl-badge">📄 A4 PDF${p.slides ? ` · ${p.slides} Pages` : ""}</span>` : p.slides ? `<span class="sl-badge">${icon("i-layers")}${p.slides} Slides</span>` : p.type === "pdf" ? `<span class="sl-badge">PDF</span>` : ""}
     </button>
     <div class="c-body">
-      ${soldTag(p)}
+      <div class="srow">${soldTag(p)}${favBtn(p.id)}</div>
       <h3>${esc(p.title)}</h3>
       ${isBook(p) ? `<span class="pdfpill">📄 PDF eBook · hard copy nahi</span>` : ""}
       <p>${esc(p.desc)}</p>
@@ -1085,8 +1086,19 @@ function sharePpt(id, ev){
   bx.classList.add("on");
 }
 const waShare = m => `https://wa.me/?text=${encodeURIComponent(m)}`;
+/* Favourite (♡) aur Recently Viewed: My Account mein dikhte hain (isi phone par yaad) */
+const favs = () => { try { return JSON.parse(localStorage.getItem("la_fav") || "[]"); } catch(e) { return []; } };
+const favBtn = (id, cls = "fav") => { const on = favs().includes(id); return `<button type="button" class="${cls} fv${on ? " on" : ""}" data-fav="${id}" onclick="event.stopPropagation();toggleFav(${id})" aria-pressed="${on}" aria-label="${on ? "Favourite se hatayein" : "Favourite mein save karein"}" title="${on ? "Saved ❤️" : "Save (Favourite)"}">${on ? "❤️" : "🤍"}</button>`; };
+function toggleFav(id){
+  let f = favs(); const on = !f.includes(id); f = on ? [id, ...f].slice(0, 100) : f.filter(x => x !== id);
+  try { localStorage.setItem("la_fav", JSON.stringify(f)); } catch(e) {}
+  document.querySelectorAll(`[data-fav="${id}"]`).forEach(b => { b.classList.toggle("on", on); b.textContent = on ? "❤️" : "🤍"; b.setAttribute("aria-pressed", on); b.title = on ? "Saved ❤️" : "Save (Favourite)"; });
+  toast(on ? "❤️ Favourite mein save — My Account mein dikhegi" : "Favourite se hata diya");
+}
+function seen(id){ try { const L = JSON.parse(localStorage.getItem("la_recent") || "[]").filter(x => x.id !== id); L.unshift({ id, t:Date.now() }); localStorage.setItem("la_recent", JSON.stringify(L.slice(0, 30))); } catch(e) {} }
 function openPreview(id, full){
   const p = PRODUCTS.find(x => x.id === id); if (!p) return;
+  if (!full) seen(id);
   const imgs = p.previews && p.previews.length ? p.previews : (p.thumb ? [p.thumb] : []);
   if (!full && PVS_V[id]) full = PVS_V[id];
   const slots = pvSlots(imgs, +p.slides || 0, full), N = slots.length, all = !!(full && full.some(Boolean)), bk = PV_FROM != null && BUNDLES[PV_FROM];
@@ -1108,7 +1120,7 @@ function openPreview(id, full){
         <div class="price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><em>${off}% OFF</em>` : ""}</div>
         <div class="grow">
           <button class="btn btn-ghost btn-sm" onclick="toggleCart(${p.id});hideModal('previewModal')">${cart.includes(p.id) ? "Remove from Cart" : "+ Add to Cart"}</button>
-          <button class="btn btn-ghost btn-sm shr" onclick="sharePpt(${p.id},event)" aria-label="Share" title="Share">${icon("i-share","width:16px")}</button>
+          ${favBtn(p.id, "btn btn-ghost btn-sm")}<button class="btn btn-ghost btn-sm shr" onclick="sharePpt(${p.id},event)" aria-label="Share" title="Share">${icon("i-share","width:16px")}</button>
           <button class="btn btn-gold btn-sm" onclick="hideModal('previewModal');buyNow(${p.id})">${icon("i-dl","width:15px")}Buy Now</button>
         </div>
       </div>
